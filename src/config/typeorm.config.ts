@@ -51,7 +51,6 @@ export const typeORMConfig: TypeOrmModuleOptions = {
     SnsInfo,
     Students,
   ],
-  // entities: ['../output/entities/*.entity.ts'],
-  synchronize: true,
+  synchronize: false,
   logging: true,
 };

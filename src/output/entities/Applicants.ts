@@ -36,7 +36,7 @@ export class Applicants {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'club_no', referencedColumnName: 'id' }])
-  clubNo2: Clubs;
+  club: Clubs;
 
   @ManyToOne(() => Students, (students) => students.applicants, {
     onDelete: 'CASCADE',

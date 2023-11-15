@@ -5,68 +5,68 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { Students } from "./Students";
+} from 'typeorm';
+import { Students } from './Students';
 
-@Index("letters_fk1", ["senderId"], {})
-@Index("letters_fk2", ["recipientId"], {})
-@Index("letters_fk3", ["hostId"], {})
-@Entity("letters", { schema: "dongurami_local_db" })
+@Index('letters_fk1', ['senderId'], {})
+@Index('letters_fk2', ['recipientId'], {})
+@Index('letters_fk3', ['hostId'], {})
+@Entity('letters', { schema: 'dongurami_local_db' })
 export class Letters {
-  @PrimaryGeneratedColumn({ type: "int", name: "id", unsigned: true })
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column("int", { name: "sender_id", unsigned: true })
+  @Column('int', { name: 'sender_id', unsigned: true })
   senderId: number;
 
-  @Column("int", { name: "recipient_id", unsigned: true })
+  @Column('int', { name: 'recipient_id', unsigned: true })
   recipientId: number;
 
-  @Column("int", { name: "host_id", unsigned: true })
+  @Column('int', { name: 'host_id', unsigned: true })
   hostId: number;
 
-  @Column("varchar", { name: "description", length: 255 })
+  @Column('varchar', { name: 'description', length: 255 })
   description: string;
 
-  @Column("int", { name: "group_no", default: () => "'0'" })
+  @Column('int', { name: 'group_no', default: () => "'0'" })
   groupNo: number;
 
-  @Column("datetime", {
-    name: "created_at",
-    default: () => "CURRENT_TIMESTAMP",
+  @Column('datetime', {
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
-  @Column("tinyint", { name: "writer_hidden_flag", width: 1 })
+  @Column('tinyint', { name: 'writer_hidden_flag', width: 1 })
   writerHiddenFlag: boolean;
 
-  @Column("tinyint", { name: "recipient_hidden_flag", width: 1 })
+  @Column('tinyint', { name: 'recipient_hidden_flag', width: 1 })
   recipientHiddenFlag: boolean;
 
-  @Column("tinyint", { name: "reading_flag", width: 1, default: () => "'0'" })
+  @Column('tinyint', { name: 'reading_flag', width: 1, default: () => "'0'" })
   readingFlag: boolean;
 
-  @Column("tinyint", { name: "delete_flag", width: 1, default: () => "'0'" })
+  @Column('tinyint', { name: 'delete_flag', width: 1, default: () => "'0'" })
   deleteFlag: boolean;
 
   @ManyToOne(() => Students, (students) => students.letters, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: "sender_id", referencedColumnName: "id" }])
+  @JoinColumn([{ name: 'sender_id', referencedColumnName: 'id' }])
   sender: Students;
 
   @ManyToOne(() => Students, (students) => students.letters2, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: "recipient_id", referencedColumnName: "id" }])
+  @JoinColumn([{ name: 'recipient_id', referencedColumnName: 'id' }])
   recipient: Students;
 
   @ManyToOne(() => Students, (students) => students.letters3, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: "host_id", referencedColumnName: "id" }])
+  @JoinColumn([{ name: 'host_id', referencedColumnName: 'id' }])
   host: Students;
 }

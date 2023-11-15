@@ -1,12 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Boards } from "./Boards";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Boards } from './Boards';
 
-@Entity("board_categories", { schema: "dongurami_local_db" })
+@Entity('board_categories', { schema: 'dongurami_local_db' })
 export class BoardCategories {
-  @PrimaryGeneratedColumn({ type: "int", name: "id", unsigned: true })
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column("varchar", { name: "name", length: 20 })
+  @Column('varchar', { name: 'name', length: 20 })
   name: string;
 
   @OneToMany(() => Boards, (boards) => boards.boardCategoryNo2)

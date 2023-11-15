@@ -45,7 +45,7 @@ export class Clubs {
   @Column('text', { name: 'introduce', nullable: true })
   introduce: string | null;
 
-  @OneToMany(() => Applicants, (applicants) => applicants.clubNo)
+  @OneToMany(() => Applicants, (applicants) => applicants.club)
   applicants: Applicants[];
 
   @OneToMany(() => Boards, (boards) => boards.clubNo)

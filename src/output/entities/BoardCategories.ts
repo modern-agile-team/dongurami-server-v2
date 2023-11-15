@@ -9,6 +9,6 @@ export class BoardCategories {
   @Column('varchar', { name: 'name', length: 20 })
   name: string;
 
-  @OneToMany(() => Boards, (boards) => boards.boardCategoryNo2)
+  @OneToMany(() => Boards, (boards) => boards.boardCategory)
   boards: Boards[];
 }

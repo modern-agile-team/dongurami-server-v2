@@ -9,15 +9,15 @@ import {
 import { Clubs } from './Clubs';
 import { Students } from './Students';
 
-@Index('applicants_fk1', ['clubNo'], {})
+@Index('applicants_fk1', ['clubId'], {})
 @Index('applicants_fk2', ['studentId'], {})
 @Entity('applicants', { schema: 'dongurami_local_db' })
 export class Applicants {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column('int', { name: 'club_no', unsigned: true })
-  clubNo: number;
+  @Column('int', { name: 'club_id', unsigned: true })
+  clubId: number;
 
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
@@ -35,7 +35,7 @@ export class Applicants {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'club_no', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
   club: Clubs;
 
   @ManyToOne(() => Students, (students) => students.applicants, {

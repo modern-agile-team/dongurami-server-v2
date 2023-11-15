@@ -10,7 +10,7 @@ import { Students } from './Students';
 import { Boards } from './Boards';
 
 @Index('board_emotions_fk1', ['studentId'], {})
-@Index('board_emotions_fk2', ['boardNo'], {})
+@Index('board_emotions_fk2', ['boardId'], {})
 @Entity('board_emotions', { schema: 'dongurami_local_db' })
 export class BoardEmotions {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
@@ -19,8 +19,8 @@ export class BoardEmotions {
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
 
-  @Column('int', { name: 'board_no', unsigned: true })
-  boardNo: number;
+  @Column('int', { name: 'board_id', unsigned: true })
+  boardId: number;
 
   @ManyToOne(() => Students, (students) => students.boardEmotions, {
     onDelete: 'CASCADE',
@@ -33,6 +33,6 @@ export class BoardEmotions {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'board_no', referencedColumnName: 'id' }])
-  boardNo2: Boards;
+  @JoinColumn([{ name: 'board_id', referencedColumnName: 'id' }])
+  board: Boards;
 }

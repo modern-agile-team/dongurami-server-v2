@@ -9,7 +9,7 @@ import {
 import { Questions } from './Questions';
 import { Students } from './Students';
 
-@Index('answers_fk1', ['questionNo'], {})
+@Index('answers_fk1', ['questionId'], {})
 @Index('answers_fk2', ['studentId'], {})
 @Entity('answers', { schema: 'dongurami_local_db' })
 export class Answers {

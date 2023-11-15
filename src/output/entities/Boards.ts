@@ -14,9 +14,9 @@ import { Clubs } from './Clubs';
 import { Comments } from './Comments';
 import { Images } from './Images';
 
-@Index('club_boards_fk1', ['boardCategoryNo'], {})
+@Index('club_boards_fk1', ['boardCategoryId'], {})
 @Index('club_boards_fk2', ['studentId'], {})
-@Index('club_boards_fk3', ['clubNo'], {})
+@Index('club_boards_fk3', ['clubId'], {})
 @Entity('boards', { schema: 'dongurami_local_db' })
 export class Boards {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
@@ -25,11 +25,11 @@ export class Boards {
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
 
-  @Column('int', { name: 'club_no', unsigned: true, default: () => "'1'" })
-  clubNo: number;
+  @Column('int', { name: 'club_id', unsigned: true, default: () => "'1'" })
+  clubId: number;
 
-  @Column('int', { name: 'board_category_no', unsigned: true })
-  boardCategoryNo: number;
+  @Column('int', { name: 'board_category_id', unsigned: true })
+  boardCategoryId: number;
 
   @Column('varchar', { name: 'title', length: 255 })
   title: string;
@@ -53,7 +53,7 @@ export class Boards {
   })
   writerHiddenFlag: boolean;
 
-  @OneToMany(() => BoardEmotions, (boardEmotions) => boardEmotions.boardNo2)
+  @OneToMany(() => BoardEmotions, (boardEmotions) => boardEmotions.board)
   boardEmotions: BoardEmotions[];
 
   @ManyToOne(
@@ -61,8 +61,8 @@ export class Boards {
     (boardCategories) => boardCategories.boards,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn([{ name: 'board_category_no', referencedColumnName: 'id' }])
-  boardCategoryNo2: BoardCategories;
+  @JoinColumn([{ name: 'board_category_id', referencedColumnName: 'id' }])
+  boardCategory: BoardCategories;
 
   @ManyToOne(() => Students, (students) => students.boards, {
     onDelete: 'CASCADE',
@@ -75,8 +75,8 @@ export class Boards {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'club_no', referencedColumnName: 'id' }])
-  clubNo2: Clubs;
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
+  club: Clubs;
 
   @OneToMany(() => Comments, (comments) => comments.boardNo2)
   comments: Comments[];

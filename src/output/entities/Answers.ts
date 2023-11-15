@@ -16,8 +16,8 @@ export class Answers {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column('int', { name: 'question_no', unsigned: true })
-  questionNo: number;
+  @Column('int', { name: 'question_id', unsigned: true })
+  questionId: number;
 
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
@@ -29,8 +29,8 @@ export class Answers {
     onDelete: 'CASCADE',
     onUpdate: 'NO ACTION',
   })
-  @JoinColumn([{ name: 'question_no', referencedColumnName: 'id' }])
-  questionNo2: Questions;
+  @JoinColumn([{ name: 'question_id', referencedColumnName: 'id' }])
+  question: Questions;
 
   @ManyToOne(() => Students, (students) => students.answers, {
     onDelete: 'CASCADE',

@@ -68,7 +68,7 @@ export class Students {
   @OneToMany(() => Boards, (boards) => boards.student)
   boards: Boards[];
 
-  @OneToMany(() => Clubs, (clubs) => clubs.leader2)
+  @OneToMany(() => Clubs, (clubs) => clubs.leader)
   clubs: Clubs[];
 
   @OneToMany(

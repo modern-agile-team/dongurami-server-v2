@@ -40,15 +40,15 @@ export class Clubs {
   avgScore: number | null;
 
   @Column('int', { name: 'leader', unsigned: true })
-  leader: number;
+  leaderId: number;
 
   @Column('text', { name: 'introduce', nullable: true })
   introduce: string | null;
 
-  @OneToMany(() => Applicants, (applicants) => applicants.clubNo2)
+  @OneToMany(() => Applicants, (applicants) => applicants.clubNo)
   applicants: Applicants[];
 
-  @OneToMany(() => Boards, (boards) => boards.clubNo2)
+  @OneToMany(() => Boards, (boards) => boards.clubNo)
   boards: Boards[];
 
   @ManyToOne(() => Students, (students) => students.clubs, {
@@ -56,7 +56,7 @@ export class Clubs {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'leader', referencedColumnName: 'id' }])
-  leader2: Students;
+  leader: Students;
 
   @OneToMany(() => Members, (members) => members.clubNo2)
   members: Members[];

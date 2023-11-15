@@ -22,7 +22,7 @@ export class Questions {
   @Column('varchar', { name: 'description', length: 255 })
   description: string;
 
-  @OneToMany(() => Answers, (answers) => answers.questionNo2)
+  @OneToMany(() => Answers, (answers) => answers.question)
   answers: Answers[];
 
   @ManyToOne(() => Clubs, (clubs) => clubs.questions, {

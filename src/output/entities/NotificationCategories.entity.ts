@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Notifications } from './Notifications';
+import { Notifications } from './Notifications.entity';
 
 @Entity('notification_categories', { schema: 'dongurami_local_db' })
 export class NotificationCategories {

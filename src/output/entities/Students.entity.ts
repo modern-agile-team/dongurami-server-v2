@@ -1,18 +1,18 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Answers } from './Answers';
-import { Applicants } from './Applicants';
-import { BoardEmotions } from './BoardEmotions';
-import { Boards } from './Boards';
-import { Clubs } from './Clubs';
-import { CommentEmotions } from './CommentEmotions';
-import { Comments } from './Comments';
-import { Members } from './Members';
-import { Notifications } from './Notifications';
-import { ReplyCommentEmotions } from './ReplyCommentEmotions';
-import { Reviews } from './Reviews';
-import { Schedules } from './Schedules';
-import { Scraps } from './Scraps';
-import { SnsInfo } from './SnsInfo';
+import { Answers } from './Answers.entity';
+import { Applicants } from './Applicants.entity';
+import { BoardEmotions } from './BoardEmotions.entity';
+import { Boards } from './Boards.entity';
+import { Clubs } from './Clubs.entity';
+import { CommentEmotions } from './CommentEmotions.entity';
+import { Comments } from './Comments.entity';
+import { Members } from './Members.entity';
+import { Notifications } from './Notifications.entity';
+import { ReplyCommentEmotions } from './ReplyCommentEmotions.entity';
+import { Reviews } from './Reviews.entity';
+import { Schedules } from './Schedules.entity';
+import { Scraps } from './Scraps.entity';
+import { SnsInfo } from './SnsInfo.entity';
 
 @Entity('students', { schema: 'dongurami_local_db' })
 export class Students {

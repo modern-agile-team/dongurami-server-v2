@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Clubs } from './Clubs';
-import { Students } from './Students';
+import { Clubs } from './Clubs.entity';
+import { Students } from './Students.entity';
 
 @Index('members_fk1', ['clubId'], {})
 @Index('members_fk2', ['studentId'], {})

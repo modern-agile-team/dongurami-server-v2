@@ -6,13 +6,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Clubs } from './Clubs';
-import { Students } from './Students';
+import { Clubs } from './Clubs.entity';
+import { Students } from './Students.entity';
 
-@Index('applicants_fk1', ['clubId'], {})
-@Index('applicants_fk2', ['studentId'], {})
-@Entity('applicants', { schema: 'dongurami_local_db' })
-export class Applicants {
+@Index('reviews_fk1', ['clubId'], {})
+@Index('reviews_fk2', ['studentId'], {})
+@Entity('reviews', { schema: 'dongurami_local_db' })
+export class Reviews {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
@@ -22,8 +22,8 @@ export class Applicants {
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
 
-  @Column('tinyint', { name: 'reading_flag', width: 1, default: () => "'0'" })
-  readingFlag: boolean;
+  @Column('varchar', { name: 'description', nullable: true, length: 255 })
+  description: string | null;
 
   @Column('datetime', {
     name: 'created_at',
@@ -31,14 +31,17 @@ export class Applicants {
   })
   createdAt: Date;
 
-  @ManyToOne(() => Clubs, (clubs) => clubs.applicants, {
+  @Column('tinyint', { name: 'score', width: 1 })
+  score: boolean;
+
+  @ManyToOne(() => Clubs, (clubs) => clubs.reviews, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
   club: Clubs;
 
-  @ManyToOne(() => Students, (students) => students.applicants, {
+  @ManyToOne(() => Students, (students) => students.reviews, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

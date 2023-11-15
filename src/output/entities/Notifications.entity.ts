@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NotificationCategories } from './NotificationCategories';
-import { Students } from './Students';
+import { NotificationCategories } from './NotificationCategories.entity';
+import { Students } from './Students.entity';
 
 @Index('notifications_fk1', ['notificationCategoryId'], {})
 @Index('notifications_fk2', ['recipientId'], {})

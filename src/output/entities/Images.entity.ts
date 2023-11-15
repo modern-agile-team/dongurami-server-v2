@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Boards } from './Boards';
+import { Boards } from './Boards.entity';
 
 @Index('images_fk1', ['boardId'], {})
 @Entity('images', { schema: 'dongurami_local_db' })
@@ -24,6 +24,6 @@ export class Images {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'board_no', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'board_id', referencedColumnName: 'id' }])
   board: Boards;
 }

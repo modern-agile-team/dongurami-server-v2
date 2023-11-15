@@ -7,12 +7,12 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BoardEmotions } from './BoardEmotions';
-import { BoardCategories } from './BoardCategories';
-import { Students } from './Students';
-import { Clubs } from './Clubs';
-import { Comments } from './Comments';
-import { Images } from './Images';
+import { BoardEmotions } from './BoardEmotions.entity';
+import { BoardCategories } from './BoardCategories.entity';
+import { Students } from './Students.entity';
+import { Clubs } from './Clubs.entity';
+import { Comments } from './Comments.entity';
+import { Images } from './Images.entity';
 
 @Index('club_boards_fk1', ['boardCategoryId'], {})
 @Index('club_boards_fk2', ['studentId'], {})

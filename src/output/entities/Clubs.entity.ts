@@ -7,14 +7,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Applicants } from './Applicants';
-import { Boards } from './Boards';
-import { Students } from './Students';
-import { Members } from './Members';
-import { Questions } from './Questions';
-import { Reviews } from './Reviews';
-import { Schedules } from './Schedules';
-import { Scraps } from './Scraps';
+import { Applicants } from './Applicants.entity';
+import { Boards } from './Boards.entity';
+import { Students } from './Students.entity';
+import { Members } from './Members.entity';
+import { Questions } from './Questions.entity';
+import { Reviews } from './Reviews.entity';
+import { Schedules } from './Schedules.entity';
+import { Scraps } from './Scraps.entity';
 
 @Index('clubs_fk1', ['leader'], {})
 @Entity('clubs', { schema: 'dongurami_local_db' })

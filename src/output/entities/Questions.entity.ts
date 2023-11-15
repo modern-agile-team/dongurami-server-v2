@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Answers } from './Answers';
-import { Clubs } from './Clubs';
+import { Answers } from './Answers.entity';
+import { Clubs } from './Clubs.entity';
 
 @Index('questions_fk1', ['clubId'], {})
 @Entity('questions', { schema: 'dongurami_local_db' })

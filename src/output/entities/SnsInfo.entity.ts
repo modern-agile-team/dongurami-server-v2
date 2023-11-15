@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Students } from './Students';
+import { Students } from './Students.entity';
 
 @Index('sns_info_fk1', ['studentId'], {})
 @Entity('sns_info', { schema: 'dongurami_local_db' })

@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Students } from './Students';
-import { Comments } from './Comments';
+import { Students } from './Students.entity';
+import { Comments } from './Comments.entity';
 
 @Index('comment_emotions_fk1', ['studentId'], {})
 @Index('comment_emotions_fk2', ['commentId'], {})

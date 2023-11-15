@@ -7,10 +7,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CommentEmotions } from './CommentEmotions';
-import { Boards } from './Boards';
-import { Students } from './Students';
-import { ReplyCommentEmotions } from './ReplyCommentEmotions';
+import { CommentEmotions } from './CommentEmotions.entity';
+import { Boards } from './Boards.entity';
+import { Students } from './Students.entity';
+import { ReplyCommentEmotions } from './ReplyCommentEmotions.entity';
 
 @Index('comments_fk1', ['boardId'], {})
 @Index('comments_fk2', ['studentId'], {})

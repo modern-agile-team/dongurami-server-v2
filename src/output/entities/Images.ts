@@ -8,14 +8,14 @@ import {
 } from 'typeorm';
 import { Boards } from './Boards';
 
-@Index('images_fk1', ['boardNo'], {})
+@Index('images_fk1', ['boardId'], {})
 @Entity('images', { schema: 'dongurami_local_db' })
 export class Images {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column('int', { name: 'board_no', unsigned: true })
-  boardNo: number;
+  @Column('int', { name: 'board_id', unsigned: true })
+  boardId: number;
 
   @Column('varchar', { name: 'url', length: 255 })
   url: string;
@@ -25,5 +25,5 @@ export class Images {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'board_no', referencedColumnName: 'id' }])
-  boardNo2: Boards;
+  board: Boards;
 }

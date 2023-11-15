@@ -10,7 +10,7 @@ import { Students } from './Students';
 import { Comments } from './Comments';
 
 @Index('reply_comment_emotions_fk1', ['studentId'], {})
-@Index('reply_comment_emotions_fk2', ['replyCommentNo'], {})
+@Index('reply_comment_emotions_fk2', ['replyCommentId'], {})
 @Entity('reply_comment_emotions', { schema: 'dongurami_local_db' })
 export class ReplyCommentEmotions {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
@@ -19,8 +19,8 @@ export class ReplyCommentEmotions {
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
 
-  @Column('int', { name: 'reply_comment_no', unsigned: true })
-  replyCommentNo: number;
+  @Column('int', { name: 'reply_comment_id', unsigned: true })
+  replyCommentId: number;
 
   @ManyToOne(() => Students, (students) => students.replyCommentEmotions, {
     onDelete: 'CASCADE',
@@ -33,6 +33,6 @@ export class ReplyCommentEmotions {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'reply_comment_no', referencedColumnName: 'id' }])
-  replyCommentNo2: Comments;
+  @JoinColumn([{ name: 'reply_comment_id', referencedColumnName: 'id' }])
+  replyComment: Comments;
 }

@@ -9,7 +9,7 @@ import {
 import { Clubs } from './Clubs';
 import { Students } from './Students';
 
-@Index('scraps_fk1', ['clubNo'], {})
+@Index('scraps_fk1', ['clubId'], {})
 @Index('scraps_fk2', ['studentId'], {})
 @Entity('scraps', { schema: 'dongurami_local_db' })
 export class Scraps {
@@ -19,8 +19,8 @@ export class Scraps {
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
 
-  @Column('int', { name: 'club_no', unsigned: true })
-  clubNo: number;
+  @Column('int', { name: 'club_id', unsigned: true })
+  clubId: number;
 
   @Column('varchar', { name: 'title', length: 255 })
   title: string;
@@ -44,8 +44,8 @@ export class Scraps {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'club_no', referencedColumnName: 'id' }])
-  clubNo2: Clubs;
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
+  club: Clubs;
 
   @ManyToOne(() => Students, (students) => students.scraps, {
     onDelete: 'CASCADE',

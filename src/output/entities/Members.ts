@@ -9,7 +9,7 @@ import {
 import { Clubs } from './Clubs';
 import { Students } from './Students';
 
-@Index('members_fk1', ['clubNo'], {})
+@Index('members_fk1', ['clubId'], {})
 @Index('members_fk2', ['studentId'], {})
 @Entity('members', { schema: 'dongurami_local_db' })
 export class Members {
@@ -19,8 +19,8 @@ export class Members {
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
 
-  @Column('int', { name: 'club_no', unsigned: true })
-  clubNo: number;
+  @Column('int', { name: 'club_id', unsigned: true })
+  clubId: number;
 
   @Column('tinyint', {
     name: 'join_admin_flag',
@@ -40,8 +40,8 @@ export class Members {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'club_no', referencedColumnName: 'id' }])
-  clubNo2: Clubs;
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
+  club: Clubs;
 
   @ManyToOne(() => Students, (students) => students.members, {
     onDelete: 'CASCADE',

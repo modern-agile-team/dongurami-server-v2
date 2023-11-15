@@ -39,7 +39,7 @@ export class Clubs {
   })
   avgScore: number | null;
 
-  @Column('int', { name: 'leader', unsigned: true })
+  @Column('int', { name: 'leader_id', unsigned: true })
   leaderId: number;
 
   @Column('text', { name: 'introduce', nullable: true })
@@ -48,28 +48,28 @@ export class Clubs {
   @OneToMany(() => Applicants, (applicants) => applicants.club)
   applicants: Applicants[];
 
-  @OneToMany(() => Boards, (boards) => boards.clubNo)
+  @OneToMany(() => Boards, (boards) => boards.club)
   boards: Boards[];
 
   @ManyToOne(() => Students, (students) => students.clubs, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'leader', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'leader_id', referencedColumnName: 'id' }])
   leader: Students;
 
-  @OneToMany(() => Members, (members) => members.clubNo2)
+  @OneToMany(() => Members, (members) => members.club)
   members: Members[];
 
-  @OneToMany(() => Questions, (questions) => questions.clubNo2)
+  @OneToMany(() => Questions, (questions) => questions.club)
   questions: Questions[];
 
-  @OneToMany(() => Reviews, (reviews) => reviews.clubNo2)
+  @OneToMany(() => Reviews, (reviews) => reviews.club)
   reviews: Reviews[];
 
-  @OneToMany(() => Schedules, (schedules) => schedules.clubNo2)
+  @OneToMany(() => Schedules, (schedules) => schedules.club)
   schedules: Schedules[];
 
-  @OneToMany(() => Scraps, (scraps) => scraps.clubNo2)
+  @OneToMany(() => Scraps, (scraps) => scraps.club)
   scraps: Scraps[];
 }

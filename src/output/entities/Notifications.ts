@@ -9,7 +9,7 @@ import {
 import { NotificationCategories } from './NotificationCategories';
 import { Students } from './Students';
 
-@Index('notifications_fk1', ['notificationCategoryNo'], {})
+@Index('notifications_fk1', ['notificationCategoryId'], {})
 @Index('notifications_fk2', ['recipientId'], {})
 @Entity('notifications', { schema: 'dongurami_local_db' })
 export class Notifications {
@@ -20,8 +20,8 @@ export class Notifications {
   sender: string;
 
   @Column('varchar', { name: 'recipient', length: 20 })
-  recipient: string;
-
+  recipientName: string;
+  // 알람 받는 사람 이름? 추후 로직보고 수정 예정
   @Column('int', { name: 'recipient_id', unsigned: true })
   recipientId: number;
 
@@ -34,8 +34,8 @@ export class Notifications {
   })
   createdAt: Date;
 
-  @Column('int', { name: 'notification_category_no', unsigned: true })
-  notificationCategoryNo: number;
+  @Column('int', { name: 'notification_category_id', unsigned: true })
+  notificationCategoryId: number;
 
   @Column('varchar', { name: 'content', length: 255 })
   content: string;
@@ -52,14 +52,14 @@ export class Notifications {
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([
-    { name: 'notification_category_no', referencedColumnName: 'id' },
+    { name: 'notification_category_id', referencedColumnName: 'id' },
   ])
-  notificationCategoryNo2: NotificationCategories;
+  notificationCategory: NotificationCategories;
 
   @ManyToOne(() => Students, (students) => students.notifications, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'recipient_id', referencedColumnName: 'id' }])
-  recipient_2: Students;
+  recipient: Students;
 }

@@ -12,15 +12,15 @@ import { Boards } from './Boards';
 import { Students } from './Students';
 import { ReplyCommentEmotions } from './ReplyCommentEmotions';
 
-@Index('comments_fk1', ['boardNo'], {})
+@Index('comments_fk1', ['boardId'], {})
 @Index('comments_fk2', ['studentId'], {})
 @Entity('comments', { schema: 'dongurami_local_db' })
 export class Comments {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column('int', { name: 'board_no', unsigned: true })
-  boardNo: number;
+  @Column('int', { name: 'board_id', unsigned: true })
+  boardId: number;
 
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
@@ -37,8 +37,8 @@ export class Comments {
   @Column('tinyint', { name: 'depth', width: 1, default: () => "'0'" })
   depth: boolean;
 
-  @Column('int', { name: 'group_no', default: () => "'0'" })
-  groupNo: number;
+  @Column('int', { name: 'group_id', default: () => "'0'" })
+  groupId: number;
 
   @Column('tinyint', { name: 'reply_flag', width: 1, default: () => "'0'" })
   replyFlag: boolean;
@@ -55,7 +55,7 @@ export class Comments {
 
   @OneToMany(
     () => CommentEmotions,
-    (commentEmotions) => commentEmotions.commentNo2,
+    (commentEmotions) => commentEmotions.comment,
   )
   commentEmotions: CommentEmotions[];
 
@@ -63,8 +63,8 @@ export class Comments {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'board_no', referencedColumnName: 'id' }])
-  boardNo2: Boards;
+  @JoinColumn([{ name: 'board_id', referencedColumnName: 'id' }])
+  board: Boards;
 
   @ManyToOne(() => Students, (students) => students.comments, {
     onDelete: 'CASCADE',
@@ -75,7 +75,7 @@ export class Comments {
 
   @OneToMany(
     () => ReplyCommentEmotions,
-    (replyCommentEmotions) => replyCommentEmotions.replyCommentNo2,
+    (replyCommentEmotions) => replyCommentEmotions.replyComment,
   )
   replyCommentEmotions: ReplyCommentEmotions[];
 }

@@ -78,9 +78,9 @@ export class Boards {
   @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
   club: Clubs;
 
-  @OneToMany(() => Comments, (comments) => comments.boardNo2)
+  @OneToMany(() => Comments, (comments) => comments.board)
   comments: Comments[];
 
-  @OneToMany(() => Images, (images) => images.boardNo2)
+  @OneToMany(() => Images, (images) => images.board)
   images: Images[];
 }

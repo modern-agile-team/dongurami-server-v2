@@ -11,7 +11,7 @@ export class NotificationCategories {
 
   @OneToMany(
     () => Notifications,
-    (notifications) => notifications.notificationCategoryNo2,
+    (notifications) => notifications.notificationCategory,
   )
   notifications: Notifications[];
 }

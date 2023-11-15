@@ -28,8 +28,8 @@ export class Letters {
   @Column('varchar', { name: 'description', length: 255 })
   description: string;
 
-  @Column('int', { name: 'group_no', default: () => "'0'" })
-  groupNo: number;
+  @Column('int', { name: 'group_id', default: () => "'0'" })
+  groupId: number;
 
   @Column('datetime', {
     name: 'created_at',
@@ -49,21 +49,21 @@ export class Letters {
   @Column('tinyint', { name: 'delete_flag', width: 1, default: () => "'0'" })
   deleteFlag: boolean;
 
-  @ManyToOne(() => Students, (students) => students.letters, {
+  @ManyToOne(() => Students, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'sender_id', referencedColumnName: 'id' }])
   sender: Students;
 
-  @ManyToOne(() => Students, (students) => students.letters2, {
+  @ManyToOne(() => Students, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'recipient_id', referencedColumnName: 'id' }])
   recipient: Students;
 
-  @ManyToOne(() => Students, (students) => students.letters3, {
+  @ManyToOne(() => Students, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

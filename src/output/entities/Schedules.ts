@@ -10,14 +10,14 @@ import { Students } from './Students';
 import { Clubs } from './Clubs';
 
 @Index('schedules_fk1', ['studentId'], {})
-@Index('schedules_fk2', ['clubNo'], {})
+@Index('schedules_fk2', ['clubId'], {})
 @Entity('schedules', { schema: 'dongurami_local_db' })
 export class Schedules {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id', unsigned: true })
   id: number;
 
-  @Column('int', { name: 'club_no', unsigned: true })
-  clubNo: number;
+  @Column('int', { name: 'club_id', unsigned: true })
+  clubId: number;
 
   @Column('int', { name: 'student_id', unsigned: true })
   studentId: number;
@@ -48,6 +48,6 @@ export class Schedules {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'club_no', referencedColumnName: 'id' }])
-  clubNo2: Clubs;
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
+  club: Clubs;
 }

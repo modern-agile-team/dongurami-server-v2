@@ -6,7 +6,6 @@ import { Boards } from './Boards';
 import { Clubs } from './Clubs';
 import { CommentEmotions } from './CommentEmotions';
 import { Comments } from './Comments';
-import { Letters } from './Letters';
 import { Members } from './Members';
 import { Notifications } from './Notifications';
 import { ReplyCommentEmotions } from './ReplyCommentEmotions';
@@ -80,19 +79,10 @@ export class Students {
   @OneToMany(() => Comments, (comments) => comments.student)
   comments: Comments[];
 
-  @OneToMany(() => Letters, (letters) => letters.sender)
-  letters: Letters[];
-
-  @OneToMany(() => Letters, (letters) => letters.recipient)
-  letters2: Letters[];
-
-  @OneToMany(() => Letters, (letters) => letters.host)
-  letters3: Letters[];
-
   @OneToMany(() => Members, (members) => members.student)
   members: Members[];
 
-  @OneToMany(() => Notifications, (notifications) => notifications.recipient_2)
+  @OneToMany(() => Notifications, (notifications) => notifications.recipient)
   notifications: Notifications[];
 
   @OneToMany(

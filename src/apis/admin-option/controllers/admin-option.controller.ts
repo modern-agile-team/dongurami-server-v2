@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AdminOptionService } from '../services/admin-option.service';
 import { UserTokenDto } from '../dto/find-one-by-club-num.dto';
-import { User } from 'src/common/get-request.decorator';
+// import { User } from 'src/common/get-request.decorator';
 
 @Controller('admin-option')
 export class AdminOptionController {

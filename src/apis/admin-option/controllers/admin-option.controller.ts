@@ -24,7 +24,9 @@ export class AdminOptionController {
   }
 
   @Post('/')
-  async checkLeaderAdmin() {}
+  async checkLeaderAdmin() {
+    console.log('a');
+  }
 
   // @Put()
   // async

@@ -4,8 +4,6 @@ services:
     image: hobijeong/dongurami-server-v2
     ports:
       - '3000:3000'
-    env_file:
-      - .env
     restart: always
     environment:
       - TZ=Asia/Seoul

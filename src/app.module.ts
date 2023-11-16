@@ -23,12 +23,20 @@ import { S3Module } from './apis/s3/s3.module';
 import { ScheduleModule } from './apis/schedule/schedule.module';
 import { SearchModule } from './apis/search/search.module';
 import { typeORMConfig } from './config/typeorm.config';
+import { validation } from './common/utils/validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.production.env'
+          : process.env.NODE_ENV === 'development'
+            ? '.development.env'
+            : '.env',
       cache: true,
       isGlobal: true,
+      validationSchema: validation,
     }),
     TypeOrmModule.forRoot(typeORMConfig),
     AdminOptionModule,

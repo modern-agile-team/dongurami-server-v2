@@ -10,8 +10,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { AdminOptionService } from '../services/admin-option.service';
-import { UserTokenDto } from '../dto/find-one-by-club-num.dto';
+import { UserTokenDto } from '../dto/user-token.dto';
 import { User } from 'src/common/get-request.decorator';
+import { ClubJoinCheck } from '../middlewares/club-join-check';
 
 @Controller('admin-option')
 export class AdminOptionController {
@@ -22,8 +23,10 @@ export class AdminOptionController {
     @User() user: UserTokenDto,
     @Param('clubId', ParseIntPipe) clubId: number,
   ) {
-    return user;
-    // const isAdmin = await this.adminOptionService.checkClubAdmin(user, clubId);
+    ClubJoinCheck(clubId, user);
+    const isAdmin = await this.adminOptionService.checkClubAdmin(clubId, user);
+
+    return '성공';
   }
 
   @Post('/')

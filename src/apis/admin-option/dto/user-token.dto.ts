@@ -1,11 +1,11 @@
 import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class UserTokenDto {
-  @IsArray()
-  clubId: number[];
-
   @IsNumber()
   id: number;
+
+  @IsArray()
+  clubId: number[];
 
   @IsString()
   name: string;

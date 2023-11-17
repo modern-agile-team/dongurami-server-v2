@@ -38,7 +38,7 @@ import { validation } from './common/utils/validation';
     //   isGlobal: true,
     //   validationSchema: validation,
     // }),
-    TypeOrmModule.forRoot(typeORMConfig),
+    // TypeOrmModule.forRoot(typeORMConfig),
     AdminOptionModule,
     ApplicationModule,
     BoardModule,

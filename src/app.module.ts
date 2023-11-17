@@ -27,18 +27,18 @@ import { validation } from './common/utils/validation';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath:
-        process.env.NODE_ENV === 'production'
-          ? '.production.env'
-          : process.env.NODE_ENV === 'development'
-            ? '.development.env'
-            : '.env',
-      cache: true,
-      isGlobal: true,
-      validationSchema: validation,
-    }),
-    TypeOrmModule.forRoot(typeORMConfig),
+    // ConfigModule.forRoot({
+    //   envFilePath:
+    //     process.env.NODE_ENV === 'production'
+    //       ? '.production.env'
+    //       : process.env.NODE_ENV === 'development'
+    //         ? '.development.env'
+    //         : '.env',
+    //   cache: true,
+    //   isGlobal: true,
+    //   validationSchema: validation,
+    // }),
+    // TypeOrmModule.forRoot(typeORMConfig),
     AdminOptionModule,
     ApplicationModule,
     BoardModule,

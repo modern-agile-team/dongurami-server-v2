@@ -409,6 +409,13 @@ export class Init1700205074777 implements MigrationInterface {
             isNullable: false,
             comment: '반응 타입',
           },
+          {
+            name: 'memo',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+            comment: '메모',
+          },
           generateCreatedAtColumn(),
           generateUpdatedAtColumn(),
         ],

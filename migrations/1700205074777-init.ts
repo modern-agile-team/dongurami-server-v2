@@ -179,9 +179,9 @@ export class Init1700205074777 implements MigrationInterface {
           },
           {
             name: 'role',
-            type: 'varchar',
-            length: '20',
+            type: 'enum',
             isNullable: false,
+            enum: ['admin', 'student'],
             default: '"student"',
             comment: '역할 (admin: service admin, student: 학생)',
           },
@@ -358,9 +358,9 @@ export class Init1700205074777 implements MigrationInterface {
           },
           {
             name: 'status',
-            type: 'varchar',
-            length: '20',
+            type: 'enum',
             isNullable: false,
+            enum: ['pending', 'resolve', 'reject'],
             default: '"pending"',
             comment: '지원서 상태 (pending: 대기, resolve: 승인, reject: 거절)',
           },

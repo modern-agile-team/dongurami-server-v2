@@ -1,0 +1,33 @@
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import Joi from 'joi';
+import { ENV_KEY } from 'src/core/app-config/constants/app-config.constant';
+import { AppConfigService } from 'src/core/app-config/services/app-config.service';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.local', '.env'],
+      validationSchema: Joi.object({
+        [ENV_KEY.PORT]: Joi.number().default(3000),
+        [ENV_KEY.NODE_ENV]: Joi.string().required(),
+
+        [ENV_KEY.RDB_HOST]: Joi.string().required(),
+        [ENV_KEY.RDB_PORT]: Joi.number().required(),
+        [ENV_KEY.RDB_USER_NAME]: Joi.string().required(),
+        [ENV_KEY.RDB_PASSWORD]: Joi.string().required(),
+        [ENV_KEY.RDB_DATABASE]: Joi.string().required(),
+      }),
+      isGlobal: true,
+    }),
+  ],
+  providers: [ConfigService, AppConfigService],
+  exports: [AppConfigService],
+})
+export class AppConfigModule implements OnApplicationBootstrap {
+  constructor(private readonly appConfigService: AppConfigService) {}
+
+  onApplicationBootstrap() {
+    console.info(this.appConfigService.getAllMap());
+  }
+}

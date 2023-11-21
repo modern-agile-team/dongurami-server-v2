@@ -1,41 +1,29 @@
 import { Module } from '@nestjs/common';
-import { AdminOptionModule } from './apis/admin-option/admin-option.module';
-import { ApplicationModule } from './apis/application/application.module';
-import { BoardModule } from './apis/board/board.module';
-import { ClubBoardModule } from './apis/club-board/club-board.module';
-import { ClubListModule } from './apis/club-list/club-list.module';
-import { CommentModule } from './apis/comment/comment.module';
-import { EmotionModule } from './apis/emotion/emotion.module';
-import { HomeModule } from './apis/home/home.module';
-import { ImageModule } from './apis/image/image.module';
-import { LetterModule } from './apis/letter/letter.module';
-import { MyPageModule } from './apis/my-page/my-page.module';
-import { NaverModule } from './apis/naver/naver.module';
-import { NotificationModule } from './apis/notification/notification.module';
-import { ProfileModule } from './apis/profile/profile.module';
-import { ReviewModule } from './apis/review/review.module';
-import { RootModule } from './apis/root/root.module';
-import { S3Module } from './apis/s3/s3.module';
-import { ScheduleModule } from './apis/schedule/schedule.module';
-import { SearchModule } from './apis/search/search.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AppConfigModule } from './core/app-config/app-config.module';
+import { AdminOptionModule } from '@src/apis/admin-option/admin-option.module';
+import { ApplicationModule } from '@src/apis/application/application.module';
+import { BoardModule } from '@src/apis/board/board.module';
+import { ClubBoardModule } from '@src/apis/club-board/club-board.module';
+import { ClubListModule } from '@src/apis/club-list/club-list.module';
+import { CommentModule } from '@src/apis/comment/comment.module';
+import { EmotionModule } from '@src/apis/emotion/emotion.module';
+import { HomeModule } from '@src/apis/home/home.module';
+import { ImageModule } from '@src/apis/image/image.module';
+import { LetterModule } from '@src/apis/letter/letter.module';
+import { MyPageModule } from '@src/apis/my-page/my-page.module';
+import { NaverModule } from '@src/apis/naver/naver.module';
+import { NotificationModule } from '@src/apis/notification/notification.module';
+import { ProfileModule } from '@src/apis/profile/profile.module';
+import { ReviewModule } from '@src/apis/review/review.module';
+import { RootModule } from '@src/apis/root/root.module';
+import { S3Module } from '@src/apis/s3/s3.module';
+import { ScheduleModule } from '@src/apis/schedule/schedule.module';
+import { SearchModule } from '@src/apis/search/search.module';
+import { AppController } from '@src/app.controller';
+import { AppService } from '@src/app.service';
+import { AppConfigModule } from '@src/core/app-config/app-config.module';
 
 @Module({
   imports: [
-    // ConfigModule.forRoot({
-    //   envFilePath:
-    //     process.env.NODE_ENV === 'production'
-    //       ? '.production.env'
-    //       : process.env.NODE_ENV === 'development'
-    //         ? '.development.env'
-    //         : '.env',
-    //   cache: true,
-    //   isGlobal: true,
-    //   validationSchema: validation,
-    // }),
-    // TypeOrmModule.forRoot(typeORMConfig),
     AdminOptionModule,
     ApplicationModule,
     BoardModule,

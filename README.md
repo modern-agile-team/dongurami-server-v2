@@ -120,6 +120,23 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+### **Migration**
+
+```bash
+# create migration file
+# ex) npx typeorm migration:create ./migrations/init
+$ npx typeorm migration:create ./migrations/{file_name}
+
+# migration show
+$ npm run db:migrate:show
+
+# migration
+$ npm run db:migrate
+
+# revert
+$ npm run db:migrate:revert
+```
+
 </br>
 
 ## **Related Projects**

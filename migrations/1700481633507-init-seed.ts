@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { ClubCategory } from '../output/entities/ClubCategory';
-import { LoginType } from '../output/entities/LoginType';
-import { Major } from '../output/entities/Major';
-import { ReactionType } from '../output/entities/ReactionType';
+import { ClubCategory } from '../src/entities/ClubCategory';
+import { LoginType } from '../src/entities/LoginType';
+import { Major } from '../src/entities/Major';
+import { ReactionType } from '../src/entities/ReactionType';
 
 export class InitSeed1700481633507 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -15,7 +15,7 @@ export class TypeOrmModuleOptionsFactory implements TypeOrmOptionsFactory {
       username: this.appConfigService.get<string>(ENV_KEY.RDB_USER_NAME),
       password: this.appConfigService.get<string>(ENV_KEY.RDB_PASSWORD),
       database: this.appConfigService.get<string>(ENV_KEY.RDB_DATABASE),
-      entities: ['dist/**/*.entity{.ts,.js}'],
+      entities: ['dist/**/entities/*{.ts,.js}'],
       logging: true,
     };
   }

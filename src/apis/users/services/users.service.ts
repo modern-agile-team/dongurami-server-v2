@@ -1,16 +1,18 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
-import bcrypt from 'bcrypt';
+import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 
 @Injectable()
 export class UsersService {
   private readonly SALT = 10;
 
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly encryptionService: EncryptionService,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async create(createUserRequestBodyDto: CreateUserRequestBodyDto) {
-    console.log(this.userRepository);
     const existUser = await this.userRepository.findOne({
       select: {
         email: true,
@@ -39,7 +41,7 @@ export class UsersService {
     const newUser = this.userRepository.create(createUserRequestBodyDto);
 
     if (newUser.password) {
-      newUser.password = await bcrypt.hash(
+      newUser.password = await this.encryptionService.hash(
         createUserRequestBodyDto.password,
         this.SALT,
       );

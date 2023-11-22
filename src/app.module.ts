@@ -22,6 +22,7 @@ import { SearchModule } from '@src/apis/search/search.module';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
 import { CoreModule } from '@src/core/core.module';
+import { LibsModule } from '@src/libs/libs.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { CoreModule } from '@src/core/core.module';
     SearchModule,
     CoreModule,
     ApiModule,
+    LibsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

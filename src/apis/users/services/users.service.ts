@@ -52,4 +52,12 @@ export class UsersService {
 
     return new UserDto(newUser);
   }
+
+  async findOneById(id: number): Promise<UserDto | null> {
+    const user = await this.userRepository.findOneBy({
+      id,
+    });
+
+    return user ? new UserDto(user) : null;
+  }
 }

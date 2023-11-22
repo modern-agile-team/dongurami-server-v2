@@ -103,4 +103,32 @@ describe(UsersService.name, () => {
       );
     });
   });
+
+  describe(UsersService.prototype.findOneById.name, () => {
+    let id: number;
+
+    let user: User;
+
+    beforeEach(() => {
+      id: NaN;
+
+      user = new User();
+    });
+
+    it('유저가 없는 경우', async () => {
+      id = faker.number.int();
+
+      mockUserRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.findOneById(id)).resolves.toBeNull();
+    });
+
+    it('유저가 있는 경우', async () => {
+      id = faker.number.int();
+
+      mockUserRepository.findOneBy.mockResolvedValue(user);
+
+      await expect(service.findOneById(id)).resolves.toBeInstanceOf(UserDto);
+    });
+  });
 });

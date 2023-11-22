@@ -8,4 +8,5 @@ export const mockEncryptionService: MockProvider<EncryptionService> = {
 
 export const mockUsersService: MockProvider<UsersService> = {
   create: jest.fn(),
+  findOneById: jest.fn(),
 };

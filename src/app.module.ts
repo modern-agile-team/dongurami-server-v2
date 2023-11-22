@@ -20,7 +20,7 @@ import { ScheduleModule } from '@src/apis/schedule/schedule.module';
 import { SearchModule } from '@src/apis/search/search.module';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
-import { AppConfigModule } from '@src/core/app-config/app-config.module';
+import { CoreModule } from '@src/core/core.module';
 
 @Module({
   imports: [
@@ -43,7 +43,7 @@ import { AppConfigModule } from '@src/core/app-config/app-config.module';
     S3Module,
     ScheduleModule,
     SearchModule,
-    AppConfigModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

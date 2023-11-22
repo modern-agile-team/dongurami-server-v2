@@ -16,6 +16,12 @@ import { FreeBoardReplyComment } from './FreeBoardReplyComment';
 import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
 import { LoginType } from './LoginType';
 import { Major } from './Major';
+import { NoticeBoard } from './NoticeBoard';
+import { NoticeBoardComment } from './NoticeBoardComment';
+import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
+import { NoticeBoardReaction } from './NoticeBoardReaction';
+import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
+import { NoticeBoardReplyCommentReaction } from './NoticeBoardReplyCommentReaction';
 
 @Entity('user', { schema: 'dongurami_v2' })
 export class User {
@@ -107,11 +113,20 @@ export class User {
   @OneToMany(() => FreeBoard, (freeBoard) => freeBoard.user)
   freeBoards: FreeBoard[];
 
+  @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.user)
+  noticeBoards: NoticeBoard[];
+
   @OneToMany(
     () => FreeBoardComment,
     (freeBoardComment) => freeBoardComment.user,
   )
   freeBoardComments: FreeBoardComment[];
+
+  @OneToMany(
+    () => NoticeBoardComment,
+    (noticeBoardComment) => noticeBoardComment.user,
+  )
+  noticeBoardComments: NoticeBoardComment[];
 
   @OneToMany(
     () => FreeBoardCommentReaction,
@@ -120,10 +135,22 @@ export class User {
   freeBoardCommentReactions: FreeBoardCommentReaction[];
 
   @OneToMany(
+    () => NoticeBoardCommentReaction,
+    (noticeBoardCommentReaction) => noticeBoardCommentReaction.user,
+  )
+  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+
+  @OneToMany(
     () => FreeBoardReaction,
     (freeBoardReaction) => freeBoardReaction.user,
   )
   freeBoardReactions: FreeBoardReaction[];
+
+  @OneToMany(
+    () => NoticeBoardReaction,
+    (noticeBoardReaction) => noticeBoardReaction.user,
+  )
+  noticeBoardReactions: NoticeBoardReaction[];
 
   @OneToMany(
     () => FreeBoardReplyComment,
@@ -132,10 +159,22 @@ export class User {
   freeBoardReplyComments: FreeBoardReplyComment[];
 
   @OneToMany(
+    () => NoticeBoardReplyComment,
+    (noticeBoardReplyComment) => noticeBoardReplyComment.user,
+  )
+  noticeBoardReplyComments: NoticeBoardReplyComment[];
+
+  @OneToMany(
     () => FreeBoardReplyCommentReaction,
     (freeBoardReplyCommentReaction) => freeBoardReplyCommentReaction.user,
   )
   freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
+
+  @OneToMany(
+    () => NoticeBoardReplyCommentReaction,
+    (noticeBoardReplyCommentReaction) => noticeBoardReplyCommentReaction.user,
+  )
+  noticeBoardReplyCommentReactions: NoticeBoardReplyCommentReaction[];
 
   @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',

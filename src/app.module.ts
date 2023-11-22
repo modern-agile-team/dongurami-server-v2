@@ -1,8 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 import { AdminOptionModule } from './apis/admin-option/admin-option.module';
 import { ApplicationModule } from './apis/application/application.module';
 import { BoardModule } from './apis/board/board.module';
@@ -22,8 +18,9 @@ import { RootModule } from './apis/root/root.module';
 import { S3Module } from './apis/s3/s3.module';
 import { ScheduleModule } from './apis/schedule/schedule.module';
 import { SearchModule } from './apis/search/search.module';
-import { typeORMConfig } from './config/typeorm.config';
-import { validation } from './common/utils/validation';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AppConfigModule } from './core/app-config/app-config.module';
 
 @Module({
   imports: [
@@ -58,6 +55,7 @@ import { validation } from './common/utils/validation';
     S3Module,
     ScheduleModule,
     SearchModule,
+    AppConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

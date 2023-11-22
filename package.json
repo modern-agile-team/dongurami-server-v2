@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "contributors": [
     "SeokHo Lee <rrgks@naver.com>",
-    "BiGo Jeong <jjb26433@naver.com>"
+    "Biho Jeong <jjb26433@naver.com>"
   ],
   "repository": {
     "type": "github",
@@ -30,6 +30,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli.js -d typeorm.config.ts",
     "db:migrate": "npm run typeorm migration:run",
+    "db:migration:create": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:create ./migrations",
     "db:migrate:show": "npm run typeorm migration:show",
     "db:migrate:revert": "npm run typeorm migration:revert"
   },

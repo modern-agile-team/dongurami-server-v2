@@ -4,6 +4,7 @@ import {
   UserRole,
 } from '@src/apis/users/constants/user.enum';
 import { User } from '@src/entities/User';
+import { Exclude } from 'class-transformer';
 
 export class UserDto
   implements
@@ -25,6 +26,7 @@ export class UserDto
 {
   id: number;
   name: string;
+  @Exclude()
   password: string | null;
   email: string;
   grade: number | null;

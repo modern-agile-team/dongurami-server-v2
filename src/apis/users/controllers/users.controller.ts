@@ -7,7 +7,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserRequestBodyDto: CreateUserRequestBodyDto) {
-    return this.usersService.create(createUserRequestBodyDto);
+  async create(@Body() createUserRequestBodyDto: CreateUserRequestBodyDto) {
+    const newUser = await this.usersService.create(createUserRequestBodyDto);
+
+    return {
+      user: newUser,
+    };
   }
 }

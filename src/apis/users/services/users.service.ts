@@ -1,5 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 
@@ -49,6 +50,6 @@ export class UsersService {
 
     await this.userRepository.save(newUser);
 
-    return newUser;
+    return new UserDto(newUser);
   }
 }

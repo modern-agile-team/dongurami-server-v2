@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AdminOptionModule } from '@src/apis/admin-option/admin-option.module';
+import { ApiModule } from '@src/apis/api.module';
 import { ApplicationModule } from '@src/apis/application/application.module';
 import { BoardModule } from '@src/apis/board/board.module';
 import { ClubBoardModule } from '@src/apis/club-board/club-board.module';
@@ -44,6 +45,7 @@ import { CoreModule } from '@src/core/core.module';
     ScheduleModule,
     SearchModule,
     CoreModule,
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,19 +1,16 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
-import { User } from '@src/entities/User';
+import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   private readonly SALT = 10;
 
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async create(createUserRequestBodyDto: CreateUserRequestBodyDto) {
+    console.log(this.userRepository);
     const existUser = await this.userRepository.findOne({
       select: {
         email: true,

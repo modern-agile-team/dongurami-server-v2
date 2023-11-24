@@ -32,7 +32,14 @@ jobs:
           echo "RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }}" >> .env
           cat .env
           sudo docker build --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
-
+        env:
+          NODE_ENV: ${{ secrets.DEV_NODE_ENV }}
+          PORT: ${{ secrets.DEV_PORT }}
+          RDB_HOST: ${{ secrets.DEV_RDB_HOST }}
+          RDB_PORT: ${{ secrets.DEV_RDB_PORT }}
+          RDB_USER_NAME: ${{ secrets.DEV_RDB_USER_NAME }}
+          RDB_PASSWORD: ${{ secrets.DEV_RDB_PASSWORD }}
+          RDB_DATABASE: ${{ secrets.DEV_RDB_DATABASE }}
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:

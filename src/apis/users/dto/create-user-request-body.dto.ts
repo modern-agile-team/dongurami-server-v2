@@ -69,7 +69,7 @@ export class CreateUserRequestBodyDto
   })
   @Matches(USER_PASSWORD_REGEXP)
   @ValidateIf((object, value) => {
-    if (object.password === UserLoginType.Email) {
+    if (object.loginType === UserLoginType.Email) {
       return true;
     }
 

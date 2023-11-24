@@ -25,11 +25,11 @@ jobs:
           npm run build
           echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+          echo "RDB_HOST=${{ secrets.DEV_RDB_HOST }}" >> .env
+          echo "RDB_PORT=${{ secrets.DEV_RDB_PORT }}" >> .env
+          echo "RDB_USER_NAME=${{ secrets.DEV_RDB_USER_NAME }}" >> .env
+          echo "RDB_PASSWORD=${{ secrets.DEV_RDB_PASSWORD }}" >> .env
+          echo "RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }}" >> .env
           cat .env
           sudo docker build --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
 

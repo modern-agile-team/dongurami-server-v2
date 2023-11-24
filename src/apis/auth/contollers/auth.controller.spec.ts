@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { mockAuthService } from '@test/mock/mock.service';
 import { AuthService } from '../services/auth.service';
@@ -28,6 +29,24 @@ describe(AuthController.name, () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe(AuthController.prototype.signIn.name, () => {
+    let signInRequestBodyDto: SignInRequestBodyDto;
+
+    beforeEach(() => {
+      signInRequestBodyDto = new SignInRequestBodyDto();
+    });
+
+    it('sign in', async () => {
+      const token = 'token';
+
+      mockAuthService.signIn.mockResolvedValue({ token });
+
+      await expect(controller.signIn(signInRequestBodyDto)).resolves.toEqual({
+        token,
+      });
+    });
   });
 
   describe(AuthController.prototype.getProfile.name, () => {

@@ -6,6 +6,7 @@ import { EncryptionService } from '@src/libs/encryption/services/encryption.serv
 import { MockProvider } from '@test/mock/mock.type';
 
 export const mockEncryptionService: MockProvider<EncryptionService> = {
+  compare: jest.fn(),
   hash: jest.fn(),
 };
 
@@ -29,9 +30,11 @@ export const mockAppConfigService: MockProvider<AppConfigService> = {
 
 export const mockAuthService: MockProvider<AuthService> = {
   generateToken: jest.fn(),
+  signIn: jest.fn(),
 };
 
 export const mockUsersService: MockProvider<UsersService> = {
   create: jest.fn(),
   findOneById: jest.fn(),
+  findOneBy: jest.fn(),
 };

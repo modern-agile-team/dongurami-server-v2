@@ -35,4 +35,23 @@ describe(EncryptionService.name, () => {
       expect(data).not.toBe(hashedData);
     });
   });
+
+  describe.skip(EncryptionService.prototype.compare.name, () => {
+    let data: string;
+    let encrypted: string;
+
+    beforeEach(() => {
+      data = '';
+      encrypted = '';
+    });
+
+    it('hash', async () => {
+      data = 'data';
+      encrypted = 'encrypted';
+
+      const hashedData = await service.compare(data, encrypted);
+
+      expect(data).not.toBe(hashedData);
+    });
+  });
 });

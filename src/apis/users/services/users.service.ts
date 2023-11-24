@@ -2,7 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
+import { User } from '@src/entities/User';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -57,6 +59,12 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({
       id,
     });
+
+    return user ? new UserDto(user) : null;
+  }
+
+  async findOneBy(where: FindOptionsWhere<User>): Promise<UserDto | null> {
+    const user = await this.userRepository.findOneBy(where);
 
     return user ? new UserDto(user) : null;
   }

@@ -1,15 +1,13 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { ClubCategory } from '../output/entities/ClubCategory';
-import { LoginType } from '../output/entities/LoginType';
-import { Major } from '../output/entities/Major';
-import { ReactionType } from '../output/entities/ReactionType';
+import { ClubCategory } from '../src/entities/ClubCategory';
+import { Major } from '../src/entities/Major';
+import { ReactionType } from '../src/entities/ReactionType';
 
 export class InitSeed1700481633507 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const entityManager = queryRunner.manager;
 
     const clubCategoryRepository = entityManager.getRepository(ClubCategory);
-    const loginTypeRepository = entityManager.getRepository(LoginType);
     const majorRepository = entityManager.getRepository(Major);
     const reactionTypeRepository = entityManager.getRepository(ReactionType);
 
@@ -41,19 +39,6 @@ export class InitSeed1700481633507 implements MigrationInterface {
         {
           name: 'category 6',
           memo: 'category 6',
-        },
-      ],
-      ['name'],
-    );
-
-    /**
-     * @todo kakao naver 등 추가 예정
-     */
-    await loginTypeRepository.upsert(
-      [
-        {
-          name: 'email',
-          memo: 'email',
         },
       ],
       ['name'],
@@ -121,12 +106,10 @@ export class InitSeed1700481633507 implements MigrationInterface {
     const entityManager = queryRunner.manager;
 
     const clubCategoryRepository = entityManager.getRepository(ClubCategory);
-    const loginTypeRepository = entityManager.getRepository(LoginType);
     const majorRepository = entityManager.getRepository(Major);
     const reactionTypeRepository = entityManager.getRepository(ReactionType);
 
     await clubCategoryRepository.delete({});
-    await loginTypeRepository.delete({});
     await majorRepository.delete({});
     await reactionTypeRepository.delete({});
   }

@@ -1,9 +1,10 @@
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Global, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { ENV_KEY } from 'src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from 'src/core/app-config/services/app-config.service';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({

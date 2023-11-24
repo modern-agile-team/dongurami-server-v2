@@ -47,33 +47,6 @@ const generateUpdatedAtColumn = (
 
 export class Init1700205074777 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // 로그인 타입
-    await queryRunner.createTable(
-      new Table({
-        name: 'login_type',
-        columns: [
-          generatePrimaryColumn('로그인 타입 고유 ID'),
-          {
-            name: 'name',
-            type: 'varchar',
-            length: '20',
-            isNullable: false,
-            comment: '로그인 타입',
-          },
-          {
-            name: 'memo',
-            type: 'varchar',
-            length: '255',
-            isNullable: false,
-            comment: '메모',
-          },
-          generateCreatedAtColumn(),
-          generateUpdatedAtColumn(),
-        ],
-      }),
-    );
-    await queryRunner.query('ALTER TABLE login_type COMMENT = "로그인 타입"');
-
     // 전공
     await queryRunner.createTable(
       new Table({
@@ -115,18 +88,18 @@ export class Init1700205074777 implements MigrationInterface {
         columns: [
           generatePrimaryColumn('유저 고유 ID'),
           {
-            name: 'login_type_id',
-            type: 'int',
-            unsigned: true,
-            isNullable: false,
-            comment: '로그인 타입 고유 ID',
-          },
-          {
             name: 'major_id',
             type: 'int',
             unsigned: true,
             isNullable: false,
-            comment: '로그인 타입 고유 ID',
+            comment: '전공 고유 ID',
+          },
+          {
+            name: 'login_type',
+            type: 'enum',
+            enum: ['email'],
+            isNullable: false,
+            comment: '로그인 타입',
           },
           {
             name: 'name',
@@ -189,13 +162,6 @@ export class Init1700205074777 implements MigrationInterface {
           generateUpdatedAtColumn(),
         ],
         foreignKeys: [
-          {
-            referencedTableName: 'login_type',
-            referencedColumnNames: ['id'],
-            columnNames: ['login_type_id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          },
           {
             referencedTableName: 'major',
             referencedColumnNames: ['id'],
@@ -814,7 +780,6 @@ export class Init1700205074777 implements MigrationInterface {
     await queryRunner.dropTable(new Table({ name: 'club_category' }));
 
     await queryRunner.dropTable(new Table({ name: 'user' }));
-    await queryRunner.dropTable(new Table({ name: 'login_type' }));
     await queryRunner.dropTable(new Table({ name: 'major' }));
   }
 }

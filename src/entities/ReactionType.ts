@@ -1,3 +1,6 @@
+import { NoticeBoardCommentReaction } from '@src/entities/NoticeBoardCommentReaction';
+import { NoticeBoardReaction } from '@src/entities/NoticeBoardReaction';
+import { NoticeBoardReplyCommentReaction } from '@src/entities/NoticeBoardReplyCommentReaction';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { FreeBoardCommentReaction } from './FreeBoardCommentReaction';
 import { FreeBoardReaction } from './FreeBoardReaction';
@@ -51,4 +54,23 @@ export class ReactionType {
       freeBoardReplyCommentReaction.reactionType,
   )
   freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
+
+  @OneToMany(
+    () => NoticeBoardCommentReaction,
+    (noticeBoardCommentReaction) => noticeBoardCommentReaction.reactionType,
+  )
+  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+
+  @OneToMany(
+    () => NoticeBoardReaction,
+    (noticeBoardReaction) => noticeBoardReaction.reactionType,
+  )
+  noticeBoardReactions: NoticeBoardReaction[];
+
+  @OneToMany(
+    () => NoticeBoardReplyCommentReaction,
+    (noticeBoardReplyCommentReaction) =>
+      noticeBoardReplyCommentReaction.reactionType,
+  )
+  noticeBoardReplyCommentReactions: NoticeBoardReplyCommentReaction[];
 }

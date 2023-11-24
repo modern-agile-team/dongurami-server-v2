@@ -23,8 +23,8 @@ jobs:
         run: |
           npm install
           npm run build
-          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
-          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "NODE_ENV=${{ secrets.DEV_NODE_ENV }}" >> .env
+          echo "PORT=${{ secrets.DEV_PORT }}" >> .env
           echo "RDB_HOST=${{ secrets.DEV_RDB_HOST }}" >> .env
           echo "RDB_PORT=${{ secrets.DEV_RDB_PORT }}" >> .env
           echo "RDB_USER_NAME=${{ secrets.DEV_RDB_USER_NAME }}" >> .env

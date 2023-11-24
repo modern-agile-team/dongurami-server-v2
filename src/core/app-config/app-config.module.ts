@@ -18,6 +18,8 @@ import { AppConfigService } from 'src/core/app-config/services/app-config.servic
         [ENV_KEY.RDB_USER_NAME]: Joi.string().required(),
         [ENV_KEY.RDB_PASSWORD]: Joi.string().required(),
         [ENV_KEY.RDB_DATABASE]: Joi.string().required(),
+
+        [ENV_KEY.JWT_SECRET]: Joi.string().required(),
       }),
       isGlobal: true,
     }),

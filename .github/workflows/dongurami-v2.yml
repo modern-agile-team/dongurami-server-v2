@@ -21,28 +21,28 @@ jobs:
 
       - name: Generate Environment Variables File
         run: |
-          echo "NODE_ENV=$DEV_NODE_ENV" >> .env
-          echo "PORT=$DEV_PORT" >> .env
-          echo "RDB_HOST=$DEV_RDB_HOST" >> .env
-          echo "RDB_PORT=$DEV_RDB_PORT" >> .env
-          echo "RDB_USER_NAME=$DEV_RDB_USER_NAME" >> .env
-          echo "RDB_PASSWORD=$DEV_RDB_PASSWORD" >> .env
-          echo "RDB_DATABASE=$DEV_RDB_DATABASE" >> .env
-          cat .env
-        env:
-          NODE_ENV: ${{ secrets.DEV_NODE_ENV }}
-          PORT: ${{ secrets.DEV_PORT }}
-          RDB_HOST: ${{ secrets.DEV_RDB_HOST }}
-          RDB_PORT: ${{ secrets.DEV_RDB_PORT }}
-          RDB_USER_NAME: ${{ secrets.DEV_RDB_USER_NAME }}
-          RDB_PASSWORD: ${{ secrets.DEV_RDB_PASSWORD }}
-          RDB_DATABASE: ${{ secrets.DEV_RDB_DATABASE }}
-          
+          echo "NODE_ENV=${{ secrets.DEV_NODE_ENV }}" >> $GITHUB_ENV
+          echo "PORT=${{ secrets.DEV_PORT }}" >> $GITHUB_ENV
+          echo "RDB_HOST=${{ secrets.DEV_RDB_HOST }}" >> $GITHUB_ENV
+          echo "RDB_PORT=${{ secrets.DEV_RDB_PORT }}" >> $GITHUB_ENV
+          echo "RDB_USER_NAME=${{ secrets.DEV_RDB_USER_NAME }}" >> $GITHUB_ENV
+          echo "RDB_PASSWORD=${{ secrets.DEV_RDB_PASSWORD }}" >> $GITHUB_ENV
+          echo "RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }}" >> $GITHUB_ENV
+          cat $GITHUB_ENV
+
       - name: Build and package
         run: |
           npm install
           npm run build
-          sudo docker build --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
+          sudo docker build --platform linux/amd64 \
+          --build-arg NODE_ENV=${{ secrets.DEV_NODE_ENV }} \
+          --build-arg PORT=${{ secrets.DEV_PORT }} \
+          --build-arg RDB_HOST=${{ secrets.DEV_RDB_HOST }} \
+          --build-arg RDB_PORT=${{ secrets.DEV_RDB_PORT }} \
+          --build-arg RDB_USER_NAME=${{ secrets.DEV_RDB_USER_NAME }} \
+          --build-arg RDB_PASSWORD=${{ secrets.DEV_RDB_PASSWORD }} \
+          --build-arg RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }} \
+          -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
         
       - name: Login to Docker Hub
         uses: docker/login-action@v1

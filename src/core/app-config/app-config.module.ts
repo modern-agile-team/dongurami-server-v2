@@ -1,9 +1,10 @@
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Global, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { ENV_KEY } from 'src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from 'src/core/app-config/services/app-config.service';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,6 +18,8 @@ import { AppConfigService } from 'src/core/app-config/services/app-config.servic
         [ENV_KEY.RDB_USER_NAME]: Joi.string().required(),
         [ENV_KEY.RDB_PASSWORD]: Joi.string().required(),
         [ENV_KEY.RDB_DATABASE]: Joi.string().required(),
+
+        [ENV_KEY.JWT_SECRET]: Joi.string().required(),
       }),
       isGlobal: true,
     }),

@@ -1,4 +1,9 @@
 import {
+  UserGender,
+  UserLoginType,
+  UserRole,
+} from '@src/apis/users/constants/user.enum';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -14,7 +19,6 @@ import { FreeBoardCommentReaction } from './FreeBoardCommentReaction';
 import { FreeBoardReaction } from './FreeBoardReaction';
 import { FreeBoardReplyComment } from './FreeBoardReplyComment';
 import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
-import { LoginType } from './LoginType';
 import { Major } from './Major';
 import { NoticeBoard } from './NoticeBoard';
 import { NoticeBoardComment } from './NoticeBoardComment';
@@ -32,6 +36,20 @@ export class User {
     unsigned: true,
   })
   id: number;
+
+  @Column('int', {
+    name: 'major_id',
+    comment: '전공 고유 ID',
+    unsigned: true,
+  })
+  majorId: number;
+
+  @Column('enum', {
+    name: 'login_type',
+    comment: '로그인 타입',
+    enum: ['email'],
+  })
+  loginType: UserLoginType;
 
   @Column('varchar', { name: 'name', comment: '유저 이름', length: 20 })
   name: string;
@@ -61,7 +79,7 @@ export class User {
     comment: '학년 (0이면 졸업생)',
     width: 1,
   })
-  grade: boolean | null;
+  grade: number | null;
 
   @Column('varchar', {
     name: 'gender',
@@ -69,7 +87,7 @@ export class User {
     comment: '성별',
     length: 20,
   })
-  gender: string | null;
+  gender: UserGender | null;
 
   @Column('varchar', {
     name: 'profile_path',
@@ -85,7 +103,7 @@ export class User {
     enum: ['admin', 'student'],
     default: () => "'student'",
   })
-  role: 'admin' | 'student';
+  role: UserRole;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -182,11 +200,4 @@ export class User {
   })
   @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
   major: Major;
-
-  @ManyToOne(() => LoginType, (loginType) => loginType.users, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn([{ name: 'login_type_id', referencedColumnName: 'id' }])
-  loginType: LoginType;
 }

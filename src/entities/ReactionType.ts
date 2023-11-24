@@ -1,10 +1,10 @@
+import { FreeBoardCommentReaction } from '@src/entities/FreeBoardCommentReaction';
+import { FreeBoardReaction } from '@src/entities/FreeBoardReaction';
+import { FreeBoardReplyCommentReaction } from '@src/entities/FreeBoardReplyCommentReaction';
 import { NoticeBoardCommentReaction } from '@src/entities/NoticeBoardCommentReaction';
 import { NoticeBoardReaction } from '@src/entities/NoticeBoardReaction';
 import { NoticeBoardReplyCommentReaction } from '@src/entities/NoticeBoardReplyCommentReaction';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { FreeBoardCommentReaction } from './FreeBoardCommentReaction';
-import { FreeBoardReaction } from './FreeBoardReaction';
-import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
 
 @Entity('reaction_type', { schema: 'dongurami_v2' })
 export class ReactionType {

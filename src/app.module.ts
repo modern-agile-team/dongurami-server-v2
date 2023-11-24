@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ApiModule } from '@src/apis/api.module';
+import { CoreModule } from '@src/core/core.module';
 import { InterceptorModule } from '@src/interceptors/interceptor.module';
 import { AdminOptionModule } from './apis/admin-option/admin-option.module';
 import { ApplicationModule } from './apis/application/application.module';
@@ -44,6 +46,8 @@ import { AppConfigModule } from './core/app-config/app-config.module';
     S3Module,
     ScheduleModule,
     SearchModule,
+    ApiModule,
+    CoreModule,
     AppConfigModule,
     InterceptorModule,
   ],

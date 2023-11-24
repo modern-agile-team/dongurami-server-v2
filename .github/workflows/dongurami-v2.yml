@@ -19,19 +19,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build and package
+      - name: Generate Environment Variables File
         run: |
-          npm install
-          npm run build
-          echo "NODE_ENV=${{ secrets.DEV_NODE_ENV }}" >> .env
-          echo "PORT=${{ secrets.DEV_PORT }}" >> .env
-          echo "RDB_HOST=${{ secrets.DEV_RDB_HOST }}" >> .env
-          echo "RDB_PORT=${{ secrets.DEV_RDB_PORT }}" >> .env
-          echo "RDB_USER_NAME=${{ secrets.DEV_RDB_USER_NAME }}" >> .env
-          echo "RDB_PASSWORD=${{ secrets.DEV_RDB_PASSWORD }}" >> .env
-          echo "RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }}" >> .env
+          echo "NODE_ENV=$DEV_NODE_ENV" >> .env
+          echo "PORT=$DEV_PORT" >> .env
+          echo "RDB_HOST=$DEV_RDB_HOST" >> .env
+          echo "RDB_PORT=$DEV_RDB_PORT" >> .env
+          echo "RDB_USER_NAME=$DEV_RDB_USER_NAME" >> .env
+          echo "RDB_PASSWORD=$DEV_RDB_PASSWORD" >> .env
+          echo "RDB_DATABASE=$DEV_RDB_DATABASE" >> .env
           cat .env
-          sudo docker build --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
         env:
           NODE_ENV: ${{ secrets.DEV_NODE_ENV }}
           PORT: ${{ secrets.DEV_PORT }}
@@ -40,6 +37,13 @@ jobs:
           RDB_USER_NAME: ${{ secrets.DEV_RDB_USER_NAME }}
           RDB_PASSWORD: ${{ secrets.DEV_RDB_PASSWORD }}
           RDB_DATABASE: ${{ secrets.DEV_RDB_DATABASE }}
+          
+      - name: Build and package
+        run: |
+          npm install
+          npm run build
+          sudo docker build --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
+        
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:

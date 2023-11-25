@@ -7,6 +7,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
+import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -44,7 +45,10 @@ async function bootstrap() {
   app.enableCors();
   app.useLogger(logger);
   app.setGlobalPrefix('api');
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+    app.get<SuccessInterceptor>(SuccessInterceptor),
+  );
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

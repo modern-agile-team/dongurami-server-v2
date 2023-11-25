@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { User } from '@src/common/get-request.decorator';
+import { User } from '@src/decorators/user.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { AuthService } from '../services/auth.service';
 

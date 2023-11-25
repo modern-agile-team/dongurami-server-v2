@@ -13,6 +13,7 @@ const JWT = {
 export const ENV_KEY = {
   PORT: 'PORT',
   NODE_ENV: 'NODE_ENV',
+  DOMAIN: 'DOMAIN',
   ...RDB,
   ...JWT,
 } as const;

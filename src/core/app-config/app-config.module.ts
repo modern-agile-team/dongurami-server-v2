@@ -20,6 +20,11 @@ import { AppConfigService } from 'src/core/app-config/services/app-config.servic
         [ENV_KEY.RDB_DATABASE]: Joi.string().required(),
 
         [ENV_KEY.JWT_SECRET]: Joi.string().required(),
+
+        /**
+         * @todo dns 적용하면 default 제거 및 required 로 변경
+         */
+        [ENV_KEY.DOMAIN]: Joi.string().default('http://localhost:3000'),
       }),
       isGlobal: true,
     }),

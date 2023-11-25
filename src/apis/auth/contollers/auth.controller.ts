@@ -3,6 +3,9 @@ import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dt
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
+import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
+import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
+import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { AuthService } from '../services/auth.service';
 
@@ -19,8 +22,9 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'user', type: ResponseType.Detail })
   @Get('profile')
-  getProfile(@User() user: UserDto) {
+  getProfile(@User() user: UserDto): DetailResponse<UserDto> {
     return new UserDto(user);
   }
 

@@ -1,14 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ApiModule } from '@src/apis/api.module';
 import { CoreModule } from '@src/core/core.module';
+import { InterceptorModule } from '@src/interceptors/interceptor.module';
 import { LibsModule } from '@src/libs/libs.module';
-import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 
 @Module({
-  imports: [ApiModule, CoreModule, LibsModule],
+  imports: [ApiModule, CoreModule, LibsModule, InterceptorModule],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

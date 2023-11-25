@@ -1,0 +1,7 @@
+/**
+ * 2000 ~ 2999
+ */
+export const USER_ERROR_CODE = {
+  ALREADY_EXIST_USER_EMAIL: 2000,
+  ALREADY_EXIST_USER_PHONE_NUMBER: 2001,
+} as const;

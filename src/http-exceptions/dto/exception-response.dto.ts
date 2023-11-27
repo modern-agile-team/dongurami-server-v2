@@ -14,13 +14,16 @@ export class ExceptionResponseDto {
 
   public readonly stack?: any;
 
+  public readonly errors: unknown[];
+
   constructor(error: Omit<ExceptionResponseDto, 'timestamp'>) {
-    const { statusCode, code, message, stack } = error;
+    const { statusCode, code, message, stack, errors } = error;
 
     this.timestamp = new Date();
     this.statusCode = statusCode;
     this.code = code;
     this.message = message;
     this.stack = stack;
+    this.errors = errors;
   }
 }

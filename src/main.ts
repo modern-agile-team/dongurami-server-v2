@@ -1,12 +1,15 @@
 import {
   ClassSerializerInterceptor,
   Logger,
+  ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpBadRequestExceptionFilter } from '@src/http-exceptions/filters/http-bad-request-exception.filter';
 import { HttpConflictExceptionFilter } from '@src/http-exceptions/filters/http-conflict-exception.filter';
 import { HttpForbiddenExceptionFilter } from '@src/http-exceptions/filters/http-forbidden-exception.filter';
@@ -39,6 +42,19 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
+
+      exceptionFactory(validationErrors: ValidationError[]) {
+        throw new HttpBadRequestException({
+          code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          errors: validationErrors.flatMap((validationError) => {
+            return {
+              property: validationError.property,
+              value: validationError.value,
+              reason: Object.values(validationError.constraints)[0] || '',
+            };
+          }),
+        });
+      },
     }),
   );
 

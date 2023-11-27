@@ -7,6 +7,7 @@ import { ValueOf } from '@src/types/type';
 
 interface ExceptionError {
   code: ValueOf<typeof ERROR_CODE>;
+  errors?: unknown[];
   stack?: any;
 }
 
@@ -19,12 +20,13 @@ export class HttpExceptionService {
     exceptionError: ExceptionError,
   ): ExceptionResponseDto {
     const isProduction = this.appConfigService.isProduction();
-    const { code } = exceptionError;
+    const { code, errors } = exceptionError;
 
     return new ExceptionResponseDto({
       statusCode,
       code,
       message: ERROR_MESSAGE[code],
+      errors,
       stack:
         statusCode >= 500 && isProduction ? exceptionError.stack : undefined,
     });

@@ -18,6 +18,21 @@ async function bootstrap() {
   const PORT = appConfigService.get<number>(ENV_KEY.PORT);
   const isProduction = appConfigService.isProduction();
 
+  app.enableCors();
+  app.useLogger(logger);
+  app.setGlobalPrefix('api');
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+    app.get<SuccessInterceptor>(SuccessInterceptor),
+  );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
   if (!isProduction) {
     const DOMAIN = appConfigService.get<string>(ENV_KEY.DOMAIN);
     const JSON_PATH = 'api-docs-json';
@@ -34,28 +49,16 @@ async function bootstrap() {
       .addBearerAuth()
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {});
 
     SwaggerModule.setup('api-docs', app, document, {
       jsonDocumentUrl: JSON_PATH,
       yamlDocumentUrl: YAML_PATH,
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
     });
   }
-
-  app.enableCors();
-  app.useLogger(logger);
-  app.setGlobalPrefix('api');
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector)),
-    app.get<SuccessInterceptor>(SuccessInterceptor),
-  );
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
 
   await app.listen(PORT);
 }

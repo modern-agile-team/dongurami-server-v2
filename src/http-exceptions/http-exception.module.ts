@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpBadRequestExceptionFilter } from '@src/http-exceptions/filters/http-bad-request-exception.filter';
+import { HttpConflictExceptionFilter } from '@src/http-exceptions/filters/http-conflict-exception.filter';
 import { HttpForbiddenExceptionFilter } from '@src/http-exceptions/filters/http-forbidden-exception.filter';
 import { HttpInternalServerErrorExceptionFilter } from '@src/http-exceptions/filters/http-internal-server-error-exception.filter';
 import { HttpNotFoundExceptionFilter } from '@src/http-exceptions/filters/http-not-found-exception.filter';
@@ -18,7 +18,7 @@ import { HttpExceptionService } from '@src/http-exceptions/services/http-excepti
     HttpForbiddenExceptionFilter,
     HttpPathNotFoundExceptionFilter,
     HttpNotFoundExceptionFilter,
-    HttpConflictException,
+    HttpConflictExceptionFilter,
     HttpInternalServerErrorExceptionFilter,
     HttpRemainderExceptionFilter,
     HttpProcessErrorExceptionFilter,

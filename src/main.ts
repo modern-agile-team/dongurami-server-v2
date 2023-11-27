@@ -7,8 +7,8 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
-import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpBadRequestExceptionFilter } from '@src/http-exceptions/filters/http-bad-request-exception.filter';
+import { HttpConflictExceptionFilter } from '@src/http-exceptions/filters/http-conflict-exception.filter';
 import { HttpForbiddenExceptionFilter } from '@src/http-exceptions/filters/http-forbidden-exception.filter';
 import { HttpInternalServerErrorExceptionFilter } from '@src/http-exceptions/filters/http-internal-server-error-exception.filter';
 import { HttpNotFoundExceptionFilter } from '@src/http-exceptions/filters/http-not-found-exception.filter';
@@ -73,7 +73,7 @@ async function bootstrap() {
     app.get(HttpProcessErrorExceptionFilter),
     app.get(HttpRemainderExceptionFilter),
     app.get(HttpInternalServerErrorExceptionFilter),
-    app.get(HttpConflictException),
+    app.get(HttpConflictExceptionFilter),
     app.get(HttpNotFoundExceptionFilter),
     app.get(HttpPathNotFoundExceptionFilter),
     app.get(HttpForbiddenExceptionFilter),

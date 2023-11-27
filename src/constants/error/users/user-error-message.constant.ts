@@ -1,4 +1,4 @@
-import { USER_ERROR_CODE } from '@src/apis/users/constants/user-error-code.constant';
+import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { ErrorMessage } from '@src/types/type';
 
 export const USER_ERROR_MESSAGE: ErrorMessage<typeof USER_ERROR_CODE> = {

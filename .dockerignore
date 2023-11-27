@@ -3,6 +3,7 @@ node_modules
 # dockerfile
 src
 test
+.env
 .eslintrc.js
 .gitignore
 .prettierrc

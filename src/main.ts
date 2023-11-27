@@ -7,6 +7,14 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
+import { HttpBadRequestExceptionFilter } from '@src/http-exceptions/filters/http-bad-request-exception.filter';
+import { HttpForbiddenExceptionFilter } from '@src/http-exceptions/filters/http-forbidden-exception.filter';
+import { HttpInternalServerErrorExceptionFilter } from '@src/http-exceptions/filters/http-internal-server-error-exception.filter';
+import { HttpNotFoundExceptionFilter } from '@src/http-exceptions/filters/http-not-found-exception.filter';
+import { HttpPathNotFoundExceptionFilter } from '@src/http-exceptions/filters/http-path-not-found-exception.filter';
+import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/http-process-error-exception.filter';
+import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
+import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
 import { AppModule } from './app.module';
 
@@ -59,6 +67,17 @@ async function bootstrap() {
       },
     });
   }
+
+  app.useGlobalFilters(
+    app.get(HttpProcessErrorExceptionFilter),
+    app.get(HttpRemainderExceptionFilter),
+    app.get(HttpInternalServerErrorExceptionFilter),
+    app.get(HttpNotFoundExceptionFilter),
+    app.get(HttpPathNotFoundExceptionFilter),
+    app.get(HttpForbiddenExceptionFilter),
+    app.get(HttpUnauthorizedExceptionFilter),
+    app.get(HttpBadRequestExceptionFilter),
+  );
 
   await app.listen(PORT);
 }

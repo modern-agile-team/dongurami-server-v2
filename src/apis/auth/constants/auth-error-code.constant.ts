@@ -1,0 +1,7 @@
+/**
+ * 1000 ~ 1999
+ */
+export const AUTH_ERROR_CODE = {
+  ACCOUNT_NOT_FOUND: 1000,
+  DIFFERENT_ACCOUNT_INFORMATION: 1001,
+} as const;

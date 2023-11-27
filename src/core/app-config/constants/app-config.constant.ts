@@ -6,8 +6,14 @@ const RDB = {
   RDB_DATABASE: 'RDB_DATABASE',
 } as const;
 
+const JWT = {
+  JWT_SECRET: 'JWT_SECRET',
+} as const;
+
 export const ENV_KEY = {
   PORT: 'PORT',
   NODE_ENV: 'NODE_ENV',
+  DOMAIN: 'DOMAIN',
   ...RDB,
+  ...JWT,
 } as const;

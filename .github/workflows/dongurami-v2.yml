@@ -28,7 +28,7 @@ jobs:
           echo "RDB_USER_NAME=${{ secrets.DEV_RDB_USER_NAME }}" >> $GITHUB_ENV
           echo "RDB_PASSWORD=${{ secrets.DEV_RDB_PASSWORD }}" >> $GITHUB_ENV
           echo "RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }}" >> $GITHUB_ENV
-          echo "JWT_SECRET=${{ secrets.DEV_JWT_SCERET }}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${{ secrets.DEV_JWT_SECRET }}" >> $GITHUB_ENV
           cat $GITHUB_ENV
 
       - name: Build and package
@@ -85,7 +85,7 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.CI_CD_SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
   deploy:

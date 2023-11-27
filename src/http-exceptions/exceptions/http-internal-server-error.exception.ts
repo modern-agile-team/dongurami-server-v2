@@ -7,10 +7,12 @@ import { HttpError } from '@src/http-exceptions/types/exception.type';
  */
 export class HttpInternalServerErrorException extends HttpException {
   public readonly ctx: string;
+  public readonly stack?: any;
 
   constructor(
     error: Omit<HttpError<HttpInternalServerErrorException>, 'message'> & {
       ctx: string;
+      stack?: any;
     },
   ) {
     const { code, errors, ctx } = error;
@@ -22,9 +24,14 @@ export class HttpInternalServerErrorException extends HttpException {
     });
 
     this.ctx = ctx;
+    this.stack = this.stack;
   }
 
   getResponse(): HttpInternalServerErrorException {
-    return super.getResponse() as HttpInternalServerErrorException;
+    return {
+      ...(super.getResponse() as any),
+      ctx: this.ctx,
+      stack: this.stack,
+    } as HttpInternalServerErrorException;
   }
 }

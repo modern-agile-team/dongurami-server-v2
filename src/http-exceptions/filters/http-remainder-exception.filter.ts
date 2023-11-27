@@ -25,15 +25,21 @@ export class HttpRemainderExceptionFilter
     const response = ctx.getResponse<Response>();
 
     const statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    const exceptionError = new HttpInternalServerErrorException({
-      code: COMMON_ERROR_CODE.SERVER_ERROR,
-      ctx: 'server error',
-    });
+    const httpInternalServerErrorException =
+      new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: 'custom exception 을 사용하지 않아 생긴 에러',
+        stack: exception.stack,
+      });
+    const exceptionError = httpInternalServerErrorException.getResponse();
 
     const responseJson = this.httpExceptionService.buildResponseJson(
       statusCode,
       exceptionError,
     );
+
+    console.error(exceptionError.ctx);
+    console.error(exceptionError.stack);
 
     response.status(statusCode).json(responseJson);
   }

@@ -10,7 +10,6 @@ export class ExceptionResponseDto {
 
   public readonly code: ValueOf<typeof ERROR_CODE>;
 
-  // public readonly message: ErrorMessage<typeof ERROR_CODE>;
   public readonly message: ValueOf<typeof ERROR_MESSAGE>;
 
   public readonly stack?: any;

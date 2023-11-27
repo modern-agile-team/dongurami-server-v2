@@ -32,6 +32,9 @@ export class HttpProcessErrorExceptionFilter implements ExceptionFilter {
       exceptionError,
     );
 
+    console.error('Node Process Error');
+    console.error(exception.stack);
+
     response.status(statusCode).json(responseJson);
   }
 }

@@ -1,8 +1,4 @@
 import { faker } from '@faker-js/faker';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
@@ -11,6 +7,8 @@ import { UserLoginType } from '@src/apis/users/constants/user.enum';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UsersService } from '@src/apis/users/services/users.service';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import {
   mockAppConfigService,
@@ -75,7 +73,7 @@ describe(AuthService.name, () => {
       mockUsersService.findOneBy.mockResolvedValue(null);
 
       await expect(service.signIn(signInRequestBodyDto)).rejects.toThrow(
-        BadRequestException,
+        HttpBadRequestException,
       );
     });
 
@@ -88,7 +86,7 @@ describe(AuthService.name, () => {
       mockUsersService.findOneBy.mockResolvedValue(existUser);
 
       await expect(service.signIn(signInRequestBodyDto)).rejects.toThrow(
-        InternalServerErrorException,
+        HttpInternalServerErrorException,
       );
     });
 
@@ -104,7 +102,7 @@ describe(AuthService.name, () => {
       mockEncryptionService.compare.mockResolvedValue(false);
 
       await expect(service.signIn(signInRequestBodyDto)).rejects.toThrow(
-        BadRequestException,
+        HttpBadRequestException,
       );
     });
 

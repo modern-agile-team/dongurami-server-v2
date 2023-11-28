@@ -43,7 +43,7 @@ describe(UsersController.name, () => {
 
       await expect(
         controller.create(createUserRequestBodyDto),
-      ).resolves.toEqual({ user: newUser });
+      ).resolves.toEqual(newUser);
     });
   });
 });

@@ -1,6 +1,6 @@
-import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PageDto } from '@src/dto/page.dto';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { ResponseBuilder } from '@src/interceptors/success-interceptor/builders/success-response.builder';
 import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
@@ -44,14 +44,18 @@ describe(ResponseBuilder.name, () => {
       res.key = 'key';
       res.data = [];
 
-      expect(() => builder.delete(res)).toThrow(InternalServerErrorException);
+      expect(() => builder.delete(res)).toThrow(
+        HttpInternalServerErrorException,
+      );
     });
 
     it('data is null type to throw', () => {
       res.key = 'key';
       res.data = null;
 
-      expect(() => builder.delete(res)).toThrow(InternalServerErrorException);
+      expect(() => builder.delete(res)).toThrow(
+        HttpInternalServerErrorException,
+      );
     });
 
     it('data is plain class instance', () => {
@@ -81,13 +85,17 @@ describe(ResponseBuilder.name, () => {
     it('data is not number type', () => {
       res.data = 'data';
 
-      expect(() => builder.delete(res)).toThrow(InternalServerErrorException);
+      expect(() => builder.delete(res)).toThrow(
+        HttpInternalServerErrorException,
+      );
     });
 
     it('data is not integer format', () => {
       res.data = 1.1;
 
-      expect(() => builder.delete(res)).toThrow(InternalServerErrorException);
+      expect(() => builder.delete(res)).toThrow(
+        HttpInternalServerErrorException,
+      );
     });
 
     it('delete response object build', () => {
@@ -111,7 +119,7 @@ describe(ResponseBuilder.name, () => {
       res.data = 'data';
 
       expect(() => builder.pagination(res, pageDto)).toThrow(
-        InternalServerErrorException,
+        HttpInternalServerErrorException,
       );
     });
 
@@ -120,7 +128,7 @@ describe(ResponseBuilder.name, () => {
       res.data = ['arrayObject'];
 
       expect(() => builder.pagination(res, pageDto)).toThrow(
-        InternalServerErrorException,
+        HttpInternalServerErrorException,
       );
     });
 
@@ -129,7 +137,7 @@ describe(ResponseBuilder.name, () => {
       res.data = [[], 'totalCount'];
 
       expect(() => builder.pagination(res, pageDto)).toThrow(
-        InternalServerErrorException,
+        HttpInternalServerErrorException,
       );
     });
 
@@ -138,7 +146,7 @@ describe(ResponseBuilder.name, () => {
       res.data = [[], 1.1];
 
       expect(() => builder.pagination(res, pageDto)).toThrow(
-        InternalServerErrorException,
+        HttpInternalServerErrorException,
       );
     });
 

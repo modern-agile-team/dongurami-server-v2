@@ -1,4 +1,4 @@
-import { COMMON_ERROR_CODE } from '@src/constants/common-error-code.constant';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ErrorMessage } from '@src/types/type';
 
 export const COMMON_ERROR_MESSAGE: ErrorMessage<typeof COMMON_ERROR_CODE> = {

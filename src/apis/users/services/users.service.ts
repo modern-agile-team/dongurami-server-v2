@@ -1,8 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
+import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { User } from '@src/entities/User';
+import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { FindOptionsWhere } from 'typeorm';
 
@@ -33,11 +35,15 @@ export class UsersService {
 
     if (existUser) {
       if (createUserRequestBodyDto.email === existUser.email) {
-        throw new ConflictException('already exist user email');
+        throw new HttpConflictException({
+          code: USER_ERROR_CODE.ALREADY_EXIST_USER_EMAIL,
+        });
       }
 
       if (createUserRequestBodyDto.phoneNumber === existUser.phoneNumber) {
-        throw new ConflictException('already exist user phone number');
+        throw new HttpConflictException({
+          code: USER_ERROR_CODE.ALREADY_EXIST_USER_PHONE_NUMBER,
+        });
       }
     }
 

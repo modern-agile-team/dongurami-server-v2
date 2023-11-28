@@ -1,9 +1,6 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-} from '@nestjs/common';
+import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 
 @Injectable()
 export class ParsePositiveIntPipe implements PipeTransform<string> {
@@ -11,9 +8,16 @@ export class ParsePositiveIntPipe implements PipeTransform<string> {
     const { type, data } = metadata;
 
     if (!this.isPositiveNumeric(value)) {
-      throw new BadRequestException(
-        `${type} internal the ${data} must be a numeric string`,
-      );
+      throw new HttpBadRequestException({
+        code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+        errors: [
+          {
+            value,
+            property: data,
+            reason: `${type} internal the ${data} must be a numeric string`,
+          },
+        ],
+      });
     }
 
     return parseInt(value, 10);

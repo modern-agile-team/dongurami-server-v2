@@ -36,8 +36,8 @@ export class HttpException extends NestHttpException {
     codes: ValueOf<typeof ERROR_CODE>[],
     errors?: { description: string; type: Type },
   ) {
+    const ExtraModels: any[] = [];
     let errorsProperty: unknown;
-    let ExtraModel;
 
     if (errors) {
       errorsProperty = {
@@ -49,11 +49,11 @@ export class HttpException extends NestHttpException {
         },
       };
 
-      ExtraModel = applyDecorators(ApiExtraModels(errors.type));
+      ExtraModels.push(ApiExtraModels(errors.type));
     }
 
     return applyDecorators(
-      ExtraModel,
+      ...ExtraModels,
       ApiResponse({
         status,
         schema: {

@@ -1,3 +1,4 @@
+import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import {
   Column,
   Entity,
@@ -69,6 +70,12 @@ export class FreeBoard {
     (freeBoardComment) => freeBoardComment.freeBoard,
   )
   freeBoardComments: FreeBoardComment[];
+
+  @OneToMany(
+    () => FreeBoardHistory,
+    (freeBoardHistory) => freeBoardHistory.freeBoard,
+  )
+  freeBoardHistories: FreeBoardHistory[];
 
   @OneToMany(
     () => FreeBoardReaction,

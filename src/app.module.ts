@@ -10,6 +10,7 @@ import { AppService } from '@src/app.service';
 import { CoreModule } from '@src/core/core.module';
 import { InterceptorModule } from '@src/interceptors/interceptor.module';
 import { LibsModule } from '@src/libs/libs.module';
+import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middleware';
 
 @Module({
@@ -19,6 +20,7 @@ import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middl
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
     consumer.apply(UseDevelopmentMiddleware).forRoutes({
       path: 'error-code',
       method: RequestMethod.GET,

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AUTH_ERROR_CODE } from '@src/apis/auth/constants/auth-error-code.constant';
-import { AUTH_ERROR_MESSAGE } from '@src/apis/auth/constants/auth-error-message.constant';
-import { USER_ERROR_CODE } from '@src/apis/users/constants/user-error-code.constant';
-import { USER_ERROR_MESSAGE } from '@src/apis/users/constants/user-error-message.constant';
-import { COMMON_ERROR_CODE } from '@src/constants/common-error-code.constant';
-import { COMMON_ERROR_MESSAGE } from '@src/constants/common-error-message.constant';
+import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
+import { AUTH_ERROR_MESSAGE } from '@src/constants/error/auth/auth-error-message.constant';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { COMMON_ERROR_MESSAGE } from '@src/constants/error/common/common-error-message.constant';
+import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
+import { USER_ERROR_MESSAGE } from '@src/constants/error/users/user-error-message.constant';
 
 @Injectable()
 export class AppService {

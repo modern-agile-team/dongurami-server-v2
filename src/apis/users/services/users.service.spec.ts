@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UsersService } from '@src/apis/users/services/users.service';
 import { User } from '@src/entities/User';
+import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { mockUserRepository } from '@test/mock/mock.repository';
 import { mockEncryptionService } from '@test/mock/mock.service';
@@ -62,7 +62,7 @@ describe(UsersService.name, () => {
       mockUserRepository.findOne.mockResolvedValue(existUser);
 
       await expect(service.create(createUserRequestBodyDto)).rejects.toThrow(
-        ConflictException,
+        HttpConflictException,
       );
     });
 
@@ -74,7 +74,7 @@ describe(UsersService.name, () => {
       mockUserRepository.findOne.mockResolvedValue(createUserRequestBodyDto);
 
       await expect(service.create(createUserRequestBodyDto)).rejects.toThrow(
-        ConflictException,
+        HttpConflictException,
       );
     });
 

@@ -13,12 +13,12 @@ export class FreeBoardHistoryService {
   create(
     entityManager: EntityManager,
     userId: number,
-    postId: number,
+    freeBoardId: number,
     createFreeBoardHistoryDto: CreateFreeBoardHistoryDto,
   ) {
     return entityManager.withRepository(this.freeBoardHistoryRepository).save({
       userId,
-      postId,
+      freeBoardId,
       ...createFreeBoardHistoryDto,
     });
   }

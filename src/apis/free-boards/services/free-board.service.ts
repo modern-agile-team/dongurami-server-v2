@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
-import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { DataSource, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
@@ -11,11 +11,11 @@ import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 @Injectable()
 export class FreeBoardsService {
   constructor(
+    private readonly freeBoardHistoryService: FreeBoardHistoryService,
+
     private readonly dataSource: DataSource,
     @InjectRepository(FreeBoard)
     private readonly freeBoardRepository: Repository<FreeBoard>,
-    @InjectRepository(FreeBoardHistory)
-    private readonly freeBoardHistoryRepository: Repository<FreeBoardHistory>,
   ) {}
 
   async create(userId: number, createFreeBoardDto: CreateFreeBoardDto) {
@@ -34,13 +34,16 @@ export class FreeBoardsService {
           ...createFreeBoardDto,
         });
 
-      await entityManager.withRepository(this.freeBoardHistoryRepository).save({
+      await this.freeBoardHistoryService.create(
+        entityManager,
         userId,
-        freeBoardId: newPost.id,
-        title: newPost.title,
-        description: newPost.description,
-        isAnonymous: newPost.isAnonymous,
-      });
+        newPost.id,
+        {
+          title: newPost.title,
+          description: newPost.description,
+          isAnonymous: newPost.isAnonymous,
+        },
+      );
 
       await queryRunner.commitTransaction();
 

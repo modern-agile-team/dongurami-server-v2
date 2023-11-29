@@ -8,6 +8,10 @@ import { MajorDto } from '../dto/major.dto';
 @Injectable()
 export class MajorService {
   constructor(private readonly majorRepository: MajorRepository) {}
+  async getAllMajors() {
+    return this.majorRepository.find();
+  }
+
   async create(createMajorRequestBodyDto: CreateMajorRequestBodyDto) {
     const existMajor = await this.majorRepository.findOne({
       select: { code: true, name: true },
@@ -38,6 +42,6 @@ export class MajorService {
 
     await this.majorRepository.save(newMajor);
 
-    return { major: new MajorDto(newMajor) };
+    return new MajorDto(newMajor);
   }
 }

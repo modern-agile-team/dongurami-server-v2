@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { UpdateFreeBoardDto } from '../dto/update-free-board.dto';
-import { FreeBoardService } from '../free-board.service';
+import { FreeBoardsService } from '../services/free-board.service';
 
-@Controller('free-board')
-export class FreeBoardController {
-  constructor(private readonly freeBoardService: FreeBoardService) {}
+@Controller('free-boards')
+export class FreeBoardsController {
+  constructor(private readonly freeBoardService: FreeBoardsService) {}
 
   @Post()
   create(@Body() createFreeBoardDto: CreateFreeBoardDto) {

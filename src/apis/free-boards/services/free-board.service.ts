@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFreeBoardDto } from './dto/create-free-board.dto';
-import { UpdateFreeBoardDto } from './dto/update-free-board.dto';
+import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
+import { UpdateFreeBoardDto } from '../dto/update-free-board.dto';
 
 @Injectable()
-export class FreeBoardService {
+export class FreeBoardsService {
   create(createFreeBoardDto: CreateFreeBoardDto) {
     return 'This action adds a new freeBoard';
   }

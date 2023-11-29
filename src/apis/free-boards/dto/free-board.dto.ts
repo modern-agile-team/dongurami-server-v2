@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FREE_BOARD_TITLE_LENGTH } from '@src/apis/free-board/constants/free-board.constant';
+import { FREE_BOARD_TITLE_LENGTH } from '@src/apis/free-boards/constants/free-board.constant';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreeBoard } from '@src/entities/FreeBoard';
 

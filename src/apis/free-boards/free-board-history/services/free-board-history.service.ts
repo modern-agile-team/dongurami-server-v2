@@ -19,7 +19,7 @@ export class FreeBoardHistoryService {
     return entityManager.withRepository(this.freeBoardHistoryRepository).save({
       userId,
       freeBoardId,
-      ...createFreeBoardHistoryDto,
+      ...new CreateFreeBoardHistoryDto(createFreeBoardHistoryDto),
     });
   }
 }

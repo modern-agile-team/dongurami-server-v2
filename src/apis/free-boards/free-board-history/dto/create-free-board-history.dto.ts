@@ -6,4 +6,10 @@ export class CreateFreeBoardHistoryDto
   title: string;
   description: string;
   isAnonymous: boolean;
+
+  constructor(createFreeBoardHistoryDto: CreateFreeBoardHistoryDto) {
+    this.title = createFreeBoardHistoryDto.title;
+    this.description = createFreeBoardHistoryDto.description;
+    this.isAnonymous = createFreeBoardHistoryDto.isAnonymous;
+  }
 }

@@ -1,5 +1,6 @@
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { FreeBoard } from '@src/entities/FreeBoard';
+import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { MockProvider } from '@test/mock/mock.type';
 import { Repository } from 'typeorm';
 
@@ -49,6 +50,24 @@ const getDefaultRepositoryMethod = () => {
   };
 };
 
+export const mockDataSource = {
+  createQueryRunner: () => {
+    return {
+      connect: jest.fn(),
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      rollbackTransaction: jest.fn(),
+      release: jest.fn(),
+      manager: {
+        withRepository: (repository) => {
+          return repository;
+        },
+        create: jest.fn(),
+      },
+    };
+  },
+};
+
 export const mockEntityManager = {
   withRepository: (repository) => {
     return repository;
@@ -59,8 +78,12 @@ export const mockUserRepository: MockProvider<UserRepository> = {
   ...getDefaultRepositoryMethod(),
 };
 
+export const mockFreeBoardRepository: MockProvider<Repository<FreeBoard>> = {
+  ...getDefaultRepositoryMethod(),
+};
+
 export const mockFreeBoardHistoryRepository: MockProvider<
-  Repository<FreeBoard>
+  Repository<FreeBoardHistory>
 > = {
   ...getDefaultRepositoryMethod(),
 };

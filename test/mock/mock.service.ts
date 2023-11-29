@@ -1,5 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '@src/apis/auth/services/auth.service';
+import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { UsersService } from '@src/apis/users/services/users.service';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
@@ -38,3 +39,8 @@ export const mockUsersService: MockProvider<UsersService> = {
   findOneById: jest.fn(),
   findOneBy: jest.fn(),
 };
+
+export const mockFreeBoardHistoryService: MockProvider<FreeBoardHistoryService> =
+  {
+    create: jest.fn(),
+  };

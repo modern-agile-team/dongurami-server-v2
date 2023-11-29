@@ -64,7 +64,7 @@ jobs:
         with:
           payload: |
             {
-              "channel": "C065D0F1Q79",
+              "channel": "${{ secrets.SLACK_BACKEND_CHANNEL_ID }}",
               "attachments": [
                 {
                   "color": "#36a64f", 
@@ -97,7 +97,7 @@ jobs:
         with:
           payload: |
             {
-              "channel": "C065D0F1Q79",
+              "channel": "${{ secrets.SLACK_BACKEND_CHANNEL_ID }}",
               "attachments": [
                 {
                   "color": "#ff0000", 

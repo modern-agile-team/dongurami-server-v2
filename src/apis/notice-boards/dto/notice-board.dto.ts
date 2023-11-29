@@ -14,4 +14,10 @@ export class NoticeBoardDto
   hit: number;
   allowComment: number;
   userId: number;
+
+  constructor(noticeBoardDto: Partial<NoticeBoardDto> = {}) {
+    super();
+
+    Object.assign(this, noticeBoardDto);
+  }
 }

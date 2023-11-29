@@ -46,12 +46,26 @@ export class NoticeBoardComment {
   })
   updatedAt: Date;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.noticeBoardComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @Column('int', {
+    name: 'notice_board_id',
+    comment: '공지 게시글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardId: number;
 
   @ManyToOne(
     () => NoticeBoard,

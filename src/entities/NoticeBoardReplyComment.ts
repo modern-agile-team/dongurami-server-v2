@@ -50,6 +50,13 @@ export class NoticeBoardReplyComment {
   })
   updatedAt: Date;
 
+  @Column('int', {
+    name: 'notice_board_id',
+    comment: '공지 게시글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardId: number;
+
   @ManyToOne(
     () => NoticeBoard,
     (noticeBoard) => noticeBoard.noticeBoardReplyComments,
@@ -58,6 +65,13 @@ export class NoticeBoardReplyComment {
   @JoinColumn([{ name: 'notice_board_id', referencedColumnName: 'id' }])
   noticeBoard: NoticeBoard;
 
+  @Column('int', {
+    name: 'notice_board_comment_id',
+    comment: '공지 게시글 댓글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardCommentId: number;
+
   @ManyToOne(
     () => NoticeBoardComment,
     (noticeBoardComment) => noticeBoardComment.noticeBoardReplyComments,
@@ -65,6 +79,13 @@ export class NoticeBoardReplyComment {
   )
   @JoinColumn([{ name: 'notice_board_comment_id', referencedColumnName: 'id' }])
   noticeBoardComment: NoticeBoardComment;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @ManyToOne(() => User, (user) => user.noticeBoardReplyComments, {
     onDelete: 'CASCADE',

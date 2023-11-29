@@ -26,6 +26,13 @@ export class NoticeBoardCommentReaction {
   })
   createdAt: Date;
 
+  @Column('int', {
+    name: 'notice_board_comment_id',
+    comment: '공지 게시판 댓글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardCommentId: number;
+
   @ManyToOne(
     () => NoticeBoardComment,
     (noticeBoardComment) => noticeBoardComment.noticeBoardCommentReactions,
@@ -33,6 +40,13 @@ export class NoticeBoardCommentReaction {
   )
   @JoinColumn([{ name: 'notice_board_comment_id', referencedColumnName: 'id' }])
   noticeBoardComment: NoticeBoardComment;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @ManyToOne(() => User, (user) => user.noticeBoardCommentReactions, {
     onDelete: 'CASCADE',

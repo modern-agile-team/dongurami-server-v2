@@ -57,6 +57,13 @@ export class NoticeBoard {
   })
   updatedAt: Date;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.noticeBoards, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

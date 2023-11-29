@@ -3,6 +3,11 @@ import {
   UserLoginType,
   UserRole,
 } from '@src/apis/users/constants/user.enum';
+import { FreeBoardCommentHistory } from '@src/entities/FreeBoardCommentHistory';
+import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
+import { FreeBoardReplyCommentHistory } from '@src/entities/FreeBoardReplyCommentHistory';
+import { NoticeBoard } from '@src/entities/NoticeBoard';
+import { NoticeBoardComment } from '@src/entities/NoticeBoardComment';
 import {
   Column,
   Entity,
@@ -20,8 +25,6 @@ import { FreeBoardReaction } from './FreeBoardReaction';
 import { FreeBoardReplyComment } from './FreeBoardReplyComment';
 import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
 import { Major } from './Major';
-import { NoticeBoard } from './NoticeBoard';
-import { NoticeBoardComment } from './NoticeBoardComment';
 import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
 import { NoticeBoardReaction } from './NoticeBoardReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
@@ -131,9 +134,6 @@ export class User {
   @OneToMany(() => FreeBoard, (freeBoard) => freeBoard.user)
   freeBoards: FreeBoard[];
 
-  @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.user)
-  noticeBoards: NoticeBoard[];
-
   @OneToMany(
     () => FreeBoardComment,
     (freeBoardComment) => freeBoardComment.user,
@@ -141,10 +141,10 @@ export class User {
   freeBoardComments: FreeBoardComment[];
 
   @OneToMany(
-    () => NoticeBoardComment,
-    (noticeBoardComment) => noticeBoardComment.user,
+    () => FreeBoardCommentHistory,
+    (freeBoardCommentHistory) => freeBoardCommentHistory.user,
   )
-  noticeBoardComments: NoticeBoardComment[];
+  freeBoardCommentHistories: FreeBoardCommentHistory[];
 
   @OneToMany(
     () => FreeBoardCommentReaction,
@@ -153,10 +153,10 @@ export class User {
   freeBoardCommentReactions: FreeBoardCommentReaction[];
 
   @OneToMany(
-    () => NoticeBoardCommentReaction,
-    (noticeBoardCommentReaction) => noticeBoardCommentReaction.user,
+    () => FreeBoardHistory,
+    (freeBoardHistory) => freeBoardHistory.user,
   )
-  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+  freeBoardHistories: FreeBoardHistory[];
 
   @OneToMany(
     () => FreeBoardReaction,
@@ -165,28 +165,49 @@ export class User {
   freeBoardReactions: FreeBoardReaction[];
 
   @OneToMany(
-    () => NoticeBoardReaction,
-    (noticeBoardReaction) => noticeBoardReaction.user,
-  )
-  noticeBoardReactions: NoticeBoardReaction[];
-
-  @OneToMany(
     () => FreeBoardReplyComment,
     (freeBoardReplyComment) => freeBoardReplyComment.user,
   )
   freeBoardReplyComments: FreeBoardReplyComment[];
 
   @OneToMany(
-    () => NoticeBoardReplyComment,
-    (noticeBoardReplyComment) => noticeBoardReplyComment.user,
+    () => FreeBoardReplyCommentHistory,
+    (freeBoardReplyCommentHistory) => freeBoardReplyCommentHistory.user,
   )
-  noticeBoardReplyComments: NoticeBoardReplyComment[];
+  freeBoardReplyCommentHistories: FreeBoardReplyCommentHistory[];
 
   @OneToMany(
     () => FreeBoardReplyCommentReaction,
     (freeBoardReplyCommentReaction) => freeBoardReplyCommentReaction.user,
   )
   freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
+
+  @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.user)
+  noticeBoards: NoticeBoard[];
+
+  @OneToMany(
+    () => NoticeBoardComment,
+    (noticeBoardComment) => noticeBoardComment.user,
+  )
+  noticeBoardComments: NoticeBoardComment[];
+
+  @OneToMany(
+    () => NoticeBoardCommentReaction,
+    (noticeBoardCommentReaction) => noticeBoardCommentReaction.user,
+  )
+  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+
+  @OneToMany(
+    () => NoticeBoardReaction,
+    (noticeBoardReaction) => noticeBoardReaction.user,
+  )
+  noticeBoardReactions: NoticeBoardReaction[];
+
+  @OneToMany(
+    () => NoticeBoardReplyComment,
+    (noticeBoardReplyComment) => noticeBoardReplyComment.user,
+  )
+  noticeBoardReplyComments: NoticeBoardReplyComment[];
 
   @OneToMany(
     () => NoticeBoardReplyCommentReaction,

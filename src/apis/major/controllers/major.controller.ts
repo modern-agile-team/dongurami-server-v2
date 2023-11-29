@@ -13,6 +13,8 @@ import { DetailResponse } from '@src/interceptors/success-interceptor/types/succ
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 
+  @ApiMajors.GetAllMajors({ summary: '전공 목록 전체 조회' })
+  @SetResponse({ type: ResponseType.Detail, key: 'majors' })
   @Get()
   getAllMajors() {
     return this.majorService.getAllMajors();

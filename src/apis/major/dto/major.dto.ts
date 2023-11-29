@@ -35,6 +35,7 @@ export class MajorDto
 
   constructor(majorDto: Partial<MajorDto> = {}) {
     super();
+
     Object.assign(this, majorDto);
   }
 }

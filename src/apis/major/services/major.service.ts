@@ -9,7 +9,9 @@ import { MajorDto } from '../dto/major.dto';
 export class MajorService {
   constructor(private readonly majorRepository: MajorRepository) {}
   async getAllMajors() {
-    return this.majorRepository.find();
+    const returnedMajors = await this.majorRepository.find();
+
+    return { returnedMajors };
   }
 
   async create(createMajorRequestBodyDto: CreateMajorRequestBodyDto) {

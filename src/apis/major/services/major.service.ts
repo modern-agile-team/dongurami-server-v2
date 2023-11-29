@@ -31,14 +31,13 @@ export class MajorService {
           code: MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_CODE,
         });
       }
-
-      createMajorRequestBodyDto['memo'] = createMajorRequestBodyDto.code;
-
-      const newMajor = this.majorRepository.create(createMajorRequestBodyDto);
-
-      await this.majorRepository.save(newMajor);
-
-      return new MajorDto(newMajor);
     }
+    createMajorRequestBodyDto['memo'] = createMajorRequestBodyDto.name;
+
+    const newMajor = this.majorRepository.create(createMajorRequestBodyDto);
+
+    await this.majorRepository.save(newMajor);
+
+    return { major: new MajorDto(newMajor) };
   }
 }

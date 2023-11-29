@@ -1,6 +1,6 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, applyDecorators } from '@nestjs/common';
 import { ErrorHttpStatusCode } from '@nestjs/common/utils/http-error-by-code.util';
-import { ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, ApiResponse } from '@nestjs/swagger';
 
 export class DeleteResponseDto {
   @ApiProperty({
@@ -23,6 +23,9 @@ export class DeleteResponseDto {
       value: `${key[0].toUpperCase()}${key.slice(1)}${this.name}`,
     });
 
-    return ApiResponse({ status, type: Temp });
+    return applyDecorators(
+      ApiExtraModels(Temp),
+      ApiResponse({ status, type: Temp }),
+    );
   }
 }

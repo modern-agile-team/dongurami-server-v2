@@ -79,6 +79,7 @@ export class CreateUserRequestBodyDto
 
   @ApiProperty({
     description: 'phone number',
+    example: '010-0000-0000',
     type: () => String,
     nullable: true,
     pattern: String(PHONE_NUMBER_REGEXP),

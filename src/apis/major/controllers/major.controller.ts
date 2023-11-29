@@ -3,9 +3,10 @@ import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto'
 import { MajorDto } from '../dto/major.dto';
 import { MajorService } from '../services/major.service';
 
-@Controller()
+@Controller('major')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
+
   @Post()
   createNewMajor(
     @Body() createMajorRequestBodyDto: CreateMajorRequestBodyDto,

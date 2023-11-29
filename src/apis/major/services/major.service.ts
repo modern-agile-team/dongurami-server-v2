@@ -3,6 +3,7 @@ import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto'
 import { MajorRepository } from '../repositories/major.repository';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
+import { MajorDto } from '../dto/major.dto';
 
 @Injectable()
 export class MajorService {
@@ -24,6 +25,20 @@ export class MajorService {
           code: MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_NAME,
         });
       }
+
+      if (createMajorRequestBodyDto.code === existMajor.code) {
+        throw new HttpConflictException({
+          code: MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_CODE,
+        });
+      }
+
+      createMajorRequestBodyDto['memo'] = createMajorRequestBodyDto.code;
+
+      const newMajor = this.majorRepository.create(createMajorRequestBodyDto);
+
+      await this.majorRepository.save(newMajor);
+
+      return new MajorDto(newMajor);
     }
   }
 }

@@ -7,7 +7,6 @@ export class MajorDto
   implements
     Pick<Major, 'id' | 'code' | 'name' | 'memo' | 'createdAt' | 'updatedAt'>
 {
-  @IsString()
   code: string;
   @IsString()
   name: string;

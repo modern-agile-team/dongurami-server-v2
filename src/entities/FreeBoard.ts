@@ -22,6 +22,13 @@ export class FreeBoard {
   })
   id: number;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
   @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
   title: string;
 

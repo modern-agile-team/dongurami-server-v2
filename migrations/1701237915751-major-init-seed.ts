@@ -11,7 +11,6 @@ export class MajorInitSeed1701237915751 implements MigrationInterface {
 
     await majorRepository.upsert(
       [
-        { code: '00', name: '학과 선택', memo: '학과 선택' },
         {
           code: '01',
           name: '디지털산업디자인학과',

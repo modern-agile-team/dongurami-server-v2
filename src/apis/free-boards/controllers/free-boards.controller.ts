@@ -1,6 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagger';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -13,7 +14,7 @@ import { FreeBoardsService } from '../services/free-board.service';
 export class FreeBoardsController {
   constructor(private readonly freeBoardService: FreeBoardsService) {}
 
-  @ApiBearerAuth()
+  @ApiFreeBoard.Create({ summary: '자유 게시글 생성' })
   @UseGuards(JwtAuthGuard)
   @SetResponse({ key: 'freeBoard', type: ResponseType.Detail })
   @Post()

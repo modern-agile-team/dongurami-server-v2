@@ -64,7 +64,7 @@ jobs:
         with:
           payload: |
             {
-              "channel": "채널 ID",
+              "channel": "${{ secrets.SLACK_BACKEND_CHANNEL_ID }}",
               "attachments": [
                 {
                   "color": "#36a64f", 
@@ -83,6 +83,39 @@ jobs:
                       "short": true
                     }
                   ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.DEV_DEPLOY_SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+        if: failure() 
+      - name: Notify Slack on Failure
+        id: slack-failure
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_BACKEND_CHANNEL_ID }}",
+              "attachments": [
+                {
+                  "color": "#ff0000", 
+                  "title": "${{ github.repository }}", 
+                  "title_link": "https://github.com/${{github.repository}}",
+                  "text": "GitHub Action 실패 :x:",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Tag",
+                      "value": "${{ github.ref_name }}",
+                      "short": true
+                    }
+                  ]      
                 }
               ]
             }

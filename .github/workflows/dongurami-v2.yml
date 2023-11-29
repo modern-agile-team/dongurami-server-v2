@@ -71,10 +71,10 @@ jobs:
               "channel": "${{ secrets.SLACK_BACKEND_CHANNEL_ID }}",
               "attachments": [
                 {
-                  "color": ${{ job.status == 'success' && '#36a64f' || job.status == 'failure' && '#ff0000' || '#fffff' }},
+                  "color": "${{ job.status == 'success' && '#36a64f' || job.status == 'failure' && '#ff0000' || '#fffff' }}",
                   "title": "${{ github.repository }}",
                   "title_link": "https://github.com/${{ github.repository }}",
-                  "text": ${{ job.status == 'success' && 'GitHub Action Build 성공' || job.status == 'failure' && 'GitHub Action Build 실패 :x:' || '' }},
+                  "text": "${{ job.status == 'success' && 'GitHub Action Build 성공' || job.status == 'failure' && 'GitHub Action Build 실패 :x:' || '' }}",
                   "fields": [
                     {
                       "title": "Repository",
@@ -125,10 +125,10 @@ jobs:
               "channel": "${{ secrets.SLACK_BACKEND_CHANNEL_ID }}",
               "attachments": [
                 {
-                  "color": ${{ job.status == 'success' && '#36a64f' || job.status == 'failure' && '#ff0000' || '#fffff' }},
+                  "color": "${{ job.status == 'success' && '#36a64f' || job.status == 'failure' && '#ff0000' || '#fffff' }}",
                   "title": "${{ github.repository }}",
                   "title_link": "https://github.com/${{ github.repository }}",
-                  "text": ${{ job.status == 'success' && 'GitHub Action Deploy 성공' || job.status == 'failure' && 'GitHub Action Deploy 실패 :x:' || '' }},
+                  "text": "${{ job.status == 'success' && 'GitHub Action Deploy 성공' || job.status == 'failure' && 'GitHub Action Deploy 실패 :x:' || '' }}",
                   "fields": [
                     {
                       "title": "Repository",

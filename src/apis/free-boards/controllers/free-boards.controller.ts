@@ -3,6 +3,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
+import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
+import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { FreeBoardsService } from '../services/free-board.service';
 
@@ -13,6 +15,7 @@ export class FreeBoardsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'freeBoard', type: ResponseType.Detail })
   @Post()
   create(
     @User() user: UserDto,

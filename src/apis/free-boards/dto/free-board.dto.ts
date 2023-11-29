@@ -46,5 +46,11 @@ export class FreeBoardDto
   @ApiProperty({
     description: '익명 여부',
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
+
+  constructor(freeBoardDto: Partial<FreeBoardDto> = {}) {
+    super();
+
+    Object.assign(this, freeBoardDto);
+  }
 }

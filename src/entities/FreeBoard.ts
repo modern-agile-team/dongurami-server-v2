@@ -1,4 +1,5 @@
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
+import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
 import {
   Column,
   Entity,
@@ -48,8 +49,9 @@ export class FreeBoard {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
+    transformer: new BooleanTransformer(),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

@@ -28,7 +28,7 @@ export class NoticeBoardCommentReaction {
 
   @Column('int', {
     name: 'notice_board_comment_id',
-    comment: '공지 게시판 댓글 고유 ID',
+    comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
   })
   noticeBoardCommentId: number;

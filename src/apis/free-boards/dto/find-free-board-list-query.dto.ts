@@ -1,7 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { FREE_BOARD_TITLE_LENGTH } from '@src/apis/free-boards/constants/free-board.constant';
+import {
+  FREE_BOARD_ORDER_FIELD,
+  FREE_BOARD_TITLE_LENGTH,
+} from '@src/apis/free-boards/constants/free-board.constant';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
+import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
+import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import { Type } from 'class-transformer';
 import { IsBooleanString, IsOptional, MaxLength } from 'class-validator';
@@ -42,4 +48,9 @@ export class FindFreeBoardListQueryDto
   @IsOptional()
   @Type(() => Boolean)
   isAnonymous?: boolean;
+
+  @ApiPropertyOrder(FREE_BOARD_ORDER_FIELD)
+  @CsvToOrder<typeof FREE_BOARD_ORDER_FIELD>([...FREE_BOARD_ORDER_FIELD])
+  @IsOptional()
+  order: Order<typeof FREE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
 }

@@ -28,6 +28,7 @@ export class FreeBoardsController {
     return this.freeBoardService.create(user.id, createFreeBoardDto);
   }
 
+  @ApiFreeBoard.FindAllAndCount({ summary: '자유 게시글 전체조회(pagination)' })
   @SetResponse({ type: ResponseType.Pagination, key: 'freeBoards' })
   @Get()
   async findAllAndCount(

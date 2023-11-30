@@ -86,6 +86,15 @@ export class FreeBoardsService {
     );
 
     return this.freeBoardRepository.findAndCount({
+      select: {
+        id: true,
+        userId: true,
+        title: true,
+        hit: true,
+        isAnonymous: true,
+        createdAt: true,
+        updatedAt: true,
+      },
       where,
       order,
       skip: page * pageSize,

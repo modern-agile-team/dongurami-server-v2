@@ -105,6 +105,7 @@ describe(FreeBoardsService.name, () => {
       ).resolves.toEqual([freeBoards, count]);
 
       expect(mockFreeBoardRepository.findAndCount).toHaveBeenCalledWith({
+        select: expect.anything(),
         where: {},
         order: { id: SortOrder.Desc },
         skip: 0,

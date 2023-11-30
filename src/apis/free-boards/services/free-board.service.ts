@@ -5,17 +5,22 @@ import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { DataSource, Like, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 
 @Injectable()
 export class FreeBoardsService {
-  private readonly LIKE_SEARCH_FIELD: (keyof Partial<FindFreeBoardListQueryDto>)[] =
-    ['title'];
+  private readonly LIKE_SEARCH_FIELD: readonly (keyof Pick<
+    FreeBoardDto,
+    'title'
+  >)[] = ['title'] as const;
 
   constructor(
     private readonly freeBoardHistoryService: FreeBoardHistoryService,
+
+    private readonly queryHelper: QueryHelper,
 
     private readonly dataSource: DataSource,
     @InjectRepository(FreeBoard)
@@ -75,24 +80,10 @@ export class FreeBoardsService {
   ): Promise<[FreeBoardDto[], number]> {
     const { page, pageSize, order, ...filter } = findFreeBoardListQueryDto;
 
-    const where = {};
-
-    for (const key in filter) {
-      if (filter[key] === undefined || filter[key] === null) continue;
-
-      if (this.LIKE_SEARCH_FIELD.includes(key as any)) {
-        where[key] = Like(`%${filter[key]}%`);
-      } else {
-        where[key] = filter[key];
-      }
-    }
-
-    console.log({
-      where,
-      order,
-      skip: page * pageSize,
-      take: pageSize,
-    });
+    const where = this.queryHelper.buildWherePropForFind(
+      filter,
+      this.LIKE_SEARCH_FIELD,
+    );
 
     return this.freeBoardRepository.findAndCount({
       where,

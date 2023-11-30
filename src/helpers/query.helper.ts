@@ -6,9 +6,9 @@ import { Like } from 'typeorm';
 export class QueryHelper {
   buildWherePropForFind<E extends Record<string, any>>(
     filter: Partial<Record<keyof E, E[keyof E]>>,
-    likeSearchFields?: (keyof Partial<E>)[],
-  ): Record<keyof Partial<E>, any> {
-    const where = <Record<keyof Partial<E>, any>>{};
+    likeSearchFields?: readonly (keyof E)[],
+  ): Record<keyof E, any> {
+    const where = <Record<keyof E, any>>{};
 
     for (const key in filter) {
       const value = filter[key];

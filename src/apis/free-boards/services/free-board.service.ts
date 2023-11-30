@@ -15,7 +15,7 @@ export class FreeBoardsService {
   private readonly LIKE_SEARCH_FIELD: readonly (keyof Pick<
     FreeBoardDto,
     'title'
-  >)[] = ['title'] as const;
+  >)[] = ['title'];
 
   constructor(
     private readonly freeBoardHistoryService: FreeBoardHistoryService,

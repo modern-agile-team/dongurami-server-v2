@@ -10,7 +10,12 @@ import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator'
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import { Type } from 'class-transformer';
-import { IsBooleanString, IsOptional, MaxLength } from 'class-validator';
+import {
+  IsBooleanString,
+  IsNotEmpty,
+  IsOptional,
+  MaxLength,
+} from 'class-validator';
 
 export class FindFreeBoardListQueryDto
   extends PageDto
@@ -37,6 +42,7 @@ export class FindFreeBoardListQueryDto
     maxLength: FREE_BOARD_TITLE_LENGTH.MAX,
   })
   @IsOptional()
+  @IsNotEmpty()
   @MaxLength(FREE_BOARD_TITLE_LENGTH.MAX)
   title?: string;
 

@@ -14,7 +14,7 @@ export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 
   @ApiMajors.GetAllMajors({ summary: '전공 목록 전체 조회' })
-  @SetResponse({ type: ResponseType.Detail, key: 'majors' })
+  @SetResponse({ type: ResponseType.Common, key: 'majors' })
   @Get()
   getAllMajors() {
     return this.majorService.getAllMajors();

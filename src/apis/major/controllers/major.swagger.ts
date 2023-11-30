@@ -9,6 +9,7 @@ import { ValidationError } from '@src/types/validation-errors.type';
 import { MajorController } from './major.controller';
 import { MajorDto } from '../dto/major.dto';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
+import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
 
 export const ApiMajors: ApiOperator<keyof MajorController> = {
   CreateNewMajor: (
@@ -49,7 +50,7 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
         operationId: 'MajorsCreate',
         ...apiOperationOptions,
       }),
-      DetailResponseDto.swaggerBuilder(HttpStatus.CREATED, 'major', MajorDto),
+      CommonResponseDto.swaggerBuilder(HttpStatus.CREATED, 'major', MajorDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

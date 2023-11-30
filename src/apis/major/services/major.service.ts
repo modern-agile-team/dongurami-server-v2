@@ -8,10 +8,9 @@ import { MajorDto } from '../dto/major.dto';
 @Injectable()
 export class MajorService {
   constructor(private readonly majorRepository: MajorRepository) {}
-  async getAllMajors() {
-    const returnedMajors = await this.majorRepository.find();
 
-    return { returnedMajors };
+  async getAllMajors() {
+    return this.majorRepository.find();
   }
 
   async create(createMajorRequestBodyDto: CreateMajorRequestBodyDto) {

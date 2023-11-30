@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
+import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { mockFreeBoardsService } from '@test/mock/mock.service';
@@ -53,6 +54,22 @@ describe(FreeBoardsController.name, () => {
       await expect(
         controller.create(user, createFreeBoardDto),
       ).resolves.toEqual(newFreeBoard);
+    });
+  });
+
+  describe(FreeBoardsController.prototype.findAllAndCount.name, () => {
+    let findFreeBoardListQueryDto: FindFreeBoardListQueryDto;
+
+    beforeEach(() => {
+      findFreeBoardListQueryDto = new FindFreeBoardListQueryDto();
+    });
+
+    it('find all and count', async () => {
+      mockFreeBoardsService.findAllAndCount.mockResolvedValue([[], 0]);
+
+      await expect(
+        controller.findAllAndCount(findFreeBoardListQueryDto),
+      ).resolves.toEqual([[], 0]);
     });
   });
 });

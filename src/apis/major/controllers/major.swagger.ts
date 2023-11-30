@@ -51,15 +51,6 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
         ...apiOperationOptions,
       }),
       CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'major', MajorDto),
-      HttpException.swaggerBuilder(
-        HttpStatus.BAD_REQUEST,
-        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
-        {
-          description:
-            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
-        },
-      ),
       HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
         COMMON_ERROR_CODE.SERVER_ERROR,
       ]),

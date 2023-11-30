@@ -35,7 +35,6 @@ export class MajorService {
         });
       }
     }
-    createMajorRequestBodyDto['memo'] = createMajorRequestBodyDto.name;
 
     const newMajor = this.majorRepository.create(createMajorRequestBodyDto);
 

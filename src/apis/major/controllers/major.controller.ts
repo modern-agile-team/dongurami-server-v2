@@ -20,6 +20,9 @@ export class MajorController {
     return this.majorService.getAllMajors();
   }
 
+  /**
+   * @todo 관리자만 사용 가능합니다.
+   */
   @ApiMajors.CreateNewMajor({ summary: '전공 코드 및 이름 생성' })
   @SetResponse({ type: ResponseType.Detail, key: 'major' })
   @Post()

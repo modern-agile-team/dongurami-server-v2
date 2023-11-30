@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
@@ -77,7 +78,7 @@ export class FreeBoardsService {
 
   findAllAndCount(
     findFreeBoardListQueryDto: FindFreeBoardListQueryDto,
-  ): Promise<[FreeBoardDto[], number]> {
+  ): Promise<[FreeBoardsItemDto[], number]> {
     const { page, pageSize, order, ...filter } = findFreeBoardListQueryDto;
 
     const where = this.queryHelper.buildWherePropForFind(

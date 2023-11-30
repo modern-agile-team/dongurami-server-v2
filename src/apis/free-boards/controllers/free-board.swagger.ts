@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { FreeBoardsController } from '@src/apis/free-boards/controllers/free-boards.controller';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
@@ -56,7 +57,7 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
       PaginationResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'freeBoards',
-        FreeBoardDto,
+        FreeBoardsItemDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

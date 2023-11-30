@@ -6,6 +6,7 @@ import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
+import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
 import { ApiOperator } from '@src/types/type';
 import { ValidationError } from '@src/types/validation-errors.type';
 
@@ -42,10 +43,30 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
       ]),
     );
   },
+
   FindAllAndCount: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {
-    return applyDecorators();
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreeBoardFindAllAndCount',
+        ...apiOperationOptions,
+      }),
+      PaginationResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'freeBoards',
+        FreeBoardDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+    );
   },
 };

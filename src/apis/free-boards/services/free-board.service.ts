@@ -8,6 +8,7 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { DataSource, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 
@@ -103,9 +104,19 @@ export class FreeBoardsService {
     });
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} freeBoard`;
-  // }
+  async findOneOrNotFound(freeBoardId: number): Promise<FreeBoardDto> {
+    const freeBoard = await this.freeBoardRepository.findOneBy({
+      id: freeBoardId,
+    });
+
+    if (!freeBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return new FreeBoardDto(freeBoard);
+  }
 
   // update(id: number, updateFreeBoardDto: UpdateFreeBoardDto) {
   //   return `This action updates a #${id} freeBoard`;

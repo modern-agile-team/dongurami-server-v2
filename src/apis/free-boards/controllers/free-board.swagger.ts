@@ -42,4 +42,10 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
       ]),
     );
   },
+  FindAllAndCount: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators();
+  },
 };

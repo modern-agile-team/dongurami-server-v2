@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 
 @Injectable()
 export class FreeBoardsService {
+  private readonly LIKE_SEARCH_FIELD: (keyof Partial<FindFreeBoardListQueryDto>)[] =
+    ['title'];
+
   constructor(
     private readonly freeBoardHistoryService: FreeBoardHistoryService,
 
@@ -66,8 +70,36 @@ export class FreeBoardsService {
     }
   }
 
-  findAllAndCount() {
-    return `This action returns all freeBoard`;
+  findAllAndCount(
+    findFreeBoardListQueryDto: FindFreeBoardListQueryDto,
+  ): Promise<[FreeBoardDto[], number]> {
+    const { page, pageSize, order, ...filter } = findFreeBoardListQueryDto;
+
+    const where = {};
+
+    for (const key in filter) {
+      if (filter[key] === undefined || filter[key] === null) continue;
+
+      if (this.LIKE_SEARCH_FIELD.includes(key as any)) {
+        where[key] = Like(`%${filter[key]}%`);
+      } else {
+        where[key] = filter[key];
+      }
+    }
+
+    console.log({
+      where,
+      order,
+      skip: page * pageSize,
+      take: pageSize,
+    });
+
+    return this.freeBoardRepository.findAndCount({
+      where,
+      order,
+      skip: page * pageSize,
+      take: pageSize,
+    });
   }
 
   // findOne(id: number) {

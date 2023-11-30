@@ -66,9 +66,9 @@ export class FreeBoardsService {
     }
   }
 
-  // findAll() {
-  //   return `This action returns all freeBoard`;
-  // }
+  findAllAndCount() {
+    return `This action returns all freeBoard`;
+  }
 
   // findOne(id: number) {
   //   return `This action returns a #${id} freeBoard`;

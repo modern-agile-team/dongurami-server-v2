@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagger';
@@ -25,10 +25,10 @@ export class FreeBoardsController {
     return this.freeBoardService.create(user.id, createFreeBoardDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.freeBoardService.findAll();
-  // }
+  @Get()
+  findAllAndCount() {
+    return this.freeBoardService.findAllAndCount();
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

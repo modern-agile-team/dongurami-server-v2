@@ -9,7 +9,7 @@ import { MajorDto } from '../dto/major.dto';
 export class MajorService {
   constructor(private readonly majorRepository: MajorRepository) {}
 
-  async getAllMajors() {
+  getAllMajors() {
     return this.majorRepository.find();
   }
 

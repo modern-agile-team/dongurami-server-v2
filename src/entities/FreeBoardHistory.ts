@@ -1,3 +1,4 @@
+import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
 import {
   Column,
   Entity,
@@ -21,6 +22,20 @@ export class FreeBoardHistory {
   })
   id: number;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
+  @Column('int', {
+    name: 'free_board_id',
+    comment: '자유 게시글 고유 ID',
+    unsigned: true,
+  })
+  freeBoardId: number;
+
   @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
   title: string;
 
@@ -32,8 +47,9 @@ export class FreeBoardHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
+    transformer: new BooleanTransformer(),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

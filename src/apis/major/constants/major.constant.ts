@@ -11,4 +11,4 @@ export const MAJOR_CODE_LENGTH = {
 export const MAJOR_MEMO_LENGTH = {
   MIN: 0,
   MAX: 255,
-};
+} as const;

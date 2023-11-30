@@ -10,14 +10,12 @@ export type Order<T extends readonly string[]> = Partial<
 
 export const CsvToOrder = <T extends readonly string[] = readonly string[]>(
   fields: T[number][],
-  defaultOrderBy: Record<T[number], SortOrder>[] = [
-    {
-      id: SortOrder.Desc,
-    } as Record<T[number], SortOrder>,
-  ],
+  defaultOrderBy: Record<T[number], SortOrder> = {
+    id: SortOrder.Desc,
+  } as Record<T[number], SortOrder>,
 ): PropertyDecorator => {
   return applyDecorators(
-    Transform(({ value }: { value: unknown }): Order<T>[] => {
+    Transform(({ value }: { value: unknown }): Order<T> => {
       const getField = (field: string): T[number] => {
         return field.startsWith('-') ? field.slice(1) : field;
       };
@@ -54,14 +52,17 @@ export const CsvToOrder = <T extends readonly string[] = readonly string[]>(
         return defaultOrderBy;
       }
 
-      return allowFields.map((allowField) => {
-        const field = getField(allowField);
-        const sortOrder = getSortOrder(allowField);
+      return allowFields.reduce(
+        (acc, allowField) => {
+          const field = getField(allowField);
+          const sortOrder = getSortOrder(allowField);
 
-        return {
-          [field]: sortOrder,
-        };
-      }) as Record<T[number], SortOrder>[];
+          acc[field] = sortOrder;
+
+          return acc;
+        },
+        <Record<T[number], SortOrder>>{},
+      );
     }),
   );
 };

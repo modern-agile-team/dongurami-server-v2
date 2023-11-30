@@ -44,4 +44,36 @@ export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {
       ]),
     );
   },
+  FindAll: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'NoticeBoardFindAll',
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.CREATED,
+        'boards',
+        NoticeBoardDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          AUTH_ERROR_CODE.ACCOUNT_NOT_FOUND,
+          AUTH_ERROR_CODE.DIFFERENT_ACCOUNT_INFORMATION,
+        ],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
 };

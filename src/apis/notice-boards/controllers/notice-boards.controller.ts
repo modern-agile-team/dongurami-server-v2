@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   // Delete,
   // Get,
   Param,
@@ -31,8 +32,12 @@ export class NoticeBoardsController {
     return this.noticeBoardService.create(userId, createNoticeBoardDto);
   }
 
-  // @Get()
-  // findAll() {}
+  @ApiNoticeBoard.FindAll({ summary: 'notice-board 전체 조회 ' })
+  @SetResponse({ type: ResponseType.Common, key: 'boards' })
+  @Get()
+  findAll() {
+    return this.noticeBoardService.findAll();
+  }
 
   // @Get(':id')
   // findOne() {}

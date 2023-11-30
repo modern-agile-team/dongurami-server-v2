@@ -50,4 +50,8 @@ export class NoticeBoardsService {
       }
     }
   }
+
+  async findAll() {
+    return this.noticeBoardRepository.find();
+  }
 }

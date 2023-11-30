@@ -47,10 +47,10 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'MajorsCreate',
+        operationId: 'GetAllMajors',
         ...apiOperationOptions,
       }),
-      CommonResponseDto.swaggerBuilder(HttpStatus.CREATED, 'major', MajorDto),
+      CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'major', MajorDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
@@ -60,10 +60,6 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
-        MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_NAME,
-        MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_CODE,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
         COMMON_ERROR_CODE.SERVER_ERROR,
       ]),

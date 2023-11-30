@@ -7,3 +7,7 @@ export const transformPage = ({ value }: { value: unknown }): number => {
 
   return page - 1;
 };
+
+export const isNil = (value: unknown) => {
+  return value === undefined || value === null;
+};

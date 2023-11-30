@@ -18,9 +18,7 @@ export class MajorService {
       select: { code: true, name: true },
       where: [
         { name: createMajorRequestBodyDto.name },
-        createMajorRequestBodyDto.code && {
-          code: createMajorRequestBodyDto.code,
-        },
+        { code: createMajorRequestBodyDto.code },
       ],
     });
 

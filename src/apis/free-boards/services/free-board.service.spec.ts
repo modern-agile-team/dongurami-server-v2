@@ -4,10 +4,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { SortOrder } from '@src/constants/enum';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { mockQueryHelper } from '@test/mock/mock.helper';
 import {
   mockDataSource,
@@ -111,6 +114,58 @@ describe(FreeBoardsService.name, () => {
         skip: 0,
         take: 20,
       });
+    });
+  });
+
+  describe(FreeBoardsService.prototype.putUpdate.name, () => {
+    let userId: number;
+    let freeBoardId: number;
+    let putUpdateFreeBoardDto: PutUpdateFreeBoardDto;
+
+    beforeEach(() => {
+      userId = NaN;
+      freeBoardId = NaN;
+      putUpdateFreeBoardDto = new PutUpdateFreeBoardDto();
+    });
+
+    it('not found free board throw httpNotFound', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.putUpdate(userId, freeBoardId, putUpdateFreeBoardDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('not owner throw httpForbidden', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+
+      await expect(
+        service.putUpdate(userId, freeBoardId, putUpdateFreeBoardDto),
+      ).rejects.toThrow(HttpForbiddenException);
+    });
+
+    it('update free board and create history', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      putUpdateFreeBoardDto.title = 'newTitle';
+      putUpdateFreeBoardDto.description = 'newDescription';
+      putUpdateFreeBoardDto.isAnonymous = false;
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId });
+      mockFreeBoardRepository.findOneByOrFail.mockResolvedValue({
+        putUpdateFreeBoardDto,
+      });
+
+      await expect(
+        service.putUpdate(userId, freeBoardId, putUpdateFreeBoardDto),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });
 });

@@ -116,6 +116,9 @@ export class FreeBoardsService {
     putUpdateFreeBoardDto: PutUpdateFreeBoardDto,
   ): Promise<FreeBoardDto> {
     const existFreeBoard = await this.freeBoardRepository.findOne({
+      select: {
+        userId: true,
+      },
       where: {
         id: freeBoardId,
       },
@@ -159,7 +162,7 @@ export class FreeBoardsService {
       await this.freeBoardHistoryService.create(
         entityManager,
         userId,
-        newPost.id,
+        freeBoardId,
         {
           title: newPost.title,
           description: newPost.description,

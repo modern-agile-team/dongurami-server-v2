@@ -2,8 +2,13 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
+import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
+import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
+import { SortOrder } from '@src/constants/enum';
 import { FreeBoard } from '@src/entities/FreeBoard';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { mockQueryHelper } from '@test/mock/mock.helper';
 import {
   mockDataSource,
   mockFreeBoardRepository,
@@ -22,6 +27,10 @@ describe(FreeBoardsService.name, () => {
         {
           provide: FreeBoardHistoryService,
           useValue: mockFreeBoardHistoryService,
+        },
+        {
+          provide: QueryHelper,
+          useValue: mockQueryHelper,
         },
         {
           provide: DataSource,
@@ -64,6 +73,44 @@ describe(FreeBoardsService.name, () => {
       );
 
       expect(mockFreeBoardHistoryService.create).toHaveBeenCalled();
+    });
+  });
+
+  describe(FreeBoardsService.prototype.findAllAndCount.name, () => {
+    let findFreeBoardListQueryDto: FindFreeBoardListQueryDto;
+
+    let freeBoards: FreeBoardDto[];
+    let count: number;
+
+    beforeEach(() => {
+      findFreeBoardListQueryDto = new FindFreeBoardListQueryDto();
+
+      freeBoards = [];
+      count = NaN;
+    });
+
+    it('default option findAllAndCount', async () => {
+      findFreeBoardListQueryDto.page = 0;
+      findFreeBoardListQueryDto.pageSize = 20;
+      findFreeBoardListQueryDto.order = { id: SortOrder.Desc };
+
+      mockQueryHelper.buildWherePropForFind.mockReturnValue({});
+      mockFreeBoardRepository.findAndCount.mockResolvedValue([
+        freeBoards,
+        count,
+      ]);
+
+      await expect(
+        service.findAllAndCount(findFreeBoardListQueryDto),
+      ).resolves.toEqual([freeBoards, count]);
+
+      expect(mockFreeBoardRepository.findAndCount).toHaveBeenCalledWith({
+        select: expect.anything(),
+        where: {},
+        order: { id: SortOrder.Desc },
+        skip: 0,
+        take: 20,
+      });
     });
   });
 });

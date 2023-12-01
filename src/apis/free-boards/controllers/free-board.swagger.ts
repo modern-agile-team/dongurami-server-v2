@@ -68,6 +68,9 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
           type: ValidationError,
         },
       ),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
     );
   },
 
@@ -95,10 +98,18 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, []),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, []),
-      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, []),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, []),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
+        COMMON_ERROR_CODE.PERMISSION_DENIED,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
     );
   },
 };

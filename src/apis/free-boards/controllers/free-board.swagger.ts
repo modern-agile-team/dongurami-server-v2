@@ -80,6 +80,7 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
         operationId: 'FreeBoardPutUpdate',
         ...apiOperationOptions,
       }),
+      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'freeBoard',

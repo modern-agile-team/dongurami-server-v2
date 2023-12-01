@@ -14,6 +14,7 @@ import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagg
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
+import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -57,13 +58,14 @@ export class FreeBoardsController {
   //   return this.freeBoardService.findOne(+id);
   // }
 
+  @ApiFreeBoard.PutUpdate({ summary: '자유게시글 수정' })
   @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
   @UseGuards(JwtAuthGuard)
   @Put(':freeBoardId')
   putUpdate(
     @User() user: UserDto,
     @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
-    @Body() putUpdateFreeBoardDto: any,
+    @Body() putUpdateFreeBoardDto: PutUpdateFreeBoardDto,
   ): Promise<FreeBoardDto> {
     return this.freeBoardService.putUpdate(
       user.id,

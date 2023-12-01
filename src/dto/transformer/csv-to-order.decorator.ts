@@ -10,7 +10,7 @@ export type Order<T extends readonly string[]> = Partial<
 
 export const CsvToOrder = <T extends readonly string[] = readonly string[]>(
   fields: T[number][],
-  defaultOrderBy: Record<T[number], SortOrder> = {
+  defaultOrderBy: Partial<Record<T[number], SortOrder>> = {
     id: SortOrder.Desc,
   } as Record<T[number], SortOrder>,
 ): PropertyDecorator => {

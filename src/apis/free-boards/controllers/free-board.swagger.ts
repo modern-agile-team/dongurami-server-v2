@@ -70,4 +70,34 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
       ),
     );
   },
+
+  PutUpdate: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreeBoardPutUpdate',
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'freeBoard',
+        FreeBoardDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, []),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, []),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, []),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, []),
+    );
+  },
 };

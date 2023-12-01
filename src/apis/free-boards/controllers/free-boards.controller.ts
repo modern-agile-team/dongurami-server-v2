@@ -1,13 +1,24 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagger';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
+import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { FreeBoardsService } from '../services/free-board.service';
@@ -45,6 +56,21 @@ export class FreeBoardsController {
   // findOne(@Param('id') id: string) {
   //   return this.freeBoardService.findOne(+id);
   // }
+
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @UseGuards(JwtAuthGuard)
+  @Put(':freeBoardId')
+  putUpdate(
+    @User() user: UserDto,
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+    @Body() putUpdateFreeBoardDto: any,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.putUpdate(
+      user.id,
+      freeBoardId,
+      putUpdateFreeBoardDto,
+    );
+  }
 
   // @Patch(':id')
   // update(

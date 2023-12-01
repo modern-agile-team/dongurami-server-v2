@@ -107,6 +107,14 @@ export class FreeBoardsService {
   //   return `This action returns a #${id} freeBoard`;
   // }
 
+  async putUpdate(
+    userId: number,
+    freeBoardId: number,
+    putUpdateFreeBoardDto: any,
+  ): Promise<FreeBoardDto> {
+    return new FreeBoardDto({});
+  }
+
   // update(id: number, updateFreeBoardDto: UpdateFreeBoardDto) {
   //   return `This action updates a #${id} freeBoard`;
   // }

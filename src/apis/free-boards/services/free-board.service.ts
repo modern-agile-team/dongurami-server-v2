@@ -113,7 +113,7 @@ export class FreeBoardsService {
   //   return `This action updates a #${id} freeBoard`;
   // }
 
-  async remove(userId: number, freeBoardId: number) {
+  async remove(userId: number, freeBoardId: number): Promise<number> {
     const existFreeBoard = await this.freeBoardRepository.findOne({
       select: {
         userId: true,

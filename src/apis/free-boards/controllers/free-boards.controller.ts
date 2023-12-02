@@ -73,7 +73,10 @@ export class FreeBoardsController {
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)
   @Delete(':freeBoardId')
-  remove(@User() user: UserDto, @Param('freeBoardId') freeBoardId: number) {
+  remove(
+    @User() user: UserDto,
+    @Param('freeBoardId') freeBoardId: number,
+  ): Promise<number> {
     return this.freeBoardService.remove(user.id, freeBoardId);
   }
 }

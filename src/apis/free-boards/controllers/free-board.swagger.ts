@@ -88,7 +88,10 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
-        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+        ],
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',

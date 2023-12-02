@@ -6,11 +6,14 @@ import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dt
 import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { isNotEmptyObject } from 'class-validator';
 import { DataSource, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 
@@ -115,6 +118,12 @@ export class FreeBoardsService {
     freeBoardId: number,
     patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
   ): Promise<FreeBoardDto> {
+    if (!isNotEmptyObject(patchUpdateFreeBoardDto)) {
+      throw new HttpBadRequestException({
+        code: ERROR_CODE.MISSING_UPDATE_FIELD,
+      });
+    }
+
     const existFreeBoard = await this.freeBoardRepository.findOne({
       select: {
         userId: true,

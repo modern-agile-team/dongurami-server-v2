@@ -11,3 +11,7 @@ export const transformPage = ({ value }: { value: unknown }): number => {
 export const isNil = (value: unknown): value is null | undefined => {
   return value === undefined || value === null;
 };
+
+export const isObject = (value: unknown): value is Record<any, any> => {
+  return Object.prototype.toString.call(value) !== '[object Object]';
+};

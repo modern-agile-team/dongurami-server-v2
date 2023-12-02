@@ -21,6 +21,9 @@ import { plainToInstance } from 'class-transformer';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { FreeBoardsService } from '../services/free-board.service';
 
+/**
+ * @todo soft delete 로 변경
+ */
 @ApiTags('free-boards')
 @Controller('free-boards')
 export class FreeBoardsController {
@@ -63,6 +66,9 @@ export class FreeBoardsController {
   //   return this.freeBoardService.update(+id, updateFreeBoardDto);
   // }
 
+  /**
+   * 테이블 참조 때문에 삭제 불가 개선 예정
+   */
   @ApiFreeBoard.Remove({ summary: '자유게시글 삭제' })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)

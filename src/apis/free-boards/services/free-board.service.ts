@@ -7,7 +7,9 @@ import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-histor
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { DataSource, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 
@@ -111,7 +113,32 @@ export class FreeBoardsService {
   //   return `This action updates a #${id} freeBoard`;
   // }
 
-  remove(userId: number, freeBoardId: number) {
-    return 1;
+  async remove(userId: number, freeBoardId: number) {
+    const existFreeBoard = await this.freeBoardRepository.findOne({
+      select: {
+        userId: true,
+      },
+      where: {
+        id: freeBoardId,
+      },
+    });
+
+    if (!existFreeBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (userId !== existFreeBoard.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const freeBoardDeleteResult = await this.freeBoardRepository.delete({
+      id: freeBoardId,
+    });
+
+    return freeBoardDeleteResult.affected;
   }
 }

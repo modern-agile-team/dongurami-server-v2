@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
@@ -107,9 +108,13 @@ export class FreeBoardsService {
   //   return `This action returns a #${id} freeBoard`;
   // }
 
-  // update(id: number, updateFreeBoardDto: UpdateFreeBoardDto) {
-  //   return `This action updates a #${id} freeBoard`;
-  // }
+  async patchUpdate(
+    userId: number,
+    freeBoardId: number,
+    patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
+  ): Promise<FreeBoardDto> {
+    return new FreeBoardDto({});
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} freeBoard`;

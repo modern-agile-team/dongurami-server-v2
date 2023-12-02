@@ -1,13 +1,25 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagger';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
+import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { FreeBoardsService } from '../services/free-board.service';
@@ -46,13 +58,20 @@ export class FreeBoardsController {
   //   return this.freeBoardService.findOne(+id);
   // }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateFreeBoardDto: UpdateFreeBoardDto,
-  // ) {
-  //   return this.freeBoardService.update(+id, updateFreeBoardDto);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @Patch(':freeBoardId')
+  patchUpdate(
+    @User() user: UserDto,
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+    @Body() patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.patchUpdate(
+      user.id,
+      freeBoardId,
+      patchUpdateFreeBoardDto,
+    );
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

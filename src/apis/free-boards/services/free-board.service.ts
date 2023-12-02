@@ -8,7 +8,9 @@ import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-histor
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { DataSource, Repository } from 'typeorm';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 
@@ -113,7 +115,80 @@ export class FreeBoardsService {
     freeBoardId: number,
     patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
   ): Promise<FreeBoardDto> {
-    return new FreeBoardDto({});
+    const existFreeBoard = await this.freeBoardRepository.findOne({
+      select: {
+        userId: true,
+      },
+      where: {
+        id: freeBoardId,
+      },
+    });
+
+    if (!existFreeBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (userId !== existFreeBoard.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      await entityManager.withRepository(this.freeBoardRepository).update(
+        {
+          id: freeBoardId,
+        },
+        {
+          ...patchUpdateFreeBoardDto,
+        },
+      );
+
+      const newPost = await entityManager
+        .withRepository(this.freeBoardRepository)
+        .findOneByOrFail({
+          id: freeBoardId,
+        });
+
+      await this.freeBoardHistoryService.create(
+        entityManager,
+        userId,
+        freeBoardId,
+        {
+          title: newPost.title,
+          description: newPost.description,
+          isAnonymous: newPost.isAnonymous,
+        },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new FreeBoardDto(newPost);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '자유게시글 patch 수정 중 알 수 없는 에러',
+        stack: error.stack,
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
   }
 
   // remove(id: number) {

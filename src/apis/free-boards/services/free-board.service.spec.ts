@@ -8,6 +8,8 @@ import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-histor
 import { SortOrder } from '@src/constants/enum';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { mockQueryHelper } from '@test/mock/mock.helper';
 import {
   mockDataSource,
@@ -111,6 +113,48 @@ describe(FreeBoardsService.name, () => {
         skip: 0,
         take: 20,
       });
+    });
+  });
+
+  describe(FreeBoardsService.prototype.remove.name, () => {
+    let userId: number;
+    let freeBoardId: number;
+
+    beforeEach(() => {
+      userId = NaN;
+      freeBoardId = NaN;
+    });
+
+    it('not found free board throw HttpNotFoundException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.remove(userId, freeBoardId)).rejects.toThrow(
+        HttpNotFoundException,
+      );
+    });
+
+    it('not owner throw HttpForbiddenException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+
+      await expect(service.remove(userId, freeBoardId)).rejects.toThrow(
+        HttpForbiddenException,
+      );
+    });
+
+    it('remove free board', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId });
+      mockFreeBoardRepository.delete.mockResolvedValue({ affected: 1 });
+
+      await expect(service.remove(userId, freeBoardId)).resolves.toBe(1);
     });
   });
 });

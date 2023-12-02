@@ -58,6 +58,7 @@ export class FreeBoardsController {
   //   return this.freeBoardService.findOne(+id);
   // }
 
+  @ApiFreeBoard.PatchUpdate({ summary: '자유게시글 부분 수정' })
   @UseGuards(JwtAuthGuard)
   @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
   @Patch(':freeBoardId')

@@ -111,7 +111,7 @@ export class FreeBoardsService {
   //   return `This action updates a #${id} freeBoard`;
   // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} freeBoard`;
-  // }
+  remove(userId: number, freeBoardId: number) {
+    return 1;
+  }
 }

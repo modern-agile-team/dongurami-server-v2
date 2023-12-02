@@ -10,7 +10,6 @@ export type Args =
     }
   | {
       type: Extract<ResponseType, ResponseType.Delete>;
-      key: never;
     };
 
 export type CommonResponse<T> = T | Promise<T>;

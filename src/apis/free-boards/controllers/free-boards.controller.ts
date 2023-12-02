@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagger';
@@ -54,8 +63,11 @@ export class FreeBoardsController {
   //   return this.freeBoardService.update(+id, updateFreeBoardDto);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.freeBoardService.remove(+id);
-  // }
+  @ApiFreeBoard.Remove({ summary: '자유게시글 삭제' })
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':freeBoardId')
+  remove(@User() user: UserDto, @Param('freeBoardId') freeBoardId: number) {
+    return this.freeBoardService.remove(user.id, freeBoardId);
+  }
 }

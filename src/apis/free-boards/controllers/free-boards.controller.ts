@@ -69,7 +69,11 @@ export class FreeBoardsController {
   /**
    * 테이블 참조 때문에 삭제 불가 개선 예정
    */
-  @ApiFreeBoard.Remove({ summary: '자유게시글 삭제' })
+  @ApiFreeBoard.Remove({
+    summary:
+      '자유게시글 삭제 (현재 내부 사정으로 서버에러가 무조건적으로 발생합니다.',
+    deprecated: true,
+  })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)
   @Delete(':freeBoardId')

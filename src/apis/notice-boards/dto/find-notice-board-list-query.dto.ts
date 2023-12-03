@@ -10,7 +10,6 @@ import {
 import { Type } from 'class-transformer';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
-import { FREE_BOARD_ORDER_FIELD } from '@src/apis/free-boards/constants/free-board.constant';
 import { SortOrder } from '@src/constants/enum';
 
 export class FindNoticeBoardListQueryDto

@@ -45,12 +45,19 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {
+    const options = {};
+    options['isArray'] = true;
     return applyDecorators(
       ApiOperation({
         operationId: 'GetAllMajors',
         ...apiOperationOptions,
       }),
-      CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'major', MajorDto),
+      CommonResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'major',
+        MajorDto,
+        options,
+      ),
       HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
         COMMON_ERROR_CODE.SERVER_ERROR,
       ]),

@@ -46,7 +46,7 @@ describe(NoticeBoardsController.name, () => {
       newNoticeBoard = new NoticeBoardDto();
     });
 
-    it('create Notice board', async () => {
+    it('create notice board', async () => {
       user.id = faker.number.int();
 
       mockNoticeBoardsService.create.mockResolvedValue(newNoticeBoard);

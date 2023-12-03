@@ -11,6 +11,7 @@ import { NoticeBoardReaction } from './NoticeBoardReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
 import { User } from './User';
 import { NoticeBoardHistory } from './NoticeBoardHistory';
+import { BooleanTransformer } from './transfomers/boolean.transfomer';
 
 @Entity('notice_board', { schema: 'dongurami_local_db' })
 export class NoticeBoard {
@@ -41,8 +42,9 @@ export class NoticeBoard {
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     unsigned: true,
     default: () => "'1'",
+    transformer: new BooleanTransformer(),
   })
-  allowComment: number;
+  allowComment: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

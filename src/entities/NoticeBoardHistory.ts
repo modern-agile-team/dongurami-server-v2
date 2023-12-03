@@ -10,6 +10,7 @@ import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
 import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
 import { User } from './User';
 import { NoticeBoard } from './NoticeBoard';
+import { BooleanTransformer } from './transfomers/boolean.transfomer';
 
 @Entity('notice_board_history', { schema: 'dongurami_local_db' })
 export class NoticeBoardHistory {
@@ -32,8 +33,9 @@ export class NoticeBoardHistory {
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     unsigned: true,
     default: () => "'1'",
+    transformer: new BooleanTransformer(),
   })
-  allowComment: number;
+  allowComment: boolean;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -47,6 +49,20 @@ export class NoticeBoardHistory {
     (noticeBoardCommentHistory) => noticeBoardCommentHistory.noticeBoardHistory,
   )
   noticeBoardCommentHistories: NoticeBoardCommentHistory[];
+
+  @Column('int', {
+    name: 'notice_board_id',
+    comment: '공지 게시글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardId: number;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @ManyToOne(() => User, (user) => user.noticeBoardHistories, {
     onDelete: 'NO ACTION',

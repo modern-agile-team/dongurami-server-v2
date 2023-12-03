@@ -29,6 +29,9 @@ import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
 import { NoticeBoardReaction } from './NoticeBoardReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
 import { NoticeBoardReplyCommentReaction } from './NoticeBoardReplyCommentReaction';
+import { NoticeBoardHistory } from './NoticeBoardHistory';
+import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
+import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
 
 @Entity('user', { schema: 'dongurami_v2' })
 export class User {
@@ -186,10 +189,22 @@ export class User {
   noticeBoards: NoticeBoard[];
 
   @OneToMany(
+    () => NoticeBoardHistory,
+    (noticeBoardHistories) => noticeBoardHistories.user,
+  )
+  noticeBoardHistories: NoticeBoardHistory[];
+
+  @OneToMany(
     () => NoticeBoardComment,
     (noticeBoardComment) => noticeBoardComment.user,
   )
   noticeBoardComments: NoticeBoardComment[];
+
+  @OneToMany(
+    () => NoticeBoardCommentHistory,
+    (noticeBoardCommentHistories) => noticeBoardCommentHistories.user,
+  )
+  noticeBoardCommentHistories: NoticeBoardCommentHistory[];
 
   @OneToMany(
     () => NoticeBoardCommentReaction,
@@ -208,6 +223,12 @@ export class User {
     (noticeBoardReplyComment) => noticeBoardReplyComment.user,
   )
   noticeBoardReplyComments: NoticeBoardReplyComment[];
+
+  @OneToMany(
+    () => NoticeBoardReplyCommentHistory,
+    (noticeBoardReplyCommentHistories) => noticeBoardReplyCommentHistories.user,
+  )
+  noticeBoardReplyCommentHistories: NoticeBoardReplyCommentHistory[];
 
   @OneToMany(
     () => NoticeBoardReplyCommentReaction,

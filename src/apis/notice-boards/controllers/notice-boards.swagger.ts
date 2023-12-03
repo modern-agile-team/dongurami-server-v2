@@ -44,7 +44,7 @@ export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {
       ]),
     );
   },
-  FindAll: (
+  FindAllAndCount: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {

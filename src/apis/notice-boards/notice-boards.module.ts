@@ -3,10 +3,11 @@ import { NoticeBoardsController } from './controllers/notice-boards.controller';
 import { NoticeBoardsService } from './services/notice-boards.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
+import { QueryHelper } from '@src/helpers/query.helper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([NoticeBoard])],
   controllers: [NoticeBoardsController],
-  providers: [NoticeBoardsService],
+  providers: [NoticeBoardsService, QueryHelper],
 })
 export class NoticeBoardsModule {}

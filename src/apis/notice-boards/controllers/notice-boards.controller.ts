@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   // Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateNoticeBoardDto } from '../dto/create-notice-board.dto';
 import { NoticeBoardsService } from '../services/notice-boards.service';
@@ -15,6 +16,7 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { ApiNoticeBoard } from './notice-boards.swagger';
 import { ApiTags } from '@nestjs/swagger';
+import { NOTICE_BOARD_ORDER_FIELD } from '../constants/notice-board.constant';
 
 @ApiTags('notice-boards')
 @Controller('notice-boards')
@@ -32,13 +34,10 @@ export class NoticeBoardsController {
     return this.noticeBoardService.create(userId, createNoticeBoardDto);
   }
 
-  @ApiNoticeBoard.FindAll({ summary: 'notice-board 전체 조회 ' })
-  @SetResponse({ type: ResponseType.Common, key: 'boards' })
   @Get()
-  findAll() {
-    return this.noticeBoardService.findAll();
-  }
-
+  async findAllAndCount(
+    @Query() findNoticeBoardQueryDto: FindNoticeBoardQueryDto,
+  ) {}
   // @Get(':id')
   // findOne() {}
 

@@ -10,6 +10,7 @@ import { NoticeBoardComment } from './NoticeBoardComment';
 import { NoticeBoardReaction } from './NoticeBoardReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
 import { User } from './User';
+import { NoticeBoardHistory } from './NoticeBoardHistory';
 
 @Entity('notice_board', { schema: 'dongurami_local_db' })
 export class NoticeBoard {
@@ -88,4 +89,10 @@ export class NoticeBoard {
     (noticeBoardReplyComment) => noticeBoardReplyComment.noticeBoard,
   )
   noticeBoardReplyComments: NoticeBoardReplyComment[];
+
+  @OneToMany(
+    () => NoticeBoardHistory,
+    (noticeBoardHistories) => noticeBoardHistories.noticeBoard,
+  )
+  noticeBoardHistories: NoticeBoardHistory[];
 }

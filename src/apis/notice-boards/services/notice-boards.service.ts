@@ -77,6 +77,7 @@ export class NoticeBoardsService {
     findNoticeBoardListQueryDto: FindNoticeBoardListQueryDto,
   ): Promise<[NoticeBoardsItemDto[], number]> {
     const { page, pageSize, order, ...filter } = findNoticeBoardListQueryDto;
+    console.log(findNoticeBoardListQueryDto);
 
     const where = this.queryHelper.buildWherePropForFind(
       filter,

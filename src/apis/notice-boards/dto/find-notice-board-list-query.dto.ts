@@ -37,6 +37,7 @@ export class FindNoticeBoardListQueryDto
     description: 'title 필터링',
     maxLength: NOTICE_BOARD_TITLE_LENGTH.MAX,
   })
+  @IsOptional()
   title?: string;
 
   @ApiPropertyOptional({

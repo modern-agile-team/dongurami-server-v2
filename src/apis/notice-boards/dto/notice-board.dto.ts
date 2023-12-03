@@ -14,9 +14,9 @@ export class NoticeBoardDto
       | 'id'
       | 'title'
       | 'description'
+      | 'userId'
       | 'hit'
       | 'allowComment'
-      | 'userId'
       | 'createdAt'
       | 'updatedAt'
     >
@@ -34,6 +34,12 @@ export class NoticeBoardDto
   description: string;
 
   @ApiProperty({
+    description: '게시글 작성자 고유 ID',
+    format: 'integer',
+  })
+  userId: number;
+
+  @ApiProperty({
     description: '공지 게시글 조회수',
     default: 0,
     format: 'integer',
@@ -47,12 +53,6 @@ export class NoticeBoardDto
     default: 1,
   })
   allowComment: boolean;
-
-  @ApiProperty({
-    description: '게시글 작성자 고유 ID',
-    format: 'integer',
-  })
-  userId: number;
 
   constructor(noticeBoardDto: Partial<NoticeBoardDto> = {}) {
     super();

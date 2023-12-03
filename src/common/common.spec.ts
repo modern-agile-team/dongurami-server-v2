@@ -1,4 +1,4 @@
-import { transformPage } from '@src/common/common';
+import { isNil, transformPage } from '@src/common/common';
 
 describe('common.ts unit test', () => {
   describe(transformPage.name, () => {
@@ -24,6 +24,20 @@ describe('common.ts unit test', () => {
       obj.value = 1;
 
       expect(transformPage(obj)).toBe(0);
+    });
+  });
+
+  describe(isNil.name, () => {
+    it('undefined', () => {
+      expect(isNil(undefined)).toBe(true);
+    });
+
+    it('null', () => {
+      expect(isNil(null)).toBe(true);
+    });
+
+    it('string', () => {
+      expect(isNil('')).toBe(false);
     });
   });
 });

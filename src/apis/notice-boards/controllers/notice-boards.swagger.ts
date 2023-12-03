@@ -23,7 +23,7 @@ export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {
       }),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
-        'board',
+        'noticeBoard',
         NoticeBoardDto,
       ),
       HttpException.swaggerBuilder(

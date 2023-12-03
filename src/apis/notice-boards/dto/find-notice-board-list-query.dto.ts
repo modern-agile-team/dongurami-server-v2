@@ -52,5 +52,5 @@ export class FindNoticeBoardListQueryDto
   @ApiPropertyOrder(NOTICE_BOARD_ORDER_FIELD)
   @CsvToOrder<typeof NOTICE_BOARD_ORDER_FIELD>([...NOTICE_BOARD_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof FREE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof NOTICE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
 }

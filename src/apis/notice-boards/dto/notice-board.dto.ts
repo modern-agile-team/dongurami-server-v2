@@ -11,7 +11,14 @@ export class NoticeBoardDto
   implements
     Pick<
       NoticeBoard,
-      'title' | 'description' | 'hit' | 'allowComment' | 'userId'
+      | 'id'
+      | 'title'
+      | 'description'
+      | 'hit'
+      | 'allowComment'
+      | 'userId'
+      | 'createdAt'
+      | 'updatedAt'
     >
 {
   @ApiProperty({
@@ -39,7 +46,7 @@ export class NoticeBoardDto
     maximum: NOTICE_BOARD_ALLOW_COMMENT_LENGTH.MAX,
     default: 1,
   })
-  allowComment: number;
+  allowComment: boolean;
 
   @ApiProperty({
     description: '게시글 작성자 고유 ID',

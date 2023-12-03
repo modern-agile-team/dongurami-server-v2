@@ -30,5 +30,5 @@ export class CreateNoticeBoardDto
     default: 1,
   })
   @IsBoolean()
-  allowComment: number;
+  allowComment: boolean;
 }

@@ -4,11 +4,10 @@ import {
   Get,
   // Delete,
   // Get,
-  Param,
-  ParseIntPipe,
   // Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateNoticeBoardDto } from '../dto/create-notice-board.dto';
 import { NoticeBoardsService } from '../services/notice-boards.service';
@@ -16,28 +15,43 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { ApiNoticeBoard } from './notice-boards.swagger';
 import { ApiTags } from '@nestjs/swagger';
-import { NOTICE_BOARD_ORDER_FIELD } from '../constants/notice-board.constant';
+import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
+import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
+import { plainToInstance } from 'class-transformer';
+import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { UserDto } from '@src/apis/users/dto/user.dto';
+import { User } from '@src/decorators/user.decorator';
 
 @ApiTags('notice-boards')
 @Controller('notice-boards')
 export class NoticeBoardsController {
   constructor(private readonly noticeBoardService: NoticeBoardsService) {}
 
-  @ApiNoticeBoard.Create({ summary: 'notice-board 게시글 생성 API' })
+  @ApiNoticeBoard.Create({ summary: '공지 게시글 생성 API' })
+  @UseGuards(JwtAuthGuard)
   @SetResponse({ type: ResponseType.Detail, key: 'board' })
-  @Post(':userId')
+  @Post()
   create(
-    // 추후 develop에 guard가 merge 될 시에 수정
-    @Param('userId', ParseIntPipe) userId: number,
+    @User() user: UserDto,
     @Body() createNoticeBoardDto: CreateNoticeBoardDto,
   ) {
-    return this.noticeBoardService.create(userId, createNoticeBoardDto);
+    return this.noticeBoardService.create(user.id, createNoticeBoardDto);
   }
 
+  @ApiNoticeBoard.FindAllAndCount({
+    summary: '공지 게시글 전체조회(pagination)',
+  })
+  @SetResponse({ type: ResponseType.Pagination, key: 'noticeBoards' })
   @Get()
   async findAllAndCount(
-    @Query() findNoticeBoardQueryDto: FindNoticeBoardQueryDto,
-  ) {}
+    @Query() findNoticeBoardListQueryDto: FindNoticeBoardListQueryDto,
+  ): Promise<[NoticeBoardsItemDto[], number]> {
+    const [noticeBoards, count] = await this.noticeBoardService.findAllAndCount(
+      findNoticeBoardListQueryDto,
+    );
+
+    return [plainToInstance(NoticeBoardsItemDto, noticeBoards), count];
+  }
   // @Get(':id')
   // findOne() {}
 

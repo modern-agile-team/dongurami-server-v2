@@ -297,9 +297,6 @@ export class FreeBoardsService {
    */
   async remove(userId: number, freeBoardId: number): Promise<number> {
     const existFreeBoard = await this.freeBoardRepository.findOne({
-      select: {
-        userId: true,
-      },
       where: {
         id: freeBoardId,
       },
@@ -317,10 +314,55 @@ export class FreeBoardsService {
       });
     }
 
-    const freeBoardDeleteResult = await this.freeBoardRepository.delete({
-      id: freeBoardId,
-    });
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    return freeBoardDeleteResult.affected;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      const freeBoardDeleteResult = await entityManager
+        .withRepository(this.freeBoardRepository)
+        .update(
+          {
+            id: freeBoardId,
+          },
+          {
+            status: FreeBoardStatus.Remove,
+            deletedAt: new Date(),
+          },
+        );
+
+      await this.freeBoardHistoryService.create(
+        entityManager,
+        userId,
+        freeBoardId,
+        HistoryAction.Delete,
+        {
+          ...existFreeBoard,
+          status: FreeBoardStatus.Remove,
+        },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return freeBoardDeleteResult.affected;
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '자유게시글 patch 수정 중 알 수 없는 에러',
+        stack: error.stack,
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
   }
 }

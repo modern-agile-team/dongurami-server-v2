@@ -72,4 +72,28 @@ describe(NoticeBoardsController.name, () => {
       ).resolves.toEqual([[], 0]);
     });
   });
+
+  describe(NoticeBoardsController.prototype.findOneOrNotFound.name, () => {
+    let noticeBoardId: number;
+
+    let noticeBoardDto: NoticeBoardDto;
+
+    beforeEach(() => {
+      noticeBoardId = NaN;
+
+      noticeBoardDto = new NoticeBoardDto();
+    });
+
+    it('findOneNoticeBoard', async () => {
+      noticeBoardId = faker.number.int();
+
+      mockNoticeBoardsService.findOneOrNotFound.mockResolvedValue(
+        noticeBoardDto,
+      );
+
+      await expect(
+        controller.findOneOrNotFound(noticeBoardId),
+      ).resolves.toBeInstanceOf(NoticeBoardDto);
+    });
+  });
 });

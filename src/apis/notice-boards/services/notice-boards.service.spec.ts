@@ -16,6 +16,7 @@ import { CreateNoticeBoardDto } from '../dto/create-notice-board.dto';
 import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
 import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 describe(NoticeBoardsService.name, () => {
   let service: NoticeBoardsService;
@@ -113,6 +114,38 @@ describe(NoticeBoardsService.name, () => {
         skip: 0,
         take: 20,
       });
+    });
+  });
+
+  describe(NoticeBoardsService.prototype.findOneOrNotFound.name, () => {
+    let noticeBoardId: number;
+
+    let noticeBoardDto: NoticeBoardDto;
+
+    beforeEach(() => {
+      noticeBoardId = NaN;
+
+      noticeBoardDto = new NoticeBoardDto();
+    });
+
+    it('not found notice board', async () => {
+      noticeBoardId = faker.number.int();
+
+      mockNoticeBoardRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.findOneOrNotFound(noticeBoardId)).rejects.toThrow(
+        HttpNotFoundException,
+      );
+    });
+
+    it('find one notice board', async () => {
+      noticeBoardId = faker.number.int();
+
+      mockNoticeBoardRepository.findOneBy.mockResolvedValue(noticeBoardDto);
+
+      await expect(
+        service.findOneOrNotFound(noticeBoardId),
+      ).resolves.toBeInstanceOf(NoticeBoardDto);
     });
   });
 });

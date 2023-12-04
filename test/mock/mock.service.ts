@@ -56,6 +56,7 @@ export const mockFreeBoardHistoryService: MockProvider<FreeBoardHistoryService> 
 export const mockNoticeBoardsService: MockProvider<NoticeBoardsService> = {
   create: jest.fn(),
   findAllAndCount: jest.fn(),
+  findOneOrNotFound: jest.fn(),
 };
 
 export const mockNoticeBoardHistoryService: MockProvider<NoticeBoardHistoryService> =

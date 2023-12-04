@@ -1,6 +1,7 @@
-import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
+import { Major } from '@src/entities/Major';
+import { User } from '@src/entities/User';
 import { UserHistory } from '@src/entities/UserHistory';
 import { MockProvider } from '@test/mock/mock.type';
 import { Repository } from 'typeorm';
@@ -75,7 +76,11 @@ export const mockEntityManager = {
   },
 };
 
-export const mockUserRepository: MockProvider<UserRepository> = {
+export const mockMajorRepository: MockProvider<Repository<Major>> = {
+  ...getDefaultRepositoryMethod(),
+};
+
+export const mockUserRepository: MockProvider<Repository<User>> = {
   ...getDefaultRepositoryMethod(),
 };
 

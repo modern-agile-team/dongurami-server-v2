@@ -9,6 +9,7 @@ export class CreateUserHistoryDto
   implements
     Pick<
       UserHistory,
+      | 'majorId'
       | 'loginType'
       | 'name'
       | 'password'
@@ -21,18 +22,20 @@ export class CreateUserHistoryDto
       | 'status'
     >
 {
+  majorId: number;
   loginType: UserLoginType;
   name: string;
   password: string | null;
   email: string;
   phoneNumber: string | null;
-  grade: boolean | null;
+  grade: number | null;
   gender: string | null;
   profilePath: string | null;
   role: UserRole;
   status: UserStatus;
 
   constructor(createUserHistoryDto: CreateUserHistoryDto) {
+    this.majorId = createUserHistoryDto.majorId;
     this.loginType = createUserHistoryDto.loginType;
     this.name = createUserHistoryDto.name;
     this.password = createUserHistoryDto.password;

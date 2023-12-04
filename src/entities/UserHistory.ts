@@ -21,6 +21,13 @@ export class UserHistory {
   id: number;
 
   @Column('int', {
+    name: 'major_id',
+    comment: '전공 고유 ID',
+    unsigned: true,
+  })
+  majorId: number;
+
+  @Column('int', {
     name: 'user_id',
     comment: '유저 고유 ID',
     unsigned: true,
@@ -69,7 +76,7 @@ export class UserHistory {
     comment: '학년 (0이면 졸업생)',
     width: 1,
   })
-  grade: boolean | null;
+  grade: number | null;
 
   @Column('varchar', {
     name: 'gender',

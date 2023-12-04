@@ -4,11 +4,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { SortOrder } from '@src/constants/enum';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { mockQueryHelper } from '@test/mock/mock.helper';
@@ -197,6 +199,72 @@ describe(FreeBoardsService.name, () => {
 
       await expect(
         service.putUpdate(userId, freeBoardId, putUpdateFreeBoardDto),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
+    });
+  });
+
+  describe(FreeBoardsService.prototype.patchUpdate.name, () => {
+    let userId: number;
+    let freeBoardId: number;
+    let patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      userId = NaN;
+      freeBoardId = NaN;
+      patchUpdateFreeBoardDto = new PatchUpdateFreeBoardDto();
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('missing update field throw HttpBadRequestException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      await expect(
+        service.patchUpdate(userId, freeBoardId, patchUpdateFreeBoardDto),
+      ).rejects.toThrow(HttpBadRequestException);
+    });
+
+    it('not found free board throw HttpNotFoundException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      patchUpdateFreeBoardDto.title = 'title';
+
+      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.patchUpdate(userId, freeBoardId, patchUpdateFreeBoardDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('not owner throw HttpForbiddenException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      patchUpdateFreeBoardDto.title = 'title';
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+
+      await expect(
+        service.patchUpdate(userId, freeBoardId, patchUpdateFreeBoardDto),
+      ).rejects.toThrow(HttpForbiddenException);
+    });
+
+    it('update title', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+      patchUpdateFreeBoardDto.title = 'updated title';
+
+      freeBoardDto.title = patchUpdateFreeBoardDto.title;
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId });
+      mockFreeBoardRepository.findOneByOrFail.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        service.patchUpdate(userId, freeBoardId, patchUpdateFreeBoardDto),
       ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });

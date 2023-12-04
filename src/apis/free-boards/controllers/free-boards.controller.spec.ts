@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { mockFreeBoardsService } from '@test/mock/mock.service';
@@ -112,6 +113,33 @@ describe(FreeBoardsController.name, () => {
 
       await expect(
         controller.putUpdate(user, freeBoardId, putUpdateFreeBoardDto),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
+    });
+  });
+
+  describe(FreeBoardsController.prototype.patchUpdate.name, () => {
+    let user: UserDto;
+    let freeBoardId: number;
+    let patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      user = new UserDto();
+      freeBoardId = NaN;
+      patchUpdateFreeBoardDto = new PatchUpdateFreeBoardDto();
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('free board patch update', async () => {
+      user.id = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardsService.patchUpdate.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        controller.patchUpdate(user, freeBoardId, patchUpdateFreeBoardDto),
       ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });

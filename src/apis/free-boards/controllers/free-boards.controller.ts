@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -14,6 +15,7 @@ import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagg
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
@@ -78,13 +80,21 @@ export class FreeBoardsController {
     );
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateFreeBoardDto: UpdateFreeBoardDto,
-  // ) {
-  //   return this.freeBoardService.update(+id, updateFreeBoardDto);
-  // }
+  @ApiFreeBoard.PatchUpdate({ summary: '자유게시글 부분 수정' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @Patch(':freeBoardId')
+  patchUpdate(
+    @User() user: UserDto,
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+    @Body() patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.patchUpdate(
+      user.id,
+      freeBoardId,
+      patchUpdateFreeBoardDto,
+    );
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

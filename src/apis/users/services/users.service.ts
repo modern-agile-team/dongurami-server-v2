@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { UserStatus } from '@src/apis/users/constants/user.enum';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
@@ -47,7 +48,10 @@ export class UsersService {
       }
     }
 
-    const newUser = this.userRepository.create(createUserRequestBodyDto);
+    const newUser = this.userRepository.create({
+      ...createUserRequestBodyDto,
+      status: UserStatus.Active,
+    });
 
     if (newUser.password) {
       newUser.password = await this.encryptionService.hash(

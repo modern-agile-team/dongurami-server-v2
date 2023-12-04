@@ -1,8 +1,6 @@
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NoticeBoardHistory } from '@src/entities/NoticeBoardHistory';
 import { MockProvider } from '@test/mock/mock.type';
 import { Repository } from 'typeorm';
 
@@ -86,17 +84,6 @@ export const mockFreeBoardRepository: MockProvider<Repository<FreeBoard>> = {
 
 export const mockFreeBoardHistoryRepository: MockProvider<
   Repository<FreeBoardHistory>
-> = {
-  ...getDefaultRepositoryMethod(),
-};
-
-export const mockNoticeBoardRepository: MockProvider<Repository<NoticeBoard>> =
-  {
-    ...getDefaultRepositoryMethod(),
-  };
-
-export const mockNoticeBoardHistoryRepository: MockProvider<
-  Repository<NoticeBoardHistory>
 > = {
   ...getDefaultRepositoryMethod(),
 };

@@ -268,4 +268,46 @@ describe(FreeBoardsService.name, () => {
       ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });
+
+  describe(FreeBoardsService.prototype.remove.name, () => {
+    let userId: number;
+    let freeBoardId: number;
+
+    beforeEach(() => {
+      userId = NaN;
+      freeBoardId = NaN;
+    });
+
+    it('not found free board throw HttpNotFoundException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.remove(userId, freeBoardId)).rejects.toThrow(
+        HttpNotFoundException,
+      );
+    });
+
+    it('not owner throw HttpForbiddenException', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+
+      await expect(service.remove(userId, freeBoardId)).rejects.toThrow(
+        HttpForbiddenException,
+      );
+    });
+
+    it('remove free board', async () => {
+      userId = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId });
+      mockFreeBoardRepository.delete.mockResolvedValue({ affected: 1 });
+
+      await expect(service.remove(userId, freeBoardId)).resolves.toBe(1);
+    });
+  });
 });

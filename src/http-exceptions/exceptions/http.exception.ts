@@ -71,7 +71,7 @@ export class HttpException extends NestHttpException {
               example: status,
             },
             code: {
-              type: 'string',
+              type: 'number',
               description: 'error code',
               example: codes[0],
               enum: codes,

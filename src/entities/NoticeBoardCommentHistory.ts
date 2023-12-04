@@ -23,13 +23,12 @@ export class NoticeBoardCommentHistory {
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
 
-  @Column('tinyint', {
+  @Column('bool', {
     name: 'isAnonymous',
-    comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
-    unsigned: true,
-    default: () => "'0'",
+    comment: '작성자 익명 여부 (false: 실명, true: 익명)',
+    default: () => true,
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

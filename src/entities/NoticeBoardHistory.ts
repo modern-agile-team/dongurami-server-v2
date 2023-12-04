@@ -28,11 +28,10 @@ export class NoticeBoardHistory {
   @Column('text', { name: 'description', comment: '공지게시글 내용' })
   description: string;
 
-  @Column('tinyint', {
+  @Column('boolean', {
     name: 'allow_comment',
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
-    unsigned: true,
-    default: () => "'1'",
+    default: () => true,
     transformer: new BooleanTransformer(),
   })
   allowComment: boolean;

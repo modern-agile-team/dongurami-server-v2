@@ -161,7 +161,7 @@ export class NoticeBoardHistory1701328900610 implements MigrationInterface {
       new Table({
         name: 'notice_board_reply_comment_history',
         columns: [
-          generatePrimaryColumn('공지 게시글 대댓글 고유 ID'),
+          generatePrimaryColumn('공지 게시글 대댓글 수정이력 고유 ID'),
           {
             name: 'notice_board_history_id',
             type: 'int',

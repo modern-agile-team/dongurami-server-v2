@@ -115,6 +115,7 @@ export class FreeBoardsService {
   async findOneOrNotFound(freeBoardId: number): Promise<FreeBoardDto> {
     const freeBoard = await this.freeBoardRepository.findOneBy({
       id: freeBoardId,
+      status: FreeBoardStatus.Posting,
     });
 
     if (!freeBoard) {
@@ -131,20 +132,7 @@ export class FreeBoardsService {
     freeBoardId: number,
     putUpdateFreeBoardDto: PutUpdateFreeBoardDto,
   ): Promise<FreeBoardDto> {
-    const existFreeBoard = await this.freeBoardRepository.findOne({
-      select: {
-        userId: true,
-      },
-      where: {
-        id: freeBoardId,
-      },
-    });
-
-    if (!existFreeBoard) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      });
-    }
+    const existFreeBoard = await this.findOneOrNotFound(freeBoardId);
 
     if (userId !== existFreeBoard.userId) {
       throw new HttpForbiddenException({
@@ -217,20 +205,7 @@ export class FreeBoardsService {
       });
     }
 
-    const existFreeBoard = await this.freeBoardRepository.findOne({
-      select: {
-        userId: true,
-      },
-      where: {
-        id: freeBoardId,
-      },
-    });
-
-    if (!existFreeBoard) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      });
-    }
+    const existFreeBoard = await this.findOneOrNotFound(freeBoardId);
 
     if (userId !== existFreeBoard.userId) {
       throw new HttpForbiddenException({
@@ -296,17 +271,7 @@ export class FreeBoardsService {
    * 테이블 참조 때문에 삭제 불가 개선 예정
    */
   async remove(userId: number, freeBoardId: number): Promise<number> {
-    const existFreeBoard = await this.freeBoardRepository.findOne({
-      where: {
-        id: freeBoardId,
-      },
-    });
-
-    if (!existFreeBoard) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      });
-    }
+    const existFreeBoard = await this.findOneOrNotFound(freeBoardId);
 
     if (userId !== existFreeBoard.userId) {
       throw new HttpForbiddenException({
@@ -356,7 +321,7 @@ export class FreeBoardsService {
       console.error(error);
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 patch 수정 중 알 수 없는 에러',
+        ctx: '자유게시글 삭제 중 알 수 없는 에러',
         stack: error.stack,
       });
     } finally {

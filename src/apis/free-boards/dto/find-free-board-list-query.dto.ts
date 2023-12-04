@@ -3,6 +3,7 @@ import {
   FREE_BOARD_ORDER_FIELD,
   FREE_BOARD_TITLE_LENGTH,
 } from '@src/apis/free-boards/constants/free-board.constant';
+import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
@@ -12,6 +13,7 @@ import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import { Type } from 'class-transformer';
 import {
   IsBooleanString,
+  IsDefined,
   IsNotEmpty,
   IsOptional,
   MaxLength,
@@ -59,4 +61,7 @@ export class FindFreeBoardListQueryDto
   @CsvToOrder<typeof FREE_BOARD_ORDER_FIELD>([...FREE_BOARD_ORDER_FIELD])
   @IsOptional()
   order: Order<typeof FREE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
+
+  @IsDefined()
+  status: FreeBoardStatus = FreeBoardStatus.Posting;
 }

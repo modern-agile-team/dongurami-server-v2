@@ -16,7 +16,7 @@ export class NoticeBoardReplyCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '공지 게시글 대댓글 고유 ID',
+    comment: '공지 게시글 대댓글 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;

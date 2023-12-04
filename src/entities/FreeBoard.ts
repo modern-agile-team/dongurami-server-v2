@@ -1,5 +1,5 @@
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transfomer';
 import {
   Column,
   Entity,

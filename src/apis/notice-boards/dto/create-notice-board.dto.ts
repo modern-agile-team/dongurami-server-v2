@@ -4,7 +4,7 @@ import { NoticeBoardDto } from './notice-board.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateNoticeBoardDto
-  implements Pick<NoticeBoardDto, 'title' | 'description' | 'allowComment'>
+  implements Pick<NoticeBoardDto, 'title' | 'description' | 'isAllowComment'>
 {
   @ApiProperty({
     description: '공지 게시글 제목',
@@ -22,8 +22,7 @@ export class CreateNoticeBoardDto
 
   @ApiProperty({
     description: '댓글 허용 여부 (false: 비활성화, true: 허용)',
-    default: true,
   })
   @IsBoolean()
-  allowComment: boolean;
+  isAllowComment: boolean;
 }

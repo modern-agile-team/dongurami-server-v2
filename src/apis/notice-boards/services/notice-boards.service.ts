@@ -49,7 +49,7 @@ export class NoticeBoardsService {
         {
           title: newPost.title,
           description: newPost.description,
-          allowComment: newPost.allowComment,
+          isAllowComment: newPost.isAllowComment,
         },
       );
 
@@ -91,7 +91,7 @@ export class NoticeBoardsService {
         userId: true,
         title: true,
         hit: true,
-        allowComment: true,
+        isAllowComment: true,
         createdAt: true,
         updatedAt: true,
       },

@@ -9,7 +9,7 @@ import {
 import { NoticeBoardHistory } from './NoticeBoardHistory';
 import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
 import { User } from './User';
-import { BooleanTransformer } from './transformers/boolean.transformer';
+import { BooleanTransformer } from './transformers/boolean.transfomer';
 
 @Entity('notice_board_comment_history', { schema: 'dongurami_local_db' })
 export class NoticeBoardCommentHistory {

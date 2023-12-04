@@ -10,7 +10,7 @@ import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
 import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
 import { User } from './User';
 import { NoticeBoard } from './NoticeBoard';
-import { BooleanTransformer } from './transformers/boolean.transformer';
+import { BooleanTransformer } from './transformers/boolean.transfomer';
 
 @Entity('notice_board_history', { schema: 'dongurami_local_db' })
 export class NoticeBoardHistory {
@@ -29,12 +29,12 @@ export class NoticeBoardHistory {
   description: string;
 
   @Column('boolean', {
-    name: 'allow_comment',
+    name: 'is_allow_comment',
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     default: () => true,
     transformer: new BooleanTransformer(),
   })
-  allowComment: boolean;
+  isAllowComment: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

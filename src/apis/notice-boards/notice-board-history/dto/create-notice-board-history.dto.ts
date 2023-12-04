@@ -1,15 +1,16 @@
 import { NoticeBoardHistory } from '@src/entities/NoticeBoardHistory';
 
 export class CreateNoticeBoardHistoryDto
-  implements Pick<NoticeBoardHistory, 'title' | 'description' | 'allowComment'>
+  implements
+    Pick<NoticeBoardHistory, 'title' | 'description' | 'isAllowComment'>
 {
   title: string;
   description: string;
-  allowComment: boolean;
+  isAllowComment: boolean;
 
   constructor(createNoticeBoardHistoryDto: CreateNoticeBoardHistoryDto) {
     this.title = createNoticeBoardHistoryDto.title;
     this.description = createNoticeBoardHistoryDto.description;
-    this.allowComment = createNoticeBoardHistoryDto.allowComment;
+    this.isAllowComment = createNoticeBoardHistoryDto.isAllowComment;
   }
 }

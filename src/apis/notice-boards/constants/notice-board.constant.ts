@@ -5,7 +5,7 @@ export const NOTICE_BOARD_ORDER_FIELD: readonly (keyof NoticeBoardDto)[] = [
   'userId',
   'title',
   'hit',
-  'allowComment',
+  'isAllowComment',
   'createdAt',
   'updatedAt',
 ] as const;

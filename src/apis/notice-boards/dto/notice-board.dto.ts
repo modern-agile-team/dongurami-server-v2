@@ -13,7 +13,7 @@ export class NoticeBoardDto
       | 'description'
       | 'userId'
       | 'hit'
-      | 'allowComment'
+      | 'isAllowComment'
       | 'createdAt'
       | 'updatedAt'
     >
@@ -47,7 +47,7 @@ export class NoticeBoardDto
     description: '댓글 허용 여부 (false: 비활성화, true: 허용)',
     default: true,
   })
-  allowComment: boolean;
+  isAllowComment: boolean;
 
   constructor(noticeBoardDto: Partial<NoticeBoardDto> = {}) {
     super();

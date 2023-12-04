@@ -11,7 +11,7 @@ import { NoticeBoardReaction } from './NoticeBoardReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
 import { User } from './User';
 import { NoticeBoardHistory } from './NoticeBoardHistory';
-import { BooleanTransformer } from './transfomers/boolean.transfomer';
+import { BooleanTransformer } from './transformers/boolean.transformer';
 
 @Entity('notice_board', { schema: 'dongurami_local_db' })
 export class NoticeBoard {

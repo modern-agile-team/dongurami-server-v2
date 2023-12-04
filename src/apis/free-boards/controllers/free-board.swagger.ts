@@ -68,6 +68,48 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
           type: ValidationError,
         },
       ),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
+
+  PutUpdate: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreeBoardPutUpdate',
+        ...apiOperationOptions,
+      }),
+      ApiBearerAuth(),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'freeBoard',
+        FreeBoardDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
+        COMMON_ERROR_CODE.PERMISSION_DENIED,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
     );
   },
   FindOneOrNotFound: (

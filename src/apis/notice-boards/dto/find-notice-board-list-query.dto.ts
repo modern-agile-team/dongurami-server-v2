@@ -1,7 +1,7 @@
 import { PageDto } from '@src/dto/page.dto';
 import { NoticeBoardDto } from './notice-board.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBooleanString, IsOptional } from 'class-validator';
+import { IsBooleanString, IsOptional, Length } from 'class-validator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import {
   NOTICE_BOARD_ORDER_FIELD,
@@ -36,6 +36,7 @@ export class FindNoticeBoardListQueryDto
     description: 'title 필터링',
     maxLength: NOTICE_BOARD_TITLE_LENGTH.MAX,
   })
+  @Length(NOTICE_BOARD_TITLE_LENGTH.MIN - 1, NOTICE_BOARD_TITLE_LENGTH.MAX)
   @IsOptional()
   title?: string;
 

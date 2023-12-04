@@ -1,8 +1,5 @@
 import { IsBoolean, IsNotEmpty, Length } from 'class-validator';
-import {
-  NOTICE_BOARD_ALLOW_COMMENT_LENGTH,
-  NOTICE_BOARD_TITLE_LENGTH,
-} from '../constants/notice-board.constant';
+import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-board.constant';
 import { NoticeBoardDto } from './notice-board.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -24,10 +21,8 @@ export class CreateNoticeBoardDto
   description: string;
 
   @ApiProperty({
-    description: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
-    minimum: NOTICE_BOARD_ALLOW_COMMENT_LENGTH.MIN,
-    maximum: NOTICE_BOARD_ALLOW_COMMENT_LENGTH.MAX,
-    default: 1,
+    description: '댓글 허용 여부 (false: 비활성화, true: 허용)',
+    default: true,
   })
   @IsBoolean()
   allowComment: boolean;

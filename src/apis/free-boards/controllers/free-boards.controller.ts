@@ -1,13 +1,27 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreeBoard } from '@src/apis/free-boards/controllers/free-board.swagger';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
+import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
+import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { FreeBoardsService } from '../services/free-board.service';
@@ -41,18 +55,46 @@ export class FreeBoardsController {
     return [plainToInstance(FreeBoardsItemDto, freeBoards), count];
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.freeBoardService.findOne(+id);
-  // }
+  @ApiFreeBoard.FindOneOrNotFound({ summary: '자유게시글 상세조회' })
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @Get(':freeBoardId')
+  findOneOrNotFound(
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.findOneOrNotFound(freeBoardId);
+  }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateFreeBoardDto: UpdateFreeBoardDto,
-  // ) {
-  //   return this.freeBoardService.update(+id, updateFreeBoardDto);
-  // }
+  @ApiFreeBoard.PutUpdate({ summary: '자유게시글 수정' })
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @UseGuards(JwtAuthGuard)
+  @Put(':freeBoardId')
+  putUpdate(
+    @User() user: UserDto,
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+    @Body() putUpdateFreeBoardDto: PutUpdateFreeBoardDto,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.putUpdate(
+      user.id,
+      freeBoardId,
+      putUpdateFreeBoardDto,
+    );
+  }
+
+  @ApiFreeBoard.PatchUpdate({ summary: '자유게시글 부분 수정' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @Patch(':freeBoardId')
+  patchUpdate(
+    @User() user: UserDto,
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+    @Body() patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.patchUpdate(
+      user.id,
+      freeBoardId,
+      patchUpdateFreeBoardDto,
+    );
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

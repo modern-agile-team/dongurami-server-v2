@@ -1,4 +1,4 @@
-import { UserHistory } from 'output/entities/UserHistory';
+import { UserHistory } from '@src/entities/UserHistory';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 

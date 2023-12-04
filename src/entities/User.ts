@@ -2,6 +2,7 @@ import {
   UserGender,
   UserLoginType,
   UserRole,
+  UserStatus,
 } from '@src/apis/users/constants/user.enum';
 import { FreeBoardCommentHistory } from '@src/entities/FreeBoardCommentHistory';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
@@ -108,6 +109,13 @@ export class User {
   })
   role: UserRole;
 
+  @Column('enum', {
+    name: 'status',
+    comment: '유저 상태',
+    enum: UserStatus,
+  })
+  status: UserStatus;
+
   @Column('timestamp', {
     name: 'created_at',
     comment: '생성 일자',
@@ -121,6 +129,13 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @Column('timestamp', {
+    name: 'deletedAt',
+    nullable: true,
+    comment: '삭제 일자',
+  })
+  deletedAt: Date | null;
 
   @OneToMany(
     () => ClubJoinApplication,

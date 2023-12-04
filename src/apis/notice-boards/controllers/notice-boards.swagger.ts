@@ -95,6 +95,9 @@ export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
     );
   },
 };

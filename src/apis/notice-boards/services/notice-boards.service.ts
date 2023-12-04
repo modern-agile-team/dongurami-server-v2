@@ -25,7 +25,7 @@ export class NoticeBoardsService {
     @InjectRepository(NoticeBoard)
     private readonly noticeBoardRepository: Repository<NoticeBoard>,
   ) {}
-  
+
   async create(userId: number, createNoticeBoardDto: CreateNoticeBoardDto) {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -62,6 +62,7 @@ export class NoticeBoardsService {
       }
 
       console.error(error);
+
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '공지게시글 생성 중 알 수 없는 에러',
@@ -78,7 +79,6 @@ export class NoticeBoardsService {
     findNoticeBoardListQueryDto: FindNoticeBoardListQueryDto,
   ): Promise<[NoticeBoardsItemDto[], number]> {
     const { page, pageSize, order, ...filter } = findNoticeBoardListQueryDto;
-    console.log(findNoticeBoardListQueryDto);
 
     const where = this.queryHelper.buildWherePropForFind(
       filter,

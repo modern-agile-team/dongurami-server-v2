@@ -25,8 +25,8 @@ export class NoticeBoardCommentHistory {
   description: string;
 
   @Column('boolean', {
-    name: 'isAnonymous',
-    comment: '작성자 익명 여부 (false: 실명, true: 익명)',
+    name: 'is_anonymous',
+    comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     default: () => false,
     transformer: new BooleanTransformer(),
   })

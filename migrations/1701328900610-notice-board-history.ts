@@ -160,7 +160,7 @@ export class NoticeBoardHistory1701328900610 implements MigrationInterface {
       'ALTER TABLE notice_board_comment_history COMMENT = "공지 게시글 댓글 수정이력"',
     );
 
-    // 공지 게시글 대댓글
+    // 공지 게시글 대댓글 수정이력
     await queryRunner.createTable(
       new Table({
         name: 'notice_board_reply_comment_history',

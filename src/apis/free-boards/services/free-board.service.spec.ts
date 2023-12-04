@@ -8,6 +8,7 @@ import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-histor
 import { SortOrder } from '@src/constants/enum';
 import { FreeBoard } from '@src/entities/FreeBoard';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { mockQueryHelper } from '@test/mock/mock.helper';
 import {
   mockDataSource,
@@ -111,6 +112,38 @@ describe(FreeBoardsService.name, () => {
         skip: 0,
         take: 20,
       });
+    });
+  });
+
+  describe(FreeBoardsService.prototype.findOneOrNotFound.name, () => {
+    let freeBoardId: number;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      freeBoardId = NaN;
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('not found free board', async () => {
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.findOneOrNotFound(freeBoardId)).rejects.toThrow(
+        HttpNotFoundException,
+      );
+    });
+
+    it('find one free board', async () => {
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        service.findOneOrNotFound(freeBoardId),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });
 });

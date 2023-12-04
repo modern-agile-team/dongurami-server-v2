@@ -43,6 +43,7 @@ export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {
       ]),
     );
   },
+
   FindAllAndCount: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,

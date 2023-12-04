@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -26,6 +27,9 @@ import { plainToInstance } from 'class-transformer';
 import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
 import { FreeBoardsService } from '../services/free-board.service';
 
+/**
+ * @todo soft delete 로 변경
+ */
 @ApiTags('free-boards')
 @Controller('free-boards')
 export class FreeBoardsController {
@@ -96,8 +100,21 @@ export class FreeBoardsController {
     );
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.freeBoardService.remove(+id);
-  // }
+  /**
+   * 테이블 참조 때문에 삭제 불가 개선 예정
+   */
+  @ApiFreeBoard.Remove({
+    summary:
+      '자유게시글 삭제 (현재 내부 사정으로 서버에러가 무조건적으로 발생합니다.',
+    deprecated: true,
+  })
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':freeBoardId')
+  remove(
+    @User() user: UserDto,
+    @Param('freeBoardId') freeBoardId: number,
+  ): Promise<number> {
+    return this.freeBoardService.remove(user.id, freeBoardId);
+  }
 }

@@ -47,6 +47,7 @@ export const mockFreeBoardsService: MockProvider<FreeBoardsService> = {
   patchUpdate: jest.fn(),
   findOneOrNotFound: jest.fn(),
   putUpdate: jest.fn(),
+  remove: jest.fn(),
 };
 
 export const mockFreeBoardHistoryService: MockProvider<FreeBoardHistoryService> =

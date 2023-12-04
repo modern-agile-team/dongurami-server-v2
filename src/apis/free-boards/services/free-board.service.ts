@@ -292,7 +292,35 @@ export class FreeBoardsService {
     }
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} freeBoard`;
-  // }
+  /**
+   * 테이블 참조 때문에 삭제 불가 개선 예정
+   */
+  async remove(userId: number, freeBoardId: number): Promise<number> {
+    const existFreeBoard = await this.freeBoardRepository.findOne({
+      select: {
+        userId: true,
+      },
+      where: {
+        id: freeBoardId,
+      },
+    });
+
+    if (!existFreeBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (userId !== existFreeBoard.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const freeBoardDeleteResult = await this.freeBoardRepository.delete({
+      id: freeBoardId,
+    });
+
+    return freeBoardDeleteResult.affected;
+  }
 }

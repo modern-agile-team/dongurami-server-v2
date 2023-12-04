@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
 import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
 import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
 import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
+import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreeBoard } from '@src/entities/FreeBoard';
@@ -48,6 +50,7 @@ export class FreeBoardsService {
         .withRepository(this.freeBoardRepository)
         .save({
           userId,
+          status: FreeBoardStatus.Posting,
           ...createFreeBoardDto,
         });
 
@@ -55,10 +58,9 @@ export class FreeBoardsService {
         entityManager,
         userId,
         newPost.id,
+        HistoryAction.Insert,
         {
-          title: newPost.title,
-          description: newPost.description,
-          isAnonymous: newPost.isAnonymous,
+          ...newPost,
         },
       );
 
@@ -177,10 +179,9 @@ export class FreeBoardsService {
         entityManager,
         userId,
         freeBoardId,
+        HistoryAction.Update,
         {
-          title: newPost.title,
-          description: newPost.description,
-          isAnonymous: newPost.isAnonymous,
+          ...newPost,
         },
       );
 
@@ -264,10 +265,9 @@ export class FreeBoardsService {
         entityManager,
         userId,
         freeBoardId,
+        HistoryAction.Update,
         {
-          title: newPost.title,
-          description: newPost.description,
-          isAnonymous: newPost.isAnonymous,
+          ...newPost,
         },
       );
 

@@ -11,6 +11,8 @@ import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query
 import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
 import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { PutUpdateNoticeBoardDto } from '../dto/put-update-notice-board.dto';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 
 @Injectable()
 export class NoticeBoardsService {
@@ -114,5 +116,79 @@ export class NoticeBoardsService {
     }
 
     return new NoticeBoardDto(noticeBoard);
+  }
+
+  async putUpdate(
+    noticeBoardId: number,
+    userId: number,
+    putUpdateNoticeBoardDto: PutUpdateNoticeBoardDto,
+  ): Promise<NoticeBoardDto> {
+    const existBoard = await this.noticeBoardRepository.findOne({
+      select: { userId: true },
+      where: { id: noticeBoardId },
+    });
+
+    if (!existBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (existBoard.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    queryRunner.connect();
+    queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+      await entityManager.withRepository(this.noticeBoardRepository).update(
+        {
+          id: noticeBoardId,
+        },
+        {
+          ...putUpdateNoticeBoardDto,
+        },
+      );
+
+      const newPost = await entityManager
+        .withRepository(this.noticeBoardRepository)
+        .findOneByOrFail({ id: noticeBoardId });
+
+      await this.noticeBoardHistoryService.create(
+        entityManager,
+        userId,
+        noticeBoardId,
+        {
+          title: newPost.title,
+          description: newPost.description,
+          allowComment: newPost.allowComment,
+        },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new NoticeBoardDto(newPost);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        stack: error.stack,
+        ctx: '공지게시글 업데이트 중 알 수 없는 에러',
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
   }
 }

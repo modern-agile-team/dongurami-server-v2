@@ -10,6 +10,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
 import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
 import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
 export class NoticeBoardsService {
@@ -99,5 +100,19 @@ export class NoticeBoardsService {
       skip: page * pageSize,
       take: pageSize,
     });
+  }
+
+  async findOneOrNotFound(noticeboardId: number): Promise<NoticeBoardDto> {
+    const noticeBoard = await this.noticeBoardRepository.findOneBy({
+      id: noticeboardId,
+    });
+
+    if (!noticeBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return new NoticeBoardDto(noticeBoard);
   }
 }

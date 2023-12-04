@@ -17,6 +17,8 @@ import { NoticeBoardHistoryService } from '../notice-board-history/services/noti
 import { NoticeBoard } from '@src/entities/NoticeBoard';
 import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { PutUpdateNoticeBoardDto } from '../dto/put-update-notice-board.dto';
 
 describe(NoticeBoardsService.name, () => {
   let service: NoticeBoardsService;
@@ -145,6 +147,60 @@ describe(NoticeBoardsService.name, () => {
 
       await expect(
         service.findOneOrNotFound(noticeBoardId),
+      ).resolves.toBeInstanceOf(NoticeBoardDto);
+    });
+  });
+
+  describe(NoticeBoardsService.prototype.putUpdate.name, () => {
+    let userId: number;
+    let noticeBoardId: number;
+    let putUpdateNoticeBoardDto: PutUpdateNoticeBoardDto;
+
+    beforeEach(() => {
+      userId = NaN;
+      noticeBoardId = NaN;
+      putUpdateNoticeBoardDto = new PutUpdateNoticeBoardDto();
+    });
+
+    it('not found notice board throw httpNotFound', async () => {
+      userId = faker.number.int();
+      noticeBoardId = faker.number.int();
+
+      mockNoticeBoardRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.putUpdate(noticeBoardId, userId, putUpdateNoticeBoardDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('not owner throw httpForbidden', async () => {
+      userId = faker.number.int();
+      noticeBoardId = faker.number.int();
+
+      mockNoticeBoardRepository.findOne.mockResolvedValue({
+        userId: userId + 1,
+      });
+
+      await expect(
+        service.putUpdate(noticeBoardId, userId, putUpdateNoticeBoardDto),
+      ).rejects.toThrow(HttpForbiddenException);
+    });
+
+    it('update notice board and create history', async () => {
+      userId = faker.number.int();
+      noticeBoardId = faker.number.int();
+
+      putUpdateNoticeBoardDto.title = 'newTitle';
+      putUpdateNoticeBoardDto.description = 'newDescription';
+      putUpdateNoticeBoardDto.allowComment = false;
+
+      mockNoticeBoardRepository.findOne.mockResolvedValue({ userId });
+      mockNoticeBoardRepository.findOneByOrFail.mockResolvedValue({
+        putUpdateNoticeBoardDto,
+      });
+
+      await expect(
+        service.putUpdate(noticeBoardId, userId, putUpdateNoticeBoardDto),
       ).resolves.toBeInstanceOf(NoticeBoardDto);
     });
   });

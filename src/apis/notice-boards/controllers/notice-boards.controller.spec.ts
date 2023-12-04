@@ -7,6 +7,7 @@ import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query
 import { NoticeBoardDto } from '../dto/notice-board.dto';
 import { NoticeBoardsService } from '../services/notice-boards.service';
 import { NoticeBoardsController } from './notice-boards.controller';
+import { PutUpdateNoticeBoardDto } from '../dto/put-update-notice-board.dto';
 
 describe(NoticeBoardsController.name, () => {
   let controller: NoticeBoardsController;
@@ -93,6 +94,26 @@ describe(NoticeBoardsController.name, () => {
 
       await expect(
         controller.findOneOrNotFound(noticeBoardId),
+      ).resolves.toBeInstanceOf(NoticeBoardDto);
+    });
+  });
+
+  describe(NoticeBoardsController.prototype.putUpdate.name, () => {
+    let user: UserDto;
+    let noticeBoardId: number;
+    let putUpdateNoticeBoardDto: PutUpdateNoticeBoardDto;
+
+    beforeEach(() => {
+      user = new UserDto();
+      noticeBoardId = NaN;
+      putUpdateNoticeBoardDto = new PutUpdateNoticeBoardDto();
+    });
+
+    it('put update', async () => {
+      mockNoticeBoardsService.putUpdate.mockResolvedValue(new NoticeBoardDto());
+
+      await expect(
+        controller.putUpdate(noticeBoardId, user, putUpdateNoticeBoardDto),
       ).resolves.toBeInstanceOf(NoticeBoardDto);
     });
   });

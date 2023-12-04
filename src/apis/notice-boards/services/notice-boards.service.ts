@@ -25,6 +25,7 @@ export class NoticeBoardsService {
     @InjectRepository(NoticeBoard)
     private readonly noticeBoardRepository: Repository<NoticeBoard>,
   ) {}
+  
   async create(userId: number, createNoticeBoardDto: CreateNoticeBoardDto) {
     const queryRunner = this.dataSource.createQueryRunner();
 

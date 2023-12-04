@@ -15,7 +15,7 @@ export const NOTICE_BOARD_TITLE_LENGTH = {
   MAX: 255,
 } as const;
 
-export const NOTICE_BOARD_ALLOW_COMMENT_LENGTH = {
-  MIN: 0,
-  MAX: 1,
-};
+export const NOTICE_BOARD_ALLOW_COMMENT = {
+  TRUE: true,
+  FALSE: false,
+} as const;

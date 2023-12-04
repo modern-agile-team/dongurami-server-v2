@@ -9,6 +9,7 @@ import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { FreeBoardReplyCommentHistory } from '@src/entities/FreeBoardReplyCommentHistory';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
 import { NoticeBoardComment } from '@src/entities/NoticeBoardComment';
+import { UserHistory } from '@src/entities/UserHistory';
 import {
   Column,
   Entity,
@@ -236,4 +237,7 @@ export class User {
   })
   @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
   major: Major;
+
+  @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
+  userHistories: UserHistory[];
 }

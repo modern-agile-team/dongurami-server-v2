@@ -1,3 +1,4 @@
+import { UserHistory } from 'output/entities/UserHistory';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 
@@ -36,4 +37,7 @@ export class Major {
 
   @OneToMany(() => User, (user) => user.major)
   users: User[];
+
+  @OneToMany(() => UserHistory, (userHistory) => userHistory.major)
+  userHistories: UserHistory[];
 }

@@ -1,7 +1,12 @@
 import { PageDto } from '@src/dto/page.dto';
 import { NoticeBoardDto } from './notice-board.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBooleanString, IsOptional, Length } from 'class-validator';
+import {
+  IsBooleanString,
+  IsDefined,
+  IsOptional,
+  Length,
+} from 'class-validator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import {
   NOTICE_BOARD_ORDER_FIELD,
@@ -10,6 +15,7 @@ import {
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { SortOrder } from '@src/constants/enum';
+import { NoticeBoardStatus } from '../constants/notice-board.enum';
 
 export class FindNoticeBoardListQueryDto
   extends PageDto
@@ -52,4 +58,7 @@ export class FindNoticeBoardListQueryDto
   @CsvToOrder<typeof NOTICE_BOARD_ORDER_FIELD>([...NOTICE_BOARD_ORDER_FIELD])
   @IsOptional()
   order: Order<typeof NOTICE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
+
+  @IsDefined()
+  status: NoticeBoardStatus.Posting;
 }

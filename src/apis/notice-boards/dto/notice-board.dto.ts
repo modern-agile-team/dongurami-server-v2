@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@src/dto/base.dto';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
 import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-board.constant';
+import { Exclude } from 'class-transformer';
+import { NoticeBoardStatus } from '../constants/notice-board.enum';
 
 export class NoticeBoardDto
   extends BaseDto
@@ -14,8 +16,10 @@ export class NoticeBoardDto
       | 'userId'
       | 'hit'
       | 'isAllowComment'
+      | 'status'
       | 'createdAt'
       | 'updatedAt'
+      | 'deletedAt'
     >
 {
   @ApiProperty({
@@ -48,6 +52,12 @@ export class NoticeBoardDto
     default: true,
   })
   isAllowComment: boolean;
+
+  @Exclude()
+  status: NoticeBoardStatus;
+
+  @Exclude()
+  deletedAt: Date;
 
   constructor(noticeBoardDto: Partial<NoticeBoardDto> = {}) {
     super();

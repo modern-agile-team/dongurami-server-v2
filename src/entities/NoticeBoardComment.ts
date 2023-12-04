@@ -10,7 +10,7 @@ import { NoticeBoard } from './NoticeBoard';
 import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
 import { User } from './User';
-import { BooleanTransformer } from './transformers/boolean.transfomer';
+import { BooleanTransformer } from './transformers/boolean.transformer';
 
 @Entity('notice_board_comment', { schema: 'dongurami_local_db' })
 export class NoticeBoardComment {

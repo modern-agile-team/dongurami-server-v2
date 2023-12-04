@@ -11,7 +11,8 @@ import { NoticeBoardReaction } from './NoticeBoardReaction';
 import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
 import { User } from './User';
 import { NoticeBoardHistory } from './NoticeBoardHistory';
-import { BooleanTransformer } from './transformers/boolean.transfomer';
+import { BooleanTransformer } from './transformers/boolean.transformer';
+import { NoticeBoardStatus } from '@src/apis/notice-boards/constants/notice-board.enum';
 
 @Entity('notice_board', { schema: 'dongurami_local_db' })
 export class NoticeBoard {
@@ -45,6 +46,13 @@ export class NoticeBoard {
   })
   isAllowComment: boolean;
 
+  @Column('enum', {
+    name: 'status',
+    comment: '공지게시글 상태',
+    enum: NoticeBoardStatus,
+  })
+  status: NoticeBoardStatus;
+
   @Column('timestamp', {
     name: 'created_at',
     comment: '생성 일자',
@@ -58,6 +66,13 @@ export class NoticeBoard {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @Column('timestamp', {
+    name: 'deleted_at',
+    nullable: true,
+    comment: '삭제 일자',
+  })
+  deletedAt: Date | null;
 
   @Column('int', {
     name: 'user_id',

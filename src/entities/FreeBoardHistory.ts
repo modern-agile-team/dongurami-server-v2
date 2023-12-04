@@ -1,4 +1,4 @@
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transfomer';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,

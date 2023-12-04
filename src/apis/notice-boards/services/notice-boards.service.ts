@@ -10,6 +10,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
 import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
 import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
+import { HistoryAction } from '@src/constants/enum';
 
 @Injectable()
 export class NoticeBoardsService {
@@ -41,15 +42,15 @@ export class NoticeBoardsService {
           userId,
           ...createNoticeBoardDto,
         });
+      console.log(newPost);
 
       await this.noticeBoardHistoryService.create(
         entityManager,
         newPost.userId,
         newPost.id,
+        HistoryAction.Insert,
         {
-          title: newPost.title,
-          description: newPost.description,
-          isAllowComment: newPost.isAllowComment,
+          ...newPost,
         },
       );
 

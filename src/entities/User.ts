@@ -52,7 +52,7 @@ export class User {
   @Column('enum', {
     name: 'login_type',
     comment: '로그인 타입',
-    enum: ['email'],
+    enum: UserLoginType,
   })
   loginType: UserLoginType;
 
@@ -105,7 +105,7 @@ export class User {
   @Column('enum', {
     name: 'role',
     comment: '역할 (admin: service admin, student: 학생)',
-    enum: ['admin', 'student'],
+    enum: UserRole,
     default: () => "'student'",
   })
   role: UserRole;

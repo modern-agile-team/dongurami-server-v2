@@ -1,4 +1,8 @@
-import { UserRole, UserStatus } from '@src/apis/users/constants/user.enum';
+import {
+  UserLoginType,
+  UserRole,
+  UserStatus,
+} from '@src/apis/users/constants/user.enum';
 import { HistoryAction } from '@src/constants/enum';
 import {
   Column,
@@ -37,16 +41,16 @@ export class UserHistory {
   @Column('enum', {
     name: 'action',
     comment: 'history 를 쌓는 action',
-    enum: ['insert', 'update', 'delete'],
+    enum: HistoryAction,
   })
   action: HistoryAction;
 
   @Column('enum', {
     name: 'login_type',
     comment: '로그인 타입',
-    enum: ['email'],
+    enum: UserLoginType,
   })
-  loginType: 'email';
+  loginType: UserLoginType;
 
   @Column('varchar', { name: 'name', comment: '유저 이름', length: 20 })
   name: string;
@@ -97,7 +101,7 @@ export class UserHistory {
   @Column('enum', {
     name: 'role',
     comment: '역할 (admin: service admin, student: 학생)',
-    enum: ['admin', 'student'],
+    enum: UserRole,
     default: () => "'student'",
   })
   role: UserRole;
@@ -105,7 +109,7 @@ export class UserHistory {
   @Column('enum', {
     name: 'status',
     comment: '유저 상태',
-    enum: ['active', 'inactive'],
+    enum: UserStatus,
   })
   status: UserStatus;
 

@@ -1,102 +1,19 @@
-import {
-  ClassSerializerInterceptor,
-  Logger,
-  ValidationError,
-  ValidationPipe,
-} from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
-import { AppConfigService } from '@src/core/app-config/services/app-config.service';
-import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
-import { HttpBadRequestExceptionFilter } from '@src/http-exceptions/filters/http-bad-request-exception.filter';
-import { HttpConflictExceptionFilter } from '@src/http-exceptions/filters/http-conflict-exception.filter';
-import { HttpForbiddenExceptionFilter } from '@src/http-exceptions/filters/http-forbidden-exception.filter';
-import { HttpInternalServerErrorExceptionFilter } from '@src/http-exceptions/filters/http-internal-server-error-exception.filter';
-import { HttpNotFoundExceptionFilter } from '@src/http-exceptions/filters/http-not-found-exception.filter';
-import { HttpPathNotFoundExceptionFilter } from '@src/http-exceptions/filters/http-path-not-found-exception.filter';
-import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/http-process-error-exception.filter';
-import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
-import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
-import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
+import { NestFactory } from '@nestjs/core';
+import { AppService } from '@src/app.service';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = new Logger();
+  const appService = app.get<AppService>(AppService);
 
-  const appConfigService = app.get<AppConfigService>(AppConfigService);
-  const PORT = appConfigService.get<number>(ENV_KEY.PORT);
-  const isProduction = appConfigService.isProduction();
+  appService.setCors(app);
+  appService.setLogger(app);
+  appService.setPathPrefix(app);
+  appService.setInterceptor(app);
+  appService.setPipe(app);
+  appService.setFilter(app);
+  appService.setSwagger(app);
 
-  app.enableCors();
-  app.useLogger(logger);
-  app.setGlobalPrefix('api');
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector)),
-    app.get<SuccessInterceptor>(SuccessInterceptor),
-  );
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-
-      exceptionFactory(validationErrors: ValidationError[]) {
-        throw new HttpBadRequestException({
-          code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
-          errors: validationErrors.flatMap((validationError) => {
-            return {
-              property: validationError.property,
-              value: validationError.value,
-              reason: Object.values(validationError.constraints)[0] || '',
-            };
-          }),
-        });
-      },
-    }),
-  );
-
-  if (!isProduction) {
-    const DOMAIN = appConfigService.get<string>(ENV_KEY.DOMAIN);
-    const JSON_PATH = 'api-docs-json';
-    const YAML_PATH = 'api-docs-yaml';
-
-    const config = new DocumentBuilder()
-      .setTitle('dongurami v2')
-      .setDescription(
-        'dongurami v2 api</br>' +
-          `<a target="_black" href="${DOMAIN}/${JSON_PATH}">json document</a></br>` +
-          `<a target="_black" href="${DOMAIN}/${YAML_PATH}">yaml document</a></br>`,
-      )
-      .setVersion('0.1')
-      .addBearerAuth()
-      .build();
-
-    const document = SwaggerModule.createDocument(app, config, {});
-
-    SwaggerModule.setup('api-docs', app, document, {
-      jsonDocumentUrl: JSON_PATH,
-      yamlDocumentUrl: YAML_PATH,
-      swaggerOptions: {
-        persistAuthorization: true,
-      },
-    });
-  }
-
-  app.useGlobalFilters(
-    app.get(HttpProcessErrorExceptionFilter),
-    app.get(HttpRemainderExceptionFilter),
-    app.get(HttpInternalServerErrorExceptionFilter),
-    app.get(HttpConflictExceptionFilter),
-    app.get(HttpNotFoundExceptionFilter),
-    app.get(HttpPathNotFoundExceptionFilter),
-    app.get(HttpForbiddenExceptionFilter),
-    app.get(HttpUnauthorizedExceptionFilter),
-    app.get(HttpBadRequestExceptionFilter),
-  );
-
-  await app.listen(PORT);
+  await appService.startingServer(app);
 }
 bootstrap();

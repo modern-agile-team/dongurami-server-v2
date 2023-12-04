@@ -37,11 +37,10 @@ export class NoticeBoard {
   })
   hit: number;
 
-  @Column('tinyint', {
+  @Column('bool', {
     name: 'allow_comment',
-    comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
-    unsigned: true,
-    default: () => "'1'",
+    comment: '댓글 허용 여부 (false: 비활성화, true: 허용)',
+    default: () => true,
     transformer: new BooleanTransformer(),
   })
   allowComment: boolean;

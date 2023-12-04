@@ -1,7 +1,7 @@
 import { PageDto } from '@src/dto/page.dto';
 import { NoticeBoardDto } from './notice-board.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBooleanString, IsOptional, Length } from 'class-validator';
+import { IsBoolean, IsOptional, Length } from 'class-validator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import {
   NOTICE_BOARD_ORDER_FIELD,
@@ -42,9 +42,9 @@ export class FindNoticeBoardListQueryDto
 
   @ApiPropertyOptional({
     description: '댓글 허용 여부',
-    enum: ['true', 'false', '0', '1'],
+    enum: ['true', 'false'],
   })
-  @IsBooleanString()
+  @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)
   allowComment?: boolean;

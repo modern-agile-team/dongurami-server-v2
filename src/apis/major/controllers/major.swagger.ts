@@ -50,7 +50,9 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
         operationId: 'GetAllMajors',
         ...apiOperationOptions,
       }),
-      CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'major', MajorDto),
+      CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'majors', MajorDto, {
+        isArray: true,
+      }),
       HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
         COMMON_ERROR_CODE.SERVER_ERROR,
       ]),

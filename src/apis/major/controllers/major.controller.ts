@@ -8,8 +8,8 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 
-@ApiTags('major')
-@Controller('major')
+@ApiTags('majors')
+@Controller('majors')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 

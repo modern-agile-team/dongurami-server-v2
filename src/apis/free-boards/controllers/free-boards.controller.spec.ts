@@ -74,6 +74,28 @@ describe(FreeBoardsController.name, () => {
     });
   });
 
+  describe(FreeBoardsController.prototype.findOneOrNotFound.name, () => {
+    let freeBoardId: number;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      freeBoardId = NaN;
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('findOneFreeBoard', async () => {
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardsService.findOneOrNotFound.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        controller.findOneOrNotFound(freeBoardId),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
+    });
+  });
+
   describe(FreeBoardsController.prototype.putUpdate.name, () => {
     let user: UserDto;
     let freeBoardId: number;

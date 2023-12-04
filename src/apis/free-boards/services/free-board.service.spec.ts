@@ -117,6 +117,38 @@ describe(FreeBoardsService.name, () => {
     });
   });
 
+  describe(FreeBoardsService.prototype.findOneOrNotFound.name, () => {
+    let freeBoardId: number;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      freeBoardId = NaN;
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('not found free board', async () => {
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(service.findOneOrNotFound(freeBoardId)).rejects.toThrow(
+        HttpNotFoundException,
+      );
+    });
+
+    it('find one free board', async () => {
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        service.findOneOrNotFound(freeBoardId),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
+    });
+  });
+
   describe(FreeBoardsService.prototype.putUpdate.name, () => {
     let userId: number;
     let freeBoardId: number;

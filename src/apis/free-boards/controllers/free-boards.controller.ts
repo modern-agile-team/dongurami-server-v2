@@ -53,10 +53,14 @@ export class FreeBoardsController {
     return [plainToInstance(FreeBoardsItemDto, freeBoards), count];
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.freeBoardService.findOne(+id);
-  // }
+  @ApiFreeBoard.FindOneOrNotFound({ summary: '자유게시글 상세조회' })
+  @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })
+  @Get(':freeBoardId')
+  findOneOrNotFound(
+    @Param('freeBoardId', ParsePositiveIntPipe) freeBoardId: number,
+  ): Promise<FreeBoardDto> {
+    return this.freeBoardService.findOneOrNotFound(freeBoardId);
+  }
 
   @ApiFreeBoard.PutUpdate({ summary: '자유게시글 수정' })
   @SetResponse({ type: ResponseType.Detail, key: 'freeBoard' })

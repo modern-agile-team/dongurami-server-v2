@@ -106,9 +106,19 @@ export class FreeBoardsService {
     });
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} freeBoard`;
-  // }
+  async findOneOrNotFound(freeBoardId: number): Promise<FreeBoardDto> {
+    const freeBoard = await this.freeBoardRepository.findOneBy({
+      id: freeBoardId,
+    });
+
+    if (!freeBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return new FreeBoardDto(freeBoard);
+  }
 
   async putUpdate(
     userId: number,

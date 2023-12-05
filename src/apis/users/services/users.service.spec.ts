@@ -1,14 +1,24 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UsersService } from '@src/apis/users/services/users.service';
+import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
+import { Major } from '@src/entities/Major';
 import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
-import { mockUserRepository } from '@test/mock/mock.repository';
-import { mockEncryptionService } from '@test/mock/mock.service';
+import {
+  mockDataSource,
+  mockMajorRepository,
+  mockUserRepository,
+} from '@test/mock/mock.repository';
+import {
+  mockEncryptionService,
+  mockUserHistoryService,
+} from '@test/mock/mock.service';
+import { DataSource } from 'typeorm';
 
 describe(UsersService.name, () => {
   let service: UsersService;
@@ -18,12 +28,24 @@ describe(UsersService.name, () => {
       providers: [
         UsersService,
         {
+          provide: UserHistoryService,
+          useValue: mockUserHistoryService,
+        },
+        {
           provide: EncryptionService,
           useValue: mockEncryptionService,
         },
         {
-          provide: UserRepository,
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
+        {
+          provide: getRepositoryToken(User),
           useValue: mockUserRepository,
+        },
+        {
+          provide: getRepositoryToken(Major),
+          useValue: mockMajorRepository,
         },
       ],
     }).compile();
@@ -89,6 +111,7 @@ describe(UsersService.name, () => {
       newUser.name = createUserRequestBodyDto.name;
       newUser.password = originPassword;
 
+      mockMajorRepository.findOne.mockResolvedValue({ id: 1 });
       mockUserRepository.findOne.mockResolvedValue(null);
       mockUserRepository.create.mockReturnValue(createUserRequestBodyDto);
       mockEncryptionService.hash.mockResolvedValue(hashedPassword);

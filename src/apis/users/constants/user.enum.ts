@@ -11,3 +11,8 @@ export enum UserGender {
 export enum UserLoginType {
   Email = 'email',
 }
+
+export enum UserStatus {
+  Inactive = 'inactive',
+  Active = 'active',
+}

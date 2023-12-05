@@ -1,20 +1,32 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserStatus } from '@src/apis/users/constants/user.enum';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { UserRepository } from '@src/apis/users/repositories/user.repository';
+import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
+import { HistoryAction } from '@src/constants/enum';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
+import { Major } from '@src/entities/Major';
 import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
-import { FindOptionsWhere } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   private readonly SALT = 10;
 
   constructor(
+    private readonly userHistoryService: UserHistoryService,
     private readonly encryptionService: EncryptionService,
-    private readonly userRepository: UserRepository,
+
+    private readonly dataSource: DataSource,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Major)
+    private readonly majorRepository: Repository<Major>,
   ) {}
 
   async create(createUserRequestBodyDto: CreateUserRequestBodyDto) {
@@ -47,18 +59,70 @@ export class UsersService {
       }
     }
 
-    const newUser = this.userRepository.create(createUserRequestBodyDto);
+    /**
+     * @todo client 에게 받게끔 변경
+     * @todo majorService 에서 값 받아오게끔 변경
+     */
+    const major = await this.majorRepository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        code: '01',
+      },
+    });
+    createUserRequestBodyDto.majorId = major.id;
 
-    if (newUser.password) {
-      newUser.password = await this.encryptionService.hash(
-        createUserRequestBodyDto.password,
-        this.SALT,
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      const newUser = this.userRepository.create({
+        ...createUserRequestBodyDto,
+        status: UserStatus.Active,
+      });
+
+      if (newUser.password) {
+        newUser.password = await this.encryptionService.hash(
+          createUserRequestBodyDto.password,
+          this.SALT,
+        );
+      }
+
+      await entityManager.withRepository(this.userRepository).save(newUser);
+
+      await this.userHistoryService.create(
+        entityManager,
+        newUser.id,
+        HistoryAction.Insert,
+        {
+          ...newUser,
+        },
       );
+
+      await queryRunner.commitTransaction();
+
+      return new UserDto(newUser);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '유저 생성 중 알 수 없는 에러',
+        stack: error.stack,
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
     }
-
-    await this.userRepository.save(newUser);
-
-    return new UserDto(newUser);
   }
 
   async findOneById(id: number): Promise<UserDto | null> {

@@ -2,12 +2,14 @@ import {
   UserGender,
   UserLoginType,
   UserRole,
+  UserStatus,
 } from '@src/apis/users/constants/user.enum';
 import { FreeBoardCommentHistory } from '@src/entities/FreeBoardCommentHistory';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { FreeBoardReplyCommentHistory } from '@src/entities/FreeBoardReplyCommentHistory';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
 import { NoticeBoardComment } from '@src/entities/NoticeBoardComment';
+import { UserHistory } from '@src/entities/UserHistory';
 import {
   Column,
   Entity,
@@ -50,7 +52,7 @@ export class User {
   @Column('enum', {
     name: 'login_type',
     comment: '로그인 타입',
-    enum: ['email'],
+    enum: UserLoginType,
   })
   loginType: UserLoginType;
 
@@ -103,10 +105,17 @@ export class User {
   @Column('enum', {
     name: 'role',
     comment: '역할 (admin: service admin, student: 학생)',
-    enum: ['admin', 'student'],
+    enum: UserRole,
     default: () => "'student'",
   })
   role: UserRole;
+
+  @Column('enum', {
+    name: 'status',
+    comment: '유저 상태',
+    enum: UserStatus,
+  })
+  status: UserStatus;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -121,6 +130,13 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @Column('timestamp', {
+    name: 'deleted_at',
+    nullable: true,
+    comment: '삭제 일자',
+  })
+  deletedAt: Date | null;
 
   @OneToMany(
     () => ClubJoinApplication,
@@ -221,4 +237,7 @@ export class User {
   })
   @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
   major: Major;
+
+  @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
+  userHistories: UserHistory[];
 }

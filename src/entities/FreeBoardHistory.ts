@@ -1,3 +1,5 @@
+import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
+import { HistoryAction } from '@src/constants/enum';
 import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
 import {
   Column,
@@ -36,6 +38,13 @@ export class FreeBoardHistory {
   })
   freeBoardId: number;
 
+  @Column('enum', {
+    name: 'action',
+    comment: 'history 를 쌓는 action',
+    enum: ['insert', 'update', 'delete'],
+  })
+  action: HistoryAction;
+
   @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
   title: string;
 
@@ -50,6 +59,13 @@ export class FreeBoardHistory {
     transformer: new BooleanTransformer(),
   })
   isAnonymous: boolean;
+
+  @Column('enum', {
+    name: 'status',
+    comment: '자유게시글 상태',
+    enum: FreeBoardStatus,
+  })
+  status: FreeBoardStatus;
 
   @Column('timestamp', {
     name: 'created_at',

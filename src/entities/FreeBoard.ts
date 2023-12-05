@@ -76,7 +76,7 @@ export class FreeBoard {
   updatedAt: Date;
 
   @Column('timestamp', {
-    name: 'deletedAt',
+    name: 'deleted_at',
     nullable: true,
     comment: '삭제 일자',
   })

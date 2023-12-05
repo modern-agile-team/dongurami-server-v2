@@ -12,6 +12,7 @@ import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
 import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
 import { HistoryAction } from '@src/constants/enum';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { NoticeBoardStatus } from '../constants/notice-board.enum';
 
 @Injectable()
 export class NoticeBoardsService {
@@ -107,6 +108,7 @@ export class NoticeBoardsService {
   async findOneOrNotFound(noticeboardId: number): Promise<NoticeBoardDto> {
     const noticeBoard = await this.noticeBoardRepository.findOneBy({
       id: noticeboardId,
+      status: NoticeBoardStatus.Posting,
     });
 
     if (!noticeBoard) {

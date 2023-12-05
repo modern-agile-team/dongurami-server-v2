@@ -1,5 +1,4 @@
 import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
-import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
 import {
   Column,
@@ -9,13 +8,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoardComment } from './FreeBoardComment';
-import { FreeBoardReaction } from './FreeBoardReaction';
-import { FreeBoardReplyComment } from './FreeBoardReplyComment';
+import { FreePostComment } from './FreePostComment';
+import { FreePostHistory } from './FreePostHistory';
+import { FreePostReaction } from './FreePostReaction';
+import { FreePostReplyComment } from './FreePostReplyComment';
 import { User } from './User';
 
-@Entity('free_board', { schema: 'dongurami_v2' })
-export class FreeBoard {
+@Entity('free_post', { schema: 'dongurami_v2' })
+export class FreePost {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -82,7 +82,7 @@ export class FreeBoard {
   })
   deletedAt: Date | null;
 
-  @ManyToOne(() => User, (user) => user.freeBoards, {
+  @ManyToOne(() => User, (user) => user.freePosts, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -90,26 +90,26 @@ export class FreeBoard {
   user: User;
 
   @OneToMany(
-    () => FreeBoardComment,
-    (freeBoardComment) => freeBoardComment.freeBoard,
+    () => FreePostComment,
+    (freePostComment) => freePostComment.freePost,
   )
-  freeBoardComments: FreeBoardComment[];
+  freePostComments: FreePostComment[];
 
   @OneToMany(
-    () => FreeBoardHistory,
-    (freeBoardHistory) => freeBoardHistory.freeBoard,
+    () => FreePostHistory,
+    (freePostHistory) => freePostHistory.freePost,
   )
-  freeBoardHistories: FreeBoardHistory[];
+  freePostHistories: FreePostHistory[];
 
   @OneToMany(
-    () => FreeBoardReaction,
-    (freeBoardReaction) => freeBoardReaction.freeBoard,
+    () => FreePostReaction,
+    (freePostReaction) => freePostReaction.freePost,
   )
-  freeBoardReactions: FreeBoardReaction[];
+  freePostReactions: FreePostReaction[];
 
   @OneToMany(
-    () => FreeBoardReplyComment,
-    (freeBoardReplyComment) => freeBoardReplyComment.freeBoard,
+    () => FreePostReplyComment,
+    (freePostReplyComment) => freePostReplyComment.freePost,
   )
-  freeBoardReplyComments: FreeBoardReplyComment[];
+  freePostReplyComments: FreePostReplyComment[];
 }

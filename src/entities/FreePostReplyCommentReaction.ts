@@ -5,16 +5,16 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoard } from './FreeBoard';
+import { FreePostReplyComment } from './FreePostReplyComment';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('free_board_reaction', { schema: 'dongurami_v2' })
-export class FreeBoardReaction {
+@Entity('free_post_reply_comment_reaction', { schema: 'dongurami_v2' })
+export class FreePostReplyCommentReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '자유 게시글 반응 고유 ID',
+    comment: '자유 게시글 대댓글 반응 고유 ID',
     unsigned: true,
   })
   id: number;
@@ -26,23 +26,27 @@ export class FreeBoardReaction {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.freeBoardReactions, {
+  @ManyToOne(() => User, (user) => user.freePostReplyCommentReactions, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
 
-  @ManyToOne(() => FreeBoard, (freeBoard) => freeBoard.freeBoardReactions, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn([{ name: 'free_board_id', referencedColumnName: 'id' }])
-  freeBoard: FreeBoard;
+  @ManyToOne(
+    () => FreePostReplyComment,
+    (freePostReplyComment) =>
+      freePostReplyComment.freePostReplyCommentReactions,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  @JoinColumn([
+    { name: 'free_post_reply_comment_id', referencedColumnName: 'id' },
+  ])
+  freePostReplyComment: FreePostReplyComment;
 
   @ManyToOne(
     () => ReactionType,
-    (reactionType) => reactionType.freeBoardReactions,
+    (reactionType) => reactionType.freePostReplyCommentReactions,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([{ name: 'reaction_type_id', referencedColumnName: 'id' }])

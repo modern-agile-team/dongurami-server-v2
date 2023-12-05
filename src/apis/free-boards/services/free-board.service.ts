@@ -10,7 +10,7 @@ import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-histor
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
-import { FreeBoard } from '@src/entities/FreeBoard';
+import { FreePost } from '@src/entities/FreePost';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -33,8 +33,8 @@ export class FreeBoardsService {
     private readonly queryHelper: QueryHelper,
 
     private readonly dataSource: DataSource,
-    @InjectRepository(FreeBoard)
-    private readonly freeBoardRepository: Repository<FreeBoard>,
+    @InjectRepository(FreePost)
+    private readonly freeBoardRepository: Repository<FreePost>,
   ) {}
 
   async create(userId: number, createFreeBoardDto: CreateFreeBoardDto) {

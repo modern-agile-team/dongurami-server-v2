@@ -6,12 +6,12 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoardHistory } from './FreeBoardHistory';
-import { FreeBoardReplyCommentHistory } from './FreeBoardReplyCommentHistory';
+import { FreePostHistory } from './FreePostHistory';
+import { FreePostReplyCommentHistory } from './FreePostReplyCommentHistory';
 import { User } from './User';
 
-@Entity('free_board_comment_history', { schema: 'dongurami_v2' })
-export class FreeBoardCommentHistory {
+@Entity('free_post_comment_history', { schema: 'dongurami_v2' })
+export class FreePostCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -38,7 +38,7 @@ export class FreeBoardCommentHistory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.freeBoardCommentHistories, {
+  @ManyToOne(() => User, (user) => user.freePostCommentHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
@@ -46,17 +46,17 @@ export class FreeBoardCommentHistory {
   user: User;
 
   @ManyToOne(
-    () => FreeBoardHistory,
-    (freeBoardHistory) => freeBoardHistory.freeBoardCommentHistories,
+    () => FreePostHistory,
+    (freePostHistory) => freePostHistory.freePostCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
-  @JoinColumn([{ name: 'free_board_history_id', referencedColumnName: 'id' }])
-  freeBoardHistory: FreeBoardHistory;
+  @JoinColumn([{ name: 'free_post_history_id', referencedColumnName: 'id' }])
+  freePostHistory: FreePostHistory;
 
   @OneToMany(
-    () => FreeBoardReplyCommentHistory,
-    (freeBoardReplyCommentHistory) =>
-      freeBoardReplyCommentHistory.freeBoardCommentHistory,
+    () => FreePostReplyCommentHistory,
+    (freePostReplyCommentHistory) =>
+      freePostReplyCommentHistory.freePostCommentHistory,
   )
-  freeBoardReplyCommentHistories: FreeBoardReplyCommentHistory[];
+  freePostReplyCommentHistories: FreePostReplyCommentHistory[];
 }

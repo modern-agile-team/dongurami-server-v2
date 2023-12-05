@@ -6,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoard } from './FreeBoard';
-import { FreeBoardComment } from './FreeBoardComment';
-import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
+import { FreePost } from './FreePost';
+import { FreePostComment } from './FreePostComment';
+import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
 import { User } from './User';
 
-@Entity('free_board_reply_comment', { schema: 'dongurami_v2' })
-export class FreeBoardReplyComment {
+@Entity('free_post_reply_comment', { schema: 'dongurami_v2' })
+export class FreePostReplyComment {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -50,22 +50,22 @@ export class FreeBoardReplyComment {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => FreeBoard, (freeBoard) => freeBoard.freeBoardReplyComments, {
+  @ManyToOne(() => FreePost, (freePost) => freePost.freePostReplyComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'free_board_id', referencedColumnName: 'id' }])
-  freeBoard: FreeBoard;
+  @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
+  freePost: FreePost;
 
   @ManyToOne(
-    () => FreeBoardComment,
-    (freeBoardComment) => freeBoardComment.freeBoardReplyComments,
+    () => FreePostComment,
+    (freePostComment) => freePostComment.freePostReplyComments,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn([{ name: 'free_board_comment_id', referencedColumnName: 'id' }])
-  freeBoardComment: FreeBoardComment;
+  @JoinColumn([{ name: 'free_post_comment_id', referencedColumnName: 'id' }])
+  freePostComment: FreePostComment;
 
-  @ManyToOne(() => User, (user) => user.freeBoardReplyComments, {
+  @ManyToOne(() => User, (user) => user.freePostReplyComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -73,9 +73,9 @@ export class FreeBoardReplyComment {
   user: User;
 
   @OneToMany(
-    () => FreeBoardReplyCommentReaction,
-    (freeBoardReplyCommentReaction) =>
-      freeBoardReplyCommentReaction.freeBoardReplyComment,
+    () => FreePostReplyCommentReaction,
+    (freePostReplyCommentReaction) =>
+      freePostReplyCommentReaction.freePostReplyComment,
   )
-  freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
+  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
 }

@@ -8,7 +8,7 @@ import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-
 import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
 import { SortOrder } from '@src/constants/enum';
-import { FreeBoard } from '@src/entities/FreeBoard';
+import { FreePost } from '@src/entities/FreePost';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -42,7 +42,7 @@ describe(FreeBoardsService.name, () => {
           useValue: mockDataSource,
         },
         {
-          provide: getRepositoryToken(FreeBoard),
+          provide: getRepositoryToken(FreePost),
           useValue: mockFreeBoardRepository,
         },
       ],

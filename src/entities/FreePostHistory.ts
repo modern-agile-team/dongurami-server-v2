@@ -9,13 +9,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoard } from './FreeBoard';
-import { FreeBoardCommentHistory } from './FreeBoardCommentHistory';
-import { FreeBoardReplyCommentHistory } from './FreeBoardReplyCommentHistory';
+import { FreePost } from './FreePost';
+import { FreePostCommentHistory } from './FreePostCommentHistory';
+import { FreePostReplyCommentHistory } from './FreePostReplyCommentHistory';
 import { User } from './User';
 
-@Entity('free_board_history', { schema: 'dongurami_v2' })
-export class FreeBoardHistory {
+@Entity('free_post_history', { schema: 'dongurami_v2' })
+export class FreePostHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -75,29 +75,29 @@ export class FreeBoardHistory {
   createdAt: Date;
 
   @OneToMany(
-    () => FreeBoardCommentHistory,
-    (freeBoardCommentHistory) => freeBoardCommentHistory.freeBoardHistory,
+    () => FreePostCommentHistory,
+    (freePostCommentHistory) => freePostCommentHistory.freePostHistory,
   )
-  freeBoardCommentHistories: FreeBoardCommentHistory[];
+  freePostCommentHistories: FreePostCommentHistory[];
 
-  @ManyToOne(() => User, (user) => user.freeBoardHistories, {
+  @ManyToOne(() => User, (user) => user.freePostHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
 
-  @ManyToOne(() => FreeBoard, (freeBoard) => freeBoard.freeBoardHistories, {
+  @ManyToOne(() => FreePost, (freePost) => freePost.freePostHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
-  @JoinColumn([{ name: 'free_board_id', referencedColumnName: 'id' }])
-  freeBoard: FreeBoard;
+  @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
+  freePost: FreePost;
 
   @OneToMany(
-    () => FreeBoardReplyCommentHistory,
-    (freeBoardReplyCommentHistory) =>
-      freeBoardReplyCommentHistory.freeBoardHistory,
+    () => FreePostReplyCommentHistory,
+    (freePostReplyCommentHistory) =>
+      freePostReplyCommentHistory.freePostHistory,
   )
-  freeBoardReplyCommentHistories: FreeBoardReplyCommentHistory[];
+  freePostReplyCommentHistories: FreePostReplyCommentHistory[];
 }

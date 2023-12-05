@@ -5,12 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoardCommentHistory } from './FreeBoardCommentHistory';
-import { FreeBoardHistory } from './FreeBoardHistory';
+import { FreePostCommentHistory } from './FreePostCommentHistory';
+import { FreePostHistory } from './FreePostHistory';
 import { User } from './User';
 
-@Entity('free_board_reply_comment_history', { schema: 'dongurami_v2' })
-export class FreeBoardReplyCommentHistory {
+@Entity('free_post_reply_comment_history', { schema: 'dongurami_v2' })
+export class FreePostReplyCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -42,17 +42,17 @@ export class FreeBoardReplyCommentHistory {
   createdAt: Date;
 
   @ManyToOne(
-    () => FreeBoardCommentHistory,
-    (freeBoardCommentHistory) =>
-      freeBoardCommentHistory.freeBoardReplyCommentHistories,
+    () => FreePostCommentHistory,
+    (freePostCommentHistory) =>
+      freePostCommentHistory.freePostReplyCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
   @JoinColumn([
-    { name: 'free_board_comment_history_id', referencedColumnName: 'id' },
+    { name: 'free_post_comment_history_id', referencedColumnName: 'id' },
   ])
-  freeBoardCommentHistory: FreeBoardCommentHistory;
+  freePostCommentHistory: FreePostCommentHistory;
 
-  @ManyToOne(() => User, (user) => user.freeBoardReplyCommentHistories, {
+  @ManyToOne(() => User, (user) => user.freePostReplyCommentHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
@@ -60,10 +60,10 @@ export class FreeBoardReplyCommentHistory {
   user: User;
 
   @ManyToOne(
-    () => FreeBoardHistory,
-    (freeBoardHistory) => freeBoardHistory.freeBoardReplyCommentHistories,
+    () => FreePostHistory,
+    (freePostHistory) => freePostHistory.freePostReplyCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
-  @JoinColumn([{ name: 'free_board_history_id', referencedColumnName: 'id' }])
-  freeBoardHistory: FreeBoardHistory;
+  @JoinColumn([{ name: 'free_post_history_id', referencedColumnName: 'id' }])
+  freePostHistory: FreePostHistory;
 }

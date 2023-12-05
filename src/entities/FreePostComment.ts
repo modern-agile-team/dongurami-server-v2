@@ -6,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreeBoard } from './FreeBoard';
-import { FreeBoardCommentReaction } from './FreeBoardCommentReaction';
-import { FreeBoardReplyComment } from './FreeBoardReplyComment';
+import { FreePost } from './FreePost';
+import { FreePostCommentReaction } from './FreePostCommentReaction';
+import { FreePostReplyComment } from './FreePostReplyComment';
 import { User } from './User';
 
-@Entity('free_board_comment', { schema: 'dongurami_v2' })
-export class FreeBoardComment {
+@Entity('free_post_comment', { schema: 'dongurami_v2' })
+export class FreePostComment {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -46,14 +46,14 @@ export class FreeBoardComment {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => FreeBoard, (freeBoard) => freeBoard.freeBoardComments, {
+  @ManyToOne(() => FreePost, (freePost) => freePost.freePostComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'free_board_id', referencedColumnName: 'id' }])
-  freeBoard: FreeBoard;
+  @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
+  freePost: FreePost;
 
-  @ManyToOne(() => User, (user) => user.freeBoardComments, {
+  @ManyToOne(() => User, (user) => user.freePostComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -61,14 +61,14 @@ export class FreeBoardComment {
   user: User;
 
   @OneToMany(
-    () => FreeBoardCommentReaction,
-    (freeBoardCommentReaction) => freeBoardCommentReaction.freeBoardComment,
+    () => FreePostCommentReaction,
+    (freePostCommentReaction) => freePostCommentReaction.freePostComment,
   )
-  freeBoardCommentReactions: FreeBoardCommentReaction[];
+  freePostCommentReactions: FreePostCommentReaction[];
 
   @OneToMany(
-    () => FreeBoardReplyComment,
-    (freeBoardReplyComment) => freeBoardReplyComment.freeBoardComment,
+    () => FreePostReplyComment,
+    (freePostReplyComment) => freePostReplyComment.freePostComment,
   )
-  freeBoardReplyComments: FreeBoardReplyComment[];
+  freePostReplyComments: FreePostReplyComment[];
 }

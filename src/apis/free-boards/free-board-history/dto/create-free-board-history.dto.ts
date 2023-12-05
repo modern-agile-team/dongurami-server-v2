@@ -1,9 +1,9 @@
 import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
-import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
+import { FreePostHistory } from '@src/entities/FreePostHistory';
 
 export class CreateFreeBoardHistoryDto
   implements
-    Pick<FreeBoardHistory, 'title' | 'description' | 'isAnonymous' | 'status'>
+    Pick<FreePostHistory, 'title' | 'description' | 'isAnonymous' | 'status'>
 {
   title: string;
   description: string;

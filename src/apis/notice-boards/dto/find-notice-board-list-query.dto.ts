@@ -59,11 +59,6 @@ export class FindNoticeBoardListQueryDto
   @IsOptional()
   order: Order<typeof NOTICE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
 
-  @ApiProperty({
-    description:
-      '게시글 상태(posting: 게시글 작성된 상태, remove: 게시글 삭제된 상태)',
-    default: NoticeBoardStatus.Posting,
-  })
   @IsDefined()
   status: NoticeBoardStatus.Posting = NoticeBoardStatus.Posting;
 }

@@ -1,6 +1,6 @@
 import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
-import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,

@@ -28,13 +28,12 @@ export class NoticeBoardReplyComment {
   })
   description: string;
 
-  @Column('tinyint', {
-    name: 'isAnonymous',
+  @Column('boolean', {
+    name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
-    unsigned: true,
-    default: () => "'0'",
+    default: () => false,
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -50,6 +49,13 @@ export class NoticeBoardReplyComment {
   })
   updatedAt: Date;
 
+  @Column('int', {
+    name: 'notice_board_id',
+    comment: '공지 게시글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardId: number;
+
   @ManyToOne(
     () => NoticeBoard,
     (noticeBoard) => noticeBoard.noticeBoardReplyComments,
@@ -58,6 +64,13 @@ export class NoticeBoardReplyComment {
   @JoinColumn([{ name: 'notice_board_id', referencedColumnName: 'id' }])
   noticeBoard: NoticeBoard;
 
+  @Column('int', {
+    name: 'notice_board_comment_id',
+    comment: '공지 게시글 댓글 고유 ID',
+    unsigned: true,
+  })
+  noticeBoardCommentId: number;
+
   @ManyToOne(
     () => NoticeBoardComment,
     (noticeBoardComment) => noticeBoardComment.noticeBoardReplyComments,
@@ -65,6 +78,13 @@ export class NoticeBoardReplyComment {
   )
   @JoinColumn([{ name: 'notice_board_comment_id', referencedColumnName: 'id' }])
   noticeBoardComment: NoticeBoardComment;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @ManyToOne(() => User, (user) => user.noticeBoardReplyComments, {
     onDelete: 'CASCADE',

@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
+import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { IsBoolean } from 'class-validator';
 
-export class PutUpdateFreeBoardDto extends PickType(CreateFreeBoardDto, [
+export class PutUpdateFreePostDto extends PickType(CreateFreePostDto, [
   'title',
   'description',
 ] as const) {

@@ -1,4 +1,4 @@
-import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
 import {
@@ -32,11 +32,11 @@ export class FreePostHistory {
   userId: number;
 
   @Column('int', {
-    name: 'free_board_id',
+    name: 'free_post_id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
   })
-  freeBoardId: number;
+  freePostId: number;
 
   @Column('enum', {
     name: 'action',
@@ -63,9 +63,9 @@ export class FreePostHistory {
   @Column('enum', {
     name: 'status',
     comment: '자유게시글 상태',
-    enum: FreeBoardStatus,
+    enum: FreePostStatus,
   })
-  status: FreeBoardStatus;
+  status: FreePostStatus;
 
   @Column('timestamp', {
     name: 'created_at',

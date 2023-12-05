@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
-import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
-import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
-import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
-import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
-import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
-import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
+import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
+import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
+import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
+import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
+import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
@@ -18,26 +18,26 @@ import { HttpInternalServerErrorException } from '@src/http-exceptions/exception
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { isNotEmptyObject } from 'class-validator';
 import { DataSource, Repository } from 'typeorm';
-import { CreateFreeBoardDto } from '../dto/create-free-board.dto';
+import { CreateFreePostDto } from '../dto/create-free-post.dto';
 
 @Injectable()
-export class FreeBoardsService {
+export class FreePostsService {
   private readonly LIKE_SEARCH_FIELD: readonly (keyof Pick<
-    FreeBoardDto,
+    FreePostDto,
     'title'
   >)[] = ['title'];
 
   constructor(
-    private readonly freeBoardHistoryService: FreeBoardHistoryService,
+    private readonly freePostHistoryService: FreePostHistoryService,
 
     private readonly queryHelper: QueryHelper,
 
     private readonly dataSource: DataSource,
     @InjectRepository(FreePost)
-    private readonly freeBoardRepository: Repository<FreePost>,
+    private readonly freePostRepository: Repository<FreePost>,
   ) {}
 
-  async create(userId: number, createFreeBoardDto: CreateFreeBoardDto) {
+  async create(userId: number, createFreePostDto: CreateFreePostDto) {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -47,14 +47,14 @@ export class FreeBoardsService {
       const entityManager = queryRunner.manager;
 
       const newPost = await entityManager
-        .withRepository(this.freeBoardRepository)
+        .withRepository(this.freePostRepository)
         .save({
           userId,
-          status: FreeBoardStatus.Posting,
-          ...createFreeBoardDto,
+          status: FreePostStatus.Posting,
+          ...createFreePostDto,
         });
 
-      await this.freeBoardHistoryService.create(
+      await this.freePostHistoryService.create(
         entityManager,
         userId,
         newPost.id,
@@ -66,7 +66,7 @@ export class FreeBoardsService {
 
       await queryRunner.commitTransaction();
 
-      return new FreeBoardDto(newPost);
+      return new FreePostDto(newPost);
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();
@@ -86,16 +86,16 @@ export class FreeBoardsService {
   }
 
   findAllAndCount(
-    findFreeBoardListQueryDto: FindFreeBoardListQueryDto,
-  ): Promise<[FreeBoardsItemDto[], number]> {
-    const { page, pageSize, order, ...filter } = findFreeBoardListQueryDto;
+    findFreePostListQueryDto: FindFreePostListQueryDto,
+  ): Promise<[FreePostsItemDto[], number]> {
+    const { page, pageSize, order, ...filter } = findFreePostListQueryDto;
 
     const where = this.queryHelper.buildWherePropForFind(
       filter,
       this.LIKE_SEARCH_FIELD,
     );
 
-    return this.freeBoardRepository.findAndCount({
+    return this.freePostRepository.findAndCount({
       select: {
         id: true,
         userId: true,
@@ -112,29 +112,29 @@ export class FreeBoardsService {
     });
   }
 
-  async findOneOrNotFound(freeBoardId: number): Promise<FreeBoardDto> {
-    const freeBoard = await this.freeBoardRepository.findOneBy({
-      id: freeBoardId,
-      status: FreeBoardStatus.Posting,
+  async findOneOrNotFound(freePostId: number): Promise<FreePostDto> {
+    const freePost = await this.freePostRepository.findOneBy({
+      id: freePostId,
+      status: FreePostStatus.Posting,
     });
 
-    if (!freeBoard) {
+    if (!freePost) {
       throw new HttpNotFoundException({
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       });
     }
 
-    return new FreeBoardDto(freeBoard);
+    return new FreePostDto(freePost);
   }
 
   async putUpdate(
     userId: number,
-    freeBoardId: number,
-    putUpdateFreeBoardDto: PutUpdateFreeBoardDto,
-  ): Promise<FreeBoardDto> {
-    const existFreeBoard = await this.findOneOrNotFound(freeBoardId);
+    freePostId: number,
+    putUpdateFreePostDto: PutUpdateFreePostDto,
+  ): Promise<FreePostDto> {
+    const existFreePost = await this.findOneOrNotFound(freePostId);
 
-    if (userId !== existFreeBoard.userId) {
+    if (userId !== existFreePost.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
@@ -148,25 +148,25 @@ export class FreeBoardsService {
     try {
       const entityManager = queryRunner.manager;
 
-      await entityManager.withRepository(this.freeBoardRepository).update(
+      await entityManager.withRepository(this.freePostRepository).update(
         {
-          id: freeBoardId,
+          id: freePostId,
         },
         {
-          ...putUpdateFreeBoardDto,
+          ...putUpdateFreePostDto,
         },
       );
 
       const newPost = await entityManager
-        .withRepository(this.freeBoardRepository)
+        .withRepository(this.freePostRepository)
         .findOneByOrFail({
-          id: freeBoardId,
+          id: freePostId,
         });
 
-      await this.freeBoardHistoryService.create(
+      await this.freePostHistoryService.create(
         entityManager,
         userId,
-        freeBoardId,
+        freePostId,
         HistoryAction.Update,
         {
           ...newPost,
@@ -175,7 +175,7 @@ export class FreeBoardsService {
 
       await queryRunner.commitTransaction();
 
-      return new FreeBoardDto(newPost);
+      return new FreePostDto(newPost);
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();
@@ -196,18 +196,18 @@ export class FreeBoardsService {
 
   async patchUpdate(
     userId: number,
-    freeBoardId: number,
-    patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto,
-  ): Promise<FreeBoardDto> {
-    if (!isNotEmptyObject(patchUpdateFreeBoardDto)) {
+    freePostId: number,
+    patchUpdateFreePostDto: PatchUpdateFreePostDto,
+  ): Promise<FreePostDto> {
+    if (!isNotEmptyObject(patchUpdateFreePostDto)) {
       throw new HttpBadRequestException({
         code: ERROR_CODE.MISSING_UPDATE_FIELD,
       });
     }
 
-    const existFreeBoard = await this.findOneOrNotFound(freeBoardId);
+    const existFreePost = await this.findOneOrNotFound(freePostId);
 
-    if (userId !== existFreeBoard.userId) {
+    if (userId !== existFreePost.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
@@ -221,25 +221,25 @@ export class FreeBoardsService {
     try {
       const entityManager = queryRunner.manager;
 
-      await entityManager.withRepository(this.freeBoardRepository).update(
+      await entityManager.withRepository(this.freePostRepository).update(
         {
-          id: freeBoardId,
+          id: freePostId,
         },
         {
-          ...patchUpdateFreeBoardDto,
+          ...patchUpdateFreePostDto,
         },
       );
 
       const newPost = await entityManager
-        .withRepository(this.freeBoardRepository)
+        .withRepository(this.freePostRepository)
         .findOneByOrFail({
-          id: freeBoardId,
+          id: freePostId,
         });
 
-      await this.freeBoardHistoryService.create(
+      await this.freePostHistoryService.create(
         entityManager,
         userId,
-        freeBoardId,
+        freePostId,
         HistoryAction.Update,
         {
           ...newPost,
@@ -248,7 +248,7 @@ export class FreeBoardsService {
 
       await queryRunner.commitTransaction();
 
-      return new FreeBoardDto(newPost);
+      return new FreePostDto(newPost);
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();
@@ -270,10 +270,10 @@ export class FreeBoardsService {
   /**
    * 테이블 참조 때문에 삭제 불가 개선 예정
    */
-  async remove(userId: number, freeBoardId: number): Promise<number> {
-    const existFreeBoard = await this.findOneOrNotFound(freeBoardId);
+  async remove(userId: number, freePostId: number): Promise<number> {
+    const existFreePost = await this.findOneOrNotFound(freePostId);
 
-    if (userId !== existFreeBoard.userId) {
+    if (userId !== existFreePost.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
@@ -287,32 +287,32 @@ export class FreeBoardsService {
     try {
       const entityManager = queryRunner.manager;
 
-      const freeBoardDeleteResult = await entityManager
-        .withRepository(this.freeBoardRepository)
+      const freePostUpdateResult = await entityManager
+        .withRepository(this.freePostRepository)
         .update(
           {
-            id: freeBoardId,
+            id: freePostId,
           },
           {
-            status: FreeBoardStatus.Remove,
+            status: FreePostStatus.Remove,
             deletedAt: new Date(),
           },
         );
 
-      await this.freeBoardHistoryService.create(
+      await this.freePostHistoryService.create(
         entityManager,
         userId,
-        freeBoardId,
+        freePostId,
         HistoryAction.Delete,
         {
-          ...existFreeBoard,
-          status: FreeBoardStatus.Remove,
+          ...existFreePost,
+          status: FreePostStatus.Remove,
         },
       );
 
       await queryRunner.commitTransaction();
 
-      return freeBoardDeleteResult.affected;
+      return freePostUpdateResult.affected;
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

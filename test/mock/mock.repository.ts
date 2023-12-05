@@ -89,11 +89,11 @@ export const mockUserHistoryRepository: MockProvider<Repository<UserHistory>> =
     ...getDefaultRepositoryMethod(),
   };
 
-export const mockFreeBoardRepository: MockProvider<Repository<FreePost>> = {
+export const mockFreePostRepository: MockProvider<Repository<FreePost>> = {
   ...getDefaultRepositoryMethod(),
 };
 
-export const mockFreeBoardHistoryRepository: MockProvider<
+export const mockFreePostHistoryRepository: MockProvider<
   Repository<FreePostHistory>
 > = {
   ...getDefaultRepositoryMethod(),

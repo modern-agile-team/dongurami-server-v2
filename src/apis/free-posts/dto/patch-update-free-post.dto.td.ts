@@ -1,17 +1,17 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { FREE_BOARD_TITLE_LENGTH } from '@src/apis/free-boards/constants/free-board.constant';
+import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { CreateFreeBoardDto } from './create-free-board.dto';
+import { CreateFreePostDto } from './create-free-post.dto';
 
-export class PatchUpdateFreeBoardDto implements Partial<CreateFreeBoardDto> {
+export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
   @ApiPropertyOptional({
     description: '제목',
     nullable: false,
-    minLength: FREE_BOARD_TITLE_LENGTH.MIN,
-    maxLength: FREE_BOARD_TITLE_LENGTH.MAX,
+    minLength: FREE_POST_TITLE_LENGTH.MIN,
+    maxLength: FREE_POST_TITLE_LENGTH.MAX,
   })
   @IsOptional()
-  @Length(FREE_BOARD_TITLE_LENGTH.MIN, FREE_BOARD_TITLE_LENGTH.MAX)
+  @Length(FREE_POST_TITLE_LENGTH.MIN, FREE_POST_TITLE_LENGTH.MAX)
   title?: string;
 
   @ApiPropertyOptional({

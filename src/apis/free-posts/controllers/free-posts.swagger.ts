@@ -1,9 +1,9 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { FreeBoardsController } from '@src/apis/free-boards/controllers/free-boards.controller';
-import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
-import { FreeBoardsItemDto } from '@src/apis/free-boards/dto/free-boards-item.dto';
+import { FreePostsController } from '@src/apis/free-posts/controllers/free-posts.controller';
+import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
+import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
@@ -12,21 +12,24 @@ import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto
 import { ApiOperator } from '@src/types/type';
 import { ValidationError } from '@src/types/validation-errors.type';
 
-export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
+/**
+ * @todo
+ */
+export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   Create: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreeBoardCreate',
+        operationId: 'FreePostCreate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
-        'freeBoard',
-        FreeBoardDto,
+        'freePost',
+        FreePostDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -52,13 +55,13 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreeBoardFindAllAndCount',
+        operationId: 'FreePostFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
         HttpStatus.OK,
-        'freeBoards',
-        FreeBoardsItemDto,
+        'freePosts',
+        FreePostsItemDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -81,14 +84,10 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreeBoardFindOneOrNotFound',
+        operationId: 'FreePostFindOneOrNotFound',
         ...apiOperationOptions,
       }),
-      DetailResponseDto.swaggerBuilder(
-        HttpStatus.OK,
-        'freeBoard',
-        FreeBoardDto,
-      ),
+      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
@@ -110,15 +109,11 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreeBoardPutUpdate',
+        operationId: 'FreePostPutUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
-      DetailResponseDto.swaggerBuilder(
-        HttpStatus.OK,
-        'freeBoard',
-        FreeBoardDto,
-      ),
+      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
@@ -149,15 +144,11 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreeBoardPatchUpdate',
+        operationId: 'FreePostPatchUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
-      DetailResponseDto.swaggerBuilder(
-        HttpStatus.OK,
-        'freeBoard',
-        FreeBoardDto,
-      ),
+      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [
@@ -191,11 +182,11 @@ export const ApiFreeBoard: ApiOperator<keyof FreeBoardsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreeBoardRemove',
+        operationId: 'FreePostRemove',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
-      DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freeBoard'),
+      DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

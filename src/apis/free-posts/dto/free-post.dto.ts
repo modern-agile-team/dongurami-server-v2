@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FREE_BOARD_TITLE_LENGTH } from '@src/apis/free-boards/constants/free-board.constant';
-import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
+import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePost } from '@src/entities/FreePost';
 import { Exclude } from 'class-transformer';
 
-export class FreeBoardDto
+export class FreePostDto
   extends BaseDto
   implements
     Pick<
@@ -30,8 +30,8 @@ export class FreeBoardDto
 
   @ApiProperty({
     description: '제목',
-    minLength: FREE_BOARD_TITLE_LENGTH.MIN,
-    maxLength: FREE_BOARD_TITLE_LENGTH.MAX,
+    minLength: FREE_POST_TITLE_LENGTH.MIN,
+    maxLength: FREE_POST_TITLE_LENGTH.MAX,
   })
   title: string;
 
@@ -53,14 +53,14 @@ export class FreeBoardDto
   isAnonymous: boolean;
 
   @Exclude()
-  status: FreeBoardStatus;
+  status: FreePostStatus;
 
   @Exclude()
   deletedAt: Date;
 
-  constructor(freeBoardDto: Partial<FreeBoardDto> = {}) {
+  constructor(freePostDto: Partial<FreePostDto> = {}) {
     super();
 
-    Object.assign(this, freeBoardDto);
+    Object.assign(this, freePostDto);
   }
 }

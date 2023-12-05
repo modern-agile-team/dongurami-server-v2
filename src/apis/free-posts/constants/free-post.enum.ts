@@ -1,4 +1,4 @@
-export enum FreeBoardStatus {
+export enum FreePostStatus {
   Posting = 'posting',
   Remove = 'remove',
 }

@@ -1,29 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreateFreeBoardHistoryDto } from '@src/apis/free-boards/free-board-history/dto/create-free-board-history.dto';
+import { CreateFreePostHistoryDto } from '@src/apis/free-posts/free-post-history/dto/create-free-post-history.dto';
 import { HistoryAction } from '@src/constants/enum';
 import { FreePostHistory } from '@src/entities/FreePostHistory';
 import {
   mockEntityManager,
-  mockFreeBoardHistoryRepository,
+  mockFreePostHistoryRepository,
 } from '@test/mock/mock.repository';
-import { FreeBoardHistoryService } from './free-board-history.service';
+import { FreePostHistoryService } from './free-post-history.service';
 
-describe(FreeBoardHistoryService.name, () => {
-  let service: FreeBoardHistoryService;
+describe(FreePostHistoryService.name, () => {
+  let service: FreePostHistoryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FreeBoardHistoryService,
+        FreePostHistoryService,
         {
           provide: getRepositoryToken(FreePostHistory),
-          useValue: mockFreeBoardHistoryRepository,
+          useValue: mockFreePostHistoryRepository,
         },
       ],
     }).compile();
 
-    service = module.get<FreeBoardHistoryService>(FreeBoardHistoryService);
+    service = module.get<FreePostHistoryService>(FreePostHistoryService);
   });
 
   afterEach(() => {
@@ -34,33 +34,33 @@ describe(FreeBoardHistoryService.name, () => {
     expect(service).toBeDefined();
   });
 
-  describe(FreeBoardHistoryService.prototype.create.name, () => {
+  describe(FreePostHistoryService.prototype.create.name, () => {
     let entityManager: any;
     let userId: number;
-    let freeBoardId: number;
+    let freePostId: number;
     let action: HistoryAction;
-    let createFreeBoardHistoryDto: CreateFreeBoardHistoryDto;
+    let createFreePostHistoryDto: CreateFreePostHistoryDto;
 
     beforeEach(() => {
       entityManager = mockEntityManager;
       userId = NaN;
-      freeBoardId = NaN;
+      freePostId = NaN;
       action = null;
-      createFreeBoardHistoryDto = new CreateFreeBoardHistoryDto({} as any);
+      createFreePostHistoryDto = new CreateFreePostHistoryDto({} as any);
     });
 
-    it('create free board history', async () => {
-      mockFreeBoardHistoryRepository.save.mockResolvedValue(
-        createFreeBoardHistoryDto,
+    it('create free Post history', async () => {
+      mockFreePostHistoryRepository.save.mockResolvedValue(
+        createFreePostHistoryDto,
       );
 
       await expect(
         service.create(
           entityManager,
           userId,
-          freeBoardId,
+          freePostId,
           action,
-          createFreeBoardHistoryDto,
+          createFreePostHistoryDto,
         ),
       ).resolves.toEqual({});
     });

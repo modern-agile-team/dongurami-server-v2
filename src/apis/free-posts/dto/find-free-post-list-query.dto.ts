@@ -1,10 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  FREE_BOARD_ORDER_FIELD,
-  FREE_BOARD_TITLE_LENGTH,
-} from '@src/apis/free-boards/constants/free-board.constant';
-import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
-import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+  FREE_POST_ORDER_FIELD,
+  FREE_POST_TITLE_LENGTH,
+} from '@src/apis/free-posts/constants/free-post.constant';
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
@@ -19,9 +19,9 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class FindFreeBoardListQueryDto
+export class FindFreePostListQueryDto
   extends PageDto
-  implements Partial<FreeBoardDto>
+  implements Partial<FreePostDto>
 {
   @ApiPropertyOptional({
     description: '자유게시글 고유 ID 필터링',
@@ -41,11 +41,11 @@ export class FindFreeBoardListQueryDto
 
   @ApiPropertyOptional({
     description: 'title 필터링',
-    maxLength: FREE_BOARD_TITLE_LENGTH.MAX,
+    maxLength: FREE_POST_TITLE_LENGTH.MAX,
   })
   @IsOptional()
   @IsNotEmpty()
-  @MaxLength(FREE_BOARD_TITLE_LENGTH.MAX)
+  @MaxLength(FREE_POST_TITLE_LENGTH.MAX)
   title?: string;
 
   @ApiPropertyOptional({
@@ -57,11 +57,11 @@ export class FindFreeBoardListQueryDto
   @Type(() => Boolean)
   isAnonymous?: boolean;
 
-  @ApiPropertyOrder(FREE_BOARD_ORDER_FIELD)
-  @CsvToOrder<typeof FREE_BOARD_ORDER_FIELD>([...FREE_BOARD_ORDER_FIELD])
+  @ApiPropertyOrder(FREE_POST_ORDER_FIELD)
+  @CsvToOrder<typeof FREE_POST_ORDER_FIELD>([...FREE_POST_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof FREE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof FREE_POST_ORDER_FIELD> = { id: SortOrder.Desc };
 
   @IsDefined()
-  status: FreeBoardStatus = FreeBoardStatus.Posting;
+  status: FreePostStatus = FreePostStatus.Posting;
 }

@@ -1,4 +1,4 @@
-import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { BooleanTransformer } from '@src/entities/transfomers/boolean.transfomer';
 import {
   Column,
@@ -57,9 +57,9 @@ export class FreePost {
   @Column('enum', {
     name: 'status',
     comment: '자유게시글 상태',
-    enum: FreeBoardStatus,
+    enum: FreePostStatus,
   })
-  status: FreeBoardStatus;
+  status: FreePostStatus;
 
   @Column('timestamp', {
     name: 'created_at',

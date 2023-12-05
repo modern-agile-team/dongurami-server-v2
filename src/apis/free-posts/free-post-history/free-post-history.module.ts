@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FreePostHistory } from '@src/entities/FreePostHistory';
-import { FreeBoardHistoryService } from './services/free-board-history.service';
+import { FreePostHistoryService } from './services/free-post-history.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FreePostHistory])],
-  providers: [FreeBoardHistoryService],
-  exports: [FreeBoardHistoryService],
+  providers: [FreePostHistoryService],
+  exports: [FreePostHistoryService],
 })
-export class FreeBoardHistoryModule {}
+export class FreePostHistoryModule {}

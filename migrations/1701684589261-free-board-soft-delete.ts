@@ -1,4 +1,4 @@
-import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
@@ -14,9 +14,9 @@ export class FreeBoardSoftDelete1701684589261 implements MigrationInterface {
       new TableColumn({
         name: 'status',
         type: 'enum',
-        enum: [FreeBoardStatus.Posting, FreeBoardStatus.Remove],
+        enum: [FreePostStatus.Posting, FreePostStatus.Remove],
         isNullable: false,
-        default: `"${FreeBoardStatus.Posting}"`,
+        default: `"${FreePostStatus.Posting}"`,
         comment: '자유게시글 상태',
       }),
     ]);
@@ -40,8 +40,8 @@ export class FreeBoardSoftDelete1701684589261 implements MigrationInterface {
       new TableColumn({
         name: 'status',
         type: 'enum',
-        enum: [FreeBoardStatus.Posting, FreeBoardStatus.Remove],
-        default: `"${FreeBoardStatus.Posting}"`,
+        enum: [FreePostStatus.Posting, FreePostStatus.Remove],
+        default: `"${FreePostStatus.Posting}"`,
         isNullable: false,
         comment: '자유게시글 상태',
       }),

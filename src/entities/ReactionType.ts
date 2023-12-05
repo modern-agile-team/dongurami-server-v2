@@ -1,6 +1,6 @@
-import { FreeBoardCommentReaction } from '@src/entities/FreeBoardCommentReaction';
-import { FreeBoardReaction } from '@src/entities/FreeBoardReaction';
-import { FreeBoardReplyCommentReaction } from '@src/entities/FreeBoardReplyCommentReaction';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
 import { NoticeBoardCommentReaction } from '@src/entities/NoticeBoardCommentReaction';
 import { NoticeBoardReaction } from '@src/entities/NoticeBoardReaction';
 import { NoticeBoardReplyCommentReaction } from '@src/entities/NoticeBoardReplyCommentReaction';
@@ -37,23 +37,22 @@ export class ReactionType {
   updatedAt: Date;
 
   @OneToMany(
-    () => FreeBoardCommentReaction,
-    (freeBoardCommentReaction) => freeBoardCommentReaction.reactionType,
+    () => FreePostCommentReaction,
+    (freePostCommentReaction) => freePostCommentReaction.reactionType,
   )
-  freeBoardCommentReactions: FreeBoardCommentReaction[];
+  freePostCommentReactions: FreePostCommentReaction[];
 
   @OneToMany(
-    () => FreeBoardReaction,
-    (freeBoardReaction) => freeBoardReaction.reactionType,
+    () => FreePostReaction,
+    (freePostReaction) => freePostReaction.reactionType,
   )
-  freeBoardReactions: FreeBoardReaction[];
+  freePostReactions: FreePostReaction[];
 
   @OneToMany(
-    () => FreeBoardReplyCommentReaction,
-    (freeBoardReplyCommentReaction) =>
-      freeBoardReplyCommentReaction.reactionType,
+    () => FreePostReplyCommentReaction,
+    (freePostReplyCommentReaction) => freePostReplyCommentReaction.reactionType,
   )
-  freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
+  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
 
   @OneToMany(
     () => NoticeBoardCommentReaction,

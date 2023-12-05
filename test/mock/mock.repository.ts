@@ -1,5 +1,5 @@
-import { FreeBoard } from '@src/entities/FreeBoard';
-import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostHistory } from '@src/entities/FreePostHistory';
 import { Major } from '@src/entities/Major';
 import { User } from '@src/entities/User';
 import { UserHistory } from '@src/entities/UserHistory';
@@ -89,12 +89,12 @@ export const mockUserHistoryRepository: MockProvider<Repository<UserHistory>> =
     ...getDefaultRepositoryMethod(),
   };
 
-export const mockFreeBoardRepository: MockProvider<Repository<FreeBoard>> = {
+export const mockFreePostRepository: MockProvider<Repository<FreePost>> = {
   ...getDefaultRepositoryMethod(),
 };
 
-export const mockFreeBoardHistoryRepository: MockProvider<
-  Repository<FreeBoardHistory>
+export const mockFreePostHistoryRepository: MockProvider<
+  Repository<FreePostHistory>
 > = {
   ...getDefaultRepositoryMethod(),
 };

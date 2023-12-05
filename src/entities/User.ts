@@ -4,9 +4,15 @@ import {
   UserRole,
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
-import { FreeBoardCommentHistory } from '@src/entities/FreeBoardCommentHistory';
-import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
-import { FreeBoardReplyCommentHistory } from '@src/entities/FreeBoardReplyCommentHistory';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { FreePostHistory } from '@src/entities/FreePostHistory';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
+import { FreePostReplyCommentHistory } from '@src/entities/FreePostReplyCommentHistory';
+import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
 import { NoticeBoardComment } from '@src/entities/NoticeBoardComment';
 import { UserHistory } from '@src/entities/UserHistory';
@@ -20,12 +26,6 @@ import {
 } from 'typeorm';
 import { ClubJoinApplication } from './ClubJoinApplication';
 import { ClubMember } from './ClubMember';
-import { FreeBoard } from './FreeBoard';
-import { FreeBoardComment } from './FreeBoardComment';
-import { FreeBoardCommentReaction } from './FreeBoardCommentReaction';
-import { FreeBoardReaction } from './FreeBoardReaction';
-import { FreeBoardReplyComment } from './FreeBoardReplyComment';
-import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
 import { Major } from './Major';
 import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
 import { NoticeBoardReaction } from './NoticeBoardReaction';
@@ -150,56 +150,50 @@ export class User {
   @OneToMany(() => ClubMember, (clubMember) => clubMember.user)
   clubMembers: ClubMember[];
 
-  @OneToMany(() => FreeBoard, (freeBoard) => freeBoard.user)
-  freeBoards: FreeBoard[];
+  @OneToMany(() => FreePost, (freePost) => freePost.user)
+  freePosts: FreePost[];
+
+  @OneToMany(() => FreePostComment, (freePostComment) => freePostComment.user)
+  freePostComments: FreePostComment[];
 
   @OneToMany(
-    () => FreeBoardComment,
-    (freeBoardComment) => freeBoardComment.user,
+    () => FreePostCommentHistory,
+    (freePostCommentHistory) => freePostCommentHistory.user,
   )
-  freeBoardComments: FreeBoardComment[];
+  freePostCommentHistories: FreePostCommentHistory[];
 
   @OneToMany(
-    () => FreeBoardCommentHistory,
-    (freeBoardCommentHistory) => freeBoardCommentHistory.user,
+    () => FreePostCommentReaction,
+    (freePostCommentReaction) => freePostCommentReaction.user,
   )
-  freeBoardCommentHistories: FreeBoardCommentHistory[];
+  freePostCommentReactions: FreePostCommentReaction[];
+
+  @OneToMany(() => FreePostHistory, (freePostHistory) => freePostHistory.user)
+  freePostHistories: FreePostHistory[];
 
   @OneToMany(
-    () => FreeBoardCommentReaction,
-    (freeBoardCommentReaction) => freeBoardCommentReaction.user,
+    () => FreePostReaction,
+    (freePostReaction) => freePostReaction.user,
   )
-  freeBoardCommentReactions: FreeBoardCommentReaction[];
+  freePostReactions: FreePostReaction[];
 
   @OneToMany(
-    () => FreeBoardHistory,
-    (freeBoardHistory) => freeBoardHistory.user,
+    () => FreePostReplyComment,
+    (freePostReplyComment) => freePostReplyComment.user,
   )
-  freeBoardHistories: FreeBoardHistory[];
+  freePostReplyComments: FreePostReplyComment[];
 
   @OneToMany(
-    () => FreeBoardReaction,
-    (freeBoardReaction) => freeBoardReaction.user,
+    () => FreePostReplyCommentHistory,
+    (freePostReplyCommentHistory) => freePostReplyCommentHistory.user,
   )
-  freeBoardReactions: FreeBoardReaction[];
+  freePostReplyCommentHistories: FreePostReplyCommentHistory[];
 
   @OneToMany(
-    () => FreeBoardReplyComment,
-    (freeBoardReplyComment) => freeBoardReplyComment.user,
+    () => FreePostReplyCommentReaction,
+    (freePostReplyCommentReaction) => freePostReplyCommentReaction.user,
   )
-  freeBoardReplyComments: FreeBoardReplyComment[];
-
-  @OneToMany(
-    () => FreeBoardReplyCommentHistory,
-    (freeBoardReplyCommentHistory) => freeBoardReplyCommentHistory.user,
-  )
-  freeBoardReplyCommentHistories: FreeBoardReplyCommentHistory[];
-
-  @OneToMany(
-    () => FreeBoardReplyCommentReaction,
-    (freeBoardReplyCommentReaction) => freeBoardReplyCommentReaction.user,
-  )
-  freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
+  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
 
   @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.user)
   noticeBoards: NoticeBoard[];

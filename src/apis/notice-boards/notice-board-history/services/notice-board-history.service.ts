@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NoticeBoardHistory } from '@src/entities/NoticeBoardHistory';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateNoticeBoardHistoryDto } from '../dto/create-notice-board-history.dto';
+import { HistoryAction } from '@src/constants/enum';
 
 @Injectable()
 export class NoticeBoardHistoryService {
@@ -14,6 +15,7 @@ export class NoticeBoardHistoryService {
     entityManager: EntityManager,
     userId: number,
     noticeBoardId: number,
+    action: HistoryAction,
     createNoticeBoardHistoryDto: CreateNoticeBoardHistoryDto,
   ) {
     return entityManager
@@ -21,6 +23,7 @@ export class NoticeBoardHistoryService {
       .save({
         userId,
         noticeBoardId,
+        action,
         ...new CreateNoticeBoardHistoryDto(createNoticeBoardHistoryDto),
       });
   }

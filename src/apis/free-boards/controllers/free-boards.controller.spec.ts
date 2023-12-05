@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreateFreeBoardDto } from '@src/apis/free-boards/dto/create-free-board.dto';
 import { FindFreeBoardListQueryDto } from '@src/apis/free-boards/dto/find-free-board-list-query.dto';
 import { FreeBoardDto } from '@src/apis/free-boards/dto/free-board.dto';
+import { PatchUpdateFreeBoardDto } from '@src/apis/free-boards/dto/patch-update-free-board.dto.td';
+import { PutUpdateFreeBoardDto } from '@src/apis/free-boards/dto/put-update-free-board.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { mockFreeBoardsService } from '@test/mock/mock.service';
 import { FreeBoardsService } from '../services/free-board.service';
@@ -70,6 +72,75 @@ describe(FreeBoardsController.name, () => {
       await expect(
         controller.findAllAndCount(findFreeBoardListQueryDto),
       ).resolves.toEqual([[], 0]);
+    });
+  });
+
+  describe(FreeBoardsController.prototype.findOneOrNotFound.name, () => {
+    let freeBoardId: number;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      freeBoardId = NaN;
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('findOneFreeBoard', async () => {
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardsService.findOneOrNotFound.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        controller.findOneOrNotFound(freeBoardId),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
+    });
+  });
+
+  describe(FreeBoardsController.prototype.putUpdate.name, () => {
+    let user: UserDto;
+    let freeBoardId: number;
+    let putUpdateFreeBoardDto: PutUpdateFreeBoardDto;
+
+    beforeEach(() => {
+      user = new UserDto();
+      freeBoardId = NaN;
+      putUpdateFreeBoardDto = new PutUpdateFreeBoardDto();
+    });
+
+    it('put update', async () => {
+      mockFreeBoardsService.putUpdate.mockResolvedValue(new FreeBoardDto());
+
+      await expect(
+        controller.putUpdate(user, freeBoardId, putUpdateFreeBoardDto),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
+    });
+  });
+
+  describe(FreeBoardsController.prototype.patchUpdate.name, () => {
+    let user: UserDto;
+    let freeBoardId: number;
+    let patchUpdateFreeBoardDto: PatchUpdateFreeBoardDto;
+
+    let freeBoardDto: FreeBoardDto;
+
+    beforeEach(() => {
+      user = new UserDto();
+      freeBoardId = NaN;
+      patchUpdateFreeBoardDto = new PatchUpdateFreeBoardDto();
+
+      freeBoardDto = new FreeBoardDto();
+    });
+
+    it('free board patch update', async () => {
+      user.id = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardsService.patchUpdate.mockResolvedValue(freeBoardDto);
+
+      await expect(
+        controller.patchUpdate(user, freeBoardId, patchUpdateFreeBoardDto),
+      ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });
 });

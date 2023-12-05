@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AppService } from '@src/app.service';
-import { ApiRoot } from '@src/app.swagger';
+import { ApiRoot } from '@src/apis/root/controllers/root.swagger';
+import { RootService } from '@src/apis/root/services/root.service';
 
 @ApiTags('root')
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class RootController {
+  constructor(private readonly rootService: RootService) {}
 
   @ApiRoot.FindAllErrorCode({
     summary: '개발용으로 생성된 에러코드 전체조회',
@@ -14,6 +14,6 @@ export class AppController {
   })
   @Get('error-code')
   findAllErrorCode() {
-    return this.appService.findAllErrorCode();
+    return this.rootService.findAllErrorCode();
   }
 }

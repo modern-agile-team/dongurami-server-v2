@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -21,6 +21,7 @@ export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {
         operationId: 'NoticeBoardCreate',
         ...apiOperationOptions,
       }),
+      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'noticeBoard',

@@ -9,13 +9,14 @@ import {
 import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
 import { NoticeBoardHistory } from './NoticeBoardHistory';
 import { User } from './User';
+import { BooleanTransformer } from './transformers/boolean.transformer';
 
 @Entity('notice_board_reply_comment_history', { schema: 'dongurami_local_db' })
 export class NoticeBoardReplyCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '공지 게시글 대댓글 고유 ID',
+    comment: '공지 게시글 대댓글 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;
@@ -27,13 +28,13 @@ export class NoticeBoardReplyCommentHistory {
   })
   description: string;
 
-  @Column('tinyint', {
-    name: 'isAnonymous',
+  @Column('boolean', {
+    name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
-    unsigned: true,
-    default: () => "'0'",
+    default: () => false,
+    transformer: new BooleanTransformer(),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

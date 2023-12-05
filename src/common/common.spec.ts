@@ -1,4 +1,5 @@
 import { isNil, transformPage } from '@src/common/common';
+import { isObject } from 'class-validator';
 
 describe('common.ts unit test', () => {
   describe(transformPage.name, () => {
@@ -38,6 +39,36 @@ describe('common.ts unit test', () => {
 
     it('string', () => {
       expect(isNil('')).toBe(false);
+    });
+  });
+
+  describe(isObject.name, () => {
+    it('undefined', () => {
+      expect(isObject(undefined)).toBe(false);
+    });
+
+    it('null', () => {
+      expect(isObject(null)).toBe(false);
+    });
+
+    it('string', () => {
+      expect(isObject('str')).toBe(false);
+    });
+
+    it('array', () => {
+      expect(isObject([])).toBe(false);
+    });
+
+    it('class object', () => {
+      class Test {}
+
+      const test = new Test();
+
+      expect(isObject(test)).toBe(true);
+    });
+
+    it('plain object', () => {
+      expect(isObject({})).toBe(true);
     });
   });
 });

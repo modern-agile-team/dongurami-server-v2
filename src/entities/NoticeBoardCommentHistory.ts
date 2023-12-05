@@ -9,6 +9,7 @@ import {
 import { NoticeBoardHistory } from './NoticeBoardHistory';
 import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
 import { User } from './User';
+import { BooleanTransformer } from './transformers/boolean.transformer';
 
 @Entity('notice_board_comment_history', { schema: 'dongurami_local_db' })
 export class NoticeBoardCommentHistory {
@@ -23,13 +24,13 @@ export class NoticeBoardCommentHistory {
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
 
-  @Column('tinyint', {
-    name: 'isAnonymous',
+  @Column('boolean', {
+    name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
-    unsigned: true,
-    default: () => "'0'",
+    default: () => false,
+    transformer: new BooleanTransformer(),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

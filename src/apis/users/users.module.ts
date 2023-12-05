@@ -6,7 +6,12 @@ import { UsersController } from './controllers/users.controller';
 import { UsersService } from './services/users.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository]), EncryptionModule],
+  imports: [
+    // 예시용
+    // TypeOrmExModule.forCustomRepository([UserRepository]),
+    TypeOrmModule.forFeature([UserRepository]),
+    EncryptionModule,
+  ],
   providers: [UsersService, UserRepository],
   controllers: [UsersController],
   exports: [UsersService],

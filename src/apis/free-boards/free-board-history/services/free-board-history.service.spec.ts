@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateFreeBoardHistoryDto } from '@src/apis/free-boards/free-board-history/dto/create-free-board-history.dto';
+import { HistoryAction } from '@src/constants/enum';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import {
   mockEntityManager,
@@ -37,12 +38,14 @@ describe(FreeBoardHistoryService.name, () => {
     let entityManager: any;
     let userId: number;
     let freeBoardId: number;
+    let action: HistoryAction;
     let createFreeBoardHistoryDto: CreateFreeBoardHistoryDto;
 
     beforeEach(() => {
       entityManager = mockEntityManager;
       userId = NaN;
       freeBoardId = NaN;
+      action = null;
       createFreeBoardHistoryDto = new CreateFreeBoardHistoryDto({} as any);
     });
 
@@ -56,6 +59,7 @@ describe(FreeBoardHistoryService.name, () => {
           entityManager,
           userId,
           freeBoardId,
+          action,
           createFreeBoardHistoryDto,
         ),
       ).resolves.toEqual({});

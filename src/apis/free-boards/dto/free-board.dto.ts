@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FREE_BOARD_TITLE_LENGTH } from '@src/apis/free-boards/constants/free-board.constant';
+import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreeBoard } from '@src/entities/FreeBoard';
+import { Exclude } from 'class-transformer';
 
 export class FreeBoardDto
   extends BaseDto
@@ -14,8 +16,10 @@ export class FreeBoardDto
       | 'description'
       | 'hit'
       | 'isAnonymous'
+      | 'status'
       | 'createdAt'
       | 'updatedAt'
+      | 'deletedAt'
     >
 {
   @ApiProperty({
@@ -47,6 +51,12 @@ export class FreeBoardDto
     description: '익명 여부',
   })
   isAnonymous: boolean;
+
+  @Exclude()
+  status: FreeBoardStatus;
+
+  @Exclude()
+  deletedAt: Date;
 
   constructor(freeBoardDto: Partial<FreeBoardDto> = {}) {
     super();

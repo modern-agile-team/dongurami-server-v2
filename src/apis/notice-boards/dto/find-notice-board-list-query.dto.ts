@@ -65,5 +65,5 @@ export class FindNoticeBoardListQueryDto
     default: NoticeBoardStatus.Posting,
   })
   @IsDefined()
-  status: NoticeBoardStatus.Posting;
+  status: NoticeBoardStatus.Posting = NoticeBoardStatus.Posting;
 }

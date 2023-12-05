@@ -1,3 +1,4 @@
+import { FreeBoardStatus } from '@src/apis/free-boards/constants/free-board.enum';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
@@ -45,13 +46,20 @@ export class FreeBoard {
   hit: number;
 
   @Column('tinyint', {
-    name: 'isAnonymous',
+    name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
     transformer: new BooleanTransformer(),
   })
   isAnonymous: boolean;
+
+  @Column('enum', {
+    name: 'status',
+    comment: '자유게시글 상태',
+    enum: FreeBoardStatus,
+  })
+  status: FreeBoardStatus;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -66,6 +74,13 @@ export class FreeBoard {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @Column('timestamp', {
+    name: 'deleted_at',
+    nullable: true,
+    comment: '삭제 일자',
+  })
+  deletedAt: Date | null;
 
   @ManyToOne(() => User, (user) => user.freeBoards, {
     onDelete: 'CASCADE',

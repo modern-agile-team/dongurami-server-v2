@@ -143,4 +143,23 @@ describe(FreeBoardsController.name, () => {
       ).resolves.toBeInstanceOf(FreeBoardDto);
     });
   });
+
+  describe(FreeBoardsController.prototype.findAllAndCount.name, () => {
+    let user: UserDto;
+    let freeBoardId: number;
+
+    beforeEach(() => {
+      user = new UserDto();
+      freeBoardId = NaN;
+    });
+
+    it('remove', async () => {
+      user.id = faker.number.int();
+      freeBoardId = faker.number.int();
+
+      mockFreeBoardsService.remove.mockResolvedValue(1);
+
+      await expect(controller.remove(user, freeBoardId)).resolves.toBe(1);
+    });
+  });
 });

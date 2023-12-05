@@ -4,6 +4,7 @@ import {
   UserGender,
   UserLoginType,
   UserRole,
+  UserStatus,
 } from '@src/apis/users/constants/user.enum';
 import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
 import { BaseDto } from '@src/dto/base.dto';
@@ -25,8 +26,10 @@ export class UserDto
       | 'gender'
       | 'profilePath'
       | 'role'
+      | 'status'
       | 'createdAt'
       | 'updatedAt'
+      | 'deletedAt'
     >
 {
   @ApiProperty({
@@ -87,6 +90,12 @@ export class UserDto
     type: () => String,
   })
   profilePath: string | null;
+
+  @Exclude()
+  status: UserStatus;
+
+  @Exclude()
+  deletedAt: Date | null;
 
   constructor(userDto: Partial<UserDto> = {}) {
     super();

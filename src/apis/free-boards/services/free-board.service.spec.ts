@@ -166,7 +166,7 @@ describe(FreeBoardsService.name, () => {
       userId = faker.number.int();
       freeBoardId = faker.number.int();
 
-      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(null);
 
       await expect(
         service.putUpdate(userId, freeBoardId, putUpdateFreeBoardDto),
@@ -177,7 +177,9 @@ describe(FreeBoardsService.name, () => {
       userId = faker.number.int();
       freeBoardId = faker.number.int();
 
-      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+      mockFreeBoardRepository.findOneBy.mockResolvedValue({
+        userId: userId + 1,
+      });
 
       await expect(
         service.putUpdate(userId, freeBoardId, putUpdateFreeBoardDto),
@@ -192,7 +194,7 @@ describe(FreeBoardsService.name, () => {
       putUpdateFreeBoardDto.description = 'newDescription';
       putUpdateFreeBoardDto.isAnonymous = false;
 
-      mockFreeBoardRepository.findOne.mockResolvedValue({ userId });
+      mockFreeBoardRepository.findOneBy.mockResolvedValue({ userId });
       mockFreeBoardRepository.findOneByOrFail.mockResolvedValue({
         putUpdateFreeBoardDto,
       });
@@ -233,7 +235,7 @@ describe(FreeBoardsService.name, () => {
 
       patchUpdateFreeBoardDto.title = 'title';
 
-      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(null);
 
       await expect(
         service.patchUpdate(userId, freeBoardId, patchUpdateFreeBoardDto),
@@ -246,7 +248,9 @@ describe(FreeBoardsService.name, () => {
 
       patchUpdateFreeBoardDto.title = 'title';
 
-      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+      mockFreeBoardRepository.findOneBy.mockResolvedValue({
+        userId: userId + 1,
+      });
 
       await expect(
         service.patchUpdate(userId, freeBoardId, patchUpdateFreeBoardDto),
@@ -260,7 +264,7 @@ describe(FreeBoardsService.name, () => {
 
       freeBoardDto.title = patchUpdateFreeBoardDto.title;
 
-      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId });
+      mockFreeBoardRepository.findOneBy.mockResolvedValue({ userId: userId });
       mockFreeBoardRepository.findOneByOrFail.mockResolvedValue(freeBoardDto);
 
       await expect(
@@ -282,7 +286,7 @@ describe(FreeBoardsService.name, () => {
       userId = faker.number.int();
       freeBoardId = faker.number.int();
 
-      mockFreeBoardRepository.findOne.mockResolvedValue(null);
+      mockFreeBoardRepository.findOneBy.mockResolvedValue(null);
 
       await expect(service.remove(userId, freeBoardId)).rejects.toThrow(
         HttpNotFoundException,
@@ -293,7 +297,9 @@ describe(FreeBoardsService.name, () => {
       userId = faker.number.int();
       freeBoardId = faker.number.int();
 
-      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId + 1 });
+      mockFreeBoardRepository.findOneBy.mockResolvedValue({
+        userId: userId + 1,
+      });
 
       await expect(service.remove(userId, freeBoardId)).rejects.toThrow(
         HttpForbiddenException,
@@ -304,8 +310,8 @@ describe(FreeBoardsService.name, () => {
       userId = faker.number.int();
       freeBoardId = faker.number.int();
 
-      mockFreeBoardRepository.findOne.mockResolvedValue({ userId: userId });
-      mockFreeBoardRepository.delete.mockResolvedValue({ affected: 1 });
+      mockFreeBoardRepository.findOneBy.mockResolvedValue({ userId: userId });
+      mockFreeBoardRepository.update.mockResolvedValue({ affected: 1 });
 
       await expect(service.remove(userId, freeBoardId)).resolves.toBe(1);
     });

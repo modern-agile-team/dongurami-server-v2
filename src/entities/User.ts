@@ -49,6 +49,14 @@ export class User {
   })
   majorId: number;
 
+  @Column('varchar', {
+    name: 'student_number',
+    comment: '유저 학번',
+    nullable: true,
+    length: 20,
+  })
+  studentNumber: string | null;
+
   @Column('enum', {
     name: 'login_type',
     comment: '로그인 타입',

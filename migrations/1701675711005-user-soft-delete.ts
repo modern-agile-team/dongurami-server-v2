@@ -5,7 +5,7 @@ export class UserSoftDelete1701675711005 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumns('user', [
       new TableColumn({
-        name: 'deletedAt',
+        name: 'deleted_at',
         type: 'timestamp',
         isNullable: true,
         comment: '삭제 일자',
@@ -25,7 +25,7 @@ export class UserSoftDelete1701675711005 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropColumns('user', [
-      new TableColumn({ name: 'deletedAt', type: 'timestamp' }),
+      new TableColumn({ name: 'deleted_at', type: 'timestamp' }),
       new TableColumn({ name: 'status', type: 'enum' }),
     ]);
   }

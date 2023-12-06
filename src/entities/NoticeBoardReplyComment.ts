@@ -28,13 +28,12 @@ export class NoticeBoardReplyComment {
   })
   description: string;
 
-  @Column('tinyint', {
-    name: 'isAnonymous',
+  @Column('boolean', {
+    name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
-    unsigned: true,
-    default: () => "'0'",
+    default: () => false,
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

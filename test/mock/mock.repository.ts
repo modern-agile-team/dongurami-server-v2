@@ -1,8 +1,8 @@
-import { UserRepository } from '@src/apis/users/repositories/user.repository';
-import { FreeBoard } from '@src/entities/FreeBoard';
-import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NoticeBoardHistory } from '@src/entities/NoticeBoardHistory';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostHistory } from '@src/entities/FreePostHistory';
+import { Major } from '@src/entities/Major';
+import { User } from '@src/entities/User';
+import { UserHistory } from '@src/entities/UserHistory';
 import { MockProvider } from '@test/mock/mock.type';
 import { Repository } from 'typeorm';
 
@@ -76,27 +76,25 @@ export const mockEntityManager = {
   },
 };
 
-export const mockUserRepository: MockProvider<UserRepository> = {
+export const mockMajorRepository: MockProvider<Repository<Major>> = {
   ...getDefaultRepositoryMethod(),
 };
 
-export const mockFreeBoardRepository: MockProvider<Repository<FreeBoard>> = {
+export const mockUserRepository: MockProvider<Repository<User>> = {
   ...getDefaultRepositoryMethod(),
 };
 
-export const mockFreeBoardHistoryRepository: MockProvider<
-  Repository<FreeBoardHistory>
-> = {
-  ...getDefaultRepositoryMethod(),
-};
-
-export const mockNoticeBoardRepository: MockProvider<Repository<NoticeBoard>> =
+export const mockUserHistoryRepository: MockProvider<Repository<UserHistory>> =
   {
     ...getDefaultRepositoryMethod(),
   };
 
-export const mockNoticeBoardHistoryRepository: MockProvider<
-  Repository<NoticeBoardHistory>
+export const mockFreePostRepository: MockProvider<Repository<FreePost>> = {
+  ...getDefaultRepositoryMethod(),
+};
+
+export const mockFreePostHistoryRepository: MockProvider<
+  Repository<FreePostHistory>
 > = {
   ...getDefaultRepositoryMethod(),
 };

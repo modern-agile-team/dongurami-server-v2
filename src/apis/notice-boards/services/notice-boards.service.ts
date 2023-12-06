@@ -10,9 +10,11 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
 import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
 import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
+import { HistoryAction } from '@src/constants/enum';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { PutUpdateNoticeBoardDto } from '../dto/put-update-notice-board.dto';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { NoticeBoardStatus } from '../constants/notice-board.enum';
 
 @Injectable()
 export class NoticeBoardsService {
@@ -28,6 +30,7 @@ export class NoticeBoardsService {
     @InjectRepository(NoticeBoard)
     private readonly noticeBoardRepository: Repository<NoticeBoard>,
   ) {}
+
   async create(userId: number, createNoticeBoardDto: CreateNoticeBoardDto) {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -43,15 +46,15 @@ export class NoticeBoardsService {
           userId,
           ...createNoticeBoardDto,
         });
+      console.log(newPost);
 
       await this.noticeBoardHistoryService.create(
         entityManager,
         newPost.userId,
         newPost.id,
+        HistoryAction.Insert,
         {
-          title: newPost.title,
-          description: newPost.description,
-          allowComment: newPost.allowComment,
+          ...newPost,
         },
       );
 
@@ -64,6 +67,7 @@ export class NoticeBoardsService {
       }
 
       console.error(error);
+
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '공지게시글 생성 중 알 수 없는 에러',
@@ -80,7 +84,6 @@ export class NoticeBoardsService {
     findNoticeBoardListQueryDto: FindNoticeBoardListQueryDto,
   ): Promise<[NoticeBoardsItemDto[], number]> {
     const { page, pageSize, order, ...filter } = findNoticeBoardListQueryDto;
-    console.log(findNoticeBoardListQueryDto);
 
     const where = this.queryHelper.buildWherePropForFind(
       filter,
@@ -93,7 +96,7 @@ export class NoticeBoardsService {
         userId: true,
         title: true,
         hit: true,
-        allowComment: true,
+        isAllowComment: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -107,6 +110,7 @@ export class NoticeBoardsService {
   async findOneOrNotFound(noticeboardId: number): Promise<NoticeBoardDto> {
     const noticeBoard = await this.noticeBoardRepository.findOneBy({
       id: noticeboardId,
+      status: NoticeBoardStatus.Posting,
     });
 
     if (!noticeBoard) {

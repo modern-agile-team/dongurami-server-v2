@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@src/dto/base.dto';
 import { NoticeBoard } from '@src/entities/NoticeBoard';
-import {
-  NOTICE_BOARD_TITLE_LENGTH,
-  NOTICE_BOARD_ALLOW_COMMENT_LENGTH,
-} from '../constants/notice-board.constant';
+import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-board.constant';
+import { Exclude } from 'class-transformer';
+import { NoticeBoardStatus } from '../constants/notice-board.enum';
 
 export class NoticeBoardDto
   extends BaseDto
@@ -16,9 +15,11 @@ export class NoticeBoardDto
       | 'description'
       | 'userId'
       | 'hit'
-      | 'allowComment'
+      | 'isAllowComment'
+      | 'status'
       | 'createdAt'
       | 'updatedAt'
+      | 'deletedAt'
     >
 {
   @ApiProperty({
@@ -47,12 +48,16 @@ export class NoticeBoardDto
   hit: number;
 
   @ApiProperty({
-    description: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
-    minimum: NOTICE_BOARD_ALLOW_COMMENT_LENGTH.MIN,
-    maximum: NOTICE_BOARD_ALLOW_COMMENT_LENGTH.MAX,
-    default: 1,
+    description: '댓글 허용 여부 (false: 비활성화, true: 허용)',
+    default: true,
   })
-  allowComment: boolean;
+  isAllowComment: boolean;
+
+  @Exclude()
+  status: NoticeBoardStatus;
+
+  @Exclude()
+  deletedAt: Date;
 
   constructor(noticeBoardDto: Partial<NoticeBoardDto> = {}) {
     super();

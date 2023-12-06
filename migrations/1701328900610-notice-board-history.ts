@@ -68,10 +68,8 @@ export class NoticeBoardHistory1701328900610 implements MigrationInterface {
             comment: '공지게시글 내용',
           },
           {
-            name: 'allow_comment',
-            type: 'tinyint',
-            length: '1',
-            unsigned: true,
+            name: 'is_allow_comment',
+            type: 'boolean',
             default: 1,
             isNullable: false,
             comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
@@ -128,11 +126,9 @@ export class NoticeBoardHistory1701328900610 implements MigrationInterface {
             comment: '댓글 본문',
           },
           {
-            name: 'isAnonymous',
-            type: 'tinyint',
-            length: '1',
+            name: 'is_anonymous',
+            type: 'boolean',
             default: 0,
-            unsigned: true,
             isNullable: false,
             comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
           },
@@ -160,12 +156,12 @@ export class NoticeBoardHistory1701328900610 implements MigrationInterface {
       'ALTER TABLE notice_board_comment_history COMMENT = "공지 게시글 댓글 수정이력"',
     );
 
-    // 공지 게시글 대댓글
+    // 공지 게시글 대댓글 수정이력
     await queryRunner.createTable(
       new Table({
         name: 'notice_board_reply_comment_history',
         columns: [
-          generatePrimaryColumn('공지 게시글 대댓글 고유 ID'),
+          generatePrimaryColumn('공지 게시글 대댓글 수정이력 고유 ID'),
           {
             name: 'notice_board_history_id',
             type: 'int',
@@ -195,11 +191,9 @@ export class NoticeBoardHistory1701328900610 implements MigrationInterface {
             comment: '대댓글 본문',
           },
           {
-            name: 'isAnonymous',
-            type: 'tinyint',
-            length: '1',
+            name: 'is_anonymous',
+            type: 'boolean',
             default: 0,
-            unsigned: true,
             isNullable: false,
             comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
           },

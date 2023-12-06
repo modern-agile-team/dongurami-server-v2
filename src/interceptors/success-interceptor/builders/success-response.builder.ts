@@ -7,6 +7,7 @@ import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/com
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
+import { isObject } from 'class-validator';
 
 interface Res {
   data: unknown;
@@ -32,7 +33,7 @@ export class ResponseBuilder {
   detail(res: Res) {
     const { key, data } = res;
 
-    if (Object.prototype.toString.call(data) !== '[object Object]') {
+    if (!isObject(res)) {
       throw new HttpInternalServerErrorException({
         code: ERROR_CODE.SERVER_ERROR,
         ctx: 'delete response build 중 object formant 이 아님',

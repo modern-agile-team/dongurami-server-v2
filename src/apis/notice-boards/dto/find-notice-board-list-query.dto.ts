@@ -1,6 +1,6 @@
 import { PageDto } from '@src/dto/page.dto';
 import { NoticeBoardDto } from './notice-board.dto';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBooleanString,
   IsDefined,
@@ -60,5 +60,5 @@ export class FindNoticeBoardListQueryDto
   order: Order<typeof NOTICE_BOARD_ORDER_FIELD> = { id: SortOrder.Desc };
 
   @IsDefined()
-  status: NoticeBoardStatus.Posting;
+  status: NoticeBoardStatus.Posting = NoticeBoardStatus.Posting;
 }

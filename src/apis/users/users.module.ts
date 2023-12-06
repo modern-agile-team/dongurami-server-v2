@@ -9,6 +9,8 @@ import { UsersService } from './services/users.service';
 
 @Module({
   imports: [
+    // 예시용
+    // TypeOrmExModule.forCustomRepository([UserRepository]),
     UserHistoryModule,
     TypeOrmModule.forFeature([User, Major]),
     EncryptionModule,

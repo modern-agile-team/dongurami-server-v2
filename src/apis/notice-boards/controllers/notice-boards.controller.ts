@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   // Delete,
   // Get,
   // Patch,
@@ -21,6 +22,8 @@ import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
+import { NoticeBoardDto } from '../dto/notice-board.dto';
 
 @ApiTags('notice-boards')
 @Controller('notice-boards')
@@ -52,8 +55,15 @@ export class NoticeBoardsController {
 
     return [plainToInstance(NoticeBoardsItemDto, noticeBoards), count];
   }
-  // @Get(':id')
-  // findOne() {}
+
+  @ApiNoticeBoard.FindOneOrNotFound({ summary: '공지게시글 상세조회 ' })
+  @SetResponse({ type: ResponseType.Detail, key: 'noticeBoard' })
+  @Get(':noticeBoardId')
+  findOneOrNotFound(
+    @Param('noticeBoardId', ParsePositiveIntPipe) noticeBoardId: number,
+  ): Promise<NoticeBoardDto> {
+    return this.noticeBoardService.findOneOrNotFound(noticeBoardId);
+  }
 
   // @Patch(':id')
   // update() {}

@@ -34,7 +34,7 @@ export class NoticeBoardsController {
 
   @ApiNoticeBoard.Create({ summary: '공지 게시글 생성 API' })
   @UseGuards(JwtAuthGuard)
-  @SetResponse({ type: ResponseType.Detail, key: 'board' })
+  @SetResponse({ type: ResponseType.Detail, key: 'noticeBoard' })
   @Post()
   create(
     @User() user: UserDto,

@@ -1,10 +1,9 @@
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '@src/apis/auth/services/auth.service';
-import { FreeBoardHistoryService } from '@src/apis/free-boards/free-board-history/services/free-board-history.service';
-import { FreeBoardsService } from '@src/apis/free-boards/services/free-board.service';
-import { NoticeBoardHistoryService } from '@src/apis/notice-boards/notice-board-history/services/notice-board-history.service';
-import { NoticeBoardsService } from '@src/apis/notice-boards/services/notice-boards.service';
+import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { UsersService } from '@src/apis/users/services/users.service';
+import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { MockProvider } from '@test/mock/mock.type';
@@ -43,24 +42,20 @@ export const mockUsersService: MockProvider<UsersService> = {
   findOneBy: jest.fn(),
 };
 
-export const mockFreeBoardsService: MockProvider<FreeBoardsService> = {
+export const mockUserHistoryService: MockProvider<UserHistoryService> = {
   create: jest.fn(),
-  findAllAndCount: jest.fn(),
 };
 
-export const mockFreeBoardHistoryService: MockProvider<FreeBoardHistoryService> =
-  {
-    create: jest.fn(),
-  };
-
-export const mockNoticeBoardsService: MockProvider<NoticeBoardsService> = {
+export const mockFreePostsService: MockProvider<FreePostsService> = {
   create: jest.fn(),
   findAllAndCount: jest.fn(),
+  patchUpdate: jest.fn(),
   findOneOrNotFound: jest.fn(),
   putUpdate: jest.fn(),
+  remove: jest.fn(),
 };
 
-export const mockNoticeBoardHistoryService: MockProvider<NoticeBoardHistoryService> =
+export const mockFreePostHistoryService: MockProvider<FreePostHistoryService> =
   {
     create: jest.fn(),
   };

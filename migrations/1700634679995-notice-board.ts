@@ -80,7 +80,7 @@ export class NoticeBoard1700634679995 implements MigrationInterface {
             comment: '조회수',
           },
           {
-            name: 'allow_comment',
+            name: 'is_allow_comment',
             type: 'tinyint',
             length: '1',
             unsigned: true,
@@ -190,7 +190,7 @@ export class NoticeBoard1700634679995 implements MigrationInterface {
             comment: '댓글 본문',
           },
           {
-            name: 'isAnonymous',
+            name: 'is_anonymous',
             type: 'tinyint',
             length: '1',
             default: 0,
@@ -316,7 +316,7 @@ export class NoticeBoard1700634679995 implements MigrationInterface {
             comment: '대댓글 본문',
           },
           {
-            name: 'isAnonymous',
+            name: 'is_anonymous',
             type: 'tinyint',
             length: '1',
             default: 0,

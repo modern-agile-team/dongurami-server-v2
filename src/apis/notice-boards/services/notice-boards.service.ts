@@ -46,7 +46,6 @@ export class NoticeBoardsService {
           userId,
           ...createNoticeBoardDto,
         });
-      console.log(newPost);
 
       await this.noticeBoardHistoryService.create(
         entityManager,

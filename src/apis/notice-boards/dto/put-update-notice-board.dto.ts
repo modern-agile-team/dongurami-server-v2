@@ -10,5 +10,5 @@ export class PutUpdateNoticeBoardDto extends PickType(CreateNoticeBoardDto, [
     description: '댓글 허용 여부',
   })
   @IsBoolean()
-  allowComment: boolean;
+  isAllowComment: boolean;
 }

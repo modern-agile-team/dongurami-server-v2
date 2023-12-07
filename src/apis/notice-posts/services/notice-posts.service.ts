@@ -194,4 +194,17 @@ export class NoticePostsService {
       }
     }
   }
+
+  async patchUpdate(
+    userId: number,
+    putUpdateNoticePostDto: PutUpdateNoticePostDto,
+  ) {
+    const existBoard = await this.findOneOrNotFound(userId);
+
+    if (!existBoard) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+  }
 }

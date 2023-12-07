@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   // Delete,
   // Get,
   // Patch,
@@ -26,6 +27,7 @@ import { User } from '@src/decorators/user.decorator';
 import { NoticePostDto } from '../dto/notice-post.dto';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
+import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 
 @ApiTags('notice-posts')
 @Controller('notice-posts')
@@ -83,8 +85,16 @@ export class NoticePostsController {
     );
   }
 
-  // @Patch(':id')
-  // update() {}
+  @UseGuards(JwtAuthGuard)
+  @ApiNoticePost.PatchUpdate({ summary: '공지게시글 patch 수정 ' })
+  @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
+  @Patch(':id')
+  patchUpdate(
+    @User() user: UserDto,
+    @Body() patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
+  ) {
+    return this.noticePostService.patchUpdate(user, patchUpdateNoticePostDto);
+  }
 
   // @Delete(':id')
   // remove() {}

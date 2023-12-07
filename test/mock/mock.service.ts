@@ -1,5 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '@src/apis/auth/services/auth.service';
+import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { UsersService } from '@src/apis/users/services/users.service';
@@ -44,6 +45,11 @@ export const mockUsersService: MockProvider<UsersService> = {
 
 export const mockUserHistoryService: MockProvider<UserHistoryService> = {
   create: jest.fn(),
+};
+
+export const mockCommonPostsService: MockProvider<CommonPostsService> = {
+  onModuleInit: jest.fn(),
+  incrementHit: jest.fn(),
 };
 
 export const mockFreePostsService: MockProvider<FreePostsService> = {

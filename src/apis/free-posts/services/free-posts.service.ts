@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
@@ -7,17 +6,17 @@ import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
-import { FreePost } from '@src/entities/FreePost';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { isNotEmptyObject } from 'class-validator';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 
 @Injectable()
@@ -33,8 +32,7 @@ export class FreePostsService {
     private readonly queryHelper: QueryHelper,
 
     private readonly dataSource: DataSource,
-    @InjectRepository(FreePost)
-    private readonly freePostRepository: Repository<FreePost>,
+    private readonly freePostRepository: FreePostRepository,
   ) {}
 
   async create(userId: number, createFreePostDto: CreateFreePostDto) {

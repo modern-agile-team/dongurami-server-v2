@@ -1,6 +1,6 @@
 import { IsBoolean, IsNotEmpty, Length } from 'class-validator';
-import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-board.constant';
-import { NoticeBoardDto } from './notice-board.dto';
+import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-post.constant';
+import { NoticeBoardDto } from './notice-post.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateNoticeBoardDto

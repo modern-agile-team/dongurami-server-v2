@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@src/dto/base.dto';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-board.constant';
+import { NoticeBoard } from '@src/entities/NoticePost';
+import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-post.constant';
 import { Exclude } from 'class-transformer';
-import { NoticeBoardStatus } from '../constants/notice-board.enum';
+import { NoticeBoardStatus } from '../constants/notice-post.enum';
 
 export class NoticeBoardDto
   extends BaseDto

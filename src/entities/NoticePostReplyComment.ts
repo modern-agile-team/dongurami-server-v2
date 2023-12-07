@@ -6,9 +6,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoard } from './NoticeBoard';
-import { NoticeBoardComment } from './NoticeBoardComment';
-import { NoticeBoardReplyCommentReaction } from './NoticeBoardReplyCommentReaction';
+import { NoticeBoard } from './NoticePost';
+import { NoticeBoardComment } from './NoticePostComment';
+import { NoticeBoardReplyCommentReaction } from './NoticePostReplyCommentReaction';
 import { User } from './User';
 
 @Entity('notice_board_reply_comment', { schema: 'dongurami_local_db' })

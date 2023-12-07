@@ -3,29 +3,25 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
-import { NoticeBoardHistory } from './NoticeBoardHistory';
+import { NoticeBoardHistory } from './NoticePostHistory';
+import { NoticeBoardReplyCommentHistory } from './NoticePostReplyCommentHistory';
 import { User } from './User';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 
-@Entity('notice_board_reply_comment_history', { schema: 'dongurami_local_db' })
-export class NoticeBoardReplyCommentHistory {
+@Entity('notice_board_comment_history', { schema: 'dongurami_local_db' })
+export class NoticeBoardCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '공지 게시글 대댓글 수정이력 고유 ID',
+    comment: '공지게시글 댓글 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;
 
-  @Column('varchar', {
-    name: 'description',
-    comment: '대댓글 본문',
-    length: 255,
-  })
+  @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
 
   @Column('boolean', {
@@ -43,7 +39,7 @@ export class NoticeBoardReplyCommentHistory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardReplyCommentHistories, {
+  @ManyToOne(() => User, (user) => user.noticeBoardCommentHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
@@ -51,21 +47,17 @@ export class NoticeBoardReplyCommentHistory {
   user: User;
 
   @ManyToOne(
-    () => NoticeBoardCommentHistory,
-    (noticeBoardCommentHistory) =>
-      noticeBoardCommentHistory.noticeBoardReplyCommentHistories,
-    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
-  )
-  @JoinColumn([
-    { name: 'notice_board_comment_history_id', referencedColumnName: 'id' },
-  ])
-  noticeBoardCommentHistory: NoticeBoardCommentHistory;
-
-  @ManyToOne(
     () => NoticeBoardHistory,
-    (noticeBoardHistory) => noticeBoardHistory.noticeBoardReplyCommentHistories,
+    (noticeBoardHistory) => noticeBoardHistory.noticeBoardCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
   @JoinColumn([{ name: 'notice_board_history_id', referencedColumnName: 'id' }])
   noticeBoardHistory: NoticeBoardHistory;
+
+  @OneToMany(
+    () => NoticeBoardReplyCommentHistory,
+    (noticeBoardReplyCommentHistory) =>
+      noticeBoardReplyCommentHistory.noticeBoardCommentHistory,
+  )
+  noticeBoardReplyCommentHistories: NoticeBoardReplyCommentHistory[];
 }

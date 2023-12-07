@@ -5,10 +5,10 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { ApiOperator } from '@src/types/type';
 import { ValidationError } from '@src/types/validation-errors.type';
-import { NoticeBoardsController } from './notice-boards.controller';
+import { NoticeBoardsController } from './notice-posts.controller';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
-import { NoticeBoardDto } from '../dto/notice-board.dto';
-import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
+import { NoticeBoardDto } from '../dto/notice-post.dto';
+import { NoticeBoardsItemDto } from '../dto/notice-posts-item.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
 
 export const ApiNoticeBoard: ApiOperator<keyof NoticeBoardsController> = {

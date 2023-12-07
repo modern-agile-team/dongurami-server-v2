@@ -9,14 +9,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateNoticeBoardDto } from '../dto/create-notice-board.dto';
-import { NoticeBoardsService } from '../services/notice-boards.service';
+import { CreateNoticeBoardDto } from '../dto/create-notice-post.dto';
+import { NoticeBoardsService } from '../services/notice-posts.service';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { ApiNoticeBoard } from './notice-boards.swagger';
 import { ApiTags } from '@nestjs/swagger';
-import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
-import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
+import { FindNoticeBoardListQueryDto } from '../dto/find-notice-post-list-query.dto';
+import { NoticeBoardsItemDto } from '../dto/notice-posts-item.dto';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';

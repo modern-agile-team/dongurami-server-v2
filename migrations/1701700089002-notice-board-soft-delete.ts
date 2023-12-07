@@ -1,4 +1,4 @@
-import { NoticeBoardStatus } from '@src/apis/notice-boards/constants/notice-board.enum';
+import { NoticeBoardStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 

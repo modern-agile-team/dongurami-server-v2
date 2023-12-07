@@ -6,9 +6,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoard } from './NoticeBoard';
-import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
-import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
+import { NoticeBoard } from './NoticePost';
+import { NoticeBoardCommentReaction } from './NoticePostCommentReaction';
+import { NoticeBoardReplyComment } from './NoticePostReplyComment';
 import { User } from './User';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 

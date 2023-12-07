@@ -1,4 +1,4 @@
-import { NoticeBoardDto } from '../dto/notice-board.dto';
+import { NoticeBoardDto } from '../dto/notice-post.dto';
 
 export const NOTICE_BOARD_ORDER_FIELD: readonly (keyof NoticeBoardDto)[] = [
   'id',

@@ -6,8 +6,8 @@ import {
 import { FreeBoardCommentHistory } from '@src/entities/FreeBoardCommentHistory';
 import { FreeBoardHistory } from '@src/entities/FreeBoardHistory';
 import { FreeBoardReplyCommentHistory } from '@src/entities/FreeBoardReplyCommentHistory';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NoticeBoardComment } from '@src/entities/NoticeBoardComment';
+import { NoticeBoard } from '@src/entities/NoticePost';
+import { NoticeBoardComment } from '@src/entities/NoticePostComment';
 import {
   Column,
   Entity,
@@ -25,13 +25,13 @@ import { FreeBoardReaction } from './FreeBoardReaction';
 import { FreeBoardReplyComment } from './FreeBoardReplyComment';
 import { FreeBoardReplyCommentReaction } from './FreeBoardReplyCommentReaction';
 import { Major } from './Major';
-import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
-import { NoticeBoardReaction } from './NoticeBoardReaction';
-import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
-import { NoticeBoardReplyCommentReaction } from './NoticeBoardReplyCommentReaction';
-import { NoticeBoardHistory } from './NoticeBoardHistory';
-import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
-import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
+import { NoticeBoardCommentReaction } from './NoticePostCommentReaction';
+import { NoticeBoardReaction } from './NoticePostReaction';
+import { NoticeBoardReplyComment } from './NoticePostReplyComment';
+import { NoticeBoardReplyCommentReaction } from './NoticePostReplyCommentReaction';
+import { NoticeBoardHistory } from './NoticePostHistory';
+import { NoticeBoardCommentHistory } from './NoticePostCommentHistory';
+import { NoticeBoardReplyCommentHistory } from './NoticePostReplyCommentHistory';
 
 @Entity('user', { schema: 'dongurami_v2' })
 export class User {

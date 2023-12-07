@@ -6,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
-import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
+import { NoticeBoardCommentHistory } from './NoticePostCommentHistory';
+import { NoticeBoardReplyCommentHistory } from './NoticePostReplyCommentHistory';
 import { User } from './User';
-import { NoticeBoard } from './NoticeBoard';
+import { NoticeBoard } from './NoticePost';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 import { HistoryAction } from '@src/constants/enum';
-import { NoticeBoardStatus } from '@src/apis/notice-boards/constants/notice-board.enum';
+import { NoticeBoardStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 
 @Entity('notice_board_history', { schema: 'dongurami_local_db' })
 export class NoticeBoardHistory {

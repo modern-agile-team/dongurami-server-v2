@@ -1,6 +1,6 @@
 import { PageDto } from '@src/dto/page.dto';
-import { NoticeBoardDto } from './notice-board.dto';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { NoticeBoardDto } from './notice-post.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBooleanString,
   IsDefined,
@@ -11,11 +11,11 @@ import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import {
   NOTICE_BOARD_ORDER_FIELD,
   NOTICE_BOARD_TITLE_LENGTH,
-} from '../constants/notice-board.constant';
+} from '../constants/notice-post.constant';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { SortOrder } from '@src/constants/enum';
-import { NoticeBoardStatus } from '../constants/notice-board.enum';
+import { NoticeBoardStatus } from '../constants/notice-post.enum';
 
 export class FindNoticeBoardListQueryDto
   extends PageDto

@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
+import { NoticeBoardReplyComment } from './NoticePostReplyComment';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 

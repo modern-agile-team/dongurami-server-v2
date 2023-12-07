@@ -1,5 +1,5 @@
-import { NoticeBoardHistory } from '@src/entities/NoticeBoardHistory';
-import { NoticeBoardStatus } from '../../constants/notice-board.enum';
+import { NoticeBoardHistory } from '@src/entities/NoticePostHistory';
+import { NoticeBoardStatus } from '../../constants/notice-post.enum';
 
 export class CreateNoticeBoardHistoryDto
   implements

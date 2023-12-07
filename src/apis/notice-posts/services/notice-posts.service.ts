@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNoticeBoardDto } from '../dto/create-notice-board.dto';
+import { CreateNoticeBoardDto } from '../dto/create-notice-post.dto';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NoticeBoardDto } from '../dto/notice-board.dto';
+import { NoticeBoard } from '@src/entities/NoticePost';
+import { NoticeBoardDto } from '../dto/notice-post.dto';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { QueryHelper } from '@src/helpers/query.helper';
-import { FindNoticeBoardListQueryDto } from '../dto/find-notice-board-list-query.dto';
-import { NoticeBoardsItemDto } from '../dto/notice-boards-item.dto';
-import { NoticeBoardHistoryService } from '../notice-board-history/services/notice-board-history.service';
+import { FindNoticeBoardListQueryDto } from '../dto/find-notice-post-list-query.dto';
+import { NoticeBoardsItemDto } from '../dto/notice-posts-item.dto';
+import { NoticeBoardHistoryService } from '../notice-post-history/services/notice-posts-history.service';
 import { HistoryAction } from '@src/constants/enum';
 
 @Injectable()

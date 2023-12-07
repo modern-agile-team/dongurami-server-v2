@@ -7,6 +7,7 @@ import {
   // Get,
   // Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -24,6 +25,7 @@ import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { NoticePostDto } from '../dto/notice-post.dto';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
+import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 
 @ApiTags('notice-posts')
 @Controller('notice-posts')
@@ -63,6 +65,22 @@ export class NoticePostsController {
     @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
   ): Promise<NoticePostDto> {
     return this.noticePostService.findOneOrNotFound(noticePostId);
+  }
+
+  @ApiNoticePost.PutUpdate({ summary: '공지게시글 수정' })
+  @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Put(':noticePostId')
+  putUpdate(
+    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @User() user: UserDto,
+    @Body() putUpdateNoticePostDto: PutUpdateNoticePostDto,
+  ): Promise<NoticePostDto> {
+    return this.noticePostService.putUpdate(
+      noticePostId,
+      user.id,
+      putUpdateNoticePostDto,
+    );
   }
 
   // @Patch(':id')

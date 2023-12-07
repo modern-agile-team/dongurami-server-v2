@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, Length } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
 import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
 import { NoticePostDto } from './notice-post.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -22,7 +22,9 @@ export class CreateNoticePostDto
 
   @ApiProperty({
     description: '댓글 허용 여부 (false: 비활성화, true: 허용)',
+    default: true,
   })
+  @IsOptional()
   @IsBoolean()
-  isAllowComment: boolean;
+  isAllowComment: boolean = true;
 }

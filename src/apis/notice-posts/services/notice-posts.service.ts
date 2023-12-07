@@ -13,6 +13,8 @@ import { NoticePostHistoryService } from '../notice-post-history/services/notice
 import { HistoryAction } from '@src/constants/enum';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { NoticePostStatus } from '../constants/notice-Post.enum';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 
 @Injectable()
 export class NoticePostsService {
@@ -118,5 +120,78 @@ export class NoticePostsService {
     }
 
     return new NoticePostDto(noticePost);
+  }
+
+  async putUpdate(
+    noticePostId: number,
+    userId: number,
+    putUpdateNoticePostDto: PutUpdateNoticePostDto,
+  ): Promise<NoticePostDto> {
+    const existPost = await this.noticePostRepository.findOne({
+      select: { userId: true },
+      where: { id: noticePostId },
+    });
+
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (existPost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    queryRunner.connect();
+    queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+      await entityManager.withRepository(this.noticePostRepository).update(
+        {
+          id: noticePostId,
+        },
+        {
+          ...putUpdateNoticePostDto,
+        },
+      );
+
+      const newPost = await entityManager
+        .withRepository(this.noticePostRepository)
+        .findOneByOrFail({ id: noticePostId });
+
+      await this.noticePostHistoryService.create(
+        entityManager,
+        userId,
+        noticePostId,
+        HistoryAction.Insert,
+        {
+          ...newPost,
+        },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new NoticePostDto(newPost);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        stack: error.stack,
+        ctx: '공지게시글 업데이트 중 알 수 없는 에러',
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
   }
 }

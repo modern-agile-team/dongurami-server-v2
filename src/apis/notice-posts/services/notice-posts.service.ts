@@ -12,7 +12,7 @@ import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
 import { HistoryAction } from '@src/constants/enum';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { NoticeBoardStatus } from '../constants/notice-board.enum';
+import { NoticePostStatus } from '../constants/notice-Post.enum';
 
 @Injectable()
 export class NoticePostsService {
@@ -105,18 +105,18 @@ export class NoticePostsService {
     });
   }
 
-  async findOneOrNotFound(noticeboardId: number): Promise<NoticeBoardDto> {
-    const noticeBoard = await this.noticeBoardRepository.findOneBy({
-      id: noticeboardId,
-      status: NoticeBoardStatus.Posting,
+  async findOneOrNotFound(noticePostId: number): Promise<NoticePostDto> {
+    const noticePost = await this.noticePostRepository.findOneBy({
+      id: noticePostId,
+      status: NoticePostStatus.Posting,
     });
 
-    if (!noticeBoard) {
+    if (!noticePost) {
       throw new HttpNotFoundException({
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       });
     }
 
-    return new NoticeBoardDto(noticeBoard);
+    return new NoticePostDto(noticePost);
   }
 }

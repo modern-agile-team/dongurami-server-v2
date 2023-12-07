@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   // Delete,
   // Get,
   // Patch,
@@ -21,6 +22,8 @@ import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
+import { NoticePostDto } from '../dto/notice-post.dto';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
 @ApiTags('notice-posts')
 @Controller('notice-posts')
@@ -52,8 +55,15 @@ export class NoticePostsController {
 
     return [plainToInstance(NoticePostsItemDto, noticePosts), count];
   }
-  // @Get(':id')
-  // findOne() {}
+
+  @ApiNoticePost.FindOneOrNotFound({ summary: '공지게시글 상세조회 ' })
+  @SetResponse({ type: ResponseType.Detail, key: 'noticePost' })
+  @Get(':noticePostId')
+  findOneOrNotFound(
+    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+  ): Promise<NoticePostDto> {
+    return this.noticePostService.findOneOrNotFound(noticePostId);
+  }
 
   // @Patch(':id')
   // update() {}

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';
-import { MajorRepository } from '../repositories/major.repository';
-import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
+import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';
 import { MajorDto } from '../dto/major.dto';
+import { MajorRepository } from '../repositories/major.repository';
 
 @Injectable()
 export class MajorService {

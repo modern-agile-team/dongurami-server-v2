@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserHistory } from '@src/entities/UserHistory';
+import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
+import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { UserHistoryService } from './services/user-history.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserHistory])],
+  imports: [TypeOrmExModule.forCustomRepository([UserHistoryRepository])],
   providers: [UserHistoryService],
   exports: [UserHistoryService],
 })

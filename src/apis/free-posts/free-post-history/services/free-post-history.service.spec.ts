@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateFreePostHistoryDto } from '@src/apis/free-posts/free-post-history/dto/create-free-post-history.dto';
+import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
 import { HistoryAction } from '@src/constants/enum';
-import { FreePostHistory } from '@src/entities/FreePostHistory';
 import {
   mockEntityManager,
   mockFreePostHistoryRepository,
@@ -17,7 +16,7 @@ describe(FreePostHistoryService.name, () => {
       providers: [
         FreePostHistoryService,
         {
-          provide: getRepositoryToken(FreePostHistory),
+          provide: FreePostHistoryRepository,
           useValue: mockFreePostHistoryRepository,
         },
       ],

@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Major } from '@src/entities/Major';
+import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { MajorController } from './controllers/major.controller';
-import { MajorService } from './services/major.service';
 import { MajorRepository } from './repositories/major.repository';
+import { MajorService } from './services/major.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Major])],
+  imports: [TypeOrmExModule.forCustomRepository([MajorRepository])],
   controllers: [MajorController],
-  providers: [MajorService, MajorRepository],
+  providers: [MajorService],
 })
 export class MajorModule {}

@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
-import { DataSource, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { NoticePost } from '@src/entities/NoticePost';
-import { NoticePostDto } from '../dto/notice-post.dto';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
+import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { QueryHelper } from '@src/helpers/query.helper';
-import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
-import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
-import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
-import { HistoryAction } from '@src/constants/enum';
-import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { NoticePostStatus } from '../constants/notice-Post.enum';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { DataSource } from 'typeorm';
+import { NoticePostStatus } from '../constants/notice-Post.enum';
+import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
+import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
+import { NoticePostDto } from '../dto/notice-post.dto';
+import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
+import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
 
 @Injectable()
 export class NoticePostsService {
@@ -26,9 +25,9 @@ export class NoticePostsService {
   constructor(
     private readonly queryHelper: QueryHelper,
     private readonly noticePostHistoryService: NoticePostHistoryService,
+
     private readonly dataSource: DataSource,
-    @InjectRepository(NoticePost)
-    private readonly noticePostRepository: Repository<NoticePost>,
+    private readonly noticePostRepository: NoticePostRepository,
   ) {}
 
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {

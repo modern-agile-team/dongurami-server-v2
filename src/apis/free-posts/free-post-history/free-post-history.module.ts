@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { FreePostHistory } from '@src/entities/FreePostHistory';
+import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
+import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { FreePostHistoryService } from './services/free-post-history.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FreePostHistory])],
+  imports: [TypeOrmExModule.forCustomRepository([FreePostHistoryRepository])],
   providers: [FreePostHistoryService],
   exports: [FreePostHistoryService],
 })

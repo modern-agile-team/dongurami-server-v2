@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { MajorRepository } from '@src/apis/major/repositories/major.repository';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UsersService } from '@src/apis/users/services/users.service';
 import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
-import { Major } from '@src/entities/Major';
 import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
@@ -40,11 +40,11 @@ describe(UsersService.name, () => {
           useValue: mockDataSource,
         },
         {
-          provide: getRepositoryToken(User),
+          provide: UserRepository,
           useValue: mockUserRepository,
         },
         {
-          provide: getRepositoryToken(Major),
+          provide: MajorRepository,
           useValue: mockMajorRepository,
         },
       ],

@@ -7,6 +7,7 @@ import {
   // Get,
   // Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -24,6 +25,7 @@ import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { NoticeBoardDto } from '../dto/notice-board.dto';
+import { PutUpdateNoticeBoardDto } from '../dto/put-update-notice-board.dto';
 
 @ApiTags('notice-boards')
 @Controller('notice-boards')
@@ -37,7 +39,7 @@ export class NoticeBoardsController {
   create(
     @User() user: UserDto,
     @Body() createNoticeBoardDto: CreateNoticeBoardDto,
-  ) {
+  ): Promise<NoticeBoardDto> {
     return this.noticeBoardService.create(user.id, createNoticeBoardDto);
   }
 
@@ -63,6 +65,22 @@ export class NoticeBoardsController {
     @Param('noticeBoardId', ParsePositiveIntPipe) noticeBoardId: number,
   ): Promise<NoticeBoardDto> {
     return this.noticeBoardService.findOneOrNotFound(noticeBoardId);
+  }
+
+  @ApiNoticeBoard.PutUpdate({ summary: '공지게시글 수정' })
+  @SetResponse({ key: 'noticeBoard', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Put(':noticeBoardId')
+  putUpdate(
+    @Param('noticeBoardId', ParsePositiveIntPipe) noticeBoardId: number,
+    @User() user: UserDto,
+    @Body() putUpdateNoticeBoardDto: PutUpdateNoticeBoardDto,
+  ): Promise<NoticeBoardDto> {
+    return this.noticeBoardService.putUpdate(
+      noticeBoardId,
+      user.id,
+      putUpdateNoticeBoardDto,
+    );
   }
 
   // @Patch(':id')

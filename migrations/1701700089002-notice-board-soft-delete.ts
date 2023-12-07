@@ -1,4 +1,4 @@
-import { NoticeBoardStatus } from '@src/apis/notice-boards/constants/notice-board.enum';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
@@ -14,9 +14,9 @@ export class NoticeBoardSoftDelete1701700089002 implements MigrationInterface {
       new TableColumn({
         name: 'status',
         type: 'enum',
-        enum: [NoticeBoardStatus.Posting, NoticeBoardStatus.Remove],
+        enum: [NoticePostStatus.Posting, NoticePostStatus.Remove],
         isNullable: false,
-        default: `"${NoticeBoardStatus.Posting}"`,
+        default: `"${NoticePostStatus.Posting}"`,
         comment: '공지게시글 상태',
       }),
     ]);
@@ -40,8 +40,8 @@ export class NoticeBoardSoftDelete1701700089002 implements MigrationInterface {
       new TableColumn({
         name: 'status',
         type: 'enum',
-        enum: [NoticeBoardStatus.Posting, NoticeBoardStatus.Remove],
-        default: `"${NoticeBoardStatus.Posting}"`,
+        enum: [NoticePostStatus.Posting, NoticePostStatus.Remove],
+        default: `"${NoticePostStatus.Posting}"`,
         isNullable: false,
         comment: '공지게시글 상태',
       }),

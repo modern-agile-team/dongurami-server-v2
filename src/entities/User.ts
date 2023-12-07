@@ -13,8 +13,8 @@ import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { FreePostReplyCommentHistory } from '@src/entities/FreePostReplyCommentHistory';
 import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NoticeBoardComment } from '@src/entities/NoticeBoardComment';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { UserHistory } from '@src/entities/UserHistory';
 import {
   Column,
@@ -27,13 +27,13 @@ import {
 import { ClubJoinApplication } from './ClubJoinApplication';
 import { ClubMember } from './ClubMember';
 import { Major } from './Major';
-import { NoticeBoardCommentReaction } from './NoticeBoardCommentReaction';
-import { NoticeBoardReaction } from './NoticeBoardReaction';
-import { NoticeBoardReplyComment } from './NoticeBoardReplyComment';
-import { NoticeBoardReplyCommentReaction } from './NoticeBoardReplyCommentReaction';
-import { NoticeBoardHistory } from './NoticeBoardHistory';
-import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
-import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
+import { NoticePostCommentReaction } from './NoticePostCommentReaction';
+import { NoticePostReaction } from './NoticePostReaction';
+import { NoticePostReplyComment } from './NoticePostReplyComment';
+import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
+import { NoticePostHistory } from './NoticePostHistory';
+import { NoticePostCommentHistory } from './NoticePostCommentHistory';
+import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
 
 @Entity('user', { schema: 'dongurami_v2' })
 export class User {
@@ -203,56 +203,56 @@ export class User {
   )
   freePostReplyCommentReactions: FreePostReplyCommentReaction[];
 
-  @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.user)
-  noticeBoards: NoticeBoard[];
+  @OneToMany(() => NoticePost, (noticePost) => noticePost.user)
+  noticePosts: NoticePost[];
 
   @OneToMany(
-    () => NoticeBoardHistory,
-    (noticeBoardHistories) => noticeBoardHistories.user,
+    () => NoticePostHistory,
+    (noticePostHistories) => noticePostHistories.user,
   )
-  noticeBoardHistories: NoticeBoardHistory[];
+  noticePostHistories: NoticePostHistory[];
 
   @OneToMany(
-    () => NoticeBoardComment,
-    (noticeBoardComment) => noticeBoardComment.user,
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.user,
   )
-  noticeBoardComments: NoticeBoardComment[];
+  noticePostComments: NoticePostComment[];
 
   @OneToMany(
-    () => NoticeBoardCommentHistory,
-    (noticeBoardCommentHistories) => noticeBoardCommentHistories.user,
+    () => NoticePostCommentHistory,
+    (noticePostCommentHistories) => noticePostCommentHistories.user,
   )
-  noticeBoardCommentHistories: NoticeBoardCommentHistory[];
+  noticePostCommentHistories: NoticePostCommentHistory[];
 
   @OneToMany(
-    () => NoticeBoardCommentReaction,
-    (noticeBoardCommentReaction) => noticeBoardCommentReaction.user,
+    () => NoticePostCommentReaction,
+    (noticePostCommentReaction) => noticePostCommentReaction.user,
   )
-  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+  noticePostCommentReactions: NoticePostCommentReaction[];
 
   @OneToMany(
-    () => NoticeBoardReaction,
-    (noticeBoardReaction) => noticeBoardReaction.user,
+    () => NoticePostReaction,
+    (noticePostReaction) => noticePostReaction.user,
   )
-  noticeBoardReactions: NoticeBoardReaction[];
+  noticePostReactions: NoticePostReaction[];
 
   @OneToMany(
-    () => NoticeBoardReplyComment,
-    (noticeBoardReplyComment) => noticeBoardReplyComment.user,
+    () => NoticePostReplyComment,
+    (noticePostReplyComment) => noticePostReplyComment.user,
   )
-  noticeBoardReplyComments: NoticeBoardReplyComment[];
+  noticePostReplyComments: NoticePostReplyComment[];
 
   @OneToMany(
-    () => NoticeBoardReplyCommentHistory,
-    (noticeBoardReplyCommentHistories) => noticeBoardReplyCommentHistories.user,
+    () => NoticePostReplyCommentHistory,
+    (noticePostReplyCommentHistories) => noticePostReplyCommentHistories.user,
   )
-  noticeBoardReplyCommentHistories: NoticeBoardReplyCommentHistory[];
+  noticePostReplyCommentHistories: NoticePostReplyCommentHistory[];
 
   @OneToMany(
-    () => NoticeBoardReplyCommentReaction,
-    (noticeBoardReplyCommentReaction) => noticeBoardReplyCommentReaction.user,
+    () => NoticePostReplyCommentReaction,
+    (noticePostReplyCommentReaction) => noticePostReplyCommentReaction.user,
   )
-  noticeBoardReplyCommentReactions: NoticeBoardReplyCommentReaction[];
+  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 
   @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',

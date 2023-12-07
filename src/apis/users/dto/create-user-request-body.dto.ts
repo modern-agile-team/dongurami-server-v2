@@ -62,7 +62,7 @@ export class CreateUserRequestBodyDto
   role: UserRole;
 
   @ApiProperty({
-    description: 'password ',
+    description: 'password (email 로그인시에만 패턴 검사를 진행합니다.)',
     type: () => String,
     nullable: true,
     pattern: String(USER_PASSWORD_REGEXP),

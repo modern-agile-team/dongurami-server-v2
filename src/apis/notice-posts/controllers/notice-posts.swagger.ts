@@ -76,13 +76,13 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticeBoardFindOneOrNotFound',
+        operationId: 'NoticePostFindOneOrNotFound',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
-        'noticeBoard',
-        NoticeBoardDto,
+        'noticePost',
+        NoticePostDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

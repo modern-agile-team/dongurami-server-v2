@@ -25,7 +25,7 @@ export class CommonPostsService implements OnModuleInit {
     );
   }
 
-  async increaseHit(postId: number): Promise<void> {
+  async incrementHit(postId: number): Promise<void> {
     const updateResult = await this.postRepository.increment(
       {
         id: postId,

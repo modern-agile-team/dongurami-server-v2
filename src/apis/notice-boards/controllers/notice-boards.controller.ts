@@ -39,7 +39,7 @@ export class NoticeBoardsController {
   create(
     @User() user: UserDto,
     @Body() createNoticeBoardDto: CreateNoticeBoardDto,
-  ) {
+  ): Promise<NoticeBoardDto> {
     return this.noticeBoardService.create(user.id, createNoticeBoardDto);
   }
 
@@ -75,7 +75,7 @@ export class NoticeBoardsController {
     @Param('noticeBoardId', ParsePositiveIntPipe) noticeBoardId: number,
     @User() user: UserDto,
     @Body() putUpdateNoticeBoardDto: PutUpdateNoticeBoardDto,
-  ) {
+  ): Promise<NoticeBoardDto> {
     return this.noticeBoardService.putUpdate(
       noticeBoardId,
       user.id,

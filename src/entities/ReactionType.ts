@@ -1,9 +1,9 @@
 import { FreeBoardCommentReaction } from '@src/entities/FreeBoardCommentReaction';
 import { FreeBoardReaction } from '@src/entities/FreeBoardReaction';
 import { FreeBoardReplyCommentReaction } from '@src/entities/FreeBoardReplyCommentReaction';
-import { NoticeBoardCommentReaction } from '@src/entities/NoticePostCommentReaction';
-import { NoticeBoardReaction } from '@src/entities/NoticePostReaction';
-import { NoticeBoardReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
+import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('reaction_type', { schema: 'dongurami_v2' })
@@ -56,21 +56,21 @@ export class ReactionType {
   freeBoardReplyCommentReactions: FreeBoardReplyCommentReaction[];
 
   @OneToMany(
-    () => NoticeBoardCommentReaction,
-    (noticeBoardCommentReaction) => noticeBoardCommentReaction.reactionType,
+    () => NoticePostCommentReaction,
+    (noticePostCommentReaction) => noticePostCommentReaction.reactionType,
   )
-  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+  noticePostCommentReactions: NoticePostCommentReaction[];
 
   @OneToMany(
-    () => NoticeBoardReaction,
-    (noticeBoardReaction) => noticeBoardReaction.reactionType,
+    () => NoticePostReaction,
+    (noticePostReaction) => noticePostReaction.reactionType,
   )
-  noticeBoardReactions: NoticeBoardReaction[];
+  noticePostReactions: NoticePostReaction[];
 
   @OneToMany(
-    () => NoticeBoardReplyCommentReaction,
-    (noticeBoardReplyCommentReaction) =>
-      noticeBoardReplyCommentReaction.reactionType,
+    () => NoticePostReplyCommentReaction,
+    (noticePostReplyCommentReaction) =>
+      noticePostReplyCommentReaction.reactionType,
   )
-  noticeBoardReplyCommentReactions: NoticeBoardReplyCommentReaction[];
+  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 }

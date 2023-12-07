@@ -1,17 +1,17 @@
 import { IsBoolean, IsNotEmpty, Length } from 'class-validator';
-import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-post.constant';
-import { NoticeBoardDto } from './notice-post.dto';
+import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
+import { NoticePostDto } from './notice-post.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateNoticeBoardDto
-  implements Pick<NoticeBoardDto, 'title' | 'description' | 'isAllowComment'>
+export class CreateNoticePostDto
+  implements Pick<NoticePostDto, 'title' | 'description' | 'isAllowComment'>
 {
   @ApiProperty({
     description: '공지 게시글 제목',
-    minLength: NOTICE_BOARD_TITLE_LENGTH.MIN,
-    maxLength: NOTICE_BOARD_TITLE_LENGTH.MAX,
+    minLength: NOTICE_POST_TITLE_LENGTH.MIN,
+    maxLength: NOTICE_POST_TITLE_LENGTH.MAX,
   })
-  @Length(NOTICE_BOARD_TITLE_LENGTH.MIN, NOTICE_BOARD_TITLE_LENGTH.MAX)
+  @Length(NOTICE_POST_TITLE_LENGTH.MIN, NOTICE_POST_TITLE_LENGTH.MAX)
   title: string;
 
   @ApiProperty({

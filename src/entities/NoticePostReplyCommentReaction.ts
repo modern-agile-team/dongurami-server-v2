@@ -5,12 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardReplyComment } from './NoticePostReplyComment';
+import { NoticePostReplyComment } from './NoticePostReplyComment';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('notice_board_reply_comment_reaction', { schema: 'dongurami_local_db' })
-export class NoticeBoardReplyCommentReaction {
+@Entity('notice_post_reply_comment_reaction', { schema: 'dongurami_local_db' })
+export class NoticePostReplyCommentReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -28,29 +28,29 @@ export class NoticeBoardReplyCommentReaction {
 
   @ManyToOne(
     () => ReactionType,
-    (reactionType) => reactionType.noticeBoardReplyCommentReactions,
+    (reactionType) => reactionType.noticePostReplyCommentReactions,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([{ name: 'reaction_type_id', referencedColumnName: 'id' }])
   reactionType: ReactionType;
 
   @Column('int', {
-    name: 'notice_board_reply_comment_id',
+    name: 'notice_post_reply_comment_id',
     comment: '공지 게시글 대댓글 고유 ID',
     unsigned: true,
   })
-  noticeBoardReplyCommentId: number;
+  noticePostReplyCommentId: number;
 
   @ManyToOne(
-    () => NoticeBoardReplyComment,
-    (noticeBoardReplyComment) =>
-      noticeBoardReplyComment.noticeBoardReplyCommentReactions,
+    () => NoticePostReplyComment,
+    (noticePostReplyComment) =>
+      noticePostReplyComment.noticePostReplyCommentReactions,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([
-    { name: 'notice_board_reply_comment_id', referencedColumnName: 'id' },
+    { name: 'notice_post_reply_comment_id', referencedColumnName: 'id' },
   ])
-  noticeBoardReplyComment: NoticeBoardReplyComment;
+  noticePostReplyComment: NoticePostReplyComment;
 
   @Column('int', {
     name: 'user_id',
@@ -59,7 +59,7 @@ export class NoticeBoardReplyCommentReaction {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardReplyCommentReactions, {
+  @ManyToOne(() => User, (user) => user.noticePostReplyCommentReactions, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

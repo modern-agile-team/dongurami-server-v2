@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
-import { NoticeBoardDto } from './notice-post.dto';
+import { NoticePostDto } from './notice-post.dto';
 
-export class NoticeBoardsItemDto extends OmitType(NoticeBoardDto, [
+export class NoticePostsItemDto extends OmitType(NoticePostDto, [
   'description',
 ] as const) {}

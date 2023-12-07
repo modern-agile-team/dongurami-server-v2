@@ -1,4 +1,4 @@
-export enum NoticeBoardStatus {
+export enum NoticePostStatus {
   Posting = 'posting',
   Remove = 'remove',
 }

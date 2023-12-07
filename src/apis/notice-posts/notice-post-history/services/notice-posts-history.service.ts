@@ -1,30 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NoticeBoardHistory } from '@src/entities/NoticePostHistory';
+import { NoticePostHistory } from '@src/entities/NoticePostHistory';
 import { EntityManager, Repository } from 'typeorm';
-import { CreateNoticeBoardHistoryDto } from '../dto/create-notice-post-history.dto';
+import { CreateNoticePostHistoryDto } from '../dto/create-notice-post-history.dto';
 import { HistoryAction } from '@src/constants/enum';
 
 @Injectable()
-export class NoticeBoardHistoryService {
+export class NoticePostHistoryService {
   constructor(
-    @InjectRepository(NoticeBoardHistory)
-    private readonly noticeBoardHistoryRepository: Repository<NoticeBoardHistory>,
+    @InjectRepository(NoticePostHistory)
+    private readonly noticePostHistoryRepository: Repository<NoticePostHistory>,
   ) {}
   create(
     entityManager: EntityManager,
     userId: number,
-    noticeBoardId: number,
+    noticePostId: number,
     action: HistoryAction,
-    createNoticeBoardHistoryDto: CreateNoticeBoardHistoryDto,
+    createNoticePostHistoryDto: CreateNoticePostHistoryDto,
   ) {
-    return entityManager
-      .withRepository(this.noticeBoardHistoryRepository)
-      .save({
-        userId,
-        noticeBoardId,
-        action,
-        ...new CreateNoticeBoardHistoryDto(createNoticeBoardHistoryDto),
-      });
+    return entityManager.withRepository(this.noticePostHistoryRepository).save({
+      userId,
+      noticePostId,
+      action,
+      ...new CreateNoticePostHistoryDto(createNoticePostHistoryDto),
+    });
   }
 }

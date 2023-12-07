@@ -5,12 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoard } from './NoticePost';
+import { NoticePost } from './NoticePost';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('notice_board_reaction', { schema: 'dongurami_local_db' })
-export class NoticeBoardReaction {
+@Entity('notice_post_reaction', { schema: 'dongurami_local_db' })
+export class NoticePostReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -33,7 +33,7 @@ export class NoticeBoardReaction {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardReactions, {
+  @ManyToOne(() => User, (user) => user.noticePostReactions, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -41,23 +41,22 @@ export class NoticeBoardReaction {
   user: User;
 
   @Column('int', {
-    name: 'notice_board_id',
+    name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticeBoardId: number;
+  noticePostId: number;
 
-  @ManyToOne(
-    () => NoticeBoard,
-    (noticeBoard) => noticeBoard.noticeBoardReactions,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
-  )
-  @JoinColumn([{ name: 'notice_board_id', referencedColumnName: 'id' }])
-  noticeBoard: NoticeBoard;
+  @ManyToOne(() => NoticePost, (noticePost) => noticePost.noticePostReactions, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'notice_post_id', referencedColumnName: 'id' }])
+  noticePost: NoticePost;
 
   @ManyToOne(
     () => ReactionType,
-    (reactionType) => reactionType.noticeBoardReactions,
+    (reactionType) => reactionType.noticePostReactions,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([{ name: 'reaction_type_id', referencedColumnName: 'id' }])

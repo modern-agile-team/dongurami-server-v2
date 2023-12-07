@@ -6,13 +6,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { NoticeBoardCommentHistory } from './NoticePostCommentHistory';
-import { NoticeBoardHistory } from './NoticePostHistory';
+import { NoticePostCommentHistory } from './NoticePostCommentHistory';
+import { NoticePostHistory } from './NoticePostHistory';
 import { User } from './User';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 
-@Entity('notice_board_reply_comment_history', { schema: 'dongurami_local_db' })
-export class NoticeBoardReplyCommentHistory {
+@Entity('notice_post_reply_comment_history', { schema: 'dongurami_local_db' })
+export class NoticePostReplyCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -43,7 +43,7 @@ export class NoticeBoardReplyCommentHistory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardReplyCommentHistories, {
+  @ManyToOne(() => User, (user) => user.noticePostReplyCommentHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
@@ -51,21 +51,21 @@ export class NoticeBoardReplyCommentHistory {
   user: User;
 
   @ManyToOne(
-    () => NoticeBoardCommentHistory,
-    (noticeBoardCommentHistory) =>
-      noticeBoardCommentHistory.noticeBoardReplyCommentHistories,
+    () => NoticePostCommentHistory,
+    (noticePostCommentHistory) =>
+      noticePostCommentHistory.noticePostReplyCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
   @JoinColumn([
-    { name: 'notice_board_comment_history_id', referencedColumnName: 'id' },
+    { name: 'notice_post_comment_history_id', referencedColumnName: 'id' },
   ])
-  noticeBoardCommentHistory: NoticeBoardCommentHistory;
+  noticePostCommentHistory: NoticePostCommentHistory;
 
   @ManyToOne(
-    () => NoticeBoardHistory,
-    (noticeBoardHistory) => noticeBoardHistory.noticeBoardReplyCommentHistories,
+    () => NoticePostHistory,
+    (noticePostHistory) => noticePostHistory.noticePostReplyCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
-  @JoinColumn([{ name: 'notice_board_history_id', referencedColumnName: 'id' }])
-  noticeBoardHistory: NoticeBoardHistory;
+  @JoinColumn([{ name: 'notice_post_history_id', referencedColumnName: 'id' }])
+  noticePostHistory: NoticePostHistory;
 }

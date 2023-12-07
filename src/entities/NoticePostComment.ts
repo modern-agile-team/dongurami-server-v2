@@ -6,14 +6,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoard } from './NoticePost';
-import { NoticeBoardCommentReaction } from './NoticePostCommentReaction';
-import { NoticeBoardReplyComment } from './NoticePostReplyComment';
+import { NoticePost } from './NoticePost';
+import { NoticePostCommentReaction } from './NoticePostCommentReaction';
+import { NoticePostReplyComment } from './NoticePostReplyComment';
 import { User } from './User';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 
-@Entity('notice_board_comment', { schema: 'dongurami_local_db' })
-export class NoticeBoardComment {
+@Entity('notice_post_comment', { schema: 'dongurami_local_db' })
+export class NoticePostComment {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -54,7 +54,7 @@ export class NoticeBoardComment {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardComments, {
+  @ManyToOne(() => User, (user) => user.noticePostComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -62,30 +62,28 @@ export class NoticeBoardComment {
   user: User;
 
   @Column('int', {
-    name: 'notice_board_id',
+    name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticeBoardId: number;
+  noticePostId: number;
 
-  @ManyToOne(
-    () => NoticeBoard,
-    (noticeBoard) => noticeBoard.noticeBoardComments,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
-  )
-  @JoinColumn([{ name: 'notice_board_id', referencedColumnName: 'id' }])
-  noticeBoard: NoticeBoard;
-
-  @OneToMany(
-    () => NoticeBoardCommentReaction,
-    (noticeBoardCommentReaction) =>
-      noticeBoardCommentReaction.noticeBoardComment,
-  )
-  noticeBoardCommentReactions: NoticeBoardCommentReaction[];
+  @ManyToOne(() => NoticePost, (noticePost) => noticePost.noticePostComments, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'notice_post_id', referencedColumnName: 'id' }])
+  noticePost: NoticePost;
 
   @OneToMany(
-    () => NoticeBoardReplyComment,
-    (noticeBoardReplyComment) => noticeBoardReplyComment.noticeBoardComment,
+    () => NoticePostCommentReaction,
+    (noticePostCommentReaction) => noticePostCommentReaction.noticePostComment,
   )
-  noticeBoardReplyComments: NoticeBoardReplyComment[];
+  noticePostCommentReactions: NoticePostCommentReaction[];
+
+  @OneToMany(
+    () => NoticePostReplyComment,
+    (noticePostReplyComment) => noticePostReplyComment.noticePostComment,
+  )
+  noticePostReplyComments: NoticePostReplyComment[];
 }

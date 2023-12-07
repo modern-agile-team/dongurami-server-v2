@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { NoticeBoardsController } from './controllers/notice-posts.controller';
-import { NoticeBoardsService } from './services/notice-posts.service';
+import { NoticePostsController } from './controllers/notice-posts.controller';
+import { NoticePostsService } from './services/notice-posts.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NoticeBoard } from '@src/entities/NoticePost';
+import { NoticePost } from '@src/entities/NoticePost';
 import { QueryHelper } from '@src/helpers/query.helper';
-import { NoticeBoardHistoryModule } from './notice-post-history/notice-posts-history.module';
+import { NoticePostHistoryModule } from './notice-post-history/notice-posts-history.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([NoticeBoard]), NoticeBoardHistoryModule],
-  controllers: [NoticeBoardsController],
-  providers: [NoticeBoardsService, QueryHelper],
+  imports: [TypeOrmModule.forFeature([NoticePost]), NoticePostHistoryModule],
+  controllers: [NoticePostsController],
+  providers: [NoticePostsService, QueryHelper],
 })
-export class NoticeBoardsModule {}
+export class NoticePostsModule {}

@@ -1,22 +1,22 @@
-import { NoticeBoardHistory } from '@src/entities/NoticePostHistory';
-import { NoticeBoardStatus } from '../../constants/notice-post.enum';
+import { NoticePostHistory } from '@src/entities/NoticePostHistory';
+import { NoticePostStatus } from '../../constants/notice-post.enum';
 
-export class CreateNoticeBoardHistoryDto
+export class CreateNoticePostHistoryDto
   implements
     Pick<
-      NoticeBoardHistory,
+      NoticePostHistory,
       'title' | 'description' | 'isAllowComment' | 'status'
     >
 {
   title: string;
   description: string;
   isAllowComment: boolean;
-  status: NoticeBoardStatus;
+  status: NoticePostStatus;
 
-  constructor(createNoticeBoardHistoryDto: CreateNoticeBoardHistoryDto) {
-    this.title = createNoticeBoardHistoryDto.title;
-    this.description = createNoticeBoardHistoryDto.description;
-    this.isAllowComment = createNoticeBoardHistoryDto.isAllowComment;
-    this.status = createNoticeBoardHistoryDto.status;
+  constructor(createNoticePostHistoryDto: CreateNoticePostHistoryDto) {
+    this.title = createNoticePostHistoryDto.title;
+    this.description = createNoticePostHistoryDto.description;
+    this.isAllowComment = createNoticePostHistoryDto.isAllowComment;
+    this.status = createNoticePostHistoryDto.status;
   }
 }

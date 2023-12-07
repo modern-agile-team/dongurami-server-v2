@@ -5,12 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardComment } from './NoticePostComment';
+import { NoticePostComment } from './NoticePostComment';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('notice_board_comment_reaction', { schema: 'dongurami_local_db' })
-export class NoticeBoardCommentReaction {
+@Entity('notice_post_comment_reaction', { schema: 'dongurami_local_db' })
+export class NoticePostCommentReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -27,19 +27,19 @@ export class NoticeBoardCommentReaction {
   createdAt: Date;
 
   @Column('int', {
-    name: 'notice_board_comment_id',
+    name: 'notice_post_comment_id',
     comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
   })
-  noticeBoardCommentId: number;
+  noticePostCommentId: number;
 
   @ManyToOne(
-    () => NoticeBoardComment,
-    (noticeBoardComment) => noticeBoardComment.noticeBoardCommentReactions,
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.noticePostCommentReactions,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn([{ name: 'notice_board_comment_id', referencedColumnName: 'id' }])
-  noticeBoardComment: NoticeBoardComment;
+  @JoinColumn([{ name: 'notice_post_comment_id', referencedColumnName: 'id' }])
+  noticePostComment: NoticePostComment;
 
   @Column('int', {
     name: 'user_id',
@@ -48,7 +48,7 @@ export class NoticeBoardCommentReaction {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardCommentReactions, {
+  @ManyToOne(() => User, (user) => user.noticePostCommentReactions, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -57,7 +57,7 @@ export class NoticeBoardCommentReaction {
 
   @ManyToOne(
     () => ReactionType,
-    (reactionType) => reactionType.noticeBoardCommentReactions,
+    (reactionType) => reactionType.noticePostCommentReactions,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([{ name: 'reaction_type_id', referencedColumnName: 'id' }])

@@ -6,16 +6,16 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardComment } from './NoticePostComment';
-import { NoticeBoardReaction } from './NoticePostReaction';
-import { NoticeBoardReplyComment } from './NoticePostReplyComment';
+import { NoticePostComment } from './NoticePostComment';
+import { NoticePostReaction } from './NoticePostReaction';
+import { NoticePostReplyComment } from './NoticePostReplyComment';
 import { User } from './User';
-import { NoticeBoardHistory } from './NoticePostHistory';
+import { NoticePostHistory } from './NoticePostHistory';
 import { BooleanTransformer } from './transformers/boolean.transformer';
-import { NoticeBoardStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 
-@Entity('notice_board', { schema: 'dongurami_local_db' })
-export class NoticeBoard {
+@Entity('notice_post', { schema: 'dongurami_local_db' })
+export class NoticePost {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -49,9 +49,9 @@ export class NoticeBoard {
   @Column('enum', {
     name: 'status',
     comment: '공지게시글 상태',
-    enum: NoticeBoardStatus,
+    enum: NoticePostStatus,
   })
-  status: NoticeBoardStatus;
+  status: NoticePostStatus;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -81,7 +81,7 @@ export class NoticeBoard {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoards, {
+  @ManyToOne(() => User, (user) => user.noticePosts, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -89,26 +89,26 @@ export class NoticeBoard {
   user: User;
 
   @OneToMany(
-    () => NoticeBoardComment,
-    (noticeBoardComment) => noticeBoardComment.noticeBoard,
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.noticePost,
   )
-  noticeBoardComments: NoticeBoardComment[];
+  noticePostComments: NoticePostComment[];
 
   @OneToMany(
-    () => NoticeBoardReaction,
-    (noticeBoardReaction) => noticeBoardReaction.noticeBoard,
+    () => NoticePostReaction,
+    (noticePostReaction) => noticePostReaction.noticePost,
   )
-  noticeBoardReactions: NoticeBoardReaction[];
+  noticePostReactions: NoticePostReaction[];
 
   @OneToMany(
-    () => NoticeBoardReplyComment,
-    (noticeBoardReplyComment) => noticeBoardReplyComment.noticeBoard,
+    () => NoticePostReplyComment,
+    (noticePostReplyComment) => noticePostReplyComment.noticePost,
   )
-  noticeBoardReplyComments: NoticeBoardReplyComment[];
+  noticePostReplyComments: NoticePostReplyComment[];
 
   @OneToMany(
-    () => NoticeBoardHistory,
-    (noticeBoardHistories) => noticeBoardHistories.noticeBoard,
+    () => NoticePostHistory,
+    (noticePostHistories) => noticePostHistories.noticePost,
   )
-  noticeBoardHistories: NoticeBoardHistory[];
+  noticePostHistories: NoticePostHistory[];
 }

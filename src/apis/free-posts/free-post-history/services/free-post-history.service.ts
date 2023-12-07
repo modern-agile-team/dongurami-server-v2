@@ -9,6 +9,7 @@ export class FreePostHistoryService {
   constructor(
     private readonly freePostHistoryRepository: FreePostHistoryRepository,
   ) {}
+
   create(
     entityManager: EntityManager,
     userId: number,

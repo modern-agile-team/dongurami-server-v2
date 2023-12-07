@@ -1,10 +1,9 @@
+import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
+import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { MajorRepository } from '@src/apis/major/repositories/major.repository';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
-import { FreePost } from '@src/entities/FreePost';
-import { FreePostHistory } from '@src/entities/FreePostHistory';
-import { UserHistory } from '@src/entities/UserHistory';
+import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
 import { MockProvider } from '@test/mock/mock.type';
-import { Repository } from 'typeorm';
 
 const getDefaultRepositoryMethod = () => {
   return {
@@ -84,17 +83,15 @@ export const mockUserRepository: MockProvider<UserRepository> = {
   ...getDefaultRepositoryMethod(),
 };
 
-export const mockUserHistoryRepository: MockProvider<Repository<UserHistory>> =
+export const mockUserHistoryRepository: MockProvider<UserHistoryRepository> = {
+  ...getDefaultRepositoryMethod(),
+};
+
+export const mockFreePostRepository: MockProvider<FreePostRepository> = {
+  ...getDefaultRepositoryMethod(),
+};
+
+export const mockFreePostHistoryRepository: MockProvider<FreePostHistoryRepository> =
   {
     ...getDefaultRepositoryMethod(),
   };
-
-export const mockFreePostRepository: MockProvider<Repository<FreePost>> = {
-  ...getDefaultRepositoryMethod(),
-};
-
-export const mockFreePostHistoryRepository: MockProvider<
-  Repository<FreePostHistory>
-> = {
-  ...getDefaultRepositoryMethod(),
-};

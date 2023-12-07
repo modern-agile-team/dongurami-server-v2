@@ -6,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoard } from './NoticeBoard';
-import { NoticeBoardComment } from './NoticeBoardComment';
-import { NoticeBoardReplyCommentReaction } from './NoticeBoardReplyCommentReaction';
+import { NoticePost } from './NoticePost';
+import { NoticePostComment } from './NoticePostComment';
+import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
 import { User } from './User';
 
-@Entity('notice_board_reply_comment', { schema: 'dongurami_local_db' })
-export class NoticeBoardReplyComment {
+@Entity('notice_post_reply_comment', { schema: 'dongurami_local_db' })
+export class NoticePostReplyComment {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -50,34 +50,34 @@ export class NoticeBoardReplyComment {
   updatedAt: Date;
 
   @Column('int', {
-    name: 'notice_board_id',
+    name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticeBoardId: number;
+  noticePostId: number;
 
   @ManyToOne(
-    () => NoticeBoard,
-    (noticeBoard) => noticeBoard.noticeBoardReplyComments,
+    () => NoticePost,
+    (noticePost) => noticePost.noticePostReplyComments,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn([{ name: 'notice_board_id', referencedColumnName: 'id' }])
-  noticeBoard: NoticeBoard;
+  @JoinColumn([{ name: 'notice_post_id', referencedColumnName: 'id' }])
+  noticePost: NoticePost;
 
   @Column('int', {
-    name: 'notice_board_comment_id',
+    name: 'notice_post_comment_id',
     comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
   })
-  noticeBoardCommentId: number;
+  noticePostCommentId: number;
 
   @ManyToOne(
-    () => NoticeBoardComment,
-    (noticeBoardComment) => noticeBoardComment.noticeBoardReplyComments,
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.noticePostReplyComments,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn([{ name: 'notice_board_comment_id', referencedColumnName: 'id' }])
-  noticeBoardComment: NoticeBoardComment;
+  @JoinColumn([{ name: 'notice_post_comment_id', referencedColumnName: 'id' }])
+  noticePostComment: NoticePostComment;
 
   @Column('int', {
     name: 'user_id',
@@ -86,7 +86,7 @@ export class NoticeBoardReplyComment {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardReplyComments, {
+  @ManyToOne(() => User, (user) => user.noticePostReplyComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -94,9 +94,9 @@ export class NoticeBoardReplyComment {
   user: User;
 
   @OneToMany(
-    () => NoticeBoardReplyCommentReaction,
-    (noticeBoardReplyCommentReaction) =>
-      noticeBoardReplyCommentReaction.noticeBoardReplyComment,
+    () => NoticePostReplyCommentReaction,
+    (noticePostReplyCommentReaction) =>
+      noticePostReplyCommentReaction.noticePostReplyComment,
   )
-  noticeBoardReplyCommentReactions: NoticeBoardReplyCommentReaction[];
+  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 }

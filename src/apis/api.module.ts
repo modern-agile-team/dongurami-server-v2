@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { RootModule } from '@src/apis/root/root.module';
 import { AuthModule } from './auth/auth.module';
-import { FreePostsModule } from './free-posts/free-posts.module';
+import { NoticePostsModule } from './notice-posts/notice-posts.module';
 import { MajorModule } from './major/major.module';
-import { NoticeBoardsModule } from './notice-boards/notice-boards.module';
+import { FreePostsModule } from './free-posts/free-posts.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -13,7 +13,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     FreePostsModule,
     MajorModule,
-    NoticeBoardsModule,
+    NoticePostsModule,
   ],
 })
 export class ApiModule {}

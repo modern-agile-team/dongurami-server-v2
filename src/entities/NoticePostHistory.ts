@@ -6,16 +6,16 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardCommentHistory } from './NoticeBoardCommentHistory';
-import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
+import { NoticePostCommentHistory } from './NoticePostCommentHistory';
+import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
 import { User } from './User';
-import { NoticeBoard } from './NoticeBoard';
+import { NoticePost } from './NoticePost';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 import { HistoryAction } from '@src/constants/enum';
-import { NoticeBoardStatus } from '@src/apis/notice-boards/constants/notice-board.enum';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 
-@Entity('notice_board_history', { schema: 'dongurami_local_db' })
-export class NoticeBoardHistory {
+@Entity('notice_post_history', { schema: 'dongurami_local_db' })
+export class NoticePostHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -48,9 +48,9 @@ export class NoticeBoardHistory {
   @Column('enum', {
     name: 'status',
     comment: '공지게시글 상태',
-    enum: NoticeBoardStatus,
+    enum: NoticePostStatus,
   })
-  status: NoticeBoardStatus;
+  status: NoticePostStatus;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -60,17 +60,17 @@ export class NoticeBoardHistory {
   createdAt: Date;
 
   @OneToMany(
-    () => NoticeBoardCommentHistory,
-    (noticeBoardCommentHistory) => noticeBoardCommentHistory.noticeBoardHistory,
+    () => NoticePostCommentHistory,
+    (noticePostCommentHistory) => noticePostCommentHistory.noticePostHistory,
   )
-  noticeBoardCommentHistories: NoticeBoardCommentHistory[];
+  noticePostCommentHistories: NoticePostCommentHistory[];
 
   @Column('int', {
-    name: 'notice_board_id',
+    name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticeBoardId: number;
+  noticePostId: number;
 
   @Column('int', {
     name: 'user_id',
@@ -79,25 +79,24 @@ export class NoticeBoardHistory {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardHistories, {
+  @ManyToOne(() => User, (user) => user.noticePostHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
 
-  @ManyToOne(
-    () => NoticeBoard,
-    (noticeBoard) => noticeBoard.noticeBoardHistories,
-    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
-  )
-  @JoinColumn([{ name: 'notice_board_id', referencedColumnName: 'id' }])
-  noticeBoard: NoticeBoard;
+  @ManyToOne(() => NoticePost, (noticePost) => noticePost.noticePostHistories, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn([{ name: 'notice_post_id', referencedColumnName: 'id' }])
+  noticePost: NoticePost;
 
   @OneToMany(
-    () => NoticeBoardReplyCommentHistory,
-    (noticeBoardReplyCommentHistory) =>
-      noticeBoardReplyCommentHistory.noticeBoardHistory,
+    () => NoticePostReplyCommentHistory,
+    (noticePostReplyCommentHistory) =>
+      noticePostReplyCommentHistory.noticePostHistory,
   )
-  noticeBoardReplyCommentHistories: NoticeBoardReplyCommentHistory[];
+  noticePostReplyCommentHistories: NoticePostReplyCommentHistory[];
 }

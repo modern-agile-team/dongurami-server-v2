@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HistoryAction } from '@src/constants/enum';
 import { NoticeBoardHistory } from '@src/entities/NoticeBoardHistory';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateNoticeBoardHistoryDto } from '../dto/create-notice-board-history.dto';
-import { HistoryAction } from '@src/constants/enum';
 
 @Injectable()
 export class NoticeBoardHistoryService {

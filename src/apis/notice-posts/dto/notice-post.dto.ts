@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@src/dto/base.dto';
-import { NoticeBoard } from '@src/entities/NoticeBoard';
-import { NOTICE_BOARD_TITLE_LENGTH } from '../constants/notice-board.constant';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
 import { Exclude } from 'class-transformer';
-import { NoticeBoardStatus } from '../constants/notice-board.enum';
+import { NoticePostStatus } from '../constants/notice-post.enum';
 
-export class NoticeBoardDto
+export class NoticePostDto
   extends BaseDto
   implements
     Pick<
-      NoticeBoard,
+      NoticePost,
       | 'id'
       | 'title'
       | 'description'
@@ -24,8 +24,8 @@ export class NoticeBoardDto
 {
   @ApiProperty({
     description: '공지 게시글 제목',
-    minLength: NOTICE_BOARD_TITLE_LENGTH.MIN,
-    maxLength: NOTICE_BOARD_TITLE_LENGTH.MAX,
+    minLength: NOTICE_POST_TITLE_LENGTH.MIN,
+    maxLength: NOTICE_POST_TITLE_LENGTH.MAX,
   })
   title: string;
 
@@ -54,14 +54,14 @@ export class NoticeBoardDto
   isAllowComment: boolean;
 
   @Exclude()
-  status: NoticeBoardStatus;
+  status: NoticePostStatus;
 
   @Exclude()
   deletedAt: Date;
 
-  constructor(noticeBoardDto: Partial<NoticeBoardDto> = {}) {
+  constructor(noticePostDto: Partial<NoticePostDto> = {}) {
     super();
 
-    Object.assign(this, noticeBoardDto);
+    Object.assign(this, noticePostDto);
   }
 }

@@ -6,13 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticeBoardHistory } from './NoticeBoardHistory';
-import { NoticeBoardReplyCommentHistory } from './NoticeBoardReplyCommentHistory';
+import { NoticePostHistory } from './NoticePostHistory';
+import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
 import { User } from './User';
 import { BooleanTransformer } from './transformers/boolean.transformer';
 
-@Entity('notice_board_comment_history', { schema: 'dongurami_local_db' })
-export class NoticeBoardCommentHistory {
+@Entity('notice_post_comment_history', { schema: 'dongurami_local_db' })
+export class NoticePostCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -39,7 +39,7 @@ export class NoticeBoardCommentHistory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.noticeBoardCommentHistories, {
+  @ManyToOne(() => User, (user) => user.noticePostCommentHistories, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
   })
@@ -47,17 +47,17 @@ export class NoticeBoardCommentHistory {
   user: User;
 
   @ManyToOne(
-    () => NoticeBoardHistory,
-    (noticeBoardHistory) => noticeBoardHistory.noticeBoardCommentHistories,
+    () => NoticePostHistory,
+    (noticePostHistory) => noticePostHistory.noticePostCommentHistories,
     { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
   )
-  @JoinColumn([{ name: 'notice_board_history_id', referencedColumnName: 'id' }])
-  noticeBoardHistory: NoticeBoardHistory;
+  @JoinColumn([{ name: 'notice_post_history_id', referencedColumnName: 'id' }])
+  noticePostHistory: NoticePostHistory;
 
   @OneToMany(
-    () => NoticeBoardReplyCommentHistory,
-    (noticeBoardReplyCommentHistory) =>
-      noticeBoardReplyCommentHistory.noticeBoardCommentHistory,
+    () => NoticePostReplyCommentHistory,
+    (noticePostReplyCommentHistory) =>
+      noticePostReplyCommentHistory.noticePostCommentHistory,
   )
-  noticeBoardReplyCommentHistories: NoticeBoardReplyCommentHistory[];
+  noticePostReplyCommentHistories: NoticePostReplyCommentHistory[];
 }

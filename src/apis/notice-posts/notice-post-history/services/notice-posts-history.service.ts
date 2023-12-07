@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { NoticePostHistory } from '@src/entities/NoticePostHistory';
-import { EntityManager, Repository } from 'typeorm';
-import { CreateNoticePostHistoryDto } from '../dto/create-notice-post-history.dto';
+import { NoticePostHistoryRepository } from '@src/apis/notice-posts/notice-post-history/repositories/notice-post-history.repository';
 import { HistoryAction } from '@src/constants/enum';
+import { EntityManager } from 'typeorm';
+import { CreateNoticePostHistoryDto } from '../dto/create-notice-post-history.dto';
 
 @Injectable()
 export class NoticePostHistoryService {
   constructor(
-    @InjectRepository(NoticePostHistory)
-    private readonly noticePostHistoryRepository: Repository<NoticePostHistory>,
+    private readonly noticePostHistoryRepository: NoticePostHistoryRepository,
   ) {}
+
   create(
     entityManager: EntityManager,
     userId: number,

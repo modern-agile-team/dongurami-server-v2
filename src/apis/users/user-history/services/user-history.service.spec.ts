@@ -1,9 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateUserHistoryDto } from '@src/apis/users/user-history/dto/create-user-history.dto';
+import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
 import { HistoryAction } from '@src/constants/enum';
-import { UserHistory } from '@src/entities/UserHistory';
 import {
   mockEntityManager,
   mockUserHistoryRepository,
@@ -18,7 +17,7 @@ describe('UserHistoryService', () => {
       providers: [
         UserHistoryService,
         {
-          provide: getRepositoryToken(UserHistory),
+          provide: UserHistoryRepository,
           useValue: mockUserHistoryRepository,
         },
       ],

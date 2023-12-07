@@ -27,9 +27,6 @@ import { plainToInstance } from 'class-transformer';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 import { FreePostsService } from '../services/free-posts.service';
 
-/**
- * @todo soft delete 로 변경
- */
 @ApiTags('free-posts')
 @Controller('free-posts')
 export class FreePostsController {
@@ -97,13 +94,8 @@ export class FreePostsController {
     );
   }
 
-  /**
-   * 테이블 참조 때문에 삭제 불가 개선 예정
-   */
   @ApiFreePost.Remove({
-    summary:
-      '자유게시글 삭제 (현재 내부 사정으로 서버에러가 무조건적으로 발생합니다.',
-    deprecated: true,
+    summary: '자유게시글 삭제',
   })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)

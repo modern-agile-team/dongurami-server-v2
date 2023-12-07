@@ -12,9 +12,6 @@ import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto
 import { ApiOperator } from '@src/types/type';
 import { ValidationError } from '@src/types/validation-errors.type';
 
-/**
- * @todo
- */
 export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   Create: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &

@@ -265,9 +265,6 @@ export class FreePostsService {
     }
   }
 
-  /**
-   * 테이블 참조 때문에 삭제 불가 개선 예정
-   */
   async remove(userId: number, freePostId: number): Promise<number> {
     const existFreePost = await this.findOneOrNotFound(freePostId);
 

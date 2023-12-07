@@ -16,7 +16,7 @@ export class CommonPostsService implements OnModuleInit {
     private readonly moduleRef: ModuleRef,
   ) {}
 
-  async onModuleInit() {
+  onModuleInit() {
     this.postRepository = this.moduleRef.get<Repository<any>>(
       this.PostRepository,
       {

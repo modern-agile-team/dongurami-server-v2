@@ -116,7 +116,9 @@ export class FreePostsController {
   @ApiFreePost.IncrementHit({ summary: '조회수 증가(1)' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put(':freePostId/hit')
-  incrementHit(@Param('freePostId', ParsePositiveIntPipe) freePostId: number) {
+  incrementHit(
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+  ): Promise<void> {
     return this.commonPostsService.incrementHit(freePostId);
   }
 }

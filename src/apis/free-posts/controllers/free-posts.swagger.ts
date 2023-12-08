@@ -1,5 +1,9 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNoContentResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { FreePostsController } from '@src/apis/free-posts/controllers/free-posts.controller';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
@@ -217,7 +221,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostIncrementHit',
         ...apiOperationOptions,
       }),
-      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
+      ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

@@ -1,5 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { CommonPostStatus } from '@src/apis/common-posts/constants/common-posts.enum';
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
@@ -29,6 +30,7 @@ export class CommonPostsService implements OnModuleInit {
     const updateResult = await this.postRepository.increment(
       {
         id: postId,
+        status: CommonPostStatus.Posting,
       },
       'hit',
       1,

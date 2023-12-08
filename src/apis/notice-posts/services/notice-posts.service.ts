@@ -10,7 +10,7 @@ import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
 import { HistoryAction } from '@src/constants/enum';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { NoticePostStatus } from '../constants/notice-Post.enum';
+import { NoticePostStatus } from '../constants/notice-post.enum';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
@@ -229,16 +229,23 @@ export class NoticePostsService {
           { ...patchUpdateNoticePostDto },
         );
 
+      await queryRunner.commitTransaction();
+
+      const updatedBoard = await this.findOneOrNotFound(noticePostId);
+
       await this.noticePostHistoryService.create(
         entityManager,
         userId,
         noticePostId,
         HistoryAction.Update,
-        { ...existPost },
+        { ...updatedBoard },
       );
-      return this.findOneOrNotFound(noticePostId);
+
+      await queryRunner.commitTransaction();
+
+      return new NoticePostDto(updatedBoard);
     } catch (error) {
-      if (!queryRunner.isTransactionActive) {
+      if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();
       }
 

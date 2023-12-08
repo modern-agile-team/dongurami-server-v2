@@ -5,6 +5,7 @@ import { NoticePostsModule } from './notice-posts/notice-posts.module';
 import { MajorModule } from './major/major.module';
 import { FreePostsModule } from './free-posts/free-posts.module';
 import { UsersModule } from './users/users.module';
+import { ReactionsModule } from './reactions/reactions.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module';
     FreePostsModule,
     MajorModule,
     NoticePostsModule,
+    ReactionsModule,
   ],
 })
 export class ApiModule {}

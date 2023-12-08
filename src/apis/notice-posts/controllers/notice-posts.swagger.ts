@@ -165,8 +165,8 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.BAD_REQUEST, [
-        COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
       ]),
       HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
         COMMON_ERROR_CODE.PERMISSION_DENIED,

@@ -202,7 +202,7 @@ export class NoticePostsService {
     userId: number,
     patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ) {
-    if (!patchUpdateNoticePostDto) {
+    if (!Object.values(patchUpdateNoticePostDto).length) {
       throw new HttpBadRequestException({
         code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
         errors: ['update filed is null'],

@@ -199,7 +199,7 @@ export class NoticePostsService {
     noticePostId: number,
     userId: number,
     patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
-  ) {
+  ): Promise<NoticePostDto> {
     if (!Object.values(patchUpdateNoticePostDto).length) {
       throw new HttpBadRequestException({
         code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
@@ -229,15 +229,14 @@ export class NoticePostsService {
           { ...patchUpdateNoticePostDto },
         );
 
-      const updatedPost = await this.findOneOrNotFound(noticePostId);
-
       await this.noticePostHistoryService.create(
         entityManager,
         userId,
         noticePostId,
         HistoryAction.Update,
-        { ...updatedPost },
+        { ...existPost },
       );
+      return this.findOneOrNotFound(noticePostId);
     } catch (error) {
       if (!queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

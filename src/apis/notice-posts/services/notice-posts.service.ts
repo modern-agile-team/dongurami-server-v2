@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
-import { DataSource, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { NoticePost } from '@src/entities/NoticePost';
+import { DataSource } from 'typeorm';
 import { NoticePostDto } from '../dto/notice-post.dto';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -17,6 +15,7 @@ import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-for
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { NoticePostRepository } from '../repositories/notice-post.repository';
 
 @Injectable()
 export class NoticePostsService {
@@ -29,8 +28,7 @@ export class NoticePostsService {
     private readonly queryHelper: QueryHelper,
     private readonly noticePostHistoryService: NoticePostHistoryService,
     private readonly dataSource: DataSource,
-    @InjectRepository(NoticePost)
-    private readonly noticePostRepository: Repository<NoticePost>,
+    private readonly noticePostRepository: NoticePostRepository,
   ) {}
 
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
@@ -205,7 +203,6 @@ export class NoticePostsService {
     if (!Object.values(patchUpdateNoticePostDto).length) {
       throw new HttpBadRequestException({
         code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
-        errors: ['update filed is null'],
       });
     }
 
@@ -219,22 +216,18 @@ export class NoticePostsService {
 
     const queryRunner = this.dataSource.createQueryRunner();
 
-    queryRunner.connect();
-    queryRunner.startTransaction();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const entityManager = queryRunner.manager;
 
-      const isUpdate = await this.noticePostRepository.update(
-        { id: noticePostId },
-        { ...patchUpdateNoticePostDto },
-      );
-
-      if (!isUpdate.affected) {
-        throw new HttpInternalServerErrorException({
-          code: COMMON_ERROR_CODE.SERVER_ERROR,
-          ctx: '게시글 수정이 정상적으로 이루어지지 않았습니다.',
-        });
-      }
+      await entityManager
+        .withRepository(this.noticePostRepository)
+        .update(
+          { id: noticePostId, status: NoticePostStatus.Posting },
+          { ...patchUpdateNoticePostDto },
+        );
 
       const updatedPost = await this.findOneOrNotFound(noticePostId);
 
@@ -247,7 +240,7 @@ export class NoticePostsService {
       );
     } catch (error) {
       if (!queryRunner.isTransactionActive) {
-        queryRunner.rollbackTransaction();
+        await queryRunner.rollbackTransaction();
       }
 
       console.error(error);
@@ -255,10 +248,12 @@ export class NoticePostsService {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         stack: error.stack,
-        ctx: '게시글 업데이트 중 알 수 없는 에러 발생',
+        ctx: '공지게시글 업데이트 중 알 수 없는 에러 발생',
       });
     } finally {
-      queryRunner.release();
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
     }
   }
 }

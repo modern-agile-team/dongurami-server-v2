@@ -93,7 +93,7 @@ export class NoticePostsController {
     @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
     @User() user: UserDto,
     @Body() patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
-  ) {
+  ): Promise<void> {
     return this.noticePostService.patchUpdate(
       noticePostId,
       user.id,

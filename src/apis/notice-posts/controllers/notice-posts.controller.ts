@@ -4,9 +4,7 @@ import {
   Get,
   Param,
   Patch,
-  // Delete,
-  // Get,
-  // Patch,
+  Delete,
   Post,
   Put,
   Query,
@@ -101,6 +99,6 @@ export class NoticePostsController {
     );
   }
 
-  // @Delete(':id')
-  // remove() {}
+  @Delete(':id')
+  remove() {}
 }

@@ -56,8 +56,6 @@ describe(IsPositiveInt.name, () => {
       test.id = '1' as unknown as number;
       const transTest = plainToInstance(Test, test);
 
-      console.log(transTest);
-
       await expect(validate(transTest)).resolves.toHaveLength(0);
     });
 

@@ -296,6 +296,8 @@ export class NoticePostsService {
         HistoryAction.Delete,
         { ...existPost },
       );
+
+      return '게시글 삭제 완료';
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         queryRunner.rollbackTransaction();

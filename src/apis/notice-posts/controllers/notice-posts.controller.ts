@@ -99,6 +99,14 @@ export class NoticePostsController {
     );
   }
 
-  @Delete(':id')
-  remove() {}
+  @ApiNoticePost.Remove({ summary: '공지 게시글 삭제' })
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':noticePostId')
+  remove(
+    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @User() user: UserDto,
+  ) {
+    return this.noticePostService.remove(user.id, noticePostId);
+  }
 }

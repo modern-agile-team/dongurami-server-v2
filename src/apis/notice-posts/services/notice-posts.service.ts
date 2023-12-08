@@ -261,4 +261,55 @@ export class NoticePostsService {
       queryRunner.release();
     }
   }
+
+  async remove(userId: number, noticePostId: number) {
+    const existPost = await this.findOneOrNotFound(noticePostId);
+
+    if (existPost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    try {
+      const entityManager = queryRunner.manager;
+
+      const isRemove = await this.noticePostRepository.update(
+        { id: noticePostId },
+        { status: NoticePostStatus.Remove },
+      );
+
+      if (!isRemove.affected) {
+        throw new HttpInternalServerErrorException({
+          code: COMMON_ERROR_CODE.SERVER_ERROR,
+          ctx: '게시글 삭제 중 알 수 없는 에러 발생',
+        });
+      }
+
+      await this.noticePostHistoryService.create(
+        entityManager,
+        userId,
+        noticePostId,
+        HistoryAction.Delete,
+        { ...existPost },
+      );
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        stack: error.stack,
+        ctx: '게시글 업데이트 중 알 수 없는 에러 발생',
+      });
+    } finally {
+      queryRunner.release();
+    }
+  }
 }

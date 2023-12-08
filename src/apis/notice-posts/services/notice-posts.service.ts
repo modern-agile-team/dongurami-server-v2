@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
-import { DataSource, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { NoticePost } from '@src/entities/NoticePost';
+import { DataSource } from 'typeorm';
 import { NoticePostDto } from '../dto/notice-post.dto';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';

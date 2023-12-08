@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
-import { HistoryAction } from '@src/constants/enum';
+import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
+import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostDto } from '../dto/notice-post.dto';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { QueryHelper } from '@src/helpers/query.helper';
-import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { DataSource } from 'typeorm';
-import { NoticePostStatus } from '../constants/notice-Post.enum';
-import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
 import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
-import { NoticePostDto } from '../dto/notice-post.dto';
 import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
-import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
+import { HistoryAction } from '@src/constants/enum';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { NoticePostStatus } from '../constants/notice-Post.enum';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
+import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 
 @Injectable()
 export class NoticePostsService {
@@ -25,9 +28,9 @@ export class NoticePostsService {
   constructor(
     private readonly queryHelper: QueryHelper,
     private readonly noticePostHistoryService: NoticePostHistoryService,
-
     private readonly dataSource: DataSource,
-    private readonly noticePostRepository: NoticePostRepository,
+    @InjectRepository(NoticePost)
+    private readonly noticePostRepository: Repository<NoticePost>,
   ) {}
 
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
@@ -195,15 +198,67 @@ export class NoticePostsService {
   }
 
   async patchUpdate(
+    noticePostId: number,
     userId: number,
-    putUpdateNoticePostDto: PutUpdateNoticePostDto,
+    patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ) {
-    const existBoard = await this.findOneOrNotFound(userId);
-
-    if (!existBoard) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+    if (!patchUpdateNoticePostDto) {
+      throw new HttpBadRequestException({
+        code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+        errors: ['update filed is null'],
       });
+    }
+
+    const existPost = await this.findOneOrNotFound(noticePostId);
+
+    if (existPost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    queryRunner.connect();
+    queryRunner.startTransaction();
+    try {
+      const entityManager = queryRunner.manager;
+
+      const isUpdate = await this.noticePostRepository.update(
+        { id: noticePostId },
+        { ...patchUpdateNoticePostDto },
+      );
+
+      if (!isUpdate.affected) {
+        throw new HttpInternalServerErrorException({
+          code: COMMON_ERROR_CODE.SERVER_ERROR,
+          ctx: '게시글 수정이 정상적으로 이루어지지 않았습니다.',
+        });
+      }
+
+      const updatedPost = await this.findOneOrNotFound(noticePostId);
+
+      await this.noticePostHistoryService.create(
+        entityManager,
+        userId,
+        noticePostId,
+        HistoryAction.Update,
+        { ...updatedPost },
+      );
+    } catch (error) {
+      if (!queryRunner.isTransactionActive) {
+        queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        stack: error.stack,
+        ctx: '게시글 업데이트 중 알 수 없는 에러 발생',
+      });
+    } finally {
+      queryRunner.release();
     }
   }
 }

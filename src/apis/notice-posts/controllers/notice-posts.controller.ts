@@ -88,12 +88,17 @@ export class NoticePostsController {
   @UseGuards(JwtAuthGuard)
   @ApiNoticePost.PatchUpdate({ summary: '공지게시글 patch 수정 ' })
   @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
-  @Patch(':id')
+  @Patch(':noticePostId')
   patchUpdate(
+    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
     @User() user: UserDto,
     @Body() patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ) {
-    return this.noticePostService.patchUpdate(user, patchUpdateNoticePostDto);
+    return this.noticePostService.patchUpdate(
+      noticePostId,
+      user.id,
+      patchUpdateNoticePostDto,
+    );
   }
 
   // @Delete(':id')

@@ -17,6 +17,7 @@ import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-for
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { NoticePostRepository } from '../repositories/notice-post.repository';
 
 @Injectable()
 export class NoticePostsService {
@@ -29,8 +30,7 @@ export class NoticePostsService {
     private readonly queryHelper: QueryHelper,
     private readonly noticePostHistoryService: NoticePostHistoryService,
     private readonly dataSource: DataSource,
-    @InjectRepository(NoticePost)
-    private readonly noticePostRepository: Repository<NoticePost>,
+    private readonly noticePostRepository: NoticePostRepository,
   ) {}
 
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {

@@ -5,12 +5,9 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { NoticePostsController } from './controllers/notice-posts.controller';
 import { NoticePostHistoryModule } from './notice-post-history/notice-posts-history.module';
 import { NoticePostsService } from './services/notice-posts.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { NoticePost } from '@src/entities/NoticePost';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([NoticePost]),
     TypeOrmExModule.forCustomRepository([NoticePostRepository]),
     NoticePostHistoryModule,
   ],

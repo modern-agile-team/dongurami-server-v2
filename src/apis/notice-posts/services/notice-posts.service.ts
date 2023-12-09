@@ -229,8 +229,6 @@ export class NoticePostsService {
           { ...patchUpdateNoticePostDto },
         );
 
-      await queryRunner.commitTransaction();
-
       const updatedBoard = await this.findOneOrNotFound(noticePostId);
 
       await this.noticePostHistoryService.create(
@@ -284,16 +282,12 @@ export class NoticePostsService {
         { status: NoticePostStatus.Remove },
       );
 
-      await queryRunner.commitTransaction();
-
-      const removedPost = await this.findOneOrNotFound(noticePostId);
-
       await this.noticePostHistoryService.create(
         entityManager,
         userId,
         noticePostId,
         HistoryAction.Delete,
-        { ...removedPost },
+        { ...existPost },
       );
 
       await queryRunner.commitTransaction();

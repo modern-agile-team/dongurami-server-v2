@@ -273,35 +273,35 @@ export class NoticePostsService {
     }
     const queryRunner = this.dataSource.createQueryRunner();
 
-    queryRunner.connect();
-    queryRunner.startTransaction();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const entityManager = queryRunner.manager;
 
-      const isRemove = await this.noticePostRepository.update(
+      await this.noticePostRepository.update(
         { id: noticePostId },
         { status: NoticePostStatus.Remove },
       );
 
-      if (!isRemove.affected) {
-        throw new HttpInternalServerErrorException({
-          code: COMMON_ERROR_CODE.SERVER_ERROR,
-          ctx: '게시글 삭제 중 알 수 없는 에러 발생',
-        });
-      }
+      await queryRunner.commitTransaction();
+
+      const removedPost = await this.findOneOrNotFound(noticePostId);
 
       await this.noticePostHistoryService.create(
         entityManager,
         userId,
         noticePostId,
         HistoryAction.Delete,
-        { ...existPost },
+        { ...removedPost },
       );
 
-      return '게시글 삭제 완료';
+      await queryRunner.commitTransaction();
+
+      return '공지게시글 삭제 완료';
     } catch (error) {
       if (queryRunner.isTransactionActive) {
-        queryRunner.rollbackTransaction();
+        await queryRunner.rollbackTransaction();
       }
 
       console.error(error);
@@ -309,10 +309,12 @@ export class NoticePostsService {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         stack: error.stack,
-        ctx: '게시글 업데이트 중 알 수 없는 에러 발생',
+        ctx: '공지게시글 업데이트 중 알 수 없는 에러 발생',
       });
     } finally {
-      queryRunner.release();
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
     }
   }
 }

@@ -1,5 +1,9 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNoContentResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { FreePostsController } from '@src/apis/free-posts/controllers/free-posts.controller';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
@@ -207,6 +211,31 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ]),
       HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
         COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
+
+  IncrementHit: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreePostIncrementHit',
+        ...apiOperationOptions,
+      }),
+      ApiNoContentResponse(),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
     );
   },

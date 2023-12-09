@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CommonPostsModule } from '@src/apis/common-posts/common-posts.module';
 import { FreePostHistoryModule } from '@src/apis/free-posts/free-post-history/free-post-history.module';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
@@ -10,6 +11,7 @@ import { FreePostsService } from './services/free-posts.service';
   imports: [
     FreePostHistoryModule,
     TypeOrmExModule.forCustomRepository([FreePostRepository]),
+    CommonPostsModule.forFeature(FreePostRepository),
   ],
   controllers: [FreePostsController],
   providers: [FreePostsService, QueryHelper],

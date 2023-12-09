@@ -10,7 +10,7 @@ import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
 import { HistoryAction } from '@src/constants/enum';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { NoticePostStatus } from '../constants/notice-Post.enum';
+import { NoticePostStatus } from '../constants/notice-post.enum';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
@@ -199,11 +199,10 @@ export class NoticePostsService {
     noticePostId: number,
     userId: number,
     patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
-  ) {
+  ): Promise<NoticePostDto> {
     if (!Object.values(patchUpdateNoticePostDto).length) {
       throw new HttpBadRequestException({
         code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
-        errors: ['update filed is null'],
       });
     }
 
@@ -217,35 +216,37 @@ export class NoticePostsService {
 
     const queryRunner = this.dataSource.createQueryRunner();
 
-    queryRunner.connect();
-    queryRunner.startTransaction();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const entityManager = queryRunner.manager;
 
-      const isUpdate = await this.noticePostRepository.update(
-        { id: noticePostId },
-        { ...patchUpdateNoticePostDto },
-      );
+      await entityManager
+        .withRepository(this.noticePostRepository)
+        .update(
+          { id: noticePostId, status: NoticePostStatus.Posting },
+          { ...patchUpdateNoticePostDto },
+        );
 
-      if (!isUpdate.affected) {
-        throw new HttpInternalServerErrorException({
-          code: COMMON_ERROR_CODE.SERVER_ERROR,
-          ctx: '게시글 수정이 정상적으로 이루어지지 않았습니다.',
-        });
-      }
+      await queryRunner.commitTransaction();
 
-      const updatedPost = await this.findOneOrNotFound(noticePostId);
+      const updatedBoard = await this.findOneOrNotFound(noticePostId);
 
       await this.noticePostHistoryService.create(
         entityManager,
         userId,
         noticePostId,
         HistoryAction.Update,
-        { ...updatedPost },
+        { ...updatedBoard },
       );
+
+      await queryRunner.commitTransaction();
+
+      return new NoticePostDto(updatedBoard);
     } catch (error) {
-      if (!queryRunner.isTransactionActive) {
-        queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
       }
 
       console.error(error);
@@ -253,10 +254,12 @@ export class NoticePostsService {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         stack: error.stack,
-        ctx: '게시글 업데이트 중 알 수 없는 에러 발생',
+        ctx: '공지게시글 업데이트 중 알 수 없는 에러 발생',
       });
     } finally {
-      queryRunner.release();
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
     }
   }
 

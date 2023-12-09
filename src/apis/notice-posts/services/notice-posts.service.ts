@@ -263,7 +263,7 @@ export class NoticePostsService {
     }
   }
 
-  async remove(userId: number, noticePostId: number) {
+  async remove(userId: number, noticePostId: number): Promise<string> {
     const existPost = await this.findOneOrNotFound(noticePostId);
 
     if (existPost.userId !== userId) {

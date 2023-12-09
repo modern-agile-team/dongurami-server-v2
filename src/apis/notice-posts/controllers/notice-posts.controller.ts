@@ -106,7 +106,7 @@ export class NoticePostsController {
   remove(
     @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
     @User() user: UserDto,
-  ) {
+  ): Promise<string> {
     return this.noticePostService.remove(user.id, noticePostId);
   }
 }

@@ -1,38 +1,21 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
+import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/raction/raction-error-code.constant';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { DataSource, DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
-
-interface RequiredColumn {
-  reactionTypeId: number;
-  parentId: number;
-  userId: number;
-}
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
-export class ReactionsService<E extends RequiredColumn>
-  implements OnModuleInit
-{
-  private reactionRepository: Repository<E>;
-
+export class ReactionsService<E extends RequiredReactionColumn> {
   constructor(
     @Inject(REACTION_REPOSITORY_TOKEN)
-    private readonly ReactionRepository: typeof Repository,
+    private readonly reactionRepository: Repository<E>,
     private readonly reactionTypeRepository: ReactionTypeRepository,
-
-    private readonly dataSource: DataSource,
   ) {}
-
-  async onModuleInit() {
-    this.reactionRepository = this.dataSource.getRepository<E>(
-      this.ReactionRepository,
-    );
-  }
 
   async create(reactionName: ReactionName, userId: number, parentId: number) {
     const reactionType = await this.reactionTypeRepository.findOne({

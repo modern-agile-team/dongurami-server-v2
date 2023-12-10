@@ -5,10 +5,12 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { NoticePostsController } from './controllers/notice-posts.controller';
 import { NoticePostHistoryModule } from './notice-post-history/notice-posts-history.module';
 import { NoticePostsService } from './services/notice-posts.service';
+import { CommonPostsModule } from '../common-posts/common-posts.module';
 
 @Module({
   imports: [
     TypeOrmExModule.forCustomRepository([NoticePostRepository]),
+    CommonPostsModule.forFeature(NoticePostRepository),
     NoticePostHistoryModule,
   ],
   controllers: [NoticePostsController],

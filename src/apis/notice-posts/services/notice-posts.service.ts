@@ -229,7 +229,9 @@ export class NoticePostsService {
           { ...patchUpdateNoticePostDto },
         );
 
-      const updatedBoard = await this.findOneOrNotFound(noticePostId);
+      const updatedBoard = await entityManager
+        .withRepository(this.noticePostRepository)
+        .findOneOrFail({ where: { id: noticePostId } });
 
       await this.noticePostHistoryService.create(
         entityManager,
@@ -261,7 +263,7 @@ export class NoticePostsService {
     }
   }
 
-  async remove(userId: number, noticePostId: number): Promise<string> {
+  async remove(userId: number, noticePostId: number): Promise<number> {
     const existPost = await this.findOneOrNotFound(noticePostId);
 
     if (existPost.userId !== userId) {
@@ -277,22 +279,24 @@ export class NoticePostsService {
     try {
       const entityManager = queryRunner.manager;
 
-      await this.noticePostRepository.update(
-        { id: noticePostId },
-        { status: NoticePostStatus.Remove },
-      );
+      await entityManager
+        .withRepository(this.noticePostRepository)
+        .update({ id: noticePostId }, { status: NoticePostStatus.Remove });
 
       await this.noticePostHistoryService.create(
         entityManager,
         userId,
         noticePostId,
         HistoryAction.Delete,
-        { ...existPost },
+        {
+          ...existPost,
+          status: NoticePostStatus.Remove,
+        },
       );
 
       await queryRunner.commitTransaction();
 
-      return '공지게시글 삭제 완료';
+      return 1;
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

@@ -279,7 +279,7 @@ export class NoticePostsService {
     try {
       const entityManager = queryRunner.manager;
 
-      await entityManager
+      const updateResult = await entityManager
         .withRepository(this.noticePostRepository)
         .update({ id: noticePostId }, { status: NoticePostStatus.Remove });
 
@@ -296,7 +296,7 @@ export class NoticePostsService {
 
       await queryRunner.commitTransaction();
 
-      return 1;
+      return updateResult.affected;
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

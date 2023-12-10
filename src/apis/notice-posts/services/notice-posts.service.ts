@@ -229,9 +229,9 @@ export class NoticePostsService {
           { ...patchUpdateNoticePostDto },
         );
 
-      await queryRunner.commitTransaction();
-
-      const updatedBoard = await this.findOneOrNotFound(noticePostId);
+      const updatedBoard = await entityManager
+        .withRepository(this.noticePostRepository)
+        .findOneOrFail({ where: { id: noticePostId } });
 
       await this.noticePostHistoryService.create(
         entityManager,
@@ -244,6 +244,59 @@ export class NoticePostsService {
       await queryRunner.commitTransaction();
 
       return new NoticePostDto(updatedBoard);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        stack: error.stack,
+        ctx: '공지게시글 업데이트 중 알 수 없는 에러 발생',
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  async remove(userId: number, noticePostId: number): Promise<number> {
+    const existPost = await this.findOneOrNotFound(noticePostId);
+
+    if (existPost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      const updateResult = await entityManager
+        .withRepository(this.noticePostRepository)
+        .update({ id: noticePostId }, { status: NoticePostStatus.Remove });
+
+      await this.noticePostHistoryService.create(
+        entityManager,
+        userId,
+        noticePostId,
+        HistoryAction.Delete,
+        {
+          ...existPost,
+          status: NoticePostStatus.Remove,
+        },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return updateResult.affected;
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

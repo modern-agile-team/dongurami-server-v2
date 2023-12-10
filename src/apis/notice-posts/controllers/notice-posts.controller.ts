@@ -4,9 +4,7 @@ import {
   Get,
   Param,
   Patch,
-  // Delete,
-  // Get,
-  // Patch,
+  Delete,
   Post,
   Put,
   Query,
@@ -101,6 +99,14 @@ export class NoticePostsController {
     );
   }
 
-  // @Delete(':id')
-  // remove() {}
+  @ApiNoticePost.Remove({ summary: '공지 게시글 삭제' })
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':noticePostId')
+  remove(
+    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @User() user: UserDto,
+  ): Promise<number> {
+    return this.noticePostService.remove(user.id, noticePostId);
+  }
 }

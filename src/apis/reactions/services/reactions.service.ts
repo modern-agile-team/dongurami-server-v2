@@ -18,22 +18,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   ) {}
 
   async create(reactionName: ReactionName, userId: number, parentId: number) {
-    const reactionType = await this.reactionTypeRepository.findOne({
-      select: {
-        id: true,
-      },
-      where: {
-        name: reactionName,
-      },
-    });
-
-    if (!reactionType) {
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: 'reaction 중 reaction type 이 존재하지 않음',
-      });
-    }
-
+    const reactionType = await this.findOneReactionTypeOrFail(reactionName);
     const reactionTypeId = reactionType.id;
 
     const isExistReaction = await this.reactionRepository.exist({
@@ -61,22 +46,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   }
 
   async remove(reactionName: ReactionName, userId: number, parentId: number) {
-    const reactionType = await this.reactionTypeRepository.findOne({
-      select: {
-        id: true,
-      },
-      where: {
-        name: reactionName,
-      },
-    });
-
-    if (!reactionType) {
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: 'reaction 중 reaction type 이 존재하지 않음',
-      });
-    }
-
+    const reactionType = await this.findOneReactionTypeOrFail(reactionName);
     const reactionTypeId = reactionType.id;
 
     const isExistReaction = await this.reactionRepository.exist({
@@ -98,5 +68,29 @@ export class ReactionsService<E extends RequiredReactionColumn> {
       userId,
       parentId,
     } as FindOptionsWhere<E>);
+  }
+
+  private async findOneReactionTypeOrFail(
+    reactionName: ReactionName,
+  ): Promise<{ id: number }> {
+    const reactionType = await this.reactionTypeRepository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        name: reactionName,
+      },
+    });
+
+    if (!reactionType) {
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: 'reaction 중 reaction type 이 존재하지 않음',
+      });
+    }
+
+    return {
+      id: reactionType.id,
+    };
   }
 }

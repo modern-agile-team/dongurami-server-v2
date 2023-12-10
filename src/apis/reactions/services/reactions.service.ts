@@ -36,7 +36,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
 
     const reactionTypeId = reactionType.id;
 
-    const existReaction = await this.reactionRepository.findOne({
+    const isExistReaction = await this.reactionRepository.exist({
       where: {
         reactionTypeId,
         userId,
@@ -44,7 +44,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
       } as FindOptionsWhere<E>,
     });
 
-    if (existReaction) {
+    if (isExistReaction) {
       throw new HttpConflictException({
         code: REACTION_ERROR_CODE.ALREADY_LIKED,
       });

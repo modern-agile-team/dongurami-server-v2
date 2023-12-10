@@ -1,6 +1,6 @@
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { REACTION_ERROR_CODE } from '@src/constants/error/raction/raction-error-code.constant';
+import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { MAJOR_ERROR_CODE } from './major/major-error-code.constant';
 

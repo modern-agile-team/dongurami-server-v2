@@ -4,11 +4,14 @@ import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reactio
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { REACTION_ERROR_CODE } from '@src/constants/error/raction/raction-error-code.constant';
+import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
+/**
+ * @requires 해당 service 를 사용하려면 entity에 userId, parentId, reactionTypeId가 선언돼야합니다.
+ */
 @Injectable()
 export class ReactionsService<E extends RequiredReactionColumn> {
   constructor(

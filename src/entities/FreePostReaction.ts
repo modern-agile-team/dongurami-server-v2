@@ -21,14 +21,14 @@ export class FreePostReaction {
 
   @Column('int', {
     name: 'reaction_type_id',
-    comment: '자유 게시글 고유 ID',
+    comment: '리액션 타입 고유 ID',
     unsigned: true,
   })
   reactionTypeId: number;
 
   @Column('int', {
     name: 'user_id',
-    comment: '자유 게시글 고유 ID',
+    comment: '유저 고유 ID',
     unsigned: true,
   })
   userId: number;

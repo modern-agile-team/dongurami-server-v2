@@ -1,6 +1,6 @@
 import { AUTH_ERROR_MESSAGE } from '@src/constants/error/auth/auth-error-message.constant';
 import { COMMON_ERROR_MESSAGE } from '@src/constants/error/common/common-error-message.constant';
-import { REACTION_ERROR_MESSAGE } from '@src/constants/error/raction/reaction-error-message.constant';
+import { REACTION_ERROR_MESSAGE } from '@src/constants/error/reaction/reaction-error-message.constant';
 import { USER_ERROR_MESSAGE } from '@src/constants/error/users/user-error-message.constant';
 import { MAJOR_ERROR_MESSAGE } from './major/major-error-message.constant';
 

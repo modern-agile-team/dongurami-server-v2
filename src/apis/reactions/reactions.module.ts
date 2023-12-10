@@ -12,6 +12,9 @@ import { DataSource } from 'typeorm';
   exports: [ReactionsService],
 })
 export class ReactionsModule {
+  /**
+   * @requires 해당 module을 사용하려면 entity에 userId, parentId, reactionTypeId가 선언돼야합니다.
+   */
   static forFeature(
     reactionEntity: Type<RequiredReactionColumn>,
   ): DynamicModule {

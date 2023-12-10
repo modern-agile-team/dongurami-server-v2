@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
@@ -17,7 +18,10 @@ import {
   mockDataSource,
   mockFreePostRepository,
 } from '@test/mock/mock.repository';
-import { mockFreePostHistoryService } from '@test/mock/mock.service';
+import {
+  mockCommonPostsService,
+  mockFreePostHistoryService,
+} from '@test/mock/mock.service';
 import { DataSource } from 'typeorm';
 import { FreePostsService } from './free-posts.service';
 
@@ -28,6 +32,10 @@ describe(FreePostsService.name, () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FreePostsService,
+        {
+          provide: CommonPostsService,
+          useValue: mockCommonPostsService,
+        },
         {
           provide: FreePostHistoryService,
           useValue: mockFreePostHistoryService,

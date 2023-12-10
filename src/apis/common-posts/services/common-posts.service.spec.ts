@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
@@ -10,7 +9,7 @@ const mockPostRepository = {
 };
 
 describe(CommonPostsService.name, () => {
-  let service: CommonPostsService;
+  let service: CommonPostsService<any>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,21 +17,12 @@ describe(CommonPostsService.name, () => {
         CommonPostsService,
         {
           provide: COMMON_POST_REPOSITORY_TOKEN,
-          useValue: class PostRepository {},
-        },
-        {
-          provide: ModuleRef,
-          useValue: {
-            get() {
-              return mockPostRepository;
-            },
-          },
+          useValue: mockPostRepository,
         },
       ],
     }).compile();
 
-    service = module.get<CommonPostsService>(CommonPostsService);
-    service.onModuleInit();
+    service = module.get<CommonPostsService<any>>(CommonPostsService);
   });
 
   beforeEach(() => {

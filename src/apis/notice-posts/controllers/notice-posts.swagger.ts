@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -109,7 +109,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
-      ApiProperty({
+      ApiOperation({
         operationId: 'NoticePostPutUpdate',
         ...apiOperationOptions,
       }),
@@ -147,7 +147,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
-      ApiProperty({
+      ApiOperation({
         operationId: 'NoticePostPatchUpdate',
         ...apiOperationOptions,
       }),
@@ -185,7 +185,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
-      ApiProperty({
+      ApiOperation({
         operationId: 'NoticePostRemove',
         ...apiOperationOptions,
       }),
@@ -220,15 +220,11 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
-      ApiProperty({
+      ApiOperation({
         operationId: 'NoticePostIncreaseHit',
         ...apiOperationOptions,
       }),
-      DetailResponseDto.swaggerBuilder(
-        HttpStatus.OK,
-        'noticePost',
-        NoticePostDto,
-      ),
+      ApiResponse({ status: HttpStatus.NO_CONTENT }),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
@@ -238,6 +234,12 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
           type: ValidationError,
         },
       ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
     );
   },
 };

@@ -315,4 +315,18 @@ export class NoticePostsService {
       }
     }
   }
+
+  async increaseHit(noticePostId: number): Promise<void> {
+    const existPost = await this.noticePostRepository.increment(
+      { id: noticePostId, status: NoticePostStatus.Posting },
+      'hit',
+      1,
+    );
+
+    if (!existPost.affected) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+  }
 }

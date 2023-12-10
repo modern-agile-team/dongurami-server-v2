@@ -11,6 +11,7 @@ import { mockReactionTypeRepository } from '@test/mock/mock.repository';
 const mockReactionRepository = {
   exist: jest.fn(),
   save: jest.fn(),
+  delete: jest.fn(),
 };
 
 describe(ReactionsService.name, () => {
@@ -89,6 +90,57 @@ describe(ReactionsService.name, () => {
 
       await expect(
         service.create(reactionName, userId, parentId),
+      ).resolves.toBeUndefined();
+    });
+  });
+
+  describe(ReactionsService.prototype.remove.name, () => {
+    let reactionName: ReactionName;
+    let userId: number;
+    let parentId: number;
+
+    beforeEach(() => {
+      reactionName = null;
+      userId = NaN;
+      parentId = NaN;
+    });
+
+    it('not exist reaction type throw HttpInternalServerException', async () => {
+      reactionName = ReactionName.Like;
+      userId = faker.number.int();
+      parentId = faker.number.int();
+
+      mockReactionTypeRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.remove(reactionName, userId, parentId),
+      ).rejects.toThrow(HttpInternalServerErrorException);
+    });
+
+    it('not exist reaction', async () => {
+      reactionName = ReactionName.Like;
+      userId = faker.number.int();
+      parentId = faker.number.int();
+
+      mockReactionTypeRepository.findOne.mockResolvedValue({ id: 1 });
+      mockReactionRepository.exist.mockResolvedValue(false);
+
+      await expect(
+        service.remove(reactionName, userId, parentId),
+      ).rejects.toThrow(HttpConflictException);
+    });
+
+    it('delete like reaction', async () => {
+      reactionName = ReactionName.Like;
+      userId = faker.number.int();
+      parentId = faker.number.int();
+
+      mockReactionTypeRepository.findOne.mockResolvedValue({ id: 1 });
+      mockReactionRepository.exist.mockResolvedValue(true);
+      mockReactionRepository.delete.mockResolvedValue({});
+
+      await expect(
+        service.remove(reactionName, userId, parentId),
       ).resolves.toBeUndefined();
     });
   });

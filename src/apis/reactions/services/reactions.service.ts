@@ -59,4 +59,44 @@ export class ReactionsService<E extends RequiredReactionColumn> {
       { reload: false },
     );
   }
+
+  async remove(reactionName: ReactionName, userId: number, parentId: number) {
+    const reactionType = await this.reactionTypeRepository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        name: reactionName,
+      },
+    });
+
+    if (!reactionType) {
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: 'reaction 중 reaction type 이 존재하지 않음',
+      });
+    }
+
+    const reactionTypeId = reactionType.id;
+
+    const isExistReaction = await this.reactionRepository.exist({
+      where: {
+        reactionTypeId,
+        userId,
+        parentId,
+      } as FindOptionsWhere<E>,
+    });
+
+    if (!isExistReaction) {
+      throw new HttpConflictException({
+        code: REACTION_ERROR_CODE.NOT_LIKED,
+      });
+    }
+
+    await this.reactionRepository.delete({
+      reactionTypeId,
+      userId,
+      parentId,
+    } as FindOptionsWhere<E>);
+  }
 }

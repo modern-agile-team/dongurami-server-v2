@@ -5,6 +5,7 @@ import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { FreePostsController } from './controllers/free-posts.controller';
+import { FreePostCommentsModule } from './free-post-comments/free-post-comments.module';
 import { FreePostsService } from './services/free-posts.service';
 
 @Module({
@@ -12,6 +13,7 @@ import { FreePostsService } from './services/free-posts.service';
     FreePostHistoryModule,
     TypeOrmExModule.forCustomRepository([FreePostRepository]),
     CommonPostsModule.forFeature(FreePostRepository),
+    FreePostCommentsModule,
   ],
   controllers: [FreePostsController],
   providers: [FreePostsService, QueryHelper],

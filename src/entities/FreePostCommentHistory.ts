@@ -1,3 +1,5 @@
+import { FreePostCommentStatus } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
+import { HistoryAction } from '@src/constants/enum';
 import {
   Column,
   Entity,
@@ -20,6 +22,20 @@ export class FreePostCommentHistory {
   })
   id: number;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
+  @Column('int', {
+    name: 'free_post_id',
+    comment: '자유 게시글 고유 ID',
+    unsigned: true,
+  })
+  freePostHistoryId: number;
+
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
 
@@ -30,6 +46,20 @@ export class FreePostCommentHistory {
     default: () => "'0'",
   })
   isAnonymous: number;
+
+  @Column('enum', {
+    name: 'action',
+    comment: 'history 를 쌓는 action',
+    enum: ['insert', 'update', 'delete'],
+  })
+  action: HistoryAction;
+
+  @Column('enum', {
+    name: 'status',
+    comment: '자유게시글 댓글 상태',
+    enum: FreePostCommentStatus,
+  })
+  status: FreePostCommentStatus;
 
   @Column('timestamp', {
     name: 'created_at',

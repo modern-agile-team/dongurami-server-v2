@@ -1,5 +1,6 @@
 import { FreePostCommentStatus } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
 import { HistoryAction } from '@src/constants/enum';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -30,7 +31,7 @@ export class FreePostCommentHistory {
   userId: number;
 
   @Column('int', {
-    name: 'free_post_id',
+    name: 'free_post_history_id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
   })
@@ -44,8 +45,9 @@ export class FreePostCommentHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
+    transformer: new BooleanTransformer(),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('enum', {
     name: 'action',

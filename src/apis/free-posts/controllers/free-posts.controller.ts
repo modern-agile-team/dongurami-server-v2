@@ -21,6 +21,11 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
+import { CreateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-comment.dto';
+import { FindFreePostCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-comment-list-query.dto';
+import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
+import { FreePostCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comments-item.dto';
+import { PutUpdateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-comment.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -120,5 +125,75 @@ export class FreePostsController {
     @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
   ): Promise<void> {
     return this.commonPostsService.incrementHit(freePostId);
+  }
+
+  @ApiFreePost.CreateComment({ summary: '자유 게시글 댓글 생성' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'freePostComment', type: ResponseType.Detail })
+  @Post(':freePostId/comments')
+  createComment(
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @User() user: UserDto,
+    @Body() createFreePostCommentDto: CreateFreePostCommentDto,
+  ): Promise<FreePostCommentDto> {
+    return this.freePostsService.createComment(
+      user.id,
+      freePostId,
+      createFreePostCommentDto,
+    );
+  }
+
+  @ApiFreePost.FindAllAndCountComment({
+    summary: '자유 게시글 댓글 전체조회(pagination)',
+  })
+  @SetResponse({ type: ResponseType.Pagination, key: 'freePostComments' })
+  @Get(':freePostId/comments')
+  async findAllAndCountComment(
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Query() findFreePostCommentListQueryDto: FindFreePostCommentListQueryDto,
+  ): Promise<[FreePostCommentsItemDto[], number]> {
+    const [freePosts, count] =
+      await this.freePostsService.findAllAndCountComment(
+        freePostId,
+        findFreePostCommentListQueryDto,
+      );
+
+    return [plainToInstance(FreePostCommentsItemDto, freePosts), count];
+  }
+
+  @ApiFreePost.PutUpdateComment({ summary: '자유게시글 댓글 수정' })
+  @SetResponse({ type: ResponseType.Detail, key: 'freePostComment' })
+  @UseGuards(JwtAuthGuard)
+  @Put(':freePostId/comments/:freePostCommentId')
+  putUpdateComment(
+    @User() user: UserDto,
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Body() putUpdateFreePostCommentDto: PutUpdateFreePostCommentDto,
+  ): Promise<FreePostCommentDto> {
+    return this.freePostsService.putUpdateComment(
+      user.id,
+      freePostId,
+      freePostCommentId,
+      putUpdateFreePostCommentDto,
+    );
+  }
+
+  @ApiFreePost.RemoveComment({
+    summary: '자유게시글 댓글 삭제',
+  })
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':freePostId/comments/:freePostCommentId')
+  removeComment(
+    @User() user: UserDto,
+    @Param('freePostId') freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+  ): Promise<number> {
+    return this.freePostsService.removeComment(
+      user.id,
+      freePostId,
+      freePostCommentId,
+    );
   }
 }

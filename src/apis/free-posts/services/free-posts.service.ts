@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
@@ -10,6 +11,7 @@ import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
+import { FreePost } from '@src/entities/FreePost';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -28,6 +30,7 @@ export class FreePostsService {
 
   constructor(
     private readonly freePostHistoryService: FreePostHistoryService,
+    private readonly commonPostsService: CommonPostsService<FreePost>,
 
     private readonly queryHelper: QueryHelper,
 
@@ -324,5 +327,9 @@ export class FreePostsService {
         await queryRunner.release();
       }
     }
+  }
+
+  incrementHit(freePostId: number): Promise<void> {
+    return this.commonPostsService.incrementHit(freePostId);
   }
 }

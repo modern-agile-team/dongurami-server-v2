@@ -47,8 +47,7 @@ export const mockUserHistoryService: MockProvider<UserHistoryService> = {
   create: jest.fn(),
 };
 
-export const mockCommonPostsService: MockProvider<CommonPostsService> = {
-  onModuleInit: jest.fn(),
+export const mockCommonPostsService: MockProvider<CommonPostsService<any>> = {
   incrementHit: jest.fn(),
 };
 
@@ -59,6 +58,7 @@ export const mockFreePostsService: MockProvider<FreePostsService> = {
   findOneOrNotFound: jest.fn(),
   putUpdate: jest.fn(),
   remove: jest.fn(),
+  incrementHit: jest.fn(),
 };
 
 export const mockFreePostHistoryService: MockProvider<FreePostHistoryService> =

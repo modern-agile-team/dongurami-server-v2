@@ -9,6 +9,10 @@ export type Args =
       key: string;
     }
   | {
+      type: Extract<ResponseType, ResponseType.Pagination>;
+      key?: string;
+    }
+  | {
       type: Extract<ResponseType, ResponseType.Delete>;
     };
 

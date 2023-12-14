@@ -25,14 +25,14 @@ export class FreePostCommentHistory {
 
   @Column('int', {
     name: 'user_id',
-    comment: '게시글 작성 유저 고유 ID',
+    comment: '게시글 댓글 작성 유저 고유 ID',
     unsigned: true,
   })
   userId: number;
 
   @Column('int', {
     name: 'free_post_history_id',
-    comment: '자유 게시글 고유 ID',
+    comment: '자유 게시글 수정이력 고유 ID',
     unsigned: true,
   })
   freePostHistoryId: number;

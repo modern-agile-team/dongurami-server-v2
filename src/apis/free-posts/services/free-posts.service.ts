@@ -5,20 +5,29 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
-import { FreePostCommentStatus } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
+import {
+  FreePostCommentStatus,
+  FreePostReplyCommentStatus,
+} from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
 import { CreateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-comment.dto';
+import { CreateFreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-reply-comment.dto';
 import { FindFreePostCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-comment-list-query.dto';
+import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-reply-comment-list-query.dto';
 import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
 import { FreePostCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comments-item.dto';
+import { FreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comment.dto';
+import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comments-item.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-comment.dto';
-import { FreePostCommentHistoryRepository } from '@src/apis/free-posts/free-post-comments/repositories/free-post-comment-history.repository';
+import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-reply-comment.dto';
 import { FreePostCommentRepository } from '@src/apis/free-posts/free-post-comments/repositories/free-post-comment.repository';
+import { FreePostReplyCommentRepository } from '@src/apis/free-posts/free-post-comments/repositories/free-post-reply-comment.repository';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -43,7 +52,7 @@ export class FreePostsService {
     private readonly dataSource: DataSource,
     private readonly freePostRepository: FreePostRepository,
     private readonly freePostCommentRepository: FreePostCommentRepository,
-    private readonly freePostCommentHistoryRepository: FreePostCommentHistoryRepository,
+    private readonly freePostReplyCommentRepository: FreePostReplyCommentRepository,
   ) {}
 
   async create(userId: number, createFreePostDto: CreateFreePostDto) {
@@ -558,6 +567,250 @@ export class FreePostsService {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '자유게시글 댓글 삭제 중 알 수 없는 에러',
+        stack: error.stack,
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  async createReplyComment(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    createFreePostReplyCommentDto: CreateFreePostReplyCommentDto,
+  ): Promise<FreePostReplyCommentDto> {
+    await this.findOneOrNotFoundComment(freePostId, freePostCommentId);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      const newPostReplyComment = await entityManager
+        .withRepository(this.freePostReplyCommentRepository)
+        .save({
+          userId,
+          freePostCommentId,
+          ...createFreePostReplyCommentDto,
+        });
+
+      await this.freePostHistoryService.createReplyComment(
+        entityManager,
+        userId,
+        freePostId,
+        HistoryAction.Insert,
+        newPostReplyComment,
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new FreePostReplyCommentDto(newPostReplyComment);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '자유게시글 대댓글 생성 중 알 수 없는 에러',
+        stack: error.stack,
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  async findAllAndCountReplyComment(
+    freePostId: number,
+    freePostCommentId: number,
+    findFreePostReplyCommentListQueryDto: FindFreePostReplyCommentListQueryDto,
+  ): Promise<[FreePostReplyCommentsItemDto[], number]> {
+    await this.findOneOrNotFoundComment(freePostId, freePostCommentId);
+
+    const { page, pageSize, order, ...filter } =
+      findFreePostReplyCommentListQueryDto;
+
+    const where = this.queryHelper.buildWherePropForFind<FreePostReplyComment>({
+      ...filter,
+      freePostCommentId,
+    });
+
+    return this.freePostReplyCommentRepository.findAndCount({
+      where,
+      order,
+      skip: page * pageSize,
+      take: pageSize,
+    });
+  }
+
+  async findOneOrNotFoundReplyComment(
+    freePostId: number,
+    freePostCommentId: number,
+    freePostReplyCommentId: number,
+  ): Promise<FreePostReplyCommentDto> {
+    await this.findOneOrNotFound(freePostId);
+
+    const existReplyComment = await this.freePostReplyCommentRepository.findOne(
+      {
+        where: {
+          freePostCommentId,
+          id: freePostReplyCommentId,
+          status: FreePostReplyCommentStatus.Posting,
+        },
+      },
+    );
+
+    if (!existReplyComment) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return new FreePostReplyCommentDto(existReplyComment);
+  }
+
+  async putUpdateReplyComment(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    freePostReplyCommentId: number,
+    putUpdateFreePostReplyCommentDto: PutUpdateFreePostReplyCommentDto,
+  ): Promise<FreePostReplyCommentDto> {
+    const existReplyComment = await this.findOneOrNotFoundReplyComment(
+      freePostId,
+      freePostCommentId,
+      freePostReplyCommentId,
+    );
+
+    if (userId !== existReplyComment.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      await entityManager
+        .withRepository(this.freePostReplyCommentRepository)
+        .update(
+          {
+            id: freePostCommentId,
+          },
+          {
+            ...putUpdateFreePostReplyCommentDto,
+          },
+        );
+
+      const newReplyComment = {
+        ...existReplyComment,
+        ...putUpdateFreePostReplyCommentDto,
+      };
+
+      await this.freePostHistoryService.createReplyComment(
+        entityManager,
+        userId,
+        freePostId,
+        HistoryAction.Update,
+        newReplyComment,
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new FreePostReplyCommentDto(newReplyComment);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '자유게시글 대댓글 put 수정 중 알 수 없는 에러',
+        stack: error.stack,
+      });
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  async removeReplyComment(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    freePostReplyCommentId: number,
+  ): Promise<number> {
+    const existReplyComment = await this.findOneOrNotFoundReplyComment(
+      freePostId,
+      freePostCommentId,
+      freePostReplyCommentId,
+    );
+
+    if (userId !== existReplyComment.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      const freePostUpdateResult = await entityManager
+        .withRepository(this.freePostReplyCommentRepository)
+        .update(
+          {
+            id: freePostId,
+          },
+          {
+            status: FreePostReplyCommentStatus.Remove,
+            deletedAt: new Date(),
+          },
+        );
+
+      await this.freePostHistoryService.createReplyComment(
+        entityManager,
+        userId,
+        freePostId,
+        HistoryAction.Delete,
+        {
+          ...existReplyComment,
+          status: FreePostReplyCommentStatus.Remove,
+        },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return freePostUpdateResult.affected;
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      console.error(error);
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '자유게시글 대댓글 삭제 중 알 수 없는 에러',
         stack: error.stack,
       });
     } finally {

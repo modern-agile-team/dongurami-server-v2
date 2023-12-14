@@ -10,6 +10,8 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
 import { FreePostCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comments-item.dto';
+import { FreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comment.dto';
+import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comments-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
@@ -356,6 +358,148 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
     return applyDecorators(
       ApiOperation({
         operationId: 'FreePostCommentRemove',
+        ...apiOperationOptions,
+      }),
+      ApiBearerAuth(),
+      DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
+        COMMON_ERROR_CODE.PERMISSION_DENIED,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
+
+  CreateReplyComment: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreePostReplyCommentCreate',
+        ...apiOperationOptions,
+      }),
+      ApiBearerAuth(),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.CREATED,
+        'freePostReplyComment',
+        FreePostReplyCommentDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
+
+  FindAllAndCountReplyComment: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreePostReplyCommentFindAllAndCount',
+        ...apiOperationOptions,
+      }),
+      PaginationResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'freePostReplyComments',
+        FreePostReplyCommentsItemDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  PutUpdateReplyComment: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreePostReplyCommentPutUpdate',
+        ...apiOperationOptions,
+      }),
+      ApiBearerAuth(),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'freePostReplyComment',
+        FreePostReplyCommentDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: ValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
+        COMMON_ERROR_CODE.PERMISSION_DENIED,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
+        COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
+
+  RemoveReplyComment: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'FreePostReplyCommentRemove',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),

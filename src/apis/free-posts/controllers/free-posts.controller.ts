@@ -22,10 +22,15 @@ import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { CreateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-comment.dto';
+import { CreateFreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-reply-comment.dto';
 import { FindFreePostCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-comment-list-query.dto';
+import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-reply-comment-list-query.dto';
 import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
 import { FreePostCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comments-item.dto';
+import { FreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comment.dto';
+import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comments-item.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-comment.dto';
+import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-reply-comment.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -194,6 +199,89 @@ export class FreePostsController {
       user.id,
       freePostId,
       freePostCommentId,
+    );
+  }
+
+  @ApiFreePost.CreateReplyComment({ summary: '자유 게시글 대댓글 생성' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'freePostReplyComment', type: ResponseType.Detail })
+  @Post(':freePostId/comments/:freePostCommentId/reply')
+  createReplyComment(
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @User() user: UserDto,
+    @Body() createFreePostReplyCommentDto: CreateFreePostReplyCommentDto,
+  ): Promise<FreePostReplyCommentDto> {
+    return this.freePostsService.createReplyComment(
+      user.id,
+      freePostId,
+      freePostCommentId,
+      createFreePostReplyCommentDto,
+    );
+  }
+
+  @ApiFreePost.FindAllAndCountReplyComment({
+    summary: '자유 게시글 대댓글 전체조회(pagination)',
+  })
+  @SetResponse({ type: ResponseType.Pagination, key: 'freePostReplyComments' })
+  @Get(':freePostId/comments/:freePostCommentId')
+  async findAllAndCountReplyComment(
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Query()
+    findFreePostReplyCommentListQueryDto: FindFreePostReplyCommentListQueryDto,
+  ): Promise<[FreePostReplyCommentsItemDto[], number]> {
+    const [freePosts, count] =
+      await this.freePostsService.findAllAndCountReplyComment(
+        freePostId,
+        freePostCommentId,
+        findFreePostReplyCommentListQueryDto,
+      );
+
+    return [plainToInstance(FreePostReplyCommentsItemDto, freePosts), count];
+  }
+
+  @ApiFreePost.PutUpdateReplyComment({ summary: '자유게시글 대댓글 수정' })
+  @SetResponse({ type: ResponseType.Detail, key: 'freePostReplyComment' })
+  @UseGuards(JwtAuthGuard)
+  @Put(':freePostId/comments/:freePostCommentId/reply/:freePostReplyCommentId')
+  putUpdateReplyComment(
+    @User() user: UserDto,
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Param('freePostReplyCommentId', ParsePositiveIntPipe)
+    freePostReplyCommentId: number,
+    @Body() putUpdateFreePostReplyCommentDto: PutUpdateFreePostReplyCommentDto,
+  ): Promise<FreePostReplyCommentDto> {
+    return this.freePostsService.putUpdateReplyComment(
+      user.id,
+      freePostId,
+      freePostCommentId,
+      freePostReplyCommentId,
+      putUpdateFreePostReplyCommentDto,
+    );
+  }
+
+  @ApiFreePost.RemoveReplyComment({
+    summary: '자유게시글 대댓글 삭제',
+  })
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(
+    ':freePostId/comments/:freePostCommentId/reply/:freePostReplyCommentId',
+  )
+  removeReplyComment(
+    @User() user: UserDto,
+    @Param('freePostId') freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Param('freePostReplyCommentId', ParsePositiveIntPipe)
+    freePostReplyCommentId: number,
+  ): Promise<number> {
+    return this.freePostsService.removeReplyComment(
+      user.id,
+      freePostId,
+      freePostCommentId,
+      freePostReplyCommentId,
     );
   }
 }

@@ -1,16 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import {
-  mockCommonPostsService,
-  mockFreePostsService,
-} from '@test/mock/mock.service';
+import { mockFreePostsService } from '@test/mock/mock.service';
 import { FreePostsService } from '../services/free-posts.service';
 import { FreePostsController } from './free-posts.controller';
 
@@ -21,10 +17,6 @@ describe(FreePostsController.name, () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FreePostsController],
       providers: [
-        {
-          provide: CommonPostsService,
-          useValue: mockCommonPostsService,
-        },
         {
           provide: FreePostsService,
           useValue: mockFreePostsService,
@@ -181,7 +173,7 @@ describe(FreePostsController.name, () => {
     it('increment hit', async () => {
       freePostId = faker.number.int();
 
-      mockCommonPostsService.incrementHit.mockResolvedValue(undefined);
+      mockFreePostsService.incrementHit.mockResolvedValue(undefined);
 
       await expect(
         controller.incrementHit(freePostId),

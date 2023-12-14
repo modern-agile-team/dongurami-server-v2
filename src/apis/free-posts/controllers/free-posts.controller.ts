@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
-import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { ApiFreePost } from '@src/apis/free-posts/controllers/free-posts.swagger';
 import { CreateFreePostCommentDto } from '@src/apis/free-posts/dto/create-free-post-comment.dto';
 import { CreateFreePostReplyCommentDto } from '@src/apis/free-posts/dto/create-free-post-reply-comment.dto';
@@ -43,10 +42,7 @@ import { FreePostsService } from '../services/free-posts.service';
 @ApiTags('free-posts')
 @Controller('free-posts')
 export class FreePostsController {
-  constructor(
-    private readonly freePostsService: FreePostsService,
-    private readonly commonPostsService: CommonPostsService,
-  ) {}
+  constructor(private readonly freePostsService: FreePostsService) {}
 
   @ApiFreePost.Create({ summary: '자유 게시글 생성' })
   @UseGuards(JwtAuthGuard)
@@ -129,7 +125,7 @@ export class FreePostsController {
   incrementHit(
     @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
   ): Promise<void> {
-    return this.commonPostsService.incrementHit(freePostId);
+    return this.freePostsService.incrementHit(freePostId);
   }
 
   @ApiFreePost.CreateComment({ summary: '자유 게시글 댓글 생성' })

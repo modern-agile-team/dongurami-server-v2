@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { FreePostCommentStatus } from '@src/apis/free-posts/constants/free-post-comment.enum';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { CreateFreePostCommentDto } from '@src/apis/free-posts/dto/create-free-post-comment.dto';
@@ -23,6 +24,7 @@ import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
+import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -44,6 +46,7 @@ export class FreePostsService {
 
   constructor(
     private readonly freePostHistoryService: FreePostHistoryService,
+    private readonly commonPostsService: CommonPostsService<FreePost>,
 
     private readonly queryHelper: QueryHelper,
 
@@ -342,6 +345,10 @@ export class FreePostsService {
         await queryRunner.release();
       }
     }
+  }
+
+  incrementHit(freePostId: number): Promise<void> {
+    return this.commonPostsService.incrementHit(freePostId);
   }
 
   async createComment(

@@ -62,9 +62,6 @@ export class FreePostHistoryService {
       });
   }
 
-  /**
-   * @todo
-   */
   async createReplyComment(
     entityManager: EntityManager,
     userId: number,

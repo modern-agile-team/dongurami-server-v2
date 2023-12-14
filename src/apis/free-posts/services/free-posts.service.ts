@@ -537,7 +537,7 @@ export class FreePostsService {
     try {
       const entityManager = queryRunner.manager;
 
-      const freePostUpdateResult = await entityManager
+      const freePostCommentUpdateResult = await entityManager
         .withRepository(this.freePostCommentRepository)
         .update(
           {
@@ -562,7 +562,7 @@ export class FreePostsService {
 
       await queryRunner.commitTransaction();
 
-      return freePostUpdateResult.affected;
+      return freePostCommentUpdateResult.affected;
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

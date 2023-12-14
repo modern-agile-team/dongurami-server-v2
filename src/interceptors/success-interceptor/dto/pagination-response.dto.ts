@@ -63,7 +63,7 @@ export class PaginationResponseDto {
     class Temp extends this {
       @ApiProperty({
         type,
-        name: key,
+        name: 'contents',
         isArray: true,
         ...options,
       })

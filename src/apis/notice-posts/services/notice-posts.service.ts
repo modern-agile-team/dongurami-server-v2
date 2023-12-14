@@ -17,6 +17,7 @@ import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { NoticePostRepository } from '../repositories/notice-post.repository';
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
+import { NoticePost } from '@src/entities/NoticePost';
 
 @Injectable()
 export class NoticePostsService {
@@ -30,7 +31,7 @@ export class NoticePostsService {
     private readonly noticePostHistoryService: NoticePostHistoryService,
     private readonly dataSource: DataSource,
     private readonly noticePostRepository: NoticePostRepository,
-    private readonly commonPostsService: CommonPostsService,
+    private readonly commonPostsService: CommonPostsService<NoticePost>,
   ) {}
 
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {

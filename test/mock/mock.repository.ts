@@ -1,6 +1,7 @@
 import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { MajorRepository } from '@src/apis/major/repositories/major.repository';
+import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
 import { MockProvider } from '@test/mock/mock.type';
@@ -92,6 +93,11 @@ export const mockFreePostRepository: MockProvider<FreePostRepository> = {
 };
 
 export const mockFreePostHistoryRepository: MockProvider<FreePostHistoryRepository> =
+  {
+    ...getDefaultRepositoryMethod(),
+  };
+
+export const mockReactionTypeRepository: MockProvider<ReactionTypeRepository> =
   {
     ...getDefaultRepositoryMethod(),
   };

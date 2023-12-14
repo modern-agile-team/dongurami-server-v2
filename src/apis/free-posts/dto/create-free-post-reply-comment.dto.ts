@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { FREE_POST_REPLY_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.constant';
 import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { IsBoolean, IsOptional, Length } from 'class-validator';
+import { FREE_POST_REPLY_COMMENT_DESCRIPTION_LENGTH } from '../constants/free-post-reply-comment.constant';
 
 export class CreateFreePostReplyCommentDto
   implements Pick<FreePostReplyComment, 'description' | 'isAnonymous'>

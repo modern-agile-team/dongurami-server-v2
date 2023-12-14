@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { FREE_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.constant';
-import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
+import { FREE_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-posts/constants/free-post-comment.constant';
+import { FreePostCommentDto } from '@src/apis/free-posts/dto/free-post-comment.dto';
 import { IsBoolean, IsOptional, Length } from 'class-validator';
 
 export class CreateFreePostCommentDto

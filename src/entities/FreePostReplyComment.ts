@@ -1,4 +1,4 @@
-import { FreePostReplyCommentStatus } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
+import { FreePostReplyCommentStatus } from '@src/apis/free-posts/constants/free-post-reply-comment.enum';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,

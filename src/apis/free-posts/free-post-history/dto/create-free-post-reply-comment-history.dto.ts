@@ -1,5 +1,5 @@
-import { FreePostReplyCommentStatus } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
 import { FreePostReplyCommentHistory } from '@src/entities/FreePostReplyCommentHistory';
+import { FreePostReplyCommentStatus } from '../../constants/free-post-reply-comment.enum';
 
 export class CreateFreePostReplyCommentHistoryDto
   implements

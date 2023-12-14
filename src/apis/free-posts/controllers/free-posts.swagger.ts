@@ -6,12 +6,12 @@ import {
 } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { FreePostsController } from '@src/apis/free-posts/controllers/free-posts.controller';
+import { FreePostCommentDto } from '@src/apis/free-posts/dto/free-post-comment.dto';
+import { FreePostCommentsItemDto } from '@src/apis/free-posts/dto/free-post-comments-item.dto';
+import { FreePostReplyCommentDto } from '@src/apis/free-posts/dto/free-post-reply-comment.dto';
+import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/dto/free-post-reply-comments-item.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
-import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
-import { FreePostCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comments-item.dto';
-import { FreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comment.dto';
-import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comments-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';

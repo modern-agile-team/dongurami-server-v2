@@ -1,27 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { FreePostCommentStatus } from '@src/apis/free-posts/constants/free-post-comment.enum';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { CreateFreePostCommentDto } from '@src/apis/free-posts/dto/create-free-post-comment.dto';
+import { CreateFreePostReplyCommentDto } from '@src/apis/free-posts/dto/create-free-post-reply-comment.dto';
+import { FindFreePostCommentListQueryDto } from '@src/apis/free-posts/dto/find-free-post-comment-list-query.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
+import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-posts/dto/find-free-post-reply-comment-list-query.dto';
+import { FreePostCommentDto } from '@src/apis/free-posts/dto/free-post-comment.dto';
+import { FreePostCommentsItemDto } from '@src/apis/free-posts/dto/free-post-comments-item.dto';
+import { FreePostReplyCommentDto } from '@src/apis/free-posts/dto/free-post-reply-comment.dto';
+import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/dto/free-post-reply-comments-item.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
+import { PutUpdateFreePostCommentDto } from '@src/apis/free-posts/dto/put-update-free-post-comment.dto';
+import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-posts/dto/put-update-free-post-reply-comment.dto';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
-import {
-  FreePostCommentStatus,
-  FreePostReplyCommentStatus,
-} from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
-import { CreateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-comment.dto';
-import { CreateFreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-reply-comment.dto';
-import { FindFreePostCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-comment-list-query.dto';
-import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-posts/free-post-comments/dto/find-free-post-reply-comment-list-query.dto';
-import { FreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comment.dto';
-import { FreePostCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-comments-item.dto';
-import { FreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comment.dto';
-import { FreePostReplyCommentsItemDto } from '@src/apis/free-posts/free-post-comments/dto/free-post-reply-comments-item.dto';
-import { PutUpdateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-comment.dto';
-import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-posts/free-post-comments/dto/put-update-free-post-reply-comment.dto';
-import { FreePostCommentRepository } from '@src/apis/free-posts/free-post-comments/repositories/free-post-comment.repository';
-import { FreePostReplyCommentRepository } from '@src/apis/free-posts/free-post-comments/repositories/free-post-reply-comment.repository';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { FreePostCommentRepository } from '@src/apis/free-posts/repositories/free-post-comment.repository';
+import { FreePostReplyCommentRepository } from '@src/apis/free-posts/repositories/free-post-reply-comment.repository';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -35,6 +32,7 @@ import { HttpInternalServerErrorException } from '@src/http-exceptions/exception
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { isNotEmptyObject } from 'class-validator';
 import { DataSource } from 'typeorm';
+import { FreePostReplyCommentStatus } from '../constants/free-post-reply-comment.enum';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 
 @Injectable()

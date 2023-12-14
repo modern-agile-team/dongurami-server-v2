@@ -1,9 +1,9 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { CreateFreePostCommentDto } from '@src/apis/free-posts/free-post-comments/dto/create-free-post-comment.dto';
+import { CreateFreePostReplyCommentDto } from '@src/apis/free-posts/dto/create-free-post-reply-comment.dto';
 import { IsBoolean } from 'class-validator';
 
-export class PutUpdateFreePostCommentDto extends PickType(
-  CreateFreePostCommentDto,
+export class PutUpdateFreePostReplyCommentDto extends PickType(
+  CreateFreePostReplyCommentDto,
   ['description'] as const,
 ) {
   @ApiProperty({

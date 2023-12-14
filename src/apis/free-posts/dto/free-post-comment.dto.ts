@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FREE_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.constant';
-import { FreePostReplyCommentStatus } from '@src/apis/free-posts/free-post-comments/constants/free-post-comment.enum';
+import { FREE_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-posts/constants/free-post-comment.constant';
+import { FreePostCommentStatus } from '@src/apis/free-posts/constants/free-post-comment.enum';
 import { BaseDto } from '@src/dto/base.dto';
-import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
+import { FreePostComment } from '@src/entities/FreePostComment';
 import { Exclude } from 'class-transformer';
 
-export class FreePostReplyCommentDto
+export class FreePostCommentDto
   extends BaseDto
   implements
     Pick<
-      FreePostReplyComment,
+      FreePostComment,
       | 'id'
       | 'userId'
-      | 'freePostCommentId'
+      | 'freePostId'
       | 'description'
       | 'isAnonymous'
       | 'status'
@@ -22,13 +22,13 @@ export class FreePostReplyCommentDto
     >
 {
   @ApiProperty({
-    description: '게시글 댓글 고유 ID',
+    description: '게시글 고유 ID',
     format: 'integer',
   })
-  freePostCommentId: number;
+  freePostId: number;
 
   @ApiProperty({
-    description: '대댓글 작성자 고유 ID',
+    description: '댓글 작성자 고유 ID',
     format: 'integer',
   })
   userId: number;
@@ -46,12 +46,12 @@ export class FreePostReplyCommentDto
   isAnonymous: boolean;
 
   @Exclude()
-  status: FreePostReplyCommentStatus;
+  status: FreePostCommentStatus;
 
   @Exclude()
   deletedAt: Date;
 
-  constructor(freePostDto: Partial<FreePostReplyCommentDto> = {}) {
+  constructor(freePostDto: Partial<FreePostCommentDto> = {}) {
     super();
 
     Object.assign(this, freePostDto);

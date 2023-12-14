@@ -203,9 +203,9 @@ export class FreePostsController {
   @SetResponse({ key: 'freePostReplyComment', type: ResponseType.Detail })
   @Post(':freePostId/comments/:freePostCommentId/reply')
   createReplyComment(
+    @User() user: UserDto,
     @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
     @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
-    @User() user: UserDto,
     @Body() createFreePostReplyCommentDto: CreateFreePostReplyCommentDto,
   ): Promise<FreePostReplyCommentDto> {
     return this.freePostsService.createReplyComment(

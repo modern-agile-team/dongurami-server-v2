@@ -59,9 +59,21 @@ export const mockFreePostsService: MockProvider<FreePostsService> = {
   putUpdate: jest.fn(),
   remove: jest.fn(),
   incrementHit: jest.fn(),
+  createComment: jest.fn(),
+  findAllAndCountComment: jest.fn(),
+  findOneOrNotFoundComment: jest.fn(),
+  putUpdateComment: jest.fn(),
+  removeComment: jest.fn(),
+  createReplyComment: jest.fn(),
+  findAllAndCountReplyComment: jest.fn(),
+  findOneOrNotFoundReplyComment: jest.fn(),
+  putUpdateReplyComment: jest.fn(),
+  removeReplyComment: jest.fn(),
 };
 
 export const mockFreePostHistoryService: MockProvider<FreePostHistoryService> =
   {
     create: jest.fn(),
+    createComment: jest.fn(),
+    createReplyComment: jest.fn(),
   };

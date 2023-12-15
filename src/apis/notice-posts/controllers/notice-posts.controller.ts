@@ -9,6 +9,8 @@ import {
   Put,
   Query,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
 import { NoticePostsService } from '../services/notice-posts.service';
@@ -108,5 +110,14 @@ export class NoticePostsController {
     @User() user: UserDto,
   ): Promise<number> {
     return this.noticePostService.remove(user.id, noticePostId);
+  }
+
+  @ApiNoticePost.IncreaseHit({ summary: '조회수 1 증가' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Put(':noticePostId/hit')
+  increaseHit(
+    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+  ): Promise<void> {
+    return this.noticePostService.increaseHit(noticePostId);
   }
 }

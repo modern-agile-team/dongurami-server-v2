@@ -70,9 +70,10 @@ export class ResponseBuilder {
 
   /**
    * array type 만 허용합니다.
+   * 클라이언트 요청으로 contents 로 통일합니다.
    */
   pagination(res: Res, pageDto: PageDto) {
-    const { key, data } = res;
+    const { data } = res;
 
     if (!Array.isArray(data)) {
       throw new HttpInternalServerErrorException({
@@ -111,7 +112,7 @@ export class ResponseBuilder {
     const lastPage = Math.ceil(totalCount / pageSize);
 
     return new PaginationResponseDto(
-      { [key]: array },
+      { contents: array },
       {
         totalCount,
         currentPage,

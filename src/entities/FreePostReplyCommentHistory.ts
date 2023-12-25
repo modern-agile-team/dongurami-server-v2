@@ -1,4 +1,4 @@
-import { FreePostReplyCommentStatus } from '@src/apis/free-posts/constants/free-post-reply-comment.enum';
+import { FreePostReplyCommentStatus } from '@src/apis/free-post-reply-comments/constants/free-post-reply-comment.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
@@ -9,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FreePostCommentHistory } from './FreePostCommentHistory';
-import { FreePostHistory } from './FreePostHistory';
 import { User } from './User';
 
 @Entity('free_post_reply_comment_history', { schema: 'dongurami_v2' })
@@ -90,12 +89,4 @@ export class FreePostReplyCommentHistory {
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
-
-  @ManyToOne(
-    () => FreePostHistory,
-    (freePostHistory) => freePostHistory.freePostReplyCommentHistories,
-    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
-  )
-  @JoinColumn([{ name: 'free_post_history_id', referencedColumnName: 'id' }])
-  freePostHistory: FreePostHistory;
 }

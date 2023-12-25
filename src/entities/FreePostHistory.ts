@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { FreePost } from './FreePost';
 import { FreePostCommentHistory } from './FreePostCommentHistory';
-import { FreePostReplyCommentHistory } from './FreePostReplyCommentHistory';
 import { User } from './User';
 
 @Entity('free_post_history', { schema: 'dongurami_v2' })
@@ -93,11 +92,4 @@ export class FreePostHistory {
   })
   @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
   freePost: FreePost;
-
-  @OneToMany(
-    () => FreePostReplyCommentHistory,
-    (freePostReplyCommentHistory) =>
-      freePostReplyCommentHistory.freePostHistory,
-  )
-  freePostReplyCommentHistories: FreePostReplyCommentHistory[];
 }

@@ -1,5 +1,5 @@
+import { FreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comment.dto';
 import { FREE_POST_ORDER_FIELD } from '@src/apis/free-posts/constants/free-post.constant';
-import { FreePostReplyCommentDto } from '@src/apis/free-posts/dto/free-post-reply-comment.dto';
 import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';

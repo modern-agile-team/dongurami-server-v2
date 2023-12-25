@@ -1,4 +1,4 @@
-import { FreePostCommentStatus } from '@src/apis/free-posts/constants/free-post-comment.enum';
+import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
 import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
 
 export class CreateFreePostCommentHistoryDto

@@ -1,6 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '@src/apis/auth/services/auth.service';
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
+import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
+import { FreePostCommentsService } from '@src/apis/free-post-comments/services/free-post-comments.service';
+import { FreePostReplyCommentHistoryService } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/services/free-post-reply-comment-history.service';
+import { FreePostReplyCommentsService } from '@src/apis/free-post-reply-comments/services/free-post-reply-comments.service';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { UsersService } from '@src/apis/users/services/users.service';
@@ -59,21 +63,39 @@ export const mockFreePostsService: MockProvider<FreePostsService> = {
   putUpdate: jest.fn(),
   remove: jest.fn(),
   incrementHit: jest.fn(),
-  createComment: jest.fn(),
-  findAllAndCountComment: jest.fn(),
-  findOneOrNotFoundComment: jest.fn(),
-  putUpdateComment: jest.fn(),
-  removeComment: jest.fn(),
-  createReplyComment: jest.fn(),
-  findAllAndCountReplyComment: jest.fn(),
-  findOneOrNotFoundReplyComment: jest.fn(),
-  putUpdateReplyComment: jest.fn(),
-  removeReplyComment: jest.fn(),
 };
 
 export const mockFreePostHistoryService: MockProvider<FreePostHistoryService> =
   {
     create: jest.fn(),
-    createComment: jest.fn(),
-    createReplyComment: jest.fn(),
+    findOneOrFail: jest.fn(),
+  };
+
+export const mockFreePostCommentsService: MockProvider<FreePostCommentsService> =
+  {
+    create: jest.fn(),
+    findAllAndCount: jest.fn(),
+    findOneOrNotFound: jest.fn(),
+    putUpdate: jest.fn(),
+    remove: jest.fn(),
+  };
+
+export const mockFreePostCommentHistoryService: MockProvider<FreePostCommentHistoryService> =
+  {
+    create: jest.fn(),
+    findOneOrFail: jest.fn(),
+  };
+
+export const mockFreePostReplyCommentsService: MockProvider<FreePostReplyCommentsService> =
+  {
+    create: jest.fn(),
+    findAllAndCount: jest.fn(),
+    findOneOrNotFound: jest.fn(),
+    putUpdate: jest.fn(),
+    remove: jest.fn(),
+  };
+
+export const mockFreePostReplyCommentHistoryService: MockProvider<FreePostReplyCommentHistoryService> =
+  {
+    create: jest.fn(),
   };

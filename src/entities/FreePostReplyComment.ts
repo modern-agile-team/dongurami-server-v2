@@ -1,4 +1,4 @@
-import { FreePostReplyCommentStatus } from '@src/apis/free-posts/constants/free-post-reply-comment.enum';
+import { FreePostReplyCommentStatus } from '@src/apis/free-post-reply-comments/constants/free-post-reply-comment.enum';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
@@ -8,7 +8,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePost } from './FreePost';
 import { FreePostComment } from './FreePostComment';
 import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
 import { User } from './User';
@@ -80,13 +79,6 @@ export class FreePostReplyComment {
     comment: '삭제 일자',
   })
   deletedAt: Date | null;
-
-  @ManyToOne(() => FreePost, (freePost) => freePost.freePostReplyComments, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
-  freePost: FreePost;
 
   @ManyToOne(
     () => FreePostComment,

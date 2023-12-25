@@ -36,6 +36,8 @@ export class FreePostCommentsService {
   ): Promise<FreePostCommentDto> {
     const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
 
+    console.log(existPost);
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -48,14 +50,15 @@ export class FreePostCommentsService {
         .withRepository(this.freePostCommentRepository)
         .save({
           userId,
-          frePostId: existPost.id,
+          status: FreePostCommentStatus.Posting,
+          freePostId: existPost.id,
           ...createFreePostCommentDto,
         });
 
       await this.freePostCommentHistoryService.create(
         entityManager,
         userId,
-        freePostId,
+        existPost.id,
         HistoryAction.Insert,
         newPostComment,
       );

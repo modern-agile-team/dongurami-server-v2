@@ -7,6 +7,7 @@ import { FreePostReplyCommentHistoryService } from '@src/apis/free-post-reply-co
 import { FreePostReplyCommentsService } from '@src/apis/free-post-reply-comments/services/free-post-reply-comments.service';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { UsersService } from '@src/apis/users/services/users.service';
 import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
@@ -55,6 +56,11 @@ export const mockCommonPostsService: MockProvider<CommonPostsService<any>> = {
   incrementHit: jest.fn(),
 };
 
+export const mockReactionsService: MockProvider<ReactionsService<any>> = {
+  create: jest.fn(),
+  remove: jest.fn(),
+};
+
 export const mockFreePostsService: MockProvider<FreePostsService> = {
   create: jest.fn(),
   findAllAndCount: jest.fn(),
@@ -63,6 +69,8 @@ export const mockFreePostsService: MockProvider<FreePostsService> = {
   putUpdate: jest.fn(),
   remove: jest.fn(),
   incrementHit: jest.fn(),
+  createReaction: jest.fn(),
+  removeReaction: jest.fn(),
 };
 
 export const mockFreePostHistoryService: MockProvider<FreePostHistoryService> =

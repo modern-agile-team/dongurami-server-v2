@@ -8,10 +8,14 @@ import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-fr
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreePost } from '@src/entities/FreePost';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -31,6 +35,7 @@ export class FreePostsService {
   constructor(
     private readonly freePostHistoryService: FreePostHistoryService,
     private readonly commonPostsService: CommonPostsService<FreePost>,
+    private readonly reactionsService: ReactionsService<FreePostReaction>,
 
     private readonly queryHelper: QueryHelper,
 
@@ -334,5 +339,29 @@ export class FreePostsService {
 
   incrementHit(freePostId: number): Promise<void> {
     return this.commonPostsService.incrementHit(freePostId);
+  }
+
+  createReaction(
+    userId: number,
+    freePostId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      freePostId,
+    );
+  }
+
+  removeReaction(
+    userId: number,
+    freePostId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      freePostId,
+    );
   }
 }

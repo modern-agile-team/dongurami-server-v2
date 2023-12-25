@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
@@ -44,7 +44,7 @@ describe(ReactionsService.name, () => {
   });
 
   describe(ReactionsService.prototype.create.name, () => {
-    let reactionName: ReactionName;
+    let reactionName: ReactionType;
     let userId: number;
     let parentId: number;
 
@@ -55,7 +55,7 @@ describe(ReactionsService.name, () => {
     });
 
     it('not exist reaction type throw HttpInternalServerException', async () => {
-      reactionName = ReactionName.Like;
+      reactionName = ReactionType.Like;
       userId = faker.number.int();
       parentId = faker.number.int();
 
@@ -67,7 +67,7 @@ describe(ReactionsService.name, () => {
     });
 
     it('already exist reaction', async () => {
-      reactionName = ReactionName.Like;
+      reactionName = ReactionType.Like;
       userId = faker.number.int();
       parentId = faker.number.int();
 
@@ -80,7 +80,7 @@ describe(ReactionsService.name, () => {
     });
 
     it('create like reaction', async () => {
-      reactionName = ReactionName.Like;
+      reactionName = ReactionType.Like;
       userId = faker.number.int();
       parentId = faker.number.int();
 
@@ -95,7 +95,7 @@ describe(ReactionsService.name, () => {
   });
 
   describe(ReactionsService.prototype.remove.name, () => {
-    let reactionName: ReactionName;
+    let reactionName: ReactionType;
     let userId: number;
     let parentId: number;
 
@@ -106,7 +106,7 @@ describe(ReactionsService.name, () => {
     });
 
     it('not exist reaction type throw HttpInternalServerException', async () => {
-      reactionName = ReactionName.Like;
+      reactionName = ReactionType.Like;
       userId = faker.number.int();
       parentId = faker.number.int();
 
@@ -118,7 +118,7 @@ describe(ReactionsService.name, () => {
     });
 
     it('not exist reaction', async () => {
-      reactionName = ReactionName.Like;
+      reactionName = ReactionType.Like;
       userId = faker.number.int();
       parentId = faker.number.int();
 
@@ -131,7 +131,7 @@ describe(ReactionsService.name, () => {
     });
 
     it('delete like reaction', async () => {
-      reactionName = ReactionName.Like;
+      reactionName = ReactionType.Like;
       userId = faker.number.int();
       parentId = faker.number.int();
 

@@ -36,8 +36,6 @@ export class FreePostCommentsService {
   ): Promise<FreePostCommentDto> {
     const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
 
-    console.log(existPost);
-
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -194,6 +192,9 @@ export class FreePostCommentsService {
     }
   }
 
+  /**
+   * @todo 댓글 삭제 시 soft delete 를 하기 떄문에 대댓글은 삭제되지 않음
+   */
   async remove(
     userId: number,
     freePostId: number,

@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -17,6 +19,8 @@ import { FindFreePostCommentListQueryDto } from '@src/apis/free-post-comments/dt
 import { FreePostCommentDto } from '@src/apis/free-post-comments/dto/free-post-comment.dto';
 import { FreePostCommentsItemDto } from '@src/apis/free-post-comments/dto/free-post-comments-item.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/put-update-free-post-comment.dto';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -99,6 +103,46 @@ export class FreePostCommentsController {
       user.id,
       freePostId,
       freePostCommentId,
+    );
+  }
+
+  @ApiFreePostComment.CreateReaction({
+    summary: '자유 게시글 댓글 reaction 생성',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':freePostCommentId/reaction')
+  createReaction(
+    @User() user: UserDto,
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.freePostCommentsService.createReaction(
+      user.id,
+      freePostId,
+      freePostCommentId,
+      createReactionDto,
+    );
+  }
+
+  @ApiFreePostComment.RemoveReaction({
+    summary: '자유 게시글 댓글 reaction 삭제',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':freePostCommentId/reaction')
+  removeReaction(
+    @User() user: UserDto,
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.freePostCommentsService.removeReaction(
+      user.id,
+      freePostId,
+      freePostCommentId,
+      removeReactionDto,
     );
   }
 }

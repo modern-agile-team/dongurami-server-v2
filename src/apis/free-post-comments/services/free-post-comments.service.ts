@@ -8,9 +8,13 @@ import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/pu
 import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
 import { FreePostCommentRepository } from '@src/apis/free-post-comments/repositories/free-post-comment.repository';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
@@ -22,6 +26,7 @@ export class FreePostCommentsService {
   constructor(
     private readonly freePostsService: FreePostsService,
     private readonly freePostCommentHistoryService: FreePostCommentHistoryService,
+    private readonly reactionsService: ReactionsService<FreePostCommentReaction>,
 
     private readonly queryHelper: QueryHelper,
 
@@ -261,5 +266,38 @@ export class FreePostCommentsService {
         await queryRunner.release();
       }
     }
+  }
+
+  async createReaction(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    const existComment = await this.findOneOrNotFound(
+      freePostId,
+      freePostCommentId,
+    );
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      existComment.freePostId,
+    );
+  }
+
+  async removeReaction(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    await this.findOneOrNotFound(freePostId, freePostCommentId);
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      freePostId,
+    );
   }
 }

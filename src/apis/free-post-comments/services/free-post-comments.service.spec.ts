@@ -7,6 +7,9 @@ import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/pu
 import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
 import { FreePostCommentRepository } from '@src/apis/free-post-comments/repositories/free-post-comment.repository';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { HistoryAction, SortOrder } from '@src/constants/enum';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -20,6 +23,7 @@ import {
 import {
   mockFreePostCommentHistoryService,
   mockFreePostsService,
+  mockReactionsService,
 } from '@test/mock/mock.service';
 import { DataSource } from 'typeorm';
 import { FreePostCommentsService } from './free-post-comments.service';
@@ -38,6 +42,10 @@ describe(FreePostCommentsService.name, () => {
         {
           provide: FreePostCommentHistoryService,
           useValue: mockFreePostCommentHistoryService,
+        },
+        {
+          provide: ReactionsService,
+          useValue: mockReactionsService,
         },
         {
           provide: QueryHelper,
@@ -321,6 +329,88 @@ describe(FreePostCommentsService.name, () => {
         HistoryAction.Delete,
         expect.anything(),
       );
+    });
+  });
+
+  describe(FreePostCommentsService.prototype.createReaction.name, () => {
+    let userId: number;
+    let freePostId: number;
+    let freePostCommentId: number;
+    let createReactionDto: CreateReactionDto;
+
+    beforeEach(() => {
+      userId = faker.number.int();
+      freePostId = faker.number.int();
+      freePostCommentId = faker.number.int();
+      createReactionDto = new CreateReactionDto();
+    });
+
+    it('not found comment throw HttpNotFoundException', async () => {
+      mockFreePostCommentRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.createReaction(
+          userId,
+          freePostId,
+          freePostCommentId,
+          createReactionDto,
+        ),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('create reaction', async () => {
+      mockFreePostCommentRepository.findOne.mockResolvedValue({ freePostId });
+      mockReactionsService.create.mockResolvedValue(undefined);
+
+      await expect(
+        service.createReaction(
+          userId,
+          freePostId,
+          freePostCommentId,
+          createReactionDto,
+        ),
+      ).resolves.toBeUndefined();
+    });
+  });
+
+  describe(FreePostCommentsService.prototype.removeReaction.name, () => {
+    let userId: number;
+    let freePostId: number;
+    let freePostCommentId: number;
+    let removeReactionDto: RemoveReactionDto;
+
+    beforeEach(() => {
+      userId = faker.number.int();
+      freePostId = faker.number.int();
+      freePostCommentId = faker.number.int();
+      removeReactionDto = new RemoveReactionDto();
+    });
+
+    it('not found comment throw HttpNotFoundException', async () => {
+      mockFreePostCommentRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.createReaction(
+          userId,
+          freePostId,
+          freePostCommentId,
+          removeReactionDto,
+        ),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('remove reaction', async () => {
+      mockFreePostCommentRepository.findOne.mockResolvedValue({ freePostId });
+      mockReactionsService.remove.mockResolvedValue(undefined);
+
+      await expect(
+        service.removeReaction(
+          userId,
+          freePostId,
+          freePostCommentId,
+          removeReactionDto,
+        ),
+      ).resolves.toBeUndefined();
     });
   });
 });

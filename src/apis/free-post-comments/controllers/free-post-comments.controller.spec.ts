@@ -5,6 +5,8 @@ import { FindFreePostCommentListQueryDto } from '@src/apis/free-post-comments/dt
 import { FreePostCommentDto } from '@src/apis/free-post-comments/dto/free-post-comment.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/put-update-free-post-comment.dto';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { mockFreePostCommentsService } from '@test/mock/mock.service';
 import { FreePostCommentsService } from '../services/free-post-comments.service';
@@ -133,6 +135,66 @@ describe(FreePostCommentsController.name, () => {
       await expect(
         controller.remove(user, freePostId, freePostCommentId),
       ).resolves.toBe(1);
+    });
+  });
+
+  describe(FreePostCommentsController.prototype.createReaction.name, () => {
+    let user: UserDto;
+    let freePostId: number;
+    let freePostCommentId: number;
+    let createReactionDto: CreateReactionDto;
+
+    beforeEach(() => {
+      user = new UserDto();
+      freePostId = NaN;
+      freePostCommentId = NaN;
+      createReactionDto = new CreateReactionDto();
+    });
+
+    it('remove reaction', async () => {
+      freePostId = faker.number.int();
+      freePostCommentId = faker.number.int();
+
+      mockFreePostCommentsService.createReaction.mockResolvedValue(undefined);
+
+      await expect(
+        controller.createReaction(
+          user,
+          freePostId,
+          freePostCommentId,
+          createReactionDto,
+        ),
+      ).resolves.toBeUndefined();
+    });
+  });
+
+  describe(FreePostCommentsController.prototype.removeReaction.name, () => {
+    let user: UserDto;
+    let freePostId: number;
+    let freePostCommentId: number;
+    let removeReactionDto: RemoveReactionDto;
+
+    beforeEach(() => {
+      user = new UserDto();
+      freePostId = NaN;
+      freePostCommentId = NaN;
+      removeReactionDto = new RemoveReactionDto();
+    });
+
+    it('remove reaction', async () => {
+      freePostId = faker.number.int();
+      freePostCommentId = faker.number.int();
+
+      mockFreePostCommentsService.removeReaction.mockResolvedValue(undefined);
+
+      await expect(
+        controller.removeReaction(
+          user,
+          freePostId,
+          freePostCommentId,
+          removeReactionDto,
+        ),
+      ).resolves.toBeUndefined();
     });
   });
 });

@@ -351,15 +351,21 @@ describe(FreePostsService.name, () => {
     let createReactionDto: CreateReactionDto;
 
     beforeEach(() => {
-      userId = NaN;
-      freePostId = NaN;
+      userId = faker.number.int();
+      freePostId = faker.number.int();
       createReactionDto = new CreateReactionDto();
     });
 
-    it('create reaction', async () => {
-      userId = faker.number.int();
-      freePostId = faker.number.int();
+    it('not found post throw httpNotFoundException', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue(null);
 
+      await expect(
+        service.createReaction(userId, freePostId, createReactionDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('create reaction', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue({ id: freePostId });
       mockReactionsService.create.mockResolvedValue(undefined);
 
       await expect(
@@ -374,15 +380,21 @@ describe(FreePostsService.name, () => {
     let removeReactionDto: RemoveReactionDto;
 
     beforeEach(() => {
-      userId = NaN;
-      freePostId = NaN;
+      userId = faker.number.int();
+      freePostId = faker.number.int();
       removeReactionDto = new RemoveReactionDto();
     });
 
-    it('create reaction', async () => {
-      userId = faker.number.int();
-      freePostId = faker.number.int();
+    it('not found post throw httpNotFoundException', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue(null);
 
+      await expect(
+        service.createReaction(userId, freePostId, removeReactionDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('remove reaction', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue({ id: freePostId });
       mockReactionsService.remove.mockResolvedValue(undefined);
 
       await expect(

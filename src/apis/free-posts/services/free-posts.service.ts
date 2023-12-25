@@ -341,27 +341,31 @@ export class FreePostsService {
     return this.commonPostsService.incrementHit(freePostId);
   }
 
-  createReaction(
+  async createReaction(
     userId: number,
     freePostId: number,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
+    const existPost = await this.findOneOrNotFound(freePostId);
+
     return this.reactionsService.create(
       createReactionDto.type,
       userId,
-      freePostId,
+      existPost.id,
     );
   }
 
-  removeReaction(
+  async removeReaction(
     userId: number,
     freePostId: number,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
+    const existPost = await this.findOneOrNotFound(freePostId);
+
     return this.reactionsService.remove(
       removeReactionDto.type,
       userId,
-      freePostId,
+      existPost.id,
     );
   }
 }

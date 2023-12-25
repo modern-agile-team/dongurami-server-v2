@@ -146,15 +146,12 @@ describe(FreePostCommentsController.name, () => {
 
     beforeEach(() => {
       user = new UserDto();
-      freePostId = NaN;
-      freePostCommentId = NaN;
+      freePostId = faker.number.int();
+      freePostCommentId = faker.number.int();
       createReactionDto = new CreateReactionDto();
     });
 
     it('remove reaction', async () => {
-      freePostId = faker.number.int();
-      freePostCommentId = faker.number.int();
-
       mockFreePostCommentsService.createReaction.mockResolvedValue(undefined);
 
       await expect(
@@ -176,15 +173,12 @@ describe(FreePostCommentsController.name, () => {
 
     beforeEach(() => {
       user = new UserDto();
-      freePostId = NaN;
-      freePostCommentId = NaN;
+      freePostId = faker.number.int();
+      freePostCommentId = faker.number.int();
       removeReactionDto = new RemoveReactionDto();
     });
 
     it('remove reaction', async () => {
-      freePostId = faker.number.int();
-      freePostCommentId = faker.number.int();
-
       mockFreePostCommentsService.removeReaction.mockResolvedValue(undefined);
 
       await expect(

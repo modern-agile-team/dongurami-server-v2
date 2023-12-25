@@ -103,6 +103,8 @@ export const mockFreePostReplyCommentsService: MockProvider<FreePostReplyComment
     findOneOrNotFound: jest.fn(),
     putUpdate: jest.fn(),
     remove: jest.fn(),
+    createReaction: jest.fn(),
+    removeReaction: jest.fn(),
   };
 
 export const mockFreePostReplyCommentHistoryService: MockProvider<FreePostReplyCommentHistoryService> =

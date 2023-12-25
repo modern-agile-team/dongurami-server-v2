@@ -8,9 +8,13 @@ import { FreePostReplyCommentsItemDto } from '@src/apis/free-post-reply-comments
 import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/put-update-free-post-reply-comment.dto';
 import { FreePostReplyCommentHistoryService } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/services/free-post-reply-comment-history.service';
 import { FreePostReplyCommentRepository } from '@src/apis/free-posts/repositories/free-post-reply-comment.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
+import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
@@ -22,6 +26,7 @@ export class FreePostReplyCommentsService {
   constructor(
     private readonly freePostCommentsService: FreePostCommentsService,
     private readonly freePostReplyCommentHistoryService: FreePostReplyCommentHistoryService,
+    private readonly reactionsService: ReactionsService<FreePostReplyCommentReaction>,
 
     private readonly queryHelper: QueryHelper,
 
@@ -280,5 +285,45 @@ export class FreePostReplyCommentsService {
         await queryRunner.release();
       }
     }
+  }
+
+  async createReaction(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    freePostReplyCommentId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    const existReplyComment = await this.findOneOrNotFound(
+      freePostId,
+      freePostCommentId,
+      freePostReplyCommentId,
+    );
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      existReplyComment.id,
+    );
+  }
+
+  async removeReaction(
+    userId: number,
+    freePostId: number,
+    freePostCommentId: number,
+    freePostReplyCommentId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    const existReplyComment = await this.findOneOrNotFound(
+      freePostId,
+      freePostCommentId,
+      freePostReplyCommentId,
+    );
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      existReplyComment.id,
+    );
   }
 }

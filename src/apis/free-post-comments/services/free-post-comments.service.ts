@@ -282,7 +282,7 @@ export class FreePostCommentsService {
     return this.reactionsService.create(
       createReactionDto.type,
       userId,
-      existComment.freePostId,
+      existComment.id,
     );
   }
 
@@ -292,12 +292,15 @@ export class FreePostCommentsService {
     freePostCommentId: number,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
-    await this.findOneOrNotFound(freePostId, freePostCommentId);
+    const existComment = await this.findOneOrNotFound(
+      freePostId,
+      freePostCommentId,
+    );
 
     return this.reactionsService.remove(
       removeReactionDto.type,
       userId,
-      freePostId,
+      existComment.id,
     );
   }
 }

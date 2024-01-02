@@ -59,7 +59,6 @@ export class UsersService {
 
     /**
      * @todo client 에게 받게끔 변경
-     * @todo majorService 에서 값 받아오게끔 변경
      */
     const major = await this.majorService.findOneMajor({
       select: {

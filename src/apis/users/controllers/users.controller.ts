@@ -9,6 +9,7 @@ import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
 @ApiTags('users')
 @Controller('users')
@@ -26,12 +27,10 @@ export class UsersController {
 
   @ApiUsers.FindOneUserOrNotFound({ summary: '유저 정보 단일 조회' })
   @SetResponse({ type: ResponseType.Detail, key: 'user' })
-  @UseGuards(JwtAuthGuard)
-  @Get(':userId/profile')
+  @Get(':userId')
   findOneUserOrNotFound(
-    @User() user: UserDto,
-    @Param() userId: number,
+    @Param('userId', ParsePositiveIntPipe) userId: number,
   ): DetailResponse<UserDto> {
-    return this.usersService.findOneUserOrNotFound(user.id, userId);
+    return this.usersService.findOneUserOrNotFound(userId);
   }
 }

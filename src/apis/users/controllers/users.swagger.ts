@@ -49,11 +49,7 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
         operationId: 'FindOneUserOrNotFound',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),

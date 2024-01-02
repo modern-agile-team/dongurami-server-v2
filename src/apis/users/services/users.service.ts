@@ -11,6 +11,7 @@ import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.cons
 import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 
@@ -135,5 +136,17 @@ export class UsersService {
     const user = await this.userRepository.findOneBy(where);
 
     return user ? new UserDto(user) : null;
+  }
+
+  async findOneUserOrNotFound(myId: number, userId: number) {
+    const existUser = await this.findOneById(userId);
+
+    if (!existUser) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return existUser;
   }
 }

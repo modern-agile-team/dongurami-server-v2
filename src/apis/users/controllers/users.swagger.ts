@@ -40,13 +40,13 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
     );
   },
 
-  FindOneById: (
+  FindOneUserOrNotFound: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'UserFindOneById',
+        operationId: 'FindOneUserOrNotFound',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -54,22 +54,8 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
       HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
         COMMON_ERROR_CODE.INVALID_TOKEN,
       ]),
-    );
-  },
-
-  FindOneBy: (
-    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
-      Partial<OperationObject>,
-  ): PropertyDecorator => {
-    return applyDecorators(
-      ApiOperation({
-        operationId: 'UserFindOneBy',
-        ...apiOperationOptions,
-      }),
-      ApiBearerAuth(),
-      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
     );
   },

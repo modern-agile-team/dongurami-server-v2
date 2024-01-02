@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiUsers } from '@src/apis/users/controllers/users.swagger';
@@ -24,11 +24,11 @@ export class UsersController {
     return this.usersService.create(createUserRequestBodyDto);
   }
 
-  @ApiUsers.FindOneBy({ summary: '유저 찾기 (여러 조건)' })
+  @ApiUsers.FindOneUserOrNotFound({ summary: '유저 정보 단일 조회' })
   @SetResponse({ type: ResponseType.Detail, key: 'user' })
   @UseGuards(JwtAuthGuard)
-  @Get('')
-  findOneBy(@User() user: UserDto) {
-    return this.usersService.findOneBy({ id: user.id });
+  @Get(':userId/profile')
+  findOneUserOrNotFound(@User() user: UserDto, @Param() userId: number) {
+    return this.usersService.findOneUserOrNotFound(user.id, userId);
   }
 }

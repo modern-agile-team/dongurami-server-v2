@@ -28,7 +28,10 @@ export class UsersController {
   @SetResponse({ type: ResponseType.Detail, key: 'user' })
   @UseGuards(JwtAuthGuard)
   @Get(':userId/profile')
-  findOneUserOrNotFound(@User() user: UserDto, @Param() userId: number) {
+  findOneUserOrNotFound(
+    @User() user: UserDto,
+    @Param() userId: number,
+  ): DetailResponse<UserDto> {
     return this.usersService.findOneUserOrNotFound(user.id, userId);
   }
 }

@@ -138,7 +138,7 @@ export class UsersService {
     return user ? new UserDto(user) : null;
   }
 
-  async findOneUserOrNotFound(myId: number, userId: number) {
+  async findOneUserOrNotFound(myId: number, userId: number): Promise<UserDto> {
     const existUser = await this.findOneById(userId);
 
     if (!existUser) {

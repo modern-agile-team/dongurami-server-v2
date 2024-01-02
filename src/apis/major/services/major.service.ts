@@ -11,6 +11,10 @@ import { FindOneOptions } from 'typeorm';
 export class MajorService {
   constructor(private readonly majorRepository: MajorRepository) {}
 
+  findAllMajors() {
+    return this.majorRepository.find();
+  }
+
   findOneMajor(options: FindOneOptions<Major>): Promise<Major> {
     return this.majorRepository.findOne(options);
   }

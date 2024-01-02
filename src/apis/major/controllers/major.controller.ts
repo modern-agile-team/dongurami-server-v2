@@ -17,7 +17,7 @@ export class MajorController {
   @SetResponse({ type: ResponseType.Common, key: 'majors' })
   @Get()
   getAllMajors() {
-    return this.majorService.getAllMajors();
+    return this.majorService.findAllMajors();
   }
 
   /**

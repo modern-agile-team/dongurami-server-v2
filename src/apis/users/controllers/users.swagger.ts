@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -36,6 +36,40 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
       ]),
       HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
         COMMON_ERROR_CODE.SERVER_ERROR,
+      ]),
+    );
+  },
+
+  FindOneById: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'UserFindOneById',
+        ...apiOperationOptions,
+      }),
+      ApiBearerAuth(),
+      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
+      ]),
+    );
+  },
+
+  FindOneBy: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        operationId: 'UserFindOneBy',
+        ...apiOperationOptions,
+      }),
+      ApiBearerAuth(),
+      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
+      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
+        COMMON_ERROR_CODE.INVALID_TOKEN,
       ]),
     );
   },

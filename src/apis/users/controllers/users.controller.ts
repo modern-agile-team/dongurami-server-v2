@@ -24,9 +24,19 @@ export class UsersController {
     return this.usersService.create(createUserRequestBodyDto);
   }
 
+  @ApiUsers.FindOneById({ summary: '유저 찾기(id)' })
+  @SetResponse({ type: ResponseType.Detail, key: 'user' })
   @UseGuards(JwtAuthGuard)
   @Get()
-  findOne(@User() user: UserDto) {
+  findOneById(@User() user: UserDto) {
     return this.usersService.findOneById(user.id);
+  }
+
+  @ApiUsers.FindOneBy({ summary: '유저 찾기 (여러 조건)' })
+  @SetResponse({ type: ResponseType.Detail, key: 'user' })
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findOneBy(@User() user: UserDto) {
+    return this.usersService.findOneBy({ id: user.id });
   }
 }

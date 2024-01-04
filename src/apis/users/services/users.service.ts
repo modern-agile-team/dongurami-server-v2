@@ -149,4 +149,6 @@ export class UsersService {
 
     return existUser;
   }
+
+  async putUpdate(userId: number, putUpdateUserDto) {}
 }

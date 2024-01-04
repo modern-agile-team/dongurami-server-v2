@@ -107,7 +107,8 @@ export class ResponseBuilder {
 
     const currentPage = Number(pageDto.page) || 1;
     const pageSize = Number(pageDto.pageSize) || PAGE_SIZE.DEFAULT;
-    const nextPage = pageSize * currentPage < totalCount ? pageSize + 1 : null;
+    const nextPage =
+      pageSize * currentPage < totalCount ? currentPage + 1 : null;
     const hasNext = pageSize * currentPage < totalCount;
     const lastPage = Math.ceil(totalCount / pageSize);
 

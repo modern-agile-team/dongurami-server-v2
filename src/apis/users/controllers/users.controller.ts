@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiUsers } from '@src/apis/users/controllers/users.swagger';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
@@ -21,4 +21,7 @@ export class UsersController {
   ): DetailResponse<UserDto> {
     return this.usersService.create(createUserRequestBodyDto);
   }
+
+  @Put()
+  putUpdate() {}
 }

@@ -162,6 +162,13 @@ export class UsersService {
     try {
       const entityManager = queryRunner.manager;
 
+      const major = await this.majorRepository.findOne({
+        select: ['id'],
+        where: { code: '01' },
+      });
+
+      putUpdateUserDto.majorId = major.id;
+
       await entityManager
         .withRepository(this.userRepository)
         .update(
@@ -179,6 +186,8 @@ export class UsersService {
         HistoryAction.Update,
         { ...newUser },
       );
+
+      await queryRunner.commitTransaction();
 
       return new UserDto(newUser);
     } catch (error) {

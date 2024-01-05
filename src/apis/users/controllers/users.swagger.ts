@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -73,6 +73,7 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
         operationId: 'PutUpdateUser',
         ...apiOperationOptions,
       }),
+      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

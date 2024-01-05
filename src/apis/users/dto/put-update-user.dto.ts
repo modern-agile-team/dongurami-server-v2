@@ -37,8 +37,6 @@ export class PutUpdateUserDto
   @ApiProperty({
     description: 'phone number',
     example: '010-0000-0000',
-    type: () => String,
-    nullable: true,
     pattern: String(PHONE_NUMBER_REGEXP),
   })
   @Matches(PHONE_NUMBER_REGEXP)
@@ -46,8 +44,6 @@ export class PutUpdateUserDto
 
   @ApiProperty({
     description: 'grade 0은 졸업생',
-    type: () => Number,
-    nullable: true,
     minimum: USER_GRADE.MIN,
     maximum: USER_GRADE.MAX,
   })
@@ -57,8 +53,6 @@ export class PutUpdateUserDto
 
   @ApiProperty({
     description: 'url 이 아닌 profile path',
-    type: () => String,
-    nullable: true,
     example: 'user_image.jpg',
   })
   @IsString()

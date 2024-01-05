@@ -18,6 +18,7 @@ import { ResponseType } from '@src/interceptors/success-interceptor/constants/su
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
+import { PutUpdateUserDto } from '../dto/put-update-user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -44,7 +45,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  putUpdate(@User() user: UserDto, @Body() putUpdateUserDto) {
+  putUpdate(@User() user: UserDto, @Body() putUpdateUserDto: PutUpdateUserDto) {
     return this.usersService.putUpdate(user.id, putUpdateUserDto);
   }
 }

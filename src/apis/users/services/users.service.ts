@@ -14,6 +14,7 @@ import { HttpInternalServerErrorException } from '@src/http-exceptions/exception
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
+import { PutUpdateUserDto } from '../dto/put-update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -147,5 +148,61 @@ export class UsersService {
     }
 
     return existUser;
+  }
+
+  async putUpdate(userId: number, putUpdateUserDto: PutUpdateUserDto) {
+    const existUser = await this.findOneUserOrNotFound(userId);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const entityManager = queryRunner.manager;
+
+      const major = await this.majorService.findOneMajor({
+        select: ['id'],
+        where: { code: '01' },
+      });
+
+      putUpdateUserDto.majorId = major.id;
+
+      await entityManager
+        .withRepository(this.userRepository)
+        .update(
+          { id: userId, status: UserStatus.Active },
+          { ...putUpdateUserDto },
+        );
+
+      const newUser = Object.assign(existUser, putUpdateUserDto);
+
+      await this.userHistoryService.create(
+        entityManager,
+        userId,
+        HistoryAction.Update,
+        { ...newUser },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new UserDto(newUser);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+
+        console.error(error);
+
+        throw new HttpInternalServerErrorException({
+          code: COMMON_ERROR_CODE.SERVER_ERROR,
+          ctx: '유저 업데이트 중 알 수 없는 에러',
+          stack: error.stack,
+        });
+      }
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
   }
 }

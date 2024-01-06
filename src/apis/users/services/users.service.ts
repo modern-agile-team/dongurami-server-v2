@@ -152,7 +152,7 @@ export class UsersService {
   }
 
   async putUpdate(userId: number, putUpdateUserDto: PutUpdateUserDto) {
-    await this.findOneUserOrNotFound(userId);
+    const existUser = await this.findOneUserOrNotFound(userId);
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -176,9 +176,7 @@ export class UsersService {
           { ...putUpdateUserDto },
         );
 
-      const newUser = await entityManager
-        .withRepository(this.userRepository)
-        .findOneByOrFail({ id: userId });
+      const newUser = Object.assign(existUser, putUpdateUserDto);
 
       await this.userHistoryService.create(
         entityManager,

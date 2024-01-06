@@ -195,7 +195,7 @@ export class UsersService {
 
         throw new HttpInternalServerErrorException({
           code: COMMON_ERROR_CODE.SERVER_ERROR,
-          ctx: '유저 생성 중 알 수 없는 에러',
+          ctx: '유저 업데이트 중 알 수 없는 에러',
           stack: error.stack,
         });
       }

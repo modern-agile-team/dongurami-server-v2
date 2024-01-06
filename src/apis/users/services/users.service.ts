@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MajorRepository } from '@src/apis/major/repositories/major.repository';
+import { MajorService } from '@src/apis/major/services/major.service';
 import { UserStatus } from '@src/apis/users/constants/user.enum';
 import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -25,7 +25,7 @@ export class UsersService {
 
     private readonly dataSource: DataSource,
     private readonly userRepository: UserRepository,
-    private readonly majorRepository: MajorRepository,
+    private readonly majorService: MajorService,
   ) {}
 
   async create(createUserRequestBodyDto: CreateUserRequestBodyDto) {
@@ -60,9 +60,8 @@ export class UsersService {
 
     /**
      * @todo client 에게 받게끔 변경
-     * @todo majorService 에서 값 받아오게끔 변경
      */
-    const major = await this.majorRepository.findOne({
+    const major = await this.majorService.findOneMajor({
       select: {
         id: true,
       },

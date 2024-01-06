@@ -8,5 +8,6 @@ import { MajorService } from './services/major.service';
   imports: [TypeOrmExModule.forCustomRepository([MajorRepository])],
   controllers: [MajorController],
   providers: [MajorService],
+  exports: [MajorService],
 })
 export class MajorModule {}

@@ -4,17 +4,23 @@ import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conf
 import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';
 import { MajorDto } from '../dto/major.dto';
 import { MajorRepository } from '../repositories/major.repository';
+import { Major } from '@src/entities/Major';
+import { FindOneOptions } from 'typeorm';
 
 @Injectable()
 export class MajorService {
   constructor(private readonly majorRepository: MajorRepository) {}
 
-  getAllMajors() {
+  findAllMajors() {
     return this.majorRepository.find();
   }
 
+  findOneMajor(options: FindOneOptions<Major>): Promise<Major> {
+    return this.majorRepository.findOne(options);
+  }
+
   async create(createMajorRequestBodyDto: CreateMajorRequestBodyDto) {
-    const existMajor = await this.majorRepository.findOne({
+    const existMajor = await this.findOneMajor({
       select: { code: true, name: true },
       where: [
         { name: createMajorRequestBodyDto.name },

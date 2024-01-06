@@ -41,7 +41,7 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
     );
   },
 
-  GetAllMajors: (
+  FindAllMajors: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {

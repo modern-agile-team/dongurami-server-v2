@@ -279,6 +279,8 @@ export class FreePostCommentsService {
       freePostCommentId,
     );
 
+    console.log(this.reactionsService);
+
     return this.reactionsService.create(
       createReactionDto.type,
       userId,

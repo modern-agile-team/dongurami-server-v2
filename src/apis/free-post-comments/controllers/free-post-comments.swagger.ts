@@ -184,6 +184,9 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
         HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
           COMMON_ERROR_CODE.INVALID_TOKEN,
         ]),
+        HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+          COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+        ]),
         HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
           REACTION_ERROR_CODE.ALREADY_LIKED,
         ]),
@@ -215,6 +218,9 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
         ),
         HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
           COMMON_ERROR_CODE.INVALID_TOKEN,
+        ]),
+        HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+          COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
         ]),
         HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
           REACTION_ERROR_CODE.NOT_LIKED,

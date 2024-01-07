@@ -8,10 +8,14 @@ import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-fr
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreePost } from '@src/entities/FreePost';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -31,6 +35,7 @@ export class FreePostsService {
   constructor(
     private readonly freePostHistoryService: FreePostHistoryService,
     private readonly commonPostsService: CommonPostsService<FreePost>,
+    private readonly reactionsService: ReactionsService<FreePostReaction>,
 
     private readonly queryHelper: QueryHelper,
 
@@ -268,6 +273,9 @@ export class FreePostsService {
     }
   }
 
+  /**
+   * @todo 게시글 삭제 시 soft delete 를 하기 때문에 DB 상에 댓글, 대댓글이 삭제되지 않음
+   */
   async remove(userId: number, freePostId: number): Promise<number> {
     const existFreePost = await this.findOneOrNotFound(freePostId);
 
@@ -331,5 +339,33 @@ export class FreePostsService {
 
   incrementHit(freePostId: number): Promise<void> {
     return this.commonPostsService.incrementHit(freePostId);
+  }
+
+  async createReaction(
+    userId: number,
+    freePostId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    const existPost = await this.findOneOrNotFound(freePostId);
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      existPost.id,
+    );
+  }
+
+  async removeReaction(
+    userId: number,
+    freePostId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    const existPost = await this.findOneOrNotFound(freePostId);
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      existPost.id,
+    );
   }
 }

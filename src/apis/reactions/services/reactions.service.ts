@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
@@ -20,8 +20,8 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     private readonly reactionTypeRepository: ReactionTypeRepository,
   ) {}
 
-  async create(reactionName: ReactionName, userId: number, parentId: number) {
-    const reactionType = await this.findOneReactionTypeOrFail(reactionName);
+  async create(type: ReactionType, userId: number, parentId: number) {
+    const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
     const isExistReaction = await this.reactionRepository.exist({
@@ -48,8 +48,8 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     );
   }
 
-  async remove(reactionName: ReactionName, userId: number, parentId: number) {
-    const reactionType = await this.findOneReactionTypeOrFail(reactionName);
+  async remove(type: ReactionType, userId: number, parentId: number) {
+    const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
     const isExistReaction = await this.reactionRepository.exist({
@@ -74,7 +74,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   }
 
   private async findOneReactionTypeOrFail(
-    reactionName: ReactionName,
+    reactionName: ReactionType,
   ): Promise<{ id: number }> {
     const reactionType = await this.reactionTypeRepository.findOne({
       select: {

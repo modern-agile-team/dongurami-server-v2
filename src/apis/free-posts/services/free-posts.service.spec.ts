@@ -8,6 +8,9 @@ import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-fr
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { SortOrder } from '@src/constants/enum';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
@@ -21,6 +24,7 @@ import {
 import {
   mockCommonPostsService,
   mockFreePostHistoryService,
+  mockReactionsService,
 } from '@test/mock/mock.service';
 import { DataSource } from 'typeorm';
 import { FreePostsService } from './free-posts.service';
@@ -33,12 +37,16 @@ describe(FreePostsService.name, () => {
       providers: [
         FreePostsService,
         {
+          provide: FreePostHistoryService,
+          useValue: mockFreePostHistoryService,
+        },
+        {
           provide: CommonPostsService,
           useValue: mockCommonPostsService,
         },
         {
-          provide: FreePostHistoryService,
-          useValue: mockFreePostHistoryService,
+          provide: ReactionsService,
+          useValue: mockReactionsService,
         },
         {
           provide: QueryHelper,
@@ -318,6 +326,80 @@ describe(FreePostsService.name, () => {
       mockFreePostRepository.update.mockResolvedValue({ affected: 1 });
 
       await expect(service.remove(userId, freePostId)).resolves.toBe(1);
+    });
+  });
+
+  describe(FreePostsService.prototype.incrementHit.name, () => {
+    let freePostId: number;
+
+    beforeEach(() => {
+      freePostId = NaN;
+    });
+
+    it('increment hit', async () => {
+      freePostId = faker.number.int();
+
+      mockCommonPostsService.incrementHit.mockResolvedValue(undefined);
+
+      await expect(service.incrementHit(freePostId)).resolves.toBeUndefined();
+    });
+  });
+
+  describe(FreePostsService.prototype.createReaction.name, () => {
+    let userId: number;
+    let freePostId: number;
+    let createReactionDto: CreateReactionDto;
+
+    beforeEach(() => {
+      userId = faker.number.int();
+      freePostId = faker.number.int();
+      createReactionDto = new CreateReactionDto();
+    });
+
+    it('not found post throw httpNotFoundException', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(
+        service.createReaction(userId, freePostId, createReactionDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('create reaction', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue({ id: freePostId });
+      mockReactionsService.create.mockResolvedValue(undefined);
+
+      await expect(
+        service.createReaction(userId, freePostId, createReactionDto),
+      ).resolves.toBeUndefined();
+    });
+  });
+
+  describe(FreePostsService.prototype.removeReaction.name, () => {
+    let userId: number;
+    let freePostId: number;
+    let removeReactionDto: RemoveReactionDto;
+
+    beforeEach(() => {
+      userId = faker.number.int();
+      freePostId = faker.number.int();
+      removeReactionDto = new RemoveReactionDto();
+    });
+
+    it('not found post throw httpNotFoundException', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue(null);
+
+      await expect(
+        service.createReaction(userId, freePostId, removeReactionDto),
+      ).rejects.toThrow(HttpNotFoundException);
+    });
+
+    it('remove reaction', async () => {
+      mockFreePostRepository.findOneBy.mockResolvedValue({ id: freePostId });
+      mockReactionsService.remove.mockResolvedValue(undefined);
+
+      await expect(
+        service.removeReaction(userId, freePostId, removeReactionDto),
+      ).resolves.toBeUndefined();
     });
   });
 });

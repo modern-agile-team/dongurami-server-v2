@@ -1,4 +1,7 @@
+import { FreePostCommentHistoryRepository } from '@src/apis/free-post-comments/free-post-comment-history/repositories/free-post-comment-history.repository';
+import { FreePostReplyCommentHistoryRepository } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/repositories/free-post-reply-comment-history.repository';
 import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
+import { FreePostReplyCommentRepository } from '@src/apis/free-posts/repositories/free-post-reply-comment.repository';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { MajorRepository } from '@src/apis/major/repositories/major.repository';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
@@ -92,7 +95,27 @@ export const mockFreePostRepository: MockProvider<FreePostRepository> = {
   ...getDefaultRepositoryMethod(),
 };
 
+export const mockFreePostCommentRepository: MockProvider<FreePostReplyCommentRepository> =
+  {
+    ...getDefaultRepositoryMethod(),
+  };
+
+export const mockFreePostReplyCommentRepository: MockProvider<FreePostReplyCommentRepository> =
+  {
+    ...getDefaultRepositoryMethod(),
+  };
+
 export const mockFreePostHistoryRepository: MockProvider<FreePostHistoryRepository> =
+  {
+    ...getDefaultRepositoryMethod(),
+  };
+
+export const mockFreePostCommentHistoryRepository: MockProvider<FreePostCommentHistoryRepository> =
+  {
+    ...getDefaultRepositoryMethod(),
+  };
+
+export const mockFreePostReplyCommentHistoryRepository: MockProvider<FreePostReplyCommentHistoryRepository> =
   {
     ...getDefaultRepositoryMethod(),
   };

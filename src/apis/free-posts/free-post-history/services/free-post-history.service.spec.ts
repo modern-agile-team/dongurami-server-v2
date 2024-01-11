@@ -64,4 +64,28 @@ describe(FreePostHistoryService.name, () => {
       ).resolves.toEqual({});
     });
   });
+
+  describe(FreePostHistoryService.prototype.findOneOrFail.name, () => {
+    let entityManager: any;
+    let options: any;
+
+    beforeEach(() => {
+      entityManager = mockEntityManager;
+      options = {};
+    });
+
+    it('find one or fail', async () => {
+      const newHistory = {};
+
+      mockFreePostHistoryRepository.findOneOrFail.mockResolvedValue(newHistory);
+
+      await expect(
+        service.findOneOrFail(entityManager, options),
+      ).resolves.toEqual(newHistory);
+
+      expect(mockFreePostHistoryRepository.findOneOrFail).toHaveBeenCalledWith(
+        options,
+      );
+    });
+  });
 });

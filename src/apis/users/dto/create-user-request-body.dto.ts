@@ -40,6 +40,11 @@ export class CreateUserRequestBodyDto
   loginType: UserLoginType;
 
   @ApiProperty({
+    description: 'snsId',
+  })
+  snsId: string;
+
+  @ApiProperty({
     description: 'name',
     minLength: USER_NAME_LENGTH.MIN,
     maxLength: USER_NAME_LENGTH.MAX,
@@ -68,6 +73,7 @@ export class CreateUserRequestBodyDto
     pattern: String(USER_PASSWORD_REGEXP),
   })
   @Matches(USER_PASSWORD_REGEXP)
+  @IsOptional()
   @ValidateIf((object, value) => {
     if (object.loginType === UserLoginType.Email) {
       return true;

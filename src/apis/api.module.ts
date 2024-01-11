@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { MajorModule } from './major/major.module';
 import { NoticePostsModule } from './notice-posts/notice-posts.module';
 import { UsersModule } from './users/users.module';
+import { AuthSocialModule } from './auth/social/auth-social.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersModule } from './users/users.module';
     FreePostsModule,
     FreePostCommentsModule,
     FreePostReplyCommentsModule,
+    AuthSocialModule,
   ],
 })
 export class ApiModule {}

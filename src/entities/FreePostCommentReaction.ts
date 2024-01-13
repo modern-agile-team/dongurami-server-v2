@@ -19,6 +19,27 @@ export class FreePostCommentReaction {
   })
   id: number;
 
+  @Column('int', {
+    name: 'reaction_type_id',
+    comment: '리액션 타입 고유 ID',
+    unsigned: true,
+  })
+  reactionTypeId: number;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
+  @Column('int', {
+    name: 'free_post_comment_id',
+    comment: '자유 게시글 댓글 고유 ID',
+    unsigned: true,
+  })
+  parentId: number;
+
   @Column('timestamp', {
     name: 'created_at',
     comment: '생성 일자',

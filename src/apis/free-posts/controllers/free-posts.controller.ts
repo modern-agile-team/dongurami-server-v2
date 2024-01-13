@@ -20,6 +20,8 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -116,5 +118,37 @@ export class FreePostsController {
     @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
   ): Promise<void> {
     return this.freePostsService.incrementHit(freePostId);
+  }
+
+  @ApiFreePost.CreateReaction({ summary: '자유 게시글 reaction 생성' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':freePostId/reaction')
+  createReaction(
+    @User() user: UserDto,
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.freePostsService.createReaction(
+      user.id,
+      freePostId,
+      createReactionDto,
+    );
+  }
+
+  @ApiFreePost.RemoveReaction({ summary: '자유 게시글 reaction 삭제' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':freePostId/reaction')
+  removeReaction(
+    @User() user: UserDto,
+    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.freePostsService.removeReaction(
+      user.id,
+      freePostId,
+      removeReactionDto,
+    );
   }
 }

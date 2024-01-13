@@ -11,7 +11,6 @@ import {
 import { FreePostComment } from './FreePostComment';
 import { FreePostHistory } from './FreePostHistory';
 import { FreePostReaction } from './FreePostReaction';
-import { FreePostReplyComment } from './FreePostReplyComment';
 import { User } from './User';
 
 @Entity('free_post', { schema: 'dongurami_v2' })
@@ -106,10 +105,4 @@ export class FreePost {
     (freePostReaction) => freePostReaction.freePost,
   )
   freePostReactions: FreePostReaction[];
-
-  @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.freePost,
-  )
-  freePostReplyComments: FreePostReplyComment[];
 }

@@ -1,22 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateUserRequestBodyDto } from './create-user-request-body.dto';
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  Length,
-  Matches,
-  Max,
-  Min,
-} from 'class-validator';
-import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
+import { IsEnum, IsString, Length, Max, Min } from 'class-validator';
 import { USER_NAME_LENGTH, USER_GRADE } from '../constants/user.constant';
+import { UserGender } from '../constants/user.enum';
 
 export class PutUpdateUserDto
   implements
     Omit<
       CreateUserRequestBodyDto,
-      'loginType' | 'role' | 'password' | 'gender'
+      'loginType' | 'role' | 'password' | 'phoneNumber' | 'email'
     >
 {
   @ApiProperty({
@@ -28,21 +20,6 @@ export class PutUpdateUserDto
   name: string;
 
   @ApiProperty({
-    description: 'email',
-    format: 'email',
-  })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
-    description: 'phone number',
-    example: '010-0000-0000',
-    pattern: String(PHONE_NUMBER_REGEXP),
-  })
-  @Matches(PHONE_NUMBER_REGEXP)
-  phoneNumber: string;
-
-  @ApiProperty({
     description: 'grade 0은 졸업생',
     minimum: USER_GRADE.MIN,
     maximum: USER_GRADE.MAX,
@@ -52,15 +29,19 @@ export class PutUpdateUserDto
   grade: number;
 
   @ApiProperty({
-    description: 'url 이 아닌 profile path',
-    example: 'user_image.jpg',
+    description: 'gender',
+    enum: UserGender,
+  })
+  @IsEnum(UserGender)
+  gender: UserGender;
+
+  @ApiProperty({
+    description:
+      'url 이 아닌 profile path. ex) https://dongurami.s3.com/user/1/profile_image.jpeg => profile_image.jpeg',
+    example: 'profile_image.jpg',
   })
   @IsString()
   profilePath: string;
 
-  /**
-   * @todo 변경 예정
-   */
-  @IsOptional()
-  majorId: number = 1;
+  majorId: number;
 }

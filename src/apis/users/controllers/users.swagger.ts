@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -74,6 +74,12 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
+      ApiParam({
+        name: 'userId',
+        description: '업데이트 할 user의 id',
+        required: true,
+        type: 'number',
+      }),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

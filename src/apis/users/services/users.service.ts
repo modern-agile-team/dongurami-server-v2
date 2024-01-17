@@ -15,6 +15,7 @@ import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 
 @Injectable()
 export class UsersService {
@@ -151,11 +152,17 @@ export class UsersService {
   }
 
   async putUpdate(
-    myId: number,
+    user: UserDto,
     userId: number,
     putUpdateUserDto: PutUpdateUserDto,
   ) {
-    const existUser = await this.findOneUserOrNotFound(userId);
+    const myId = user.id;
+
+    if (!(myId === userId)) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -179,18 +186,18 @@ export class UsersService {
           { ...putUpdateUserDto },
         );
 
-      const newUser = Object.assign(existUser, putUpdateUserDto);
+      const updatedUser = Object.assign(user, putUpdateUserDto);
 
       await this.userHistoryService.create(
         entityManager,
         userId,
         HistoryAction.Update,
-        { ...newUser },
+        { ...updatedUser },
       );
 
       await queryRunner.commitTransaction();
 
-      return new UserDto(newUser);
+      return new UserDto(updatedUser);
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();

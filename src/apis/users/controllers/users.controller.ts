@@ -43,11 +43,17 @@ export class UsersController {
     return this.usersService.findOneUserOrNotFound(userId);
   }
 
-  @ApiUsers.PutUpdate({ summary: '유저 정보 put 업데이트' })
+  @ApiUsers.PutUpdate({ summary: '유저 정보 업데이트' })
   @SetResponse({ type: ResponseType.Detail, key: 'user' })
   @UseGuards(JwtAuthGuard)
-  @Put()
-  putUpdate(@User() user: UserDto, @Body() putUpdateUserDto: PutUpdateUserDto) {
-    return this.usersService.putUpdate(user.id, putUpdateUserDto);
+  @Put(':userId')
+  putUpdate(
+    @User() user: UserDto,
+    @Param() userId: number,
+    @Body() putUpdateUserDto: PutUpdateUserDto,
+  ) {
+    const myId = user.id;
+
+    return this.usersService.putUpdate(myId, userId, putUpdateUserDto);
   }
 }

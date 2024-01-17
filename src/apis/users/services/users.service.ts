@@ -150,7 +150,11 @@ export class UsersService {
     return existUser;
   }
 
-  async putUpdate(userId: number, putUpdateUserDto: PutUpdateUserDto) {
+  async putUpdate(
+    myId: number,
+    userId: number,
+    putUpdateUserDto: PutUpdateUserDto,
+  ) {
     const existUser = await this.findOneUserOrNotFound(userId);
 
     const queryRunner = this.dataSource.createQueryRunner();

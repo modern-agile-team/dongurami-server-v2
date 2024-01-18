@@ -1,47 +1,26 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { CreateUserRequestBodyDto } from './create-user-request-body.dto';
-import { IsEnum, IsString, Length, Max, Min } from 'class-validator';
-import { USER_NAME_LENGTH, USER_GRADE } from '../constants/user.constant';
-import { UserGender } from '../constants/user.enum';
+import { IsString } from 'class-validator';
 
-export class PutUpdateUserDto
-  implements
-    Omit<
-      CreateUserRequestBodyDto,
-      'loginType' | 'role' | 'password' | 'phoneNumber' | 'email'
-    >
-{
-  @ApiProperty({
-    description: 'name',
-    minLength: USER_NAME_LENGTH.MIN,
-    maxLength: USER_NAME_LENGTH.MAX,
-  })
-  @Length(USER_NAME_LENGTH.MIN, USER_NAME_LENGTH.MAX)
-  name: string;
+import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
 
+export class PutUpdateUserDto extends PickType(CreateUserRequestBodyDto, [
+  'name',
+  'grade',
+  'gender',
+]) {
+  /**
+   * @todo 변경 가능성 있음.
+   */
   @ApiProperty({
-    description: 'grade 0은 졸업생',
-    minimum: USER_GRADE.MIN,
-    maximum: USER_GRADE.MAX,
-  })
-  @Min(USER_GRADE.MIN)
-  @Max(USER_GRADE.MAX)
-  grade: number;
-
-  @ApiProperty({
-    description: 'gender',
-    enum: UserGender,
-  })
-  @IsEnum(UserGender)
-  gender: UserGender;
-
-  @ApiProperty({
-    description:
-      'url 이 아닌 profile path. ex) https://dongurami.s3.com/user/1/profile_image.jpeg => profile_image.jpeg',
-    example: 'profile_image.jpg',
+    description: 'url 이 아닌 profile path',
+    type: () => String,
+    nullable: true,
+    example: 'user_image.jpg',
   })
   @IsString()
-  profilePath: string;
+  @IsNullable()
+  profilePath: string | null;
 
   majorId: number;
 }

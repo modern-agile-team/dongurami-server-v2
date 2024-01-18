@@ -52,6 +52,6 @@ export class UsersController {
     @Param('userId', ParsePositiveIntPipe) userId: number,
     @Body() putUpdateUserDto: PutUpdateUserDto,
   ) {
-    return this.usersService.putUpdate(user, userId, putUpdateUserDto);
+    return this.usersService.putUpdate(user.id, userId, putUpdateUserDto);
   }
 }

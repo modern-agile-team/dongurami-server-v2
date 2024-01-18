@@ -152,13 +152,13 @@ export class UsersService {
   }
 
   async putUpdate(
-    user: UserDto,
+    myId: number,
     userId: number,
     putUpdateUserDto: PutUpdateUserDto,
   ) {
-    const myId = user.id;
+    const existUser = await this.findOneUserOrNotFound(userId);
 
-    if (!(myId === userId)) {
+    if (myId !== existUser.id) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
@@ -186,7 +186,7 @@ export class UsersService {
           { ...putUpdateUserDto },
         );
 
-      const updatedUser = Object.assign(user, putUpdateUserDto);
+      const updatedUser = Object.assign(existUser, putUpdateUserDto);
 
       await this.userHistoryService.create(
         entityManager,

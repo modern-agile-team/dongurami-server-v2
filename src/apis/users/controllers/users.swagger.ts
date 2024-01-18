@@ -93,6 +93,9 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
       HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
         COMMON_ERROR_CODE.INVALID_TOKEN,
       ]),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
+        COMMON_ERROR_CODE.PERMISSION_DENIED,
+      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),

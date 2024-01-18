@@ -45,7 +45,7 @@ export class UsersService {
     });
 
     if (existUser) {
-      if (createUserRequestBodyDto.email === existUser.email) {
+      if (createUserRequestBodyDto.email.toLowerCase() === existUser.email.toLowerCase()) {
         throw new HttpConflictException({
           code: USER_ERROR_CODE.ALREADY_EXIST_USER_EMAIL,
         });

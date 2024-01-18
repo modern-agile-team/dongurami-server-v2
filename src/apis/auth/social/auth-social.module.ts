@@ -7,17 +7,15 @@ import { AuthService } from "../services/auth.service";
 import { EncryptionModule } from "@src/libs/encryption/encryption.module";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtModuleOptionsFactory } from "../jwt/jwt-module-options.factory";
+import { AuthModule } from "../auth.module";
 
 @Module({
   imports: [
     UsersModule,
-    EncryptionModule,
-    JwtModule.registerAsync({
-      useClass: JwtModuleOptionsFactory,
-    }),
+    AuthModule,
   ],
   controllers: [AuthSocialController],
-  providers: [AuthSocialService, AuthRegistrationService, AuthService],
+  providers: [AuthSocialService, AuthRegistrationService],
   exports: [AuthSocialService]
 })
 

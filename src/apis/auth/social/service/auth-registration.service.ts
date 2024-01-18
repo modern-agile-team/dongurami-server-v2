@@ -7,14 +7,14 @@ import { CheckRegistrationRequestBodyDto } from "../dto/auth-registration.dto";
 export class AuthRegistrationService {
   constructor(private readonly usersService: UsersService) { }
 
-  async checkUserRegistered(checkRegistrationRequestBodyDto: CheckRegistrationRequestBodyDto): Promise<boolean> {
+  async isUserRegistered(checkRegistrationRequestBodyDto: CheckRegistrationRequestBodyDto): Promise<boolean> {
     const { loginType, snsToken } = checkRegistrationRequestBodyDto;
     const snsProfile = await getSnsProfile(loginType, snsToken);
 
     if (snsProfile) {
       const user = await this.usersService.findOneBy({
         loginType: checkRegistrationRequestBodyDto.loginType,
-        snsId: snsProfile.sns_id
+        snsId: snsProfile.snsId
       });
 
       return !!user;

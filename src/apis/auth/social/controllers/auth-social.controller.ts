@@ -6,7 +6,11 @@ import { CheckRegistrationRequestBodyDto } from "../dto/auth-registration.dto";
 import { AuthRegistrationService } from "../service/auth-registration.service";
 import { ApiAuthSocial } from "./auth-social.swagger";
 
-@ApiTags('auth/social')
+/**
+ * author: changhoon oh
+ * @todo https://eslint.org/docs/latest/rules/no-return-await
+ */
+@ApiTags('auth-social')
 @Controller('auth/social')
 export class AuthSocialController {
   constructor(
@@ -17,8 +21,8 @@ export class AuthSocialController {
   @ApiAuthSocial.CheckRegistration({ summary: '소셜 유저 프로필 유무 조회' })
   @Post('check-registration')
   async checkRegistration(@Body() checkRegistrationRequestBodyDto: CheckRegistrationRequestBodyDto): Promise<boolean> {
-    return await this.authRegistrationService.checkUserRegistered(checkRegistrationRequestBodyDto)
-  }
+    return await this.authRegistrationService.isUserRegistered(checkRegistrationRequestBodyDto)
+  } 
 
   @ApiAuthSocial.SignUp({ summary: '소셜 회원가입' })
   @Post('signup')

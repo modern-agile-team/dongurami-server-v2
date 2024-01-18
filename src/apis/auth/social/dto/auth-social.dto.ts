@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { UserGender, UserLoginType, UserRole } from "@src/apis/users/constants/user.enum";
 import { PHONE_NUMBER_REGEXP } from "@src/constants/regexp.constant";
 import { IsNullable } from "@src/decorators/validators/is-nullable.decorator";
-import { IsEmail, IsEnum, IsOptional, IsString, Length, Matches, Max, Min } from "class-validator";
+import { IsEmail, IsEnum, IsInt, IsString, Length, Matches, Max, Min } from "class-validator";
 import { CheckRegistrationRequestBodyDto } from "./auth-registration.dto";
 import { USER_GRADE, USER_NAME_LENGTH } from "@src/apis/users/constants/user.constant";
 
@@ -13,6 +13,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
         maxLength: USER_NAME_LENGTH.MAX,
     })
     @Length(USER_NAME_LENGTH.MIN, USER_NAME_LENGTH.MAX)
+    @IsNullable()
     name: string;
     
     @ApiProperty({
@@ -20,6 +21,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
         format: 'email',
     })
     @IsEmail()
+    @IsNullable()
     email: string;
 
     @ApiProperty({
@@ -27,7 +29,8 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
         enum: UserRole,
     })
     @IsEnum(UserRole)
-    role: UserRole;
+    @IsNullable()
+    role: UserRole = UserRole.Student;
 
     @ApiProperty({
         description: 'phone number',
@@ -71,8 +74,9 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
     @IsNullable()
     profilePath: string | null;
 
-    @IsOptional()
-    majorId: number = 1;
+    @IsInt()
+    @IsNullable()
+    majorId: number;
 }
 
 export class SignInRequestBodyDto extends CheckRegistrationRequestBodyDto { }

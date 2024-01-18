@@ -81,7 +81,7 @@ export class User {
     comment: '유저 이름', 
     length: 20 
   })
-  name: string;
+  name: string | null;
 
   @Column('varchar', {
     name: 'password',

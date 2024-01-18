@@ -1,7 +1,7 @@
 import { UserLoginType } from "@src/apis/users/constants/user.enum";
 
 export interface SnsProfileBase {
-  sns_id: string;
+  snsId: string;
 }
 
 export interface SnsProfile extends SnsProfileBase {

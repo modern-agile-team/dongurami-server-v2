@@ -60,6 +60,14 @@ export class User {
   })
   studentNumber: string | null;
 
+  @Column('varchar', {
+    name: 'sns_id',
+    comment: '소셜 고유 ID',
+    nullable: true,
+    length: 255,
+  })
+  snsId: string | null;
+
   @Column('enum', {
     name: 'login_type',
     comment: '로그인 타입',
@@ -67,8 +75,13 @@ export class User {
   })
   loginType: UserLoginType;
 
-  @Column('varchar', { name: 'name', comment: '유저 이름', length: 20 })
-  name: string;
+  @Column('varchar', { 
+    name: 'name', 
+    nullable: true,
+    comment: '유저 이름', 
+    length: 20 
+  })
+  name: string | null;
 
   @Column('varchar', {
     name: 'password',

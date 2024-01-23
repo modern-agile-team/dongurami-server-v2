@@ -25,6 +25,7 @@ import { AuthService } from './services/auth.service';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtModuleOptionsFactory, JwtStrategy],
+  exports: [AuthService]
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

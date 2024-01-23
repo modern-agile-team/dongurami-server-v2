@@ -10,6 +10,7 @@ import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
 import { BaseDto } from '@src/dto/base.dto';
 import { User } from '@src/entities/User';
 import { Exclude } from 'class-transformer';
+import { IsOptional } from 'class-validator';
 
 export class UserDto
   extends BaseDto
@@ -45,6 +46,12 @@ export class UserDto
     format: 'email',
   })
   email: string;
+
+  @ApiProperty({
+    description: 'SNS 토큰',
+  })
+  @IsOptional()
+  snsToken: string;
 
   @ApiProperty({
     description: '유저 로그인 타입',

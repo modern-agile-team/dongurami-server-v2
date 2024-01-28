@@ -78,8 +78,13 @@ export const createHistoryTable = async (
     `CREATE TABLE \`${historyTableName}\` LIKE \`${originTableName}\`;`,
   );
   await queryRunner.dropColumns(historyTableName, dropColumns);
-  await queryRunner.addColumn(
-    historyTableName,
+  await queryRunner.addColumns(historyTableName, [
+    new TableColumn({
+      name: 'action',
+      type: 'enum',
+      enum: ['insert', 'update', 'delete'],
+      comment: 'history를 쌓는 action',
+    }),
     new TableColumn({
       name: fkColumnName,
       type: 'int',
@@ -87,7 +92,7 @@ export const createHistoryTable = async (
       isNullable: false,
       comment: 'origin 고유 ID',
     }),
-  );
+  ]);
   await queryRunner.createForeignKey(
     historyTableName,
     new TableForeignKey({

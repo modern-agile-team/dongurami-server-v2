@@ -77,6 +77,28 @@ export const createHistoryTable = async (
   await queryRunner.query(
     `CREATE TABLE \`${historyTableName}\` LIKE \`${originTableName}\`;`,
   );
+  const indexes: any[] = await queryRunner.query(
+    `show index from \`${historyTableName}\``,
+  );
+
+  if (indexes) {
+    const ukIndexIds = indexes
+      .map((index) => {
+        return index.Key_name as string;
+      })
+      .filter((keyName) => {
+        return keyName.startsWith('UQ');
+      });
+
+    await Promise.all(
+      ukIndexIds.map((ukId) => {
+        return queryRunner.query(
+          `DROP INDEX \`${ukId}\` on \`${historyTableName}\``,
+        );
+      }),
+    );
+  }
+
   await queryRunner.dropColumns(historyTableName, dropColumns);
   await queryRunner.addColumns(historyTableName, [
     new TableColumn({

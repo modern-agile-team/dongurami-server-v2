@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
+import { UserMajor } from '@src/entities/Major';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { FindOneOptions } from 'typeorm';
 import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';
 import { MajorDto } from '../dto/major.dto';
 import { MajorRepository } from '../repositories/major.repository';
-import { Major } from '@src/entities/Major';
-import { FindOneOptions } from 'typeorm';
 
 @Injectable()
 export class MajorService {
@@ -15,7 +15,7 @@ export class MajorService {
     return this.majorRepository.find();
   }
 
-  findOneMajor(options: FindOneOptions<Major>): Promise<Major> {
+  findOneMajor(options: FindOneOptions<UserMajor>): Promise<UserMajor> {
     return this.majorRepository.findOne(options);
   }
 

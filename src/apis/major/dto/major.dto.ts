@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@src/dto/base.dto';
-import { Major } from '@src/entities/Major';
+import { UserMajor } from '@src/entities/Major';
 import {
   MAJOR_CODE_LENGTH,
   MAJOR_MEMO_LENGTH,
@@ -10,7 +10,10 @@ import {
 export class MajorDto
   extends BaseDto
   implements
-    Pick<Major, 'id' | 'code' | 'name' | 'memo' | 'createdAt' | 'updatedAt'>
+    Pick<
+      UserMajor,
+      'id' | 'code' | 'name' | 'memo' | 'createdAt' | 'updatedAt'
+    >
 {
   @ApiProperty({
     description: '전공 코드',

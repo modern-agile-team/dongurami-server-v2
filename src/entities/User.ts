@@ -26,14 +26,14 @@ import {
 } from 'typeorm';
 import { ClubJoinApplication } from './ClubJoinApplication';
 import { ClubMember } from './ClubMember';
-import { Major } from './Major';
+import { UserMajor } from './Major';
+import { NoticePostCommentHistory } from './NoticePostCommentHistory';
 import { NoticePostCommentReaction } from './NoticePostCommentReaction';
+import { NoticePostHistory } from './NoticePostHistory';
 import { NoticePostReaction } from './NoticePostReaction';
 import { NoticePostReplyComment } from './NoticePostReplyComment';
-import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
-import { NoticePostHistory } from './NoticePostHistory';
-import { NoticePostCommentHistory } from './NoticePostCommentHistory';
 import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
+import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
 
 @Entity('user', { schema: 'dongurami_v2' })
 export class User {
@@ -75,11 +75,11 @@ export class User {
   })
   loginType: UserLoginType;
 
-  @Column('varchar', { 
-    name: 'name', 
+  @Column('varchar', {
+    name: 'name',
     nullable: true,
-    comment: '유저 이름', 
-    length: 20 
+    comment: '유저 이름',
+    length: 20,
   })
   name: string | null;
 
@@ -267,12 +267,12 @@ export class User {
   )
   noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 
-  @ManyToOne(() => Major, (major) => major.users, {
+  @ManyToOne(() => UserMajor, (major) => major.users, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
-  major: Major;
+  major: UserMajor;
 
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];

@@ -11,7 +11,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Major } from './Major';
+import { UserMajor } from './Major';
 import { User } from './User';
 
 @Entity('user_history', { schema: 'dongurami_v2' })
@@ -120,12 +120,12 @@ export class UserHistory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => Major, (major) => major.userHistories, {
+  @ManyToOne(() => UserMajor, (major) => major.userHistories, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
-  major: Major;
+  major: UserMajor;
 
   @ManyToOne(() => User, (user) => user.userHistories, {
     onDelete: 'CASCADE',

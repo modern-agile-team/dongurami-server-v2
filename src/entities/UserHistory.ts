@@ -14,11 +14,11 @@ import {
 } from 'typeorm';
 import { User } from './User';
 
-@Index('UQ_e12875dfb3b1d92d7d7c5377e22', ['email'], { unique: true })
-@Index('UQ_f957bcd9aa9a44ae947b3ca9ad3', ['snsId'], { unique: true })
-@Index('UQ_305f99f34a214909d328147986c', ['studentNumber'], { unique: true })
-@Index('UQ_e2364281027b926b879fa2fa1e0', ['nickname'], { unique: true })
-@Index('FK_807a1ad59068924579cd9eefbcb', ['userMajorId'], {})
+@Index(['email'], { unique: true })
+@Index(['snsId'], { unique: true })
+@Index(['studentNumber'], { unique: true })
+@Index(['nickname'], { unique: true })
+@Index(['userMajorId'], {})
 @Entity('user_history')
 export class UserHistory {
   @PrimaryGeneratedColumn({

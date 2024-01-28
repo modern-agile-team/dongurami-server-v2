@@ -18,9 +18,12 @@ export class UserDto
     Pick<
       User,
       | 'id'
+      | 'userMajorId'
       | 'loginType'
+      | 'snsId'
+      | 'studentNumber'
       | 'name'
-      | 'password'
+      | 'nickname'
       | 'email'
       | 'phoneNumber'
       | 'grade'
@@ -33,25 +36,8 @@ export class UserDto
       | 'deletedAt'
     >
 {
-  @ApiProperty({
-    description: '유저 이름',
-  })
-  name: string;
-
-  @Exclude()
-  password: string | null;
-
-  @ApiProperty({
-    description: '이메일',
-    format: 'email',
-  })
-  email: string;
-
-  @ApiProperty({
-    description: 'SNS 토큰',
-  })
-  @IsOptional()
-  snsToken: string;
+  @ApiProperty({})
+  userMajorId: number | null;
 
   @ApiProperty({
     description: '유저 로그인 타입',
@@ -60,10 +46,45 @@ export class UserDto
   loginType: UserLoginType;
 
   @ApiProperty({
-    description: '유저 role',
-    enum: UserRole,
+    nullable: true,
   })
-  role: UserRole;
+  snsId: string | null;
+
+  @ApiProperty({
+    description: 'SNS 토큰',
+  })
+  @IsOptional()
+  snsToken?: string;
+
+  @ApiProperty({
+    nullable: true,
+  })
+  studentNumber: string | null;
+
+  @ApiProperty({
+    description: '유저 이름',
+  })
+  name: string | null;
+
+  @ApiProperty({
+    nullable: true,
+  })
+  nickname: string | null;
+
+  @ApiProperty({
+    description: '이메일',
+    format: 'email',
+  })
+  email: string;
+
+  @ApiProperty({
+    description: '핸드폰 번호',
+    nullable: true,
+    example: '010-0000-0000',
+    type: () => String,
+    format: String(PHONE_NUMBER_REGEXP),
+  })
+  phoneNumber: string | null;
 
   @ApiProperty({
     description: '학년 (0이면 졸업)',
@@ -82,21 +103,18 @@ export class UserDto
   gender: UserGender | null;
 
   @ApiProperty({
-    description: '핸드폰 번호',
-    nullable: true,
-    example: '010-0000-0000',
-    type: () => String,
-    format: String(PHONE_NUMBER_REGEXP),
-  })
-  phoneNumber: string | null;
-
-  @ApiProperty({
     description: 'profile image path',
     nullable: true,
     example: 'path/user-image.jpeg',
     type: () => String,
   })
   profilePath: string | null;
+
+  @ApiProperty({
+    description: '유저 role',
+    enum: UserRole,
+  })
+  role: UserRole;
 
   @Exclude()
   status: UserStatus;

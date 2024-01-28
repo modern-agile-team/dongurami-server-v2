@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { NoticePost } from './NoticePost';
 
-@Index('FK_41fe4d63f90f444539caef65b7b', ['userId'])
+@Index(['userId'])
 @Entity('notice_post_history')
 export class NoticePostHistory {
   @PrimaryGeneratedColumn({
@@ -57,7 +57,7 @@ export class NoticePostHistory {
     default: () => "'0'",
     transformer: new BooleanTransformer(),
   })
-  isAllowComment: number;
+  isAllowComment: boolean;
 
   @Column('enum', {
     name: 'action',

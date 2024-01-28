@@ -65,6 +65,8 @@ export class FreePostReplyCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
+        newPostReplyComment.id,
         HistoryAction.Insert,
         newPostReplyComment,
       );
@@ -192,6 +194,8 @@ export class FreePostReplyCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
+        freePostReplyCommentId,
         HistoryAction.Update,
         newReplyComment,
       );
@@ -259,6 +263,8 @@ export class FreePostReplyCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
+        freePostReplyCommentId,
         HistoryAction.Delete,
         {
           ...existReplyComment,

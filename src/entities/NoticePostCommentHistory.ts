@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import { NoticePostComment } from './NoticePostComment';
 
-@Index('FK_dc1dcd90c770c67727cc910d1a2', ['userId'], {})
-@Index('FK_d0f1e4e79494b0b9da0670a510f', ['noticePostId'], {})
+@Index(['userId'], {})
+@Index(['noticePostId'], {})
 @Entity('notice_post_comment_history')
 export class NoticePostCommentHistory {
   @PrimaryGeneratedColumn({

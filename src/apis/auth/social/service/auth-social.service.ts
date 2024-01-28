@@ -1,15 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { SignInRequestBodyDto, SignUpRequestBodyDto } from "../dto/auth-social.dto";
-import { UsersService } from "@src/apis/users/services/users.service";
-import { HttpBadRequestException } from "@src/http-exceptions/exceptions/http-bad-request.exception";
-import { HttpConflictException } from "@src/http-exceptions/exceptions/http-conflict.exception";
-import { USER_ERROR_CODE } from "@src/constants/error/users/user-error-code.constant";
-import { getSnsProfile } from "../../util/getSnsProfile";
-import { HttpInternalServerErrorException } from "@src/http-exceptions/exceptions/http-internal-server-error.exception";
-import { COMMON_ERROR_CODE } from "@src/constants/error/common/common-error-code.constant";
-import { AUTH_ERROR_CODE } from "@src/constants/error/auth/auth-error-code.constant";
-import { AuthService } from "../../services/auth.service";
-import { AuthRegistrationService } from "./auth-registration.service";
+import { Injectable } from '@nestjs/common';
+import { UsersService } from '@src/apis/users/services/users.service';
+import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { AuthService } from '../../services/auth.service';
+import { getSnsProfile } from '../../util/getSnsProfile';
+import {
+  SignInRequestBodyDto,
+  SignUpRequestBodyDto,
+} from '../dto/auth-social.dto';
+import { AuthRegistrationService } from './auth-registration.service';
 
 @Injectable()
 export class AuthSocialService {
@@ -17,16 +18,16 @@ export class AuthSocialService {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
     private readonly authRegistrationService: AuthRegistrationService,
-  ) { }
+  ) {}
 
   async signUp(signUpRequestBodyDto: SignUpRequestBodyDto) {
-    const {
-      loginType,
-      snsToken,
-    } = signUpRequestBodyDto;
+    const { loginType, snsToken } = signUpRequestBodyDto;
 
     // 동시성 문제
-    const isUserRegistered = this.authRegistrationService.isUserRegistered({ loginType, snsToken })
+    const isUserRegistered = this.authRegistrationService.isUserRegistered({
+      loginType,
+      snsToken,
+    });
     if (!isUserRegistered) {
       throw new HttpBadRequestException({
         code: AUTH_ERROR_CODE.ACCOUNT_NOT_FOUND,
@@ -44,8 +45,7 @@ export class AuthSocialService {
     const user = await this.usersService.create({
       ...signUpRequestBodyDto,
       snsId: snsProfile.snsId,
-      password: null
-    })
+    });
 
     return user;
   }
@@ -64,7 +64,7 @@ export class AuthSocialService {
 
     const existUser = await this.usersService.findOneBy({
       loginType,
-      snsId: snsProfile.snsId
+      snsId: snsProfile.snsId,
     });
 
     if (!existUser) {
@@ -75,6 +75,5 @@ export class AuthSocialService {
 
     const accessToken = this.authService.generateToken({ id: existUser.id });
     return { accessToken };
-
   }
 }

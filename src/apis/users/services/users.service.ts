@@ -89,13 +89,6 @@ export class UsersService {
         status: UserStatus.Active,
       });
 
-      if (newUser.password) {
-        newUser.password = await this.encryptionService.hash(
-          createUserRequestBodyDto.password,
-          this.SALT,
-        );
-      }
-
       await entityManager.withRepository(this.userRepository).save(newUser);
 
       await this.userHistoryService.create(

@@ -11,8 +11,8 @@ import {
 } from 'typeorm';
 import { FreePostComment } from './FreePostComment';
 
-@Index('FK_bdbc9782598d9e4502ba14b5b9c', ['userId'], {})
-@Index('FK_30a136dae80c1f319fad15bb8f9', ['freePostId'], {})
+@Index(['userId'], {})
+@Index(['freePostId'], {})
 @Entity('free_post_comment_history', { schema: 'dongurami_v2' })
 export class FreePostCommentHistory {
   @PrimaryGeneratedColumn({
@@ -31,8 +31,15 @@ export class FreePostCommentHistory {
   userId: number;
 
   @Column('int', {
-    name: 'free_post_comment_id',
+    name: 'free_post_id',
     comment: '자유 게시글 고유 ID',
+    unsigned: true,
+  })
+  freePostId: number;
+
+  @Column('int', {
+    name: 'free_post_comment_id',
+    comment: '자유 게시글 댓글 고유 ID',
     unsigned: true,
   })
   freePostCommentId: number;

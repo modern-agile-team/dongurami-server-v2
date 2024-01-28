@@ -11,9 +11,9 @@ import {
 } from 'typeorm';
 import { FreePostReplyComment } from './FreePostReplyComment';
 
-@Index('FK_ad99256ee668d71d6b29731147c', ['userId'], {})
-@Index('FK_3f1f6a673500b56a8af310543de', ['freePostId'], {})
-@Index('FK_60a5d4d50145f5b36511c9c8f49', ['freePostCommentId'], {})
+@Index(['userId'], {})
+@Index(['freePostId'], {})
+@Index(['freePostCommentId'], {})
 @Entity('free_post_reply_comment_history')
 export class FreePostReplyCommentHistory {
   @PrimaryGeneratedColumn({

@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { FreePost } from './FreePost';
 
-@Index('FK_355eb7ba07da23b6722922a07c1', ['userId'], {})
+@Index(['userId'], {})
 @Entity('free_post_history')
 export class FreePostHistory {
   @PrimaryGeneratedColumn({

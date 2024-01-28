@@ -8,7 +8,6 @@ import {
   UserLoginType,
   UserRole,
 } from '@src/apis/users/constants/user.enum';
-import { USER_PASSWORD_REGEXP } from '@src/apis/users/constants/user.regexp';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
 import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
@@ -21,16 +20,12 @@ import {
   Matches,
   Max,
   Min,
-  ValidateIf,
 } from 'class-validator';
 
 export class CreateUserRequestBodyDto
   implements
     Pick<UserDto, 'name' | 'email' | 'role' | 'loginType'>,
-    Pick<
-      UserDto,
-      'password' | 'phoneNumber' | 'grade' | 'gender' | 'profilePath'
-    >
+    Pick<UserDto, 'phoneNumber' | 'grade' | 'gender' | 'profilePath'>
 {
   @ApiProperty({
     description: 'login type 현재 email 만',
@@ -65,23 +60,6 @@ export class CreateUserRequestBodyDto
   })
   @IsEnum(UserRole)
   role: UserRole;
-
-  @ApiProperty({
-    description: 'password (email 로그인시에만 패턴 검사를 진행합니다.)',
-    type: () => String,
-    nullable: true,
-    pattern: String(USER_PASSWORD_REGEXP),
-  })
-  @Matches(USER_PASSWORD_REGEXP)
-  @IsOptional()
-  @ValidateIf((object, value) => {
-    if (object.loginType === UserLoginType.Email) {
-      return true;
-    }
-
-    return value !== null;
-  })
-  password: string | null;
 
   @ApiProperty({
     description: 'phone number',

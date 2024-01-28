@@ -46,7 +46,7 @@ export class FreePostReplyCommentHistory {
   freePostCommentId: number;
 
   @Column('int', {
-    name: 'free_post_comment_id',
+    name: 'free_post_reply_comment_id',
     comment: '자유 게시글 대댓글 고유 ID',
     unsigned: true,
   })

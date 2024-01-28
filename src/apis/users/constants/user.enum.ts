@@ -9,7 +9,6 @@ export enum UserGender {
 }
 
 export enum UserLoginType {
-  Email = 'email',
   Kakao = 'KAKAO',
   Google = 'GOOGLE',
   Naver = 'NAVER',

@@ -230,7 +230,7 @@ export class FreePostCommentsService {
         .withRepository(this.freePostCommentRepository)
         .update(
           {
-            id: freePostId,
+            id: freePostCommentId,
           },
           {
             status: FreePostCommentStatus.Remove,

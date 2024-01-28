@@ -57,6 +57,7 @@ export class FreePostReplyCommentsService {
         .withRepository(this.freePostReplyCommentRepository)
         .save({
           userId,
+          freePostId,
           freePostCommentId: existComment.id,
           ...createFreePostReplyCommentDto,
         });
@@ -251,7 +252,7 @@ export class FreePostReplyCommentsService {
         .withRepository(this.freePostReplyCommentRepository)
         .update(
           {
-            id: freePostId,
+            id: freePostReplyCommentId,
           },
           {
             status: FreePostReplyCommentStatus.Remove,

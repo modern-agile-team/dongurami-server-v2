@@ -28,7 +28,7 @@ export class CreateUserRequestBodyDto
     Pick<UserDto, 'phoneNumber' | 'grade' | 'gender' | 'profilePath'>
 {
   @ApiProperty({
-    description: 'login type 현재 email 만',
+    description: 'login type',
     enum: UserLoginType,
   })
   @IsEnum(UserLoginType)
@@ -37,6 +37,7 @@ export class CreateUserRequestBodyDto
   @ApiProperty({
     description: 'snsId',
   })
+  @IsOptional()
   snsId: string;
 
   @ApiProperty({

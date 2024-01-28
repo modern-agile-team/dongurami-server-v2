@@ -45,7 +45,7 @@ export class NoticePostReplyCommentHistory {
   noticePostCommentId: number;
 
   @Column('int', {
-    name: 'notice_post_comment_id',
+    name: 'notice_post_reply_comment_id',
     comment: '공지 게시글 대댓글 고유 ID',
     unsigned: true,
   })

@@ -43,7 +43,7 @@ export class User {
   id: number;
 
   @Column('int', {
-    name: 'major_id',
+    name: 'user_major_id',
     comment: '전공 고유 ID',
     unsigned: true,
   })

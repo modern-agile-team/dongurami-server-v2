@@ -1,3 +1,7 @@
+<!-- 지라 티켓 url -->
+### JIRA
+[티켓번호](https://https://dongurami.atlassian.net/browse/티켓번호)
+
 <!-- 내용 (필수) -->
 ### Description
 
@@ -9,6 +13,8 @@
 
 <!-- 관련된 이슈 링크 (선택) -->
 ### Related Issue Link
+
+1. [티켓번호:설명](https://https://dongurami.atlassian.net/browse/티켓번호)
 
 <!-- 작업한 API (선택) -->
 ### API

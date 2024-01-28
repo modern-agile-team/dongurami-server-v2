@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
-import { UserMajor } from '@src/entities/Major';
+import { UserMajor } from '@src/entities/UserMajor';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { FindOneOptions } from 'typeorm';
 import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';

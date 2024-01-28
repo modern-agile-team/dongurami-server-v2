@@ -11,9 +11,10 @@ import {
 import { FreePostComment } from './FreePostComment';
 import { FreePostHistory } from './FreePostHistory';
 import { FreePostReaction } from './FreePostReaction';
+import { FreePostReplyComment } from './FreePostReplyComment';
 import { User } from './User';
 
-@Entity('free_post', { schema: 'dongurami_v2' })
+@Entity('free_post')
 export class FreePost {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -23,15 +24,15 @@ export class FreePost {
   })
   id: number;
 
+  @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
+  title: string;
+
   @Column('int', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
   userId: number;
-
-  @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
-  title: string;
 
   @Column('text', { name: 'description', comment: '자유게시글 내용' })
   description: string;
@@ -56,7 +57,8 @@ export class FreePost {
   @Column('enum', {
     name: 'status',
     comment: '자유게시글 상태',
-    enum: FreePostStatus,
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
   })
   status: FreePostStatus;
 
@@ -69,7 +71,7 @@ export class FreePost {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
@@ -105,4 +107,10 @@ export class FreePost {
     (freePostReaction) => freePostReaction.freePost,
   )
   freePostReactions: FreePostReaction[];
+
+  @OneToMany(
+    () => FreePostReplyComment,
+    (freePostReplyComment) => freePostReplyComment.freePost,
+  )
+  freePostReplyComments: FreePostReplyComment[];
 }

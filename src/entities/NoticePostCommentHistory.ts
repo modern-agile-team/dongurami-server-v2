@@ -1,36 +1,77 @@
+import { HistoryAction } from '@src/constants/enum';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticePostHistory } from './NoticePostHistory';
-import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
-import { User } from './User';
-import { BooleanTransformer } from './transformers/boolean.transformer';
+import { NoticePostComment } from './NoticePostComment';
 
-@Entity('notice_post_comment_history', { schema: 'dongurami_local_db' })
+@Index('FK_dc1dcd90c770c67727cc910d1a2', ['userId'], {})
+@Index('FK_d0f1e4e79494b0b9da0670a510f', ['noticePostId'], {})
+@Entity('notice_post_comment_history')
 export class NoticePostCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '공지게시글 댓글 수정이력 고유 ID',
+    comment: '공지 게시글 댓글 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '댓글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
+  @Column('int', {
+    name: 'notice_post_id',
+    comment: '공지 게시글 고유 ID',
+    unsigned: true,
+  })
+  noticePostId: number;
+
+  @Column('int', {
+    name: 'notice_post_comment_id',
+    comment: '공지 게시글 댓글 고유 ID',
+    unsigned: true,
+  })
+  noticePostCommentId: number;
+
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
 
-  @Column('boolean', {
+  @Column('tinyint', {
     name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
-    default: () => false,
+    unsigned: true,
+    default: () => "'0'",
     transformer: new BooleanTransformer(),
   })
   isAnonymous: boolean;
+
+  @Column('enum', {
+    name: 'action',
+    comment: 'history 를 쌓는 action',
+    enum: ['insert', 'update', 'delete'],
+  })
+  action: HistoryAction;
+
+  /**
+   * @todo enum type 적용
+   */
+  @Column('enum', {
+    name: 'status',
+    comment: '공지 게시글 댓글 상태',
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
+  })
+  status: 'posting' | 'remove';
 
   @Column('timestamp', {
     name: 'created_at',
@@ -39,25 +80,11 @@ export class NoticePostCommentHistory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.noticePostCommentHistories, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
-
   @ManyToOne(
-    () => NoticePostHistory,
-    (noticePostHistory) => noticePostHistory.noticePostCommentHistories,
-    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.noticePostCommentHistories,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  @JoinColumn([{ name: 'notice_post_history_id', referencedColumnName: 'id' }])
-  noticePostHistory: NoticePostHistory;
-
-  @OneToMany(
-    () => NoticePostReplyCommentHistory,
-    (noticePostReplyCommentHistory) =>
-      noticePostReplyCommentHistory.noticePostCommentHistory,
-  )
-  noticePostReplyCommentHistories: NoticePostReplyCommentHistory[];
+  @JoinColumn([{ name: 'notice_post_comment_id', referencedColumnName: 'id' }])
+  noticePostComment: NoticePostComment;
 }

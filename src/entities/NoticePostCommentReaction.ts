@@ -9,37 +9,15 @@ import { NoticePostComment } from './NoticePostComment';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('notice_post_comment_reaction', { schema: 'dongurami_local_db' })
+@Entity('notice_post_comment_reaction')
 export class NoticePostCommentReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '공지 게시글 댓글 반응 고유 ID',
+    comment: '고유 ID',
     unsigned: true,
   })
   id: number;
-
-  @Column('timestamp', {
-    name: 'created_at',
-    comment: '생성 일자',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdAt: Date;
-
-  @Column('int', {
-    name: 'notice_post_comment_id',
-    comment: '공지 게시글 댓글 고유 ID',
-    unsigned: true,
-  })
-  noticePostCommentId: number;
-
-  @ManyToOne(
-    () => NoticePostComment,
-    (noticePostComment) => noticePostComment.noticePostCommentReactions,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
-  )
-  @JoinColumn([{ name: 'notice_post_comment_id', referencedColumnName: 'id' }])
-  noticePostComment: NoticePostComment;
 
   @Column('int', {
     name: 'user_id',
@@ -47,6 +25,20 @@ export class NoticePostCommentReaction {
     unsigned: true,
   })
   userId: number;
+
+  @Column('int', {
+    name: 'notice_post_comment_id',
+    comment: '공지 게시글 댓글 고유 ID',
+    unsigned: true,
+  })
+  parentId: number;
+
+  @Column('timestamp', {
+    name: 'created_at',
+    comment: '생성 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.noticePostCommentReactions, {
     onDelete: 'CASCADE',
@@ -62,4 +54,12 @@ export class NoticePostCommentReaction {
   )
   @JoinColumn([{ name: 'reaction_type_id', referencedColumnName: 'id' }])
   reactionType: ReactionType;
+
+  @ManyToOne(
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.noticePostCommentReactions,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  @JoinColumn([{ name: 'notice_post_comment_id', referencedColumnName: 'id' }])
+  noticePostComment: NoticePostComment;
 }

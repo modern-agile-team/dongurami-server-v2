@@ -1,12 +1,12 @@
-import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
-import { FreePostReaction } from '@src/entities/FreePostReaction';
-import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
-import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
-import { NoticePostReaction } from '@src/entities/NoticePostReaction';
-import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { FreePostCommentReaction } from './FreePostCommentReaction';
+import { FreePostReaction } from './FreePostReaction';
+import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
+import { NoticePostCommentReaction } from './NoticePostCommentReaction';
+import { NoticePostReaction } from './NoticePostReaction';
+import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
 
-@Entity('reaction_type', { schema: 'dongurami_v2' })
+@Entity('reaction_type')
 export class ReactionType {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -31,7 +31,7 @@ export class ReactionType {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;

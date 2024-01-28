@@ -4,36 +4,53 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePostCommentHistory } from './FreePostCommentHistory';
-import { User } from './User';
+import { FreePostReplyComment } from './FreePostReplyComment';
 
-@Entity('free_post_reply_comment_history', { schema: 'dongurami_v2' })
+@Index('FK_ad99256ee668d71d6b29731147c', ['userId'], {})
+@Index('FK_3f1f6a673500b56a8af310543de', ['freePostId'], {})
+@Index('FK_60a5d4d50145f5b36511c9c8f49', ['freePostCommentId'], {})
+@Entity('free_post_reply_comment_history')
 export class FreePostReplyCommentHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '자유 게시글 대댓글 고유 ID',
+    comment: '자유 게시글 대댓글 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;
 
   @Column('int', {
     name: 'user_id',
-    comment: '게시글 대댓글 작성 유저 고유 ID',
+    comment: '댓글 작성 유저 고유 ID',
     unsigned: true,
   })
   userId: number;
 
   @Column('int', {
-    name: 'free_post_comment_history_id',
-    comment: '자유 게시글 대댓글 수정이력 고유 ID',
+    name: 'free_post_id',
+    comment: '자유 게시글 고유 ID',
     unsigned: true,
   })
-  freePostCommentHistoryId: number;
+  freePostId: number;
+
+  @Column('int', {
+    name: 'free_post_comment_id',
+    comment: '자유 게시글 댓글 고유 ID',
+    unsigned: true,
+  })
+  freePostCommentId: number;
+
+  @Column('int', {
+    name: 'free_post_comment_id',
+    comment: '자유 게시글 대댓글 고유 ID',
+    unsigned: true,
+  })
+  freePostReplyCommentId: number;
 
   @Column('varchar', {
     name: 'description',
@@ -60,8 +77,9 @@ export class FreePostReplyCommentHistory {
 
   @Column('enum', {
     name: 'status',
-    comment: '자유게시글 댓글 상태',
-    enum: FreePostReplyCommentStatus,
+    comment: '자유 게시글 대댓글 상태',
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
   })
   status: FreePostReplyCommentStatus;
 
@@ -73,20 +91,13 @@ export class FreePostReplyCommentHistory {
   createdAt: Date;
 
   @ManyToOne(
-    () => FreePostCommentHistory,
-    (freePostCommentHistory) =>
-      freePostCommentHistory.freePostReplyCommentHistories,
-    { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' },
+    () => FreePostReplyComment,
+    (freePostReplyComment) =>
+      freePostReplyComment.freePostReplyCommentHistories,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([
-    { name: 'free_post_comment_history_id', referencedColumnName: 'id' },
+    { name: 'free_post_reply_comment_id', referencedColumnName: 'id' },
   ])
-  freePostCommentHistory: FreePostCommentHistory;
-
-  @ManyToOne(() => User, (user) => user.freePostReplyCommentHistories, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
+  freePostReplyComment: FreePostReplyComment;
 }

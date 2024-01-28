@@ -8,11 +8,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { FreePost } from './FreePost';
 import { FreePostComment } from './FreePostComment';
+import { FreePostReplyCommentHistory } from './FreePostReplyCommentHistory';
 import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
 import { User } from './User';
 
-@Entity('free_post_reply_comment', { schema: 'dongurami_v2' })
+@Entity('free_post_reply_comment')
 export class FreePostReplyComment {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -28,6 +30,13 @@ export class FreePostReplyComment {
     unsigned: true,
   })
   userId: number;
+
+  @Column('int', {
+    name: 'free_post_id',
+    comment: '게시글 고유 ID',
+    unsigned: true,
+  })
+  freePostId: number;
 
   @Column('int', {
     name: 'free_post_comment_id',
@@ -54,8 +63,9 @@ export class FreePostReplyComment {
 
   @Column('enum', {
     name: 'status',
-    comment: '자유게시글 댓글 상태',
-    enum: FreePostReplyCommentStatus,
+    comment: '자유 게시글 대댓글 상태',
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
   })
   status: FreePostReplyCommentStatus;
 
@@ -68,7 +78,7 @@ export class FreePostReplyComment {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
@@ -79,6 +89,13 @@ export class FreePostReplyComment {
     comment: '삭제 일자',
   })
   deletedAt: Date | null;
+
+  @ManyToOne(() => FreePost, (freePost) => freePost.freePostReplyComments, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
+  freePost: FreePost;
 
   @ManyToOne(
     () => FreePostComment,
@@ -94,6 +111,13 @@ export class FreePostReplyComment {
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @OneToMany(
+    () => FreePostReplyCommentHistory,
+    (freePostReplyCommentHistory) =>
+      freePostReplyCommentHistory.freePostReplyComment,
+  )
+  freePostReplyCommentHistories: FreePostReplyCommentHistory[];
 
   @OneToMany(
     () => FreePostReplyCommentReaction,

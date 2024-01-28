@@ -132,5 +132,5 @@ export class CreateUserRequestBodyDto
    * @todo 변경 예정
    */
   @IsOptional()
-  majorId: number = 1;
+  userMajorId: number = 1;
 }

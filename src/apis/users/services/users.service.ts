@@ -10,12 +10,12 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
-import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 
 @Injectable()
 export class UsersService {
@@ -47,7 +47,10 @@ export class UsersService {
     });
 
     if (existUser) {
-      if (createUserRequestBodyDto.email.toLowerCase() === existUser.email.toLowerCase()) {
+      if (
+        createUserRequestBodyDto.email.toLowerCase() ===
+        existUser.email.toLowerCase()
+      ) {
         throw new HttpConflictException({
           code: USER_ERROR_CODE.ALREADY_EXIST_USER_EMAIL,
         });
@@ -71,7 +74,7 @@ export class UsersService {
         code: '01',
       },
     });
-    createUserRequestBodyDto.majorId = major.id;
+    createUserRequestBodyDto.userMajorId = major.id;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -177,7 +180,7 @@ export class UsersService {
         where: { code: '01' },
       });
 
-      putUpdateUserDto.majorId = major.id;
+      putUpdateUserDto.userMajorId = major.id;
 
       await entityManager
         .withRepository(this.userRepository)

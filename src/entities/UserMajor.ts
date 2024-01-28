@@ -1,4 +1,3 @@
-import { UserHistory } from '@src/entities/UserHistory';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 
@@ -30,14 +29,11 @@ export class UserMajor {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 
-  @OneToMany(() => User, (user) => user.major)
+  @OneToMany(() => User, (user) => user.userMajor)
   users: User[];
-
-  @OneToMany(() => UserHistory, (userHistory) => userHistory.major)
-  userHistories: UserHistory[];
 }

@@ -1,4 +1,4 @@
-import { UserMajor } from '@src/entities/Major';
+import { UserMajor } from '@src/entities/UserMajor';
 import {
   generateCreatedAtColumn,
   generatePrimaryColumn,

@@ -1,3 +1,5 @@
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -7,14 +9,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { NoticePostComment } from './NoticePostComment';
+import { NoticePostHistory } from './NoticePostHistory';
 import { NoticePostReaction } from './NoticePostReaction';
 import { NoticePostReplyComment } from './NoticePostReplyComment';
 import { User } from './User';
-import { NoticePostHistory } from './NoticePostHistory';
-import { BooleanTransformer } from './transformers/boolean.transformer';
-import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 
-@Entity('notice_post', { schema: 'dongurami_local_db' })
+@Entity('notice_post')
 export class NoticePost {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -23,6 +23,13 @@ export class NoticePost {
     unsigned: true,
   })
   id: number;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @Column('varchar', { name: 'title', comment: '공지게시글 제목', length: 255 })
   title: string;
@@ -38,10 +45,11 @@ export class NoticePost {
   })
   hit: number;
 
-  @Column('boolean', {
+  @Column('tinyint', {
     name: 'is_allow_comment',
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
-    default: () => true,
+    unsigned: true,
+    default: () => "'0'",
     transformer: new BooleanTransformer(),
   })
   isAllowComment: boolean;
@@ -49,7 +57,8 @@ export class NoticePost {
   @Column('enum', {
     name: 'status',
     comment: '공지게시글 상태',
-    enum: NoticePostStatus,
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
   })
   status: NoticePostStatus;
 
@@ -62,7 +71,7 @@ export class NoticePost {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
@@ -73,13 +82,6 @@ export class NoticePost {
     comment: '삭제 일자',
   })
   deletedAt: Date | null;
-
-  @Column('int', {
-    name: 'user_id',
-    comment: '게시글 작성 유저 고유 ID',
-    unsigned: true,
-  })
-  userId: number;
 
   @ManyToOne(() => User, (user) => user.noticePosts, {
     onDelete: 'CASCADE',
@@ -95,6 +97,12 @@ export class NoticePost {
   noticePostComments: NoticePostComment[];
 
   @OneToMany(
+    () => NoticePostHistory,
+    (noticePostHistory) => noticePostHistory.noticePost,
+  )
+  noticePostHistories: NoticePostHistory[];
+
+  @OneToMany(
     () => NoticePostReaction,
     (noticePostReaction) => noticePostReaction.noticePost,
   )
@@ -105,10 +113,4 @@ export class NoticePost {
     (noticePostReplyComment) => noticePostReplyComment.noticePost,
   )
   noticePostReplyComments: NoticePostReplyComment[];
-
-  @OneToMany(
-    () => NoticePostHistory,
-    (noticePostHistories) => noticePostHistories.noticePost,
-  )
-  noticePostHistories: NoticePostHistory[];
 }

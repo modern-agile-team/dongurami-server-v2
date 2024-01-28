@@ -9,16 +9,17 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FreePost } from './FreePost';
+import { FreePostCommentHistory } from './FreePostCommentHistory';
 import { FreePostCommentReaction } from './FreePostCommentReaction';
 import { FreePostReplyComment } from './FreePostReplyComment';
 import { User } from './User';
 
-@Entity('free_post_comment', { schema: 'dongurami_v2' })
+@Entity('free_post_comment')
 export class FreePostComment {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '자유게시글 댓글 고유 ID',
+    comment: '자유 게시글 댓글 고유 ID',
     unsigned: true,
   })
   id: number;
@@ -51,8 +52,9 @@ export class FreePostComment {
 
   @Column('enum', {
     name: 'status',
-    comment: '자유게시글 댓글 상태',
-    enum: FreePostCommentStatus,
+    comment: '자유 게시글 댓글 상태',
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
   })
   status: FreePostCommentStatus;
 
@@ -65,7 +67,7 @@ export class FreePostComment {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
@@ -90,6 +92,12 @@ export class FreePostComment {
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @OneToMany(
+    () => FreePostCommentHistory,
+    (freePostCommentHistory) => freePostCommentHistory.freePostComment,
+  )
+  freePostCommentHistories: FreePostCommentHistory[];
 
   @OneToMany(
     () => FreePostCommentReaction,

@@ -20,7 +20,7 @@ import { DetailResponse } from '@src/interceptors/success-interceptor/types/succ
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
 
-@ApiTags('users')
+@ApiTags('user')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

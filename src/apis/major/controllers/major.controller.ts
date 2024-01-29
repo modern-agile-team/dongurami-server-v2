@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
+import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
+import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';
 import { MajorDto } from '../dto/major.dto';
 import { MajorService } from '../services/major.service';
-import { ApiTags } from '@nestjs/swagger';
 import { ApiMajors } from './major.swagger';
-import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
-import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
-import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 
 @ApiTags('majors')
-@Controller('majors')
+@Controller('major')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 

@@ -1,35 +1,35 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
-  Delete,
   Post,
   Put,
   Query,
   UseGuards,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
-import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
-import { NoticePostsService } from '../services/notice-posts.service';
-import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
-import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
-import { ApiNoticePost } from './notice-posts.swagger';
 import { ApiTags } from '@nestjs/swagger';
-import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
-import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
-import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { User } from '@src/decorators/user.decorator';
-import { NoticePostDto } from '../dto/notice-post.dto';
+import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
+import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
-import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
+import { plainToInstance } from 'class-transformer';
+import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
+import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
+import { NoticePostDto } from '../dto/notice-post.dto';
+import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
+import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
+import { NoticePostsService } from '../services/notice-posts.service';
+import { ApiNoticePost } from './notice-posts.swagger';
 
-@ApiTags('notice-posts')
+@ApiTags('notice-post')
 @Controller('notice-posts')
 export class NoticePostsController {
   constructor(private readonly noticePostService: NoticePostsService) {}

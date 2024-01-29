@@ -29,7 +29,7 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 
-@ApiTags('free-posts')
+@ApiTags('free-post-reply-comment')
 @Controller('free-posts/:freePostId/comments/:freePostCommentId/reply')
 export class FreePostReplyCommentsController {
   constructor(

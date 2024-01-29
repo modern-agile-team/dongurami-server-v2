@@ -155,3 +155,4 @@ $ npm run db:migrate:revert
 
 - [**SeokHo Lee**](https://github.com/rrgks6221) - <rrgks@naver.com>
 - [**BiHo Jeong**](https://github.com/hobiJeong) - <jjb26433@naver.com>
+- [**ChangHoon Oh**](https://github.com/ohchanghoon) - <dhckdgns3@naver.com>

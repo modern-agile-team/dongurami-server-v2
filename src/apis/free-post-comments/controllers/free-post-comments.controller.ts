@@ -29,7 +29,7 @@ import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { FreePostCommentsService } from '../services/free-post-comments.service';
 
-@ApiTags('free-posts')
+@ApiTags('free-post-comment')
 @Controller('free-posts/:freePostId/comments')
 export class FreePostCommentsController {
   constructor(

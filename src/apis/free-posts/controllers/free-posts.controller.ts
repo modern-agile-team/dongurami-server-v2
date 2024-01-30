@@ -31,7 +31,7 @@ import { plainToInstance } from 'class-transformer';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 import { FreePostsService } from '../services/free-posts.service';
 
-@ApiTags('free-posts')
+@ApiTags('free-post')
 @Controller('free-posts')
 export class FreePostsController {
   constructor(private readonly freePostsService: FreePostsService) {}

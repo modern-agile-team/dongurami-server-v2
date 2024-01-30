@@ -118,6 +118,18 @@ export class AppService {
       yamlDocumentUrl: YAML_PATH,
       swaggerOptions: {
         persistAuthorization: true,
+        tagsSorter: 'alpha',
+        operationsSorter: (a: Map<any, any>, b: Map<any, any>) => {
+          const order = {
+            post: '0',
+            get: '1',
+            put: '2',
+            patch: '3',
+            delete: '4',
+          };
+
+          return order[a.get('method')].localeCompare(order[b.get('method')]);
+        },
       },
     });
   }

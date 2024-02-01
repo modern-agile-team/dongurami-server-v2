@@ -1,98 +1,71 @@
-import { UserStatus } from '@src/apis/users/constants/user.enum';
-import { HistoryAction } from '@src/constants/enum';
 import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableColumnOptions,
-} from 'typeorm';
+  generateCreatedAtColumn,
+  generateDeletedAtColumn,
+  generatePrimaryColumn,
+  generateUpdatedAtColumn,
+} from 'migrations/__utils/util';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-const generatePrimaryColumn = (
-  comment: string = '고유 ID',
-): TableColumnOptions => {
-  return {
-    name: 'id',
-    type: 'int',
-    unsigned: true,
-    isPrimary: true,
-    isNullable: false,
-    isGenerated: true,
-    generationStrategy: 'increment',
-    comment,
-  };
-};
-
-const generateCreatedAtColumn = (
-  comment: string = '생성 일자',
-): TableColumnOptions => {
-  return {
-    name: 'created_at',
-    type: 'timestamp',
-    isNullable: false,
-    default: 'CURRENT_TIMESTAMP',
-    comment,
-  };
-};
-
-export class UserHistory1701678486841 implements MigrationInterface {
+export class User1706436836635 implements MigrationInterface {
+  name?: string;
+  transaction?: boolean;
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // 유저 히스토리
     await queryRunner.createTable(
       new Table({
-        name: 'user_history',
+        name: 'user',
         columns: [
-          generatePrimaryColumn('유저 히스토리 고유 ID'),
+          generatePrimaryColumn('유저 고유 ID'),
           {
-            name: 'user_id',
+            name: 'user_major_id',
             type: 'int',
             unsigned: true,
-            isNullable: false,
-            comment: '유저 고유 ID',
-          },
-          {
-            name: 'major_id',
-            type: 'int',
-            unsigned: true,
-            isNullable: false,
+            isNullable: true,
             comment: '전공 고유 ID',
-          },
-          {
-            name: 'action',
-            type: 'enum',
-            enum: [
-              HistoryAction.Insert,
-              HistoryAction.Update,
-              HistoryAction.Delete,
-            ],
-            isNullable: false,
-            comment: 'history 를 쌓는 action',
           },
           {
             name: 'login_type',
             type: 'enum',
-            enum: ['email'],
+            enum: ['KAKAO', 'GOOGLE', 'NAVER'],
             isNullable: false,
             comment: '로그인 타입',
+          },
+          {
+            name: 'sns_id',
+            type: 'varchar',
+            length: '255',
+            isNullable: true,
+            isUnique: true,
+            comment: '소셜 아이디',
+          },
+          {
+            name: 'student_number',
+            type: 'varchar',
+            length: '20',
+            isNullable: true,
+            isUnique: true,
+            comment: '유저 학번',
           },
           {
             name: 'name',
             type: 'varchar',
             length: '20',
-            isNullable: false,
-            comment: '유저 이름',
+            isNullable: true,
+            comment: '본명을 기대하는 유저 이름',
           },
           {
-            name: 'password',
+            name: 'nickname',
             type: 'varchar',
-            length: '128',
+            length: '255',
             isNullable: true,
-            comment: '비밀번호',
+            isUnique: true,
+            comment: '유저 닉네임',
           },
           {
             name: 'email',
             type: 'varchar',
             length: '255',
             isNullable: false,
+            isUnique: true,
             comment: '이메일',
           },
           {
@@ -134,33 +107,30 @@ export class UserHistory1701678486841 implements MigrationInterface {
           {
             name: 'status',
             type: 'enum',
-            enum: [UserStatus.Active, UserStatus.Inactive],
+            enum: ['active', 'inactive'],
             isNullable: false,
+            default: `"active"`,
             comment: '유저 상태',
           },
           generateCreatedAtColumn(),
+          generateUpdatedAtColumn(),
+          generateDeletedAtColumn(),
         ],
         foreignKeys: [
           {
-            referencedTableName: 'user',
+            referencedTableName: 'user_major',
             referencedColumnNames: ['id'],
-            columnNames: ['user_id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          },
-          {
-            referencedTableName: 'major',
-            referencedColumnNames: ['id'],
-            columnNames: ['major_id'],
+            columnNames: ['user_major_id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
         ],
       }),
     );
+    await queryRunner.query('ALTER TABLE user COMMENT = "유저"');
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('user_history');
+    await queryRunner.dropTable(new Table({ name: 'user' }));
   }
 }

@@ -15,5 +15,5 @@ export default new DataSource({
   /** @todo 추후 entity 경로에 따라 수정 */
   entities: ['./src/entities/*.ts'],
   migrationsTableName: 'migrations', // migration 이력을 저장하는 테이블
-  migrations: ['migrations/*.ts'], // migration 할 파일들이 있는 directory
+  migrations: ['migrations/**/[0-9]*.ts'], // migration 할 파일들이 있는 directory
 });

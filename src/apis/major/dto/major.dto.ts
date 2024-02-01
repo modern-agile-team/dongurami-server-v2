@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from '@src/dto/base.dto';
-import { UserMajor } from '@src/entities/Major';
+import { UserMajor } from '@src/entities/UserMajor';
 import {
   MAJOR_CODE_LENGTH,
   MAJOR_MEMO_LENGTH,

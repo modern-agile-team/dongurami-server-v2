@@ -4,7 +4,7 @@ import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conf
 import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto';
 import { MajorDto } from '../dto/major.dto';
 import { MajorRepository } from '../repositories/major.repository';
-import { UserMajor } from '@src/entities/Major';
+import { UserMajor } from '@src/entities/UserMajor';
 import { FindOneOptions } from 'typeorm';
 
 @Injectable()

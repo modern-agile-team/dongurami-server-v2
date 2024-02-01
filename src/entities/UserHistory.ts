@@ -11,7 +11,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserMajor } from './Major';
+import { UserMajor } from './UserMajor';
 import { User } from './User';
 
 @Entity('user_history', { schema: 'dongurami_v2' })

@@ -1,5 +1,5 @@
 import { CustomRepository } from '@src/core/type-orm/decorators/custom-repository.decorator';
-import { UserMajor } from '@src/entities/Major';
+import { UserMajor } from '@src/entities/UserMajor';
 import { Repository } from 'typeorm';
 
 @CustomRepository(UserMajor)

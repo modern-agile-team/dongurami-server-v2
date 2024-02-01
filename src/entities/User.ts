@@ -26,7 +26,7 @@ import {
 } from 'typeorm';
 import { ClubJoinApplication } from './ClubJoinApplication';
 import { ClubMember } from './ClubMember';
-import { UserMajor } from './Major';
+import { UserMajor } from './UserMajor';
 import { NoticePostCommentReaction } from './NoticePostCommentReaction';
 import { NoticePostReaction } from './NoticePostReaction';
 import { NoticePostReplyComment } from './NoticePostReplyComment';

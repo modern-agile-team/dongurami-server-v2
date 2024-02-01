@@ -46,7 +46,7 @@ export class NoticePost1706442705381 implements MigrationInterface {
             type: 'tinyint',
             length: '1',
             unsigned: true,
-            default: 0,
+            default: 1,
             isNullable: false,
             comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
           },

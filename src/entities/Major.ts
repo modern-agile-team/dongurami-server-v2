@@ -2,8 +2,8 @@ import { UserHistory } from '@src/entities/UserHistory';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 
-@Entity('major', { schema: 'dongurami_v2' })
-export class Major {
+@Entity('user_major', { schema: 'dongurami_v2' })
+export class UserMajor {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',

@@ -1,35 +1,45 @@
-#!/bin/sh
-# .git/hooks/prepare-commit-msg
-#
-# Automatically add branch name and branch description to every commit message except merge commit.
-# https://stackoverflow.com/a/18739064
-#
+#!/bin/bash
 
-COMMIT_EDITMSG=$1
+# Get the current branch name
+BRANCH_NAME=$(git symbolic-ref --short HEAD 2>/dev/null)
+COMMIT_MESSAGE=$(cat "$1")
 
-setMessage() {
-  BRANCH=$(git branch | grep '*' | sed 's/* //')
-  IFS="/" read -r BRANCH_TYPE ISSUE_NUMBER BRANCH_DESCRIPTION <<< "$BRANCH"
+# Check if the branch is main or develop
+if [ "$BRANCH_NAME" == "main" ] || [ "$BRANCH_NAME" == "develop" ]; then
+  exit 0
+fi
 
-  ORIGIN_MESSAGE=$(cat $COMMIT_EDITMSG)
-  IFS=":" read -r COMMIT_TYPE COMMIT_DESCRIPTION <<< "${ORIGIN_MESSAGE}"
-  COMMIT_TYPE=$(echo "$COMMIT_TYPE" | awk '{$1=$1};1')
-  COMMIT_DESCRIPTION=$(echo "$COMMIT_DESCRIPTION" | awk '{$1=$1};1')
+# Extract JIRA ID from the branch name
+JIRA_ID=$(echo "$BRANCH_NAME" | grep -oE '[A-Z]+-[0-9]+')
 
-  DESCRIPTION=$(git config branch."$BRANCH".description)
+# JIRA ID
+if [ -z`` "$JIRA_ID" ]; then
+  echo "브랜치명에 jiraID로 보이는게 존재하지 않음"
+  exit 0
+fi
 
-  echo "$COMMIT_TYPE/$ISSUE_NUMBER: $COMMIT_DESCRIPTION" > $COMMIT_EDITMSG
-  if [ -n "$DESCRIPTION" ] 
-  then
-     echo "" >> $COMMIT_EDITMSG
-     echo $DESCRIPTION >> $COMMIT_EDITMSG
-  fi 
-}
+# Extract origin commit message
+originCommitMessage=$(cat "$1")
+IFS=":" read -r commitType commitDescription <<< "$originCommitMessage"
+commitType=$(echo "$commitType" | awk '{$1=$1};1')
+commitDescription=$(echo "$commitDescription" | awk '{$1=$1};1')
 
-MERGE=$(cat $COMMIT_EDITMSG|grep -i 'merge'|wc -l)
+footer="https://dongurami.atlassian.net/browse/$JIRA_ID"
+customCommitMessage="${commitType}/${JIRA_ID}: ${commitDescription}
 
-if [ $MERGE -eq 0 ] ; then
-  if [ ! -s "$COMMIT_EDITMSG" ]; then
-    setMessage
-  fi
+${footer}
+"
+
+DESCRIPTION=$(git config branch."$BRANCH".description)
+
+if [ -z "$(echo "$originCommitMessage" | head -n 1)" ]; then
+  customCommitMessage="commitType${customCommitMessage}${originCommitMessage}"
+
+  echo -e "$customCommitMessage" > "$1"
+
+else
+  echo -e "$customCommitMessage" > "$1"
+  echo "The hook changed the commit message to the"
+  echo "$customCommitMessage"
+  echo "--------------------------"
 fi

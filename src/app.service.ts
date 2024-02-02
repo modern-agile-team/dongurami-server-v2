@@ -111,7 +111,24 @@ export class AppService {
       .addBearerAuth()
       .build();
 
-    const document = SwaggerModule.createDocument(app, config, {});
+    const document = SwaggerModule.createDocument(app, config, {
+      operationIdFactory: (controllerKey: string, methodKey: string) => {
+        const replacedController = controllerKey.replace(/Controller$/, '');
+
+        console.log(replacedController);
+
+        const controllerName =
+          replacedController.charAt(0).toLowerCase() +
+          replacedController.slice(1);
+
+        const methodName = methodKey.replace(
+          new RegExp(`^/${replacedController}/`),
+          '',
+        );
+
+        return `${controllerName}_${methodName}`;
+      },
+    });
 
     SwaggerModule.setup('api-docs', app, document, {
       jsonDocumentUrl: JSON_PATH,

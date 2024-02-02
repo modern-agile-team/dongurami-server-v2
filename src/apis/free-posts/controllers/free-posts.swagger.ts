@@ -27,7 +27,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostCreate',
+        // operationId: 'FreePostCreate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),

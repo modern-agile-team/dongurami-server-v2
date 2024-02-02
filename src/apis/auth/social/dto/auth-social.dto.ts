@@ -87,7 +87,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
 
   @IsInt()
   @IsNullable()
-  userMajorId: number | null;
+  majorId: number | null;
 }
 
 export class SignInRequestBodyDto extends CheckRegistrationRequestBodyDto {}

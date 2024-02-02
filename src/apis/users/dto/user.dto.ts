@@ -18,7 +18,7 @@ export class UserDto
     Pick<
       User,
       | 'id'
-      | 'userMajorId'
+      | 'majorId'
       | 'loginType'
       | 'snsId'
       | 'studentNumber'
@@ -37,7 +37,7 @@ export class UserDto
     >
 {
   @ApiProperty({})
-  userMajorId: number | null;
+  majorId: number | null;
 
   @ApiProperty({
     description: '유저 로그인 타입',

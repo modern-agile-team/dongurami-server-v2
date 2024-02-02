@@ -16,7 +16,7 @@ export class User1706436836635 implements MigrationInterface {
         columns: [
           generatePrimaryColumn('유저 고유 ID'),
           {
-            name: 'user_major_id',
+            name: 'major_id',
             type: 'int',
             unsigned: true,
             isNullable: true,
@@ -118,9 +118,9 @@ export class User1706436836635 implements MigrationInterface {
         ],
         foreignKeys: [
           {
-            referencedTableName: 'user_major',
+            referencedTableName: 'major',
             referencedColumnNames: ['id'],
-            columnNames: ['user_major_id'],
+            columnNames: ['major_id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },

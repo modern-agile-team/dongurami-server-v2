@@ -18,7 +18,7 @@ import { User } from './User';
 @Index(['snsId'], { unique: true })
 @Index(['studentNumber'], { unique: true })
 @Index(['nickname'], { unique: true })
-@Index(['userMajorId'], {})
+@Index(['majorId'], {})
 @Entity('user_history')
 export class UserHistory {
   @PrimaryGeneratedColumn({
@@ -30,12 +30,12 @@ export class UserHistory {
   id: number;
 
   @Column('int', {
-    name: 'user_major_id',
+    name: 'major_id',
     nullable: true,
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  userMajorId: number | null;
+  majorId: number | null;
 
   @Column('int', {
     name: 'user_id',

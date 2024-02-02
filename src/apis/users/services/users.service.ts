@@ -74,7 +74,7 @@ export class UsersService {
         code: '01',
       },
     });
-    createUserRequestBodyDto.userMajorId = major.id;
+    createUserRequestBodyDto.majorId = major.id;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -173,7 +173,7 @@ export class UsersService {
         where: { code: '01' },
       });
 
-      putUpdateUserDto.userMajorId = major.id;
+      putUpdateUserDto.majorId = major.id;
 
       await entityManager
         .withRepository(this.userRepository)

@@ -1,4 +1,4 @@
-import { UserMajor } from '@src/entities/UserMajor';
+import { Major } from '@src/entities/Major';
 import {
   generateCreatedAtColumn,
   generatePrimaryColumn,
@@ -6,12 +6,12 @@ import {
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class UserMajor1706435061683 implements MigrationInterface {
+export class Major1706435061683 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // 전공
     await queryRunner.createTable(
       new Table({
-        name: 'user_major',
+        name: 'major',
         columns: [
           generatePrimaryColumn('전공 고유 ID'),
           {
@@ -40,9 +40,9 @@ export class UserMajor1706435061683 implements MigrationInterface {
         ],
       }),
     );
-    await queryRunner.query('ALTER TABLE user_major COMMENT = "전공"');
+    await queryRunner.query('ALTER TABLE major COMMENT = "전공"');
 
-    await queryRunner.manager.getRepository(UserMajor).upsert(
+    await queryRunner.manager.getRepository(Major).upsert(
       [
         {
           code: '01',
@@ -280,6 +280,6 @@ export class UserMajor1706435061683 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable(new Table({ name: 'user_major' }));
+    await queryRunner.dropTable(new Table({ name: 'major' }));
   }
 }

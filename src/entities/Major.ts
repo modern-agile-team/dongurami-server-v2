@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 
-@Entity('user_major', { schema: 'dongurami_v2' })
-export class UserMajor {
+@Entity('major')
+export class Major {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -34,6 +34,6 @@ export class UserMajor {
   })
   updatedAt: Date;
 
-  @OneToMany(() => User, (user) => user.userMajor)
+  @OneToMany(() => User, (user) => user.major)
   users: User[];
 }

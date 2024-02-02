@@ -26,7 +26,7 @@ import { NoticePostReaction } from './NoticePostReaction';
 import { NoticePostReplyComment } from './NoticePostReplyComment';
 import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
 import { UserHistory } from './UserHistory';
-import { UserMajor } from './UserMajor';
+import { Major } from './Major';
 
 @Index(['email'], { unique: true })
 @Index(['snsId'], { unique: true })
@@ -43,11 +43,11 @@ export class User {
   id: number;
 
   @Column('int', {
-    name: 'user_major_id',
+    name: 'major_id',
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  userMajorId: number | null;
+  majorId: number | null;
 
   @Column('enum', {
     name: 'login_type',
@@ -231,12 +231,12 @@ export class User {
   )
   noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 
-  @ManyToOne(() => UserMajor, (userMajor) => userMajor.users, {
+  @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'user_major_id', referencedColumnName: 'id' }])
-  userMajor: UserMajor;
+  @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
+  major: Major;
 
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];

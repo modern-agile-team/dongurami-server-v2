@@ -123,7 +123,7 @@ export class AppService {
         const singularMethodName = inflection.singularize(methodKey);
 
         const methodName = singularMethodName.replace(
-          new RegExp(singularControllerName, 'ig'),
+          singularControllerName,
           '',
         );
 

@@ -23,6 +23,7 @@ import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/ht
 import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
 import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
+import * as inflection from 'inflection';
 
 @Injectable()
 export class AppService {
@@ -113,18 +114,27 @@ export class AppService {
 
     const document = SwaggerModule.createDocument(app, config, {
       operationIdFactory: (controllerKey: string, methodKey: string) => {
-        const replacedController = controllerKey.replace(/Controller$/, '');
+        const replacedControllerName = controllerKey.replace(/Controller$/, '');
 
-        console.log(replacedController);
+        const singularControllerName = inflection.singularize(
+          replacedControllerName,
+        );
 
-        const controllerName =
-          replacedController.charAt(0).toLowerCase() +
-          replacedController.slice(1);
+        const singularMethodName = inflection.singularize(methodKey);
 
-        const methodName = methodKey.replace(
-          new RegExp(`^/${replacedController}/`),
+        const methodName = singularMethodName.replace(
+          new RegExp(singularControllerName, 'ig'),
           '',
         );
+
+        const controllerName =
+          singularControllerName.charAt(0).toLowerCase() +
+          singularControllerName.slice(1);
+
+        console.log(controllerName);
+
+        console.log(`Original methodKey: ${methodKey}`);
+        console.log(`Replaced methodKey: ${methodName}`);
 
         return `${controllerName}_${methodName}`;
       },

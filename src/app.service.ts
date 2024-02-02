@@ -131,11 +131,6 @@ export class AppService {
           singularControllerName.charAt(0).toLowerCase() +
           singularControllerName.slice(1);
 
-        console.log(controllerName);
-
-        console.log(`Original methodKey: ${methodKey}`);
-        console.log(`Replaced methodKey: ${methodName}`);
-
         return `${controllerName}_${methodName}`;
       },
     });

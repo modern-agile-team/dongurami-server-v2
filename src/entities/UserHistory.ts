@@ -7,29 +7,35 @@ import { HistoryAction } from '@src/constants/enum';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserMajor } from './UserMajor';
 import { User } from './User';
 
-@Entity('user_history', { schema: 'dongurami_v2' })
+@Index(['email'], { unique: true })
+@Index(['snsId'], { unique: true })
+@Index(['studentNumber'], { unique: true })
+@Index(['nickname'], { unique: true })
+@Index(['majorId'], {})
+@Entity('user_history')
 export class UserHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '유저 히스토리 고유 ID',
+    comment: '유저 고유 수정이력 ID',
     unsigned: true,
   })
   id: number;
 
   @Column('int', {
     name: 'major_id',
+    nullable: true,
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  majorId: number;
+  majorId: number | null;
 
   @Column('int', {
     name: 'user_id',
@@ -39,31 +45,53 @@ export class UserHistory {
   userId: number;
 
   @Column('enum', {
-    name: 'action',
-    comment: 'history 를 쌓는 action',
-    enum: HistoryAction,
-  })
-  action: HistoryAction;
-
-  @Column('enum', {
     name: 'login_type',
     comment: '로그인 타입',
-    enum: UserLoginType,
+    enum: ['KAKAO', 'GOOGLE', 'NAVER'],
   })
   loginType: UserLoginType;
 
-  @Column('varchar', { name: 'name', comment: '유저 이름', length: 20 })
-  name: string;
+  @Column('varchar', {
+    name: 'sns_id',
+    nullable: true,
+    unique: true,
+    comment: '소셜 아이디',
+    length: 255,
+  })
+  snsId: string | null;
 
   @Column('varchar', {
-    name: 'password',
+    name: 'student_number',
     nullable: true,
-    comment: '비밀번호',
-    length: 128,
+    unique: true,
+    comment: '유저 학번',
+    length: 20,
   })
-  password: string | null;
+  studentNumber: string | null;
 
-  @Column('varchar', { name: 'email', comment: '이메일', length: 255 })
+  @Column('varchar', {
+    name: 'name',
+    nullable: true,
+    comment: '본명을 기대하는 유저 이름',
+    length: 20,
+  })
+  name: string | null;
+
+  @Column('varchar', {
+    name: 'nickname',
+    nullable: true,
+    unique: true,
+    comment: '유저 닉네임',
+    length: 255,
+  })
+  nickname: string | null;
+
+  @Column('varchar', {
+    name: 'email',
+    unique: true,
+    comment: '이메일',
+    length: 255,
+  })
   email: string;
 
   @Column('varchar', {
@@ -101,15 +129,23 @@ export class UserHistory {
   @Column('enum', {
     name: 'role',
     comment: '역할 (admin: service admin, student: 학생)',
-    enum: UserRole,
+    enum: ['admin', 'student'],
     default: () => "'student'",
   })
   role: UserRole;
 
   @Column('enum', {
+    name: 'action',
+    comment: 'history 를 쌓는 action',
+    enum: HistoryAction,
+  })
+  action: HistoryAction;
+
+  @Column('enum', {
     name: 'status',
     comment: '유저 상태',
-    enum: UserStatus,
+    enum: ['active', 'inactive'],
+    default: () => "'active'",
   })
   status: UserStatus;
 
@@ -119,13 +155,6 @@ export class UserHistory {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
-
-  @ManyToOne(() => UserMajor, (major) => major.userHistories, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
-  major: UserMajor;
 
   @ManyToOne(() => User, (user) => user.userHistories, {
     onDelete: 'CASCADE',

@@ -1,4 +1,5 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { RequiredCommonPostColumn } from '@src/apis/common-posts/types/common-post.type';
@@ -12,6 +13,7 @@ export class CommonPostsModule {
   static forFeature(postEntity: Type<RequiredCommonPostColumn>): DynamicModule {
     return {
       module: CommonPostsModule,
+      imports: [TypeOrmModule.forFeature([postEntity])],
       providers: [
         {
           provide: COMMON_POST_REPOSITORY_TOKEN,

@@ -1,6 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { CreateUserRequestBodyDto } from './create-user-request-body.dto';
 import { IsString } from 'class-validator';
+import { CreateUserRequestBodyDto } from './create-user-request-body.dto';
 
 import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
 

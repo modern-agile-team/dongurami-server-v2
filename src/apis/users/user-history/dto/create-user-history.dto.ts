@@ -12,7 +12,6 @@ export class CreateUserHistoryDto
       | 'majorId'
       | 'loginType'
       | 'name'
-      | 'password'
       | 'email'
       | 'phoneNumber'
       | 'grade'
@@ -25,7 +24,6 @@ export class CreateUserHistoryDto
   majorId: number;
   loginType: UserLoginType;
   name: string;
-  password: string | null;
   email: string;
   phoneNumber: string | null;
   grade: number | null;
@@ -38,7 +36,6 @@ export class CreateUserHistoryDto
     this.majorId = createUserHistoryDto.majorId;
     this.loginType = createUserHistoryDto.loginType;
     this.name = createUserHistoryDto.name;
-    this.password = createUserHistoryDto.password;
     this.email = createUserHistoryDto.email;
     this.phoneNumber = createUserHistoryDto.phoneNumber;
     this.grade = createUserHistoryDto.grade;

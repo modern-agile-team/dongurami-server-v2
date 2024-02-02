@@ -57,6 +57,7 @@ export class FreePostReplyCommentsService {
         .withRepository(this.freePostReplyCommentRepository)
         .save({
           userId,
+          freePostId,
           freePostCommentId: existComment.id,
           ...createFreePostReplyCommentDto,
         });
@@ -65,6 +66,8 @@ export class FreePostReplyCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
+        newPostReplyComment.id,
         HistoryAction.Insert,
         newPostReplyComment,
       );
@@ -192,6 +195,8 @@ export class FreePostReplyCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
+        freePostReplyCommentId,
         HistoryAction.Update,
         newReplyComment,
       );
@@ -247,7 +252,7 @@ export class FreePostReplyCommentsService {
         .withRepository(this.freePostReplyCommentRepository)
         .update(
           {
-            id: freePostId,
+            id: freePostReplyCommentId,
           },
           {
             status: FreePostReplyCommentStatus.Remove,
@@ -259,6 +264,8 @@ export class FreePostReplyCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
+        freePostReplyCommentId,
         HistoryAction.Delete,
         {
           ...existReplyComment,

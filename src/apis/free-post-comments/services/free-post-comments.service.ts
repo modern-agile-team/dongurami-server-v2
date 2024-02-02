@@ -62,6 +62,7 @@ export class FreePostCommentsService {
         entityManager,
         userId,
         existPost.id,
+        newPostComment.id,
         HistoryAction.Insert,
         newPostComment,
       );
@@ -172,6 +173,7 @@ export class FreePostCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
         HistoryAction.Update,
         newComment,
       );
@@ -228,7 +230,7 @@ export class FreePostCommentsService {
         .withRepository(this.freePostCommentRepository)
         .update(
           {
-            id: freePostId,
+            id: freePostCommentId,
           },
           {
             status: FreePostCommentStatus.Remove,
@@ -240,6 +242,7 @@ export class FreePostCommentsService {
         entityManager,
         userId,
         freePostId,
+        freePostCommentId,
         HistoryAction.Delete,
         {
           ...existComment,

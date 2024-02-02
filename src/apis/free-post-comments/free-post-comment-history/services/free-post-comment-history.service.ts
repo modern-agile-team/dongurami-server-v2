@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
-import { HistoryAction, SortOrder } from '@src/constants/enum';
+import { HistoryAction } from '@src/constants/enum';
 import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
 import { EntityManager, FindOneOptions } from 'typeorm';
 import { CreateFreePostCommentHistoryDto } from '../dto/create-free-post-comment-history.dto';
@@ -9,7 +8,6 @@ import { FreePostCommentHistoryRepository } from '../repositories/free-post-comm
 @Injectable()
 export class FreePostCommentHistoryService {
   constructor(
-    private readonly freePostHistoryService: FreePostHistoryService,
     private readonly freePostCommentHistoryRepository: FreePostCommentHistoryRepository,
   ) {}
 
@@ -17,28 +15,17 @@ export class FreePostCommentHistoryService {
     entityManager: EntityManager,
     userId: number,
     freePostId: number,
+    freePostCommentId: number,
     action: HistoryAction,
     createFreePostCommentHistoryDto: CreateFreePostCommentHistoryDto,
   ) {
-    const recentFreePostHistory =
-      await this.freePostHistoryService.findOneOrFail(entityManager, {
-        select: {
-          id: true,
-        },
-        where: {
-          freePostId,
-        },
-        order: {
-          id: SortOrder.Desc,
-        },
-      });
-
     return entityManager
       .withRepository(this.freePostCommentHistoryRepository)
       .save({
         userId,
         action,
-        freePostHistoryId: recentFreePostHistory.id,
+        freePostId,
+        freePostCommentId,
         ...new CreateFreePostCommentHistoryDto(createFreePostCommentHistoryDto),
       });
   }

@@ -9,12 +9,12 @@ import { FreePostComment } from './FreePostComment';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('free_post_comment_reaction', { schema: 'dongurami_v2' })
+@Entity('free_post_comment_reaction')
 export class FreePostCommentReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '자유 게시글 댓글 반응 고유 ID',
+    comment: '고유 ID',
     unsigned: true,
   })
   id: number;

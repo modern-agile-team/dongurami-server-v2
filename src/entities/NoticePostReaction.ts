@@ -9,22 +9,22 @@ import { NoticePost } from './NoticePost';
 import { ReactionType } from './ReactionType';
 import { User } from './User';
 
-@Entity('notice_post_reaction', { schema: 'dongurami_local_db' })
+@Entity('notice_post_reaction')
 export class NoticePostReaction {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '공지 게시글 반응 고유 ID',
+    comment: '고유 ID',
     unsigned: true,
   })
   id: number;
 
-  @Column('timestamp', {
-    name: 'created_at',
-    comment: '생성 일자',
-    default: () => 'CURRENT_TIMESTAMP',
+  @Column('int', {
+    name: 'reaction_type_id',
+    comment: '리액션 타입 고유 ID',
+    unsigned: true,
   })
-  createdAt: Date;
+  reactionTypeId: number;
 
   @Column('int', {
     name: 'user_id',
@@ -33,19 +33,19 @@ export class NoticePostReaction {
   })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.noticePostReactions, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
-
   @Column('int', {
     name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticePostId: number;
+  parentId: number;
+
+  @Column('timestamp', {
+    name: 'created_at',
+    comment: '생성 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 
   @ManyToOne(() => NoticePost, (noticePost) => noticePost.noticePostReactions, {
     onDelete: 'CASCADE',
@@ -61,4 +61,11 @@ export class NoticePostReaction {
   )
   @JoinColumn([{ name: 'reaction_type_id', referencedColumnName: 'id' }])
   reactionType: ReactionType;
+
+  @ManyToOne(() => User, (user) => user.noticePostReactions, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
 }

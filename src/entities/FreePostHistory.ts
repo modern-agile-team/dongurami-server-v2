@@ -4,31 +4,23 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FreePost } from './FreePost';
-import { FreePostCommentHistory } from './FreePostCommentHistory';
-import { User } from './User';
 
-@Entity('free_post_history', { schema: 'dongurami_v2' })
+@Index(['userId'], {})
+@Entity('free_post_history')
 export class FreePostHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '자유 게시글 히스토리 고유 ID',
+    comment: '자유 게시글 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;
-
-  @Column('int', {
-    name: 'user_id',
-    comment: '게시글 작성 유저 고유 ID',
-    unsigned: true,
-  })
-  userId: number;
 
   @Column('int', {
     name: 'free_post_id',
@@ -36,6 +28,13 @@ export class FreePostHistory {
     unsigned: true,
   })
   freePostId: number;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '게시글 작성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @Column('enum', {
     name: 'action',
@@ -50,6 +49,14 @@ export class FreePostHistory {
   @Column('text', { name: 'description', comment: '자유게시글 내용' })
   description: string;
 
+  @Column('int', {
+    name: 'hit',
+    comment: '조회수',
+    unsigned: true,
+    default: () => "'0'",
+  })
+  hit: number;
+
   @Column('tinyint', {
     name: 'is_anonymous',
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
@@ -62,7 +69,8 @@ export class FreePostHistory {
   @Column('enum', {
     name: 'status',
     comment: '자유게시글 상태',
-    enum: FreePostStatus,
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
   })
   status: FreePostStatus;
 
@@ -73,22 +81,9 @@ export class FreePostHistory {
   })
   createdAt: Date;
 
-  @OneToMany(
-    () => FreePostCommentHistory,
-    (freePostCommentHistory) => freePostCommentHistory.freePostHistory,
-  )
-  freePostCommentHistories: FreePostCommentHistory[];
-
-  @ManyToOne(() => User, (user) => user.freePostHistories, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
-
   @ManyToOne(() => FreePost, (freePost) => freePost.freePostHistories, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'free_post_id', referencedColumnName: 'id' }])
   freePost: FreePost;

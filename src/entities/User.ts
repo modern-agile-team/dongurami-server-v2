@@ -4,38 +4,35 @@ import {
   UserRole,
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
-import { FreePost } from '@src/entities/FreePost';
-import { FreePostComment } from '@src/entities/FreePostComment';
-import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
-import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
-import { FreePostHistory } from '@src/entities/FreePostHistory';
-import { FreePostReaction } from '@src/entities/FreePostReaction';
-import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
-import { FreePostReplyCommentHistory } from '@src/entities/FreePostReplyCommentHistory';
-import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
-import { NoticePost } from '@src/entities/NoticePost';
-import { NoticePostComment } from '@src/entities/NoticePostComment';
-import { UserHistory } from '@src/entities/UserHistory';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ClubJoinApplication } from './ClubJoinApplication';
-import { ClubMember } from './ClubMember';
-import { UserMajor } from './UserMajor';
+import { FreePost } from './FreePost';
+import { FreePostComment } from './FreePostComment';
+import { FreePostCommentReaction } from './FreePostCommentReaction';
+import { FreePostReaction } from './FreePostReaction';
+import { FreePostReplyComment } from './FreePostReplyComment';
+import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
+import { NoticePost } from './NoticePost';
+import { NoticePostComment } from './NoticePostComment';
 import { NoticePostCommentReaction } from './NoticePostCommentReaction';
 import { NoticePostReaction } from './NoticePostReaction';
 import { NoticePostReplyComment } from './NoticePostReplyComment';
 import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
-import { NoticePostHistory } from './NoticePostHistory';
-import { NoticePostCommentHistory } from './NoticePostCommentHistory';
-import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
+import { UserHistory } from './UserHistory';
+import { Major } from './Major';
 
-@Entity('user', { schema: 'dongurami_v2' })
+@Index(['email'], { unique: true })
+@Index(['snsId'], { unique: true })
+@Index(['studentNumber'], { unique: true })
+@Index(['nickname'], { unique: true })
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -50,48 +47,56 @@ export class User {
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  majorId: number;
+  majorId: number | null;
+
+  @Column('enum', {
+    name: 'login_type',
+    comment: '로그인 타입',
+    enum: ['KAKAO', 'GOOGLE', 'NAVER'],
+  })
+  loginType: UserLoginType;
+
+  @Column('varchar', {
+    name: 'sns_id',
+    nullable: true,
+    unique: true,
+    comment: '소셜 아이디',
+    length: 255,
+  })
+  snsId: string | null;
 
   @Column('varchar', {
     name: 'student_number',
-    comment: '유저 학번',
     nullable: true,
+    unique: true,
+    comment: '유저 학번',
     length: 20,
   })
   studentNumber: string | null;
 
   @Column('varchar', {
-    name: 'sns_id',
-    comment: '소셜 고유 ID',
-    nullable: true,
-    length: 255,
-  })
-  snsId: string | null;
-
-  @Column('enum', {
-    name: 'login_type',
-    comment: '로그인 타입',
-    enum: UserLoginType,
-  })
-  loginType: UserLoginType;
-
-  @Column('varchar', {
     name: 'name',
     nullable: true,
-    comment: '유저 이름',
+    comment: '본명을 기대하는 유저 이름',
     length: 20,
   })
   name: string | null;
 
   @Column('varchar', {
-    name: 'password',
+    name: 'nickname',
     nullable: true,
-    comment: '비밀번호',
-    length: 128,
+    unique: true,
+    comment: '유저 닉네임',
+    length: 255,
   })
-  password: string | null;
+  nickname: string | null;
 
-  @Column('varchar', { name: 'email', comment: '이메일', length: 255 })
+  @Column('varchar', {
+    name: 'email',
+    unique: true,
+    comment: '이메일',
+    length: 255,
+  })
   email: string;
 
   @Column('varchar', {
@@ -129,7 +134,7 @@ export class User {
   @Column('enum', {
     name: 'role',
     comment: '역할 (admin: service admin, student: 학생)',
-    enum: UserRole,
+    enum: ['admin', 'student'],
     default: () => "'student'",
   })
   role: UserRole;
@@ -137,7 +142,8 @@ export class User {
   @Column('enum', {
     name: 'status',
     comment: '유저 상태',
-    enum: UserStatus,
+    enum: ['active', 'inactive'],
+    default: () => "'active'",
   })
   status: UserStatus;
 
@@ -150,7 +156,7 @@ export class User {
 
   @Column('timestamp', {
     name: 'updated_at',
-    comment: '생성 일자',
+    comment: '수정 일자',
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
@@ -162,15 +168,6 @@ export class User {
   })
   deletedAt: Date | null;
 
-  @OneToMany(
-    () => ClubJoinApplication,
-    (clubJoinApplication) => clubJoinApplication.user,
-  )
-  clubJoinApplications: ClubJoinApplication[];
-
-  @OneToMany(() => ClubMember, (clubMember) => clubMember.user)
-  clubMembers: ClubMember[];
-
   @OneToMany(() => FreePost, (freePost) => freePost.user)
   freePosts: FreePost[];
 
@@ -178,19 +175,10 @@ export class User {
   freePostComments: FreePostComment[];
 
   @OneToMany(
-    () => FreePostCommentHistory,
-    (freePostCommentHistory) => freePostCommentHistory.user,
-  )
-  freePostCommentHistories: FreePostCommentHistory[];
-
-  @OneToMany(
     () => FreePostCommentReaction,
     (freePostCommentReaction) => freePostCommentReaction.user,
   )
   freePostCommentReactions: FreePostCommentReaction[];
-
-  @OneToMany(() => FreePostHistory, (freePostHistory) => freePostHistory.user)
-  freePostHistories: FreePostHistory[];
 
   @OneToMany(
     () => FreePostReaction,
@@ -205,12 +193,6 @@ export class User {
   freePostReplyComments: FreePostReplyComment[];
 
   @OneToMany(
-    () => FreePostReplyCommentHistory,
-    (freePostReplyCommentHistory) => freePostReplyCommentHistory.user,
-  )
-  freePostReplyCommentHistories: FreePostReplyCommentHistory[];
-
-  @OneToMany(
     () => FreePostReplyCommentReaction,
     (freePostReplyCommentReaction) => freePostReplyCommentReaction.user,
   )
@@ -220,22 +202,10 @@ export class User {
   noticePosts: NoticePost[];
 
   @OneToMany(
-    () => NoticePostHistory,
-    (noticePostHistories) => noticePostHistories.user,
-  )
-  noticePostHistories: NoticePostHistory[];
-
-  @OneToMany(
     () => NoticePostComment,
     (noticePostComment) => noticePostComment.user,
   )
   noticePostComments: NoticePostComment[];
-
-  @OneToMany(
-    () => NoticePostCommentHistory,
-    (noticePostCommentHistories) => noticePostCommentHistories.user,
-  )
-  noticePostCommentHistories: NoticePostCommentHistory[];
 
   @OneToMany(
     () => NoticePostCommentReaction,
@@ -256,23 +226,17 @@ export class User {
   noticePostReplyComments: NoticePostReplyComment[];
 
   @OneToMany(
-    () => NoticePostReplyCommentHistory,
-    (noticePostReplyCommentHistories) => noticePostReplyCommentHistories.user,
-  )
-  noticePostReplyCommentHistories: NoticePostReplyCommentHistory[];
-
-  @OneToMany(
     () => NoticePostReplyCommentReaction,
     (noticePostReplyCommentReaction) => noticePostReplyCommentReaction.user,
   )
   noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 
-  @ManyToOne(() => UserMajor, (major) => major.users, {
+  @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'major_id', referencedColumnName: 'id' }])
-  major: UserMajor;
+  major: Major;
 
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];

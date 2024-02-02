@@ -1,6 +1,6 @@
 import { CustomRepository } from '@src/core/type-orm/decorators/custom-repository.decorator';
-import { UserMajor } from '@src/entities/UserMajor';
+import { Major } from '@src/entities/Major';
 import { Repository } from 'typeorm';
 
-@CustomRepository(UserMajor)
-export class MajorRepository extends Repository<UserMajor> {}
+@CustomRepository(Major)
+export class MajorRepository extends Repository<Major> {}

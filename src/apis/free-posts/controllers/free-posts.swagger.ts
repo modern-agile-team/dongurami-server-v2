@@ -27,7 +27,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        // operationId: 'FreePostCreate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -60,7 +59,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
@@ -89,7 +87,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostFindOneOrNotFound',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
@@ -114,7 +111,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostPutUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -149,7 +145,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostPatchUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -187,7 +182,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostRemove',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -222,7 +216,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostIncrementHit',
         ...apiOperationOptions,
       }),
       ApiNoContentResponse(),
@@ -247,7 +240,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostCreateReaction',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -282,7 +274,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostRemoveReaction',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),

@@ -19,7 +19,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostCreate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -52,7 +51,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
@@ -78,7 +76,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostFindOneOrNotFound',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(
@@ -110,7 +107,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostPutUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -148,7 +144,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostPatchUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -186,7 +181,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostRemove',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -221,7 +215,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostIncreaseHit',
         ...apiOperationOptions,
       }),
       ApiResponse({ status: HttpStatus.NO_CONTENT }),

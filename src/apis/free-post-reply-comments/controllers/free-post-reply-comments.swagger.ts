@@ -29,7 +29,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentCreate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -65,7 +64,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
@@ -97,7 +95,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentPutUpdate',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -136,7 +133,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentRemove',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -171,7 +167,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentCreateReaction',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -206,7 +201,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentRemoveReaction',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),

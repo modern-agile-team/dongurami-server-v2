@@ -1,15 +1,15 @@
-import { ApiOperator } from "@src/types/type";
-import { AuthSocialController } from "./auth-social.controller";
-import { OperationObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
-import { HttpStatus, applyDecorators } from "@nestjs/common";
-import { ApiCreatedResponse, ApiOperation } from "@nestjs/swagger";
-import { DetailResponseDto } from "@src/interceptors/success-interceptor/dto/detail-response.dto";
-import { UserDto } from "@src/apis/users/dto/user.dto";
-import { ValidationError } from "class-validator";
-import { HttpException } from "@src/http-exceptions/exceptions/http.exception";
-import { COMMON_ERROR_CODE } from "@src/constants/error/common/common-error-code.constant";
-import { USER_ERROR_CODE } from "@src/constants/error/users/user-error-code.constant";
-import { AUTH_ERROR_CODE } from "@src/constants/error/auth/auth-error-code.constant";
+import { ApiOperator } from '@src/types/type';
+import { AuthSocialController } from './auth-social.controller';
+import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { HttpStatus, applyDecorators } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ValidationError } from 'class-validator';
+import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
+import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 
 export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   CheckRegistration: (
@@ -18,13 +18,12 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'CheckRegistration',
         ...apiOperationOptions,
       }),
       ApiCreatedResponse({
-        type: Boolean
+        type: Boolean,
       }),
-    )
+    );
   },
   SignUp: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
@@ -32,7 +31,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'Signup',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.CREATED, 'user', UserDto),
@@ -60,7 +58,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'AuthSignIn',
         ...apiOperationOptions,
       }),
       ApiCreatedResponse({
@@ -91,4 +88,4 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
       ]),
     );
   },
-}
+};

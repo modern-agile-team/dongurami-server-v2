@@ -12,7 +12,6 @@ export const ApiRoot: ApiOperator<keyof RootController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'getFindAllErrorCode',
         ...apiOperationOptions,
       }),
       ApiOkResponse({ type: ErrorCodeResponseDto }),

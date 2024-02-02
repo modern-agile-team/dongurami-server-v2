@@ -21,7 +21,6 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'AuthSignIn',
         ...apiOperationOptions,
       }),
       ApiCreatedResponse({
@@ -59,7 +58,6 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'AuthGetProfile',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),
@@ -76,7 +74,6 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'AuthGetAccessToken',
         ...apiOperationOptions,
       }),
       ApiBearerAuth(),

@@ -30,10 +30,10 @@ import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 import { FreePostsService } from '../services/free-posts.service';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-response.swagger';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('free-post')
-@ApiCommonErrorCode()
+@ApiCommonResponse([500])
 @Controller('free-posts')
 export class FreePostsController {
   constructor(private readonly freePostsService: FreePostsService) {}

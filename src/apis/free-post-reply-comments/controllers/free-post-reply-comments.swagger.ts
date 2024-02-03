@@ -6,6 +6,7 @@ import { FreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/
 import { FreePostReplyCommentsItemDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comments-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
@@ -28,6 +29,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentCreate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'freePostReplyComment',
@@ -86,6 +88,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentPutUpdate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'freePostReplyComment',
@@ -115,6 +118,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentRemove',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -140,6 +144,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentCreateReaction',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -168,6 +173,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentRemoveReaction',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

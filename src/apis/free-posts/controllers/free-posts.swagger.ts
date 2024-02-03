@@ -6,6 +6,7 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
@@ -26,6 +27,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostCreate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'freePost',
@@ -103,6 +105,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostPutUpdate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -128,6 +131,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostPatchUpdate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -156,6 +160,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostRemove',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -206,6 +211,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostCreateReaction',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -234,6 +240,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostRemoveReaction',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

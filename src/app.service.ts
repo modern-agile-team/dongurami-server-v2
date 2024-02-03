@@ -124,11 +124,7 @@ export class AppService {
      */
     const document = SwaggerModule.createDocument(app, config, {
       operationIdFactory: (controllerKey: string, methodKey: string) => {
-        const replacedControllerName = controllerKey.replace(/Controller$/, '');
-
-        const singularControllerName = singularize(replacedControllerName);
-
-        const controllerName = singularControllerName.replace(
+        const controllerName = singularize(controllerKey.replace(/Controller$/, '')).replace(
           /^(.)*/,
           (matchStr) => matchStr.toLowerCase(),
         );

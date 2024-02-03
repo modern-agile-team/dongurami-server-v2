@@ -29,7 +29,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentCreate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'freePostReplyComment',
@@ -88,7 +88,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentPutUpdate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'freePostReplyComment',
@@ -118,7 +118,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentRemove',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -144,7 +144,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentCreateReaction',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -173,7 +173,7 @@ export const ApiFreePostReplyComment: ApiOperator<
         operationId: 'FreePostReplyCommentRemoveReaction',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

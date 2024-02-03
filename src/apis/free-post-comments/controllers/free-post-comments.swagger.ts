@@ -25,7 +25,7 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentCreate',
           ...apiOperationOptions,
         }),
-        ApiCommonResponse([401]),
+        ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
         DetailResponseDto.swaggerBuilder(
           HttpStatus.CREATED,
           'freePostComment',
@@ -84,7 +84,7 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentPutUpdate',
           ...apiOperationOptions,
         }),
-        ApiCommonResponse([401, 403]),
+        ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
         DetailResponseDto.swaggerBuilder(
           HttpStatus.OK,
           'freePostComment',
@@ -114,7 +114,7 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentRemove',
           ...apiOperationOptions,
         }),
-        ApiCommonResponse([401, 403]),
+        ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
         DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
         HttpException.swaggerBuilder(
           HttpStatus.BAD_REQUEST,
@@ -140,7 +140,7 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentCreateReaction',
           ...apiOperationOptions,
         }),
-        ApiCommonResponse([401]),
+        ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
         ApiNoContentResponse(),
         HttpException.swaggerBuilder(
           HttpStatus.BAD_REQUEST,
@@ -169,7 +169,7 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentRemoveReaction',
           ...apiOperationOptions,
         }),
-        ApiCommonResponse([401]),
+        ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
         ApiNoContentResponse(),
         HttpException.swaggerBuilder(
           HttpStatus.BAD_REQUEST,

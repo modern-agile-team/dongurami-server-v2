@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiAuth } from '@src/apis/auth/controllers/auth.swagger';
 import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
@@ -13,7 +21,7 @@ import { AuthService } from '../services/auth.service';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('auth')
-@ApiCommonResponse([500])
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

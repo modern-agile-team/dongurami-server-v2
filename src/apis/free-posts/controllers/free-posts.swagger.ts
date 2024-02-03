@@ -27,7 +27,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostCreate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'freePost',
@@ -105,7 +105,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostPutUpdate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -131,7 +131,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostPatchUpdate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -160,7 +160,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostRemove',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -211,7 +211,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostCreateReaction',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -240,7 +240,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
         operationId: 'FreePostRemoveReaction',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

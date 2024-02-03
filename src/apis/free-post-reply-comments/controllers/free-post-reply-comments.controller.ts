@@ -31,7 +31,7 @@ import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 
 @ApiTags('free-post-reply-comment')
-@ApiCommonResponse([500])
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('free-posts/:freePostId/comments/:freePostCommentId/reply')
 export class FreePostReplyCommentsController {
   constructor(

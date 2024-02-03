@@ -33,7 +33,7 @@ import { FreePostsService } from '../services/free-posts.service';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('free-post')
-@ApiCommonResponse([500])
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('free-posts')
 export class FreePostsController {
   constructor(private readonly freePostsService: FreePostsService) {}

@@ -56,7 +56,7 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         operationId: 'AuthGetProfile',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
     );
   },
@@ -70,7 +70,7 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         operationId: 'AuthGetAccessToken',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
     );
   },

@@ -31,7 +31,7 @@ import { FreePostCommentsService } from '../services/free-post-comments.service'
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('free-post-comment')
-@ApiCommonResponse()
+@ApiCommonResponse([500])
 @Controller('free-posts/:freePostId/comments')
 export class FreePostCommentsController {
   constructor(

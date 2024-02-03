@@ -8,14 +8,14 @@ import {
 import { CheckRegistrationRequestBodyDto } from '../dto/auth-registration.dto';
 import { AuthRegistrationService } from '../service/auth-registration.service';
 import { ApiAuthSocial } from './auth-social.swagger';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-response.swagger';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 /**
  * author: changhoon oh
  * @todo https://eslint.org/docs/latest/rules/no-return-await
  */
 @ApiTags('auth-social')
-@ApiCommonErrorCode()
+@ApiCommonResponse([500])
 @Controller('auth/social')
 export class AuthSocialController {
   constructor(

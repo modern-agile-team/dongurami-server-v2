@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -73,7 +73,6 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
         operationId: 'PutUpdateUser',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -84,17 +83,8 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },

@@ -35,9 +35,6 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
         MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_NAME,
         MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_CODE,
       ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 
@@ -53,9 +50,6 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
       CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'majors', MajorDto, {
         isArray: true,
       }),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 };

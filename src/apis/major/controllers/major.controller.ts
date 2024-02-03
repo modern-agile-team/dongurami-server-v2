@@ -7,8 +7,10 @@ import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto'
 import { MajorDto } from '../dto/major.dto';
 import { MajorService } from '../services/major.service';
 import { ApiMajors } from './major.swagger';
+import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
 
 @ApiTags('majors')
+@ApiCommonErrorCode()
 @Controller('major')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}

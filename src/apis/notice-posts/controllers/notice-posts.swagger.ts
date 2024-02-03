@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -22,7 +22,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostCreate',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'noticePost',
@@ -37,12 +36,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 
@@ -98,9 +91,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 
@@ -113,7 +103,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostPutUpdate',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'noticePost',
@@ -128,17 +117,8 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -151,7 +131,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostPatchUpdate',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'noticePost',
@@ -166,17 +145,8 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -189,7 +159,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostRemove',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'noticePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -200,17 +169,8 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -236,9 +196,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },

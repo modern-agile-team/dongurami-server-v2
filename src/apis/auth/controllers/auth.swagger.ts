@@ -5,6 +5,7 @@ import { AuthController } from '@src/apis/auth/controllers/auth.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { ApiOperator } from '@src/types/type';
@@ -55,6 +56,7 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         operationId: 'AuthGetProfile',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
     );
   },
@@ -68,6 +70,7 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         operationId: 'AuthGetAccessToken',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
     );
   },

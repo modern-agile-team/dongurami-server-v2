@@ -8,7 +8,7 @@ import {
 import { CheckRegistrationRequestBodyDto } from '../dto/auth-registration.dto';
 import { AuthRegistrationService } from '../service/auth-registration.service';
 import { ApiAuthSocial } from './auth-social.swagger';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
+import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-response.swagger';
 
 /**
  * author: changhoon oh

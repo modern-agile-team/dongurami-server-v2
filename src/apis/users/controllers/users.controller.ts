@@ -19,7 +19,7 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
+import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('user')
 @ApiCommonErrorCode()

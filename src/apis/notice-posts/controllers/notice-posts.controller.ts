@@ -28,7 +28,7 @@ import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { NoticePostsService } from '../services/notice-posts.service';
 import { ApiNoticePost } from './notice-posts.swagger';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
+import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('notice-post')
 @ApiCommonErrorCode()

@@ -10,10 +10,10 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { AuthService } from '../services/auth.service';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('auth')
-@ApiCommonErrorCode()
+@ApiCommonResponse([500])
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

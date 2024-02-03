@@ -23,7 +23,7 @@ import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/ht
 import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
 import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
-import * as inflection from 'inflection';
+import { singularize } from 'inflection';
 
 @Injectable()
 export class AppService {
@@ -112,26 +112,28 @@ export class AppService {
       .addBearerAuth()
       .build();
 
+    /**
+     * @todo 수정될 수 있음.
+     * ex) controller - Controller 지우고 단수형으로 변경
+     * method name은 그대로
+     * 문제점 - 메서드 네이밍 규칙이 각자 스타일이 달라서 모든 케이스에 대응할 수 없음.
+     * 메서드명, 컨트롤러 명에 같은 단어가 들어있는게 문제가 될 수 있다.
+     * rest 형식으로 가져갔을때 메서드 명을 제어할 수 있는 방법이 있다.
+     * [interface]{@link https://github.com/rrgks6221/nestjs-boiler-plate/blob/main/src/apis/posts/controllers/posts.controller.ts}
+     * [implements controller]{@link https://github.com/rrgks6221/nestjs-boiler-plate/blob/main/src/apis/posts/controllers/posts.controller.ts}
+     */
     const document = SwaggerModule.createDocument(app, config, {
       operationIdFactory: (controllerKey: string, methodKey: string) => {
         const replacedControllerName = controllerKey.replace(/Controller$/, '');
 
-        const singularControllerName = inflection.singularize(
-          replacedControllerName,
+        const singularControllerName = singularize(replacedControllerName);
+
+        const controllerName = singularControllerName.replace(
+          /^(.)*/,
+          (matchStr) => matchStr.toLowerCase(),
         );
 
-        const singularMethodName = inflection.singularize(methodKey);
-
-        const methodName = singularMethodName.replace(
-          singularControllerName,
-          '',
-        );
-
-        const controllerName =
-          singularControllerName.charAt(0).toLowerCase() +
-          singularControllerName.slice(1);
-
-        return `${controllerName}_${methodName}`;
+        return `${controllerName}_${methodKey}`;
       },
     });
 

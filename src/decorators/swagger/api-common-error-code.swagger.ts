@@ -3,7 +3,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 
-export function ApiCommonErrorCode(): ClassDecorator {
+export function ApiCommonErrorCode(): ClassDecorator & MethodDecorator {
   return applyDecorators(
     ApiBearerAuth(),
     HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [

@@ -1,9 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiNoContentResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { FreePostCommentsController } from '@src/apis/free-post-comments/controllers/free-post-comments.controller';
 import { FreePostCommentDto } from '@src/apis/free-post-comments/dto/free-post-comment.dto';
@@ -28,7 +24,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentCreate',
           ...apiOperationOptions,
         }),
-        ApiBearerAuth(),
         DetailResponseDto.swaggerBuilder(
           HttpStatus.CREATED,
           'freePostComment',
@@ -43,14 +38,8 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
             type: ValidationError,
           },
         ),
-        HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-          COMMON_ERROR_CODE.INVALID_TOKEN,
-        ]),
         HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
           COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-          COMMON_ERROR_CODE.SERVER_ERROR,
         ]),
       );
     },
@@ -78,9 +67,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
             type: ValidationError,
           },
         ),
-        HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-          COMMON_ERROR_CODE.SERVER_ERROR,
-        ]),
         HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
           COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
         ]),
@@ -96,7 +82,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentPutUpdate',
           ...apiOperationOptions,
         }),
-        ApiBearerAuth(),
         DetailResponseDto.swaggerBuilder(
           HttpStatus.OK,
           'freePostComment',
@@ -111,17 +96,8 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
             type: ValidationError,
           },
         ),
-        HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-          COMMON_ERROR_CODE.INVALID_TOKEN,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-          COMMON_ERROR_CODE.PERMISSION_DENIED,
-        ]),
         HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
           COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-          COMMON_ERROR_CODE.SERVER_ERROR,
         ]),
       );
     },
@@ -135,7 +111,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentRemove',
           ...apiOperationOptions,
         }),
-        ApiBearerAuth(),
         DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
         HttpException.swaggerBuilder(
           HttpStatus.BAD_REQUEST,
@@ -146,17 +121,8 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
             type: ValidationError,
           },
         ),
-        HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-          COMMON_ERROR_CODE.INVALID_TOKEN,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-          COMMON_ERROR_CODE.PERMISSION_DENIED,
-        ]),
         HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
           COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-          COMMON_ERROR_CODE.SERVER_ERROR,
         ]),
       );
     },
@@ -170,7 +136,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentCreateReaction',
           ...apiOperationOptions,
         }),
-        ApiBearerAuth(),
         ApiNoContentResponse(),
         HttpException.swaggerBuilder(
           HttpStatus.BAD_REQUEST,
@@ -181,17 +146,11 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
             type: ValidationError,
           },
         ),
-        HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-          COMMON_ERROR_CODE.INVALID_TOKEN,
-        ]),
         HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
           COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
         ]),
         HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
           REACTION_ERROR_CODE.ALREADY_LIKED,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-          COMMON_ERROR_CODE.SERVER_ERROR,
         ]),
       );
     },
@@ -205,7 +164,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
           operationId: 'FreePostCommentRemoveReaction',
           ...apiOperationOptions,
         }),
-        ApiBearerAuth(),
         ApiNoContentResponse(),
         HttpException.swaggerBuilder(
           HttpStatus.BAD_REQUEST,
@@ -216,17 +174,11 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
             type: ValidationError,
           },
         ),
-        HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-          COMMON_ERROR_CODE.INVALID_TOKEN,
-        ]),
         HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
           COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
         ]),
         HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
           REACTION_ERROR_CODE.NOT_LIKED,
-        ]),
-        HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-          COMMON_ERROR_CODE.SERVER_ERROR,
         ]),
       );
     },

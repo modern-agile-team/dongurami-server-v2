@@ -11,7 +11,7 @@ import { JwtStrategy } from '@src/apis/auth/jwt/jwt.strategy';
 import { UsersModule } from '@src/apis/users/users.module';
 import { EncryptionModule } from '@src/libs/encryption/encryption.module';
 import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middleware';
-import { AuthController } from './contollers/auth.controller';
+import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 
 @Module({

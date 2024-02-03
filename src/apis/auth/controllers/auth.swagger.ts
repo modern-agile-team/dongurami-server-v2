@@ -1,11 +1,7 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { AuthController } from '@src/apis/auth/contollers/auth.controller';
+import { AuthController } from '@src/apis/auth/controllers/auth.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -47,9 +43,6 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 
@@ -62,11 +55,7 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         operationId: 'AuthGetProfile',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
     );
   },
 
@@ -79,11 +68,7 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
         operationId: 'AuthGetAccessToken',
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
     );
   },
 };

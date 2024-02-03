@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiAuth } from '@src/apis/auth/contollers/auth.swagger';
+import { ApiAuth } from '@src/apis/auth/controllers/auth.swagger';
 import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -10,8 +10,10 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { AuthService } from '../services/auth.service';
+import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
 
 @ApiTags('auth')
+@ApiCommonErrorCode()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

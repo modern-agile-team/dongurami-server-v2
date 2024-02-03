@@ -28,8 +28,10 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { FreePostCommentsService } from '../services/free-post-comments.service';
+import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-error-code.swagger';
 
 @ApiTags('free-post-comment')
+@ApiCommonErrorCode()
 @Controller('free-posts/:freePostId/comments')
 export class FreePostCommentsController {
   constructor(

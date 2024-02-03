@@ -11,6 +11,7 @@ import { NoticePostDto } from '../dto/notice-post.dto';
 import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   Create: (
@@ -22,6 +23,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostCreate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'noticePost',
@@ -103,6 +105,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostPutUpdate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'noticePost',
@@ -122,6 +125,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       ]),
     );
   },
+
   PatchUpdate: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
@@ -131,6 +135,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostPatchUpdate',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'noticePost',
@@ -150,6 +155,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
       ]),
     );
   },
+
   Remove: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
@@ -159,6 +165,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostRemove',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'noticePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

@@ -5,6 +5,7 @@ import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { ApiOperator } from '@src/types/type';
@@ -73,6 +74,7 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
         operationId: 'PutUpdateUser',
         ...apiOperationOptions,
       }),
+      ApiCommonResponse([401, 403]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

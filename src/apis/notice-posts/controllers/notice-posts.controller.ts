@@ -28,10 +28,10 @@ import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { NoticePostsService } from '../services/notice-posts.service';
 import { ApiNoticePost } from './notice-posts.swagger';
-import { ApiCommonErrorCode } from '@src/decorators/swagger/api-common-response.swagger';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('notice-post')
-@ApiCommonErrorCode()
+@ApiCommonResponse([500])
 @Controller('notice-posts')
 export class NoticePostsController {
   constructor(private readonly noticePostService: NoticePostsService) {}

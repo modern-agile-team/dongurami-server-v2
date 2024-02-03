@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -22,7 +23,7 @@ import { PutUpdateUserDto } from '../dto/put-update-user.dto';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('user')
-@ApiCommonResponse([500])
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

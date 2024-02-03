@@ -23,7 +23,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostCreate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'noticePost',
@@ -105,7 +105,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostPutUpdate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'noticePost',
@@ -135,7 +135,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostPatchUpdate',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'noticePost',
@@ -165,7 +165,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         operationId: 'NoticePostRemove',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'noticePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

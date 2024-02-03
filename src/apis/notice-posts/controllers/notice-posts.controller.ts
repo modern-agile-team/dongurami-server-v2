@@ -31,7 +31,7 @@ import { ApiNoticePost } from './notice-posts.swagger';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('notice-post')
-@ApiCommonResponse([500])
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('notice-posts')
 export class NoticePostsController {
   constructor(private readonly noticePostService: NoticePostsService) {}

@@ -74,7 +74,7 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
         operationId: 'PutUpdateUser',
         ...apiOperationOptions,
       }),
-      ApiCommonResponse([401, 403]),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

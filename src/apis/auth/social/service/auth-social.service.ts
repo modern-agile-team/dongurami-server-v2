@@ -22,28 +22,17 @@ export class AuthSocialService {
 
   async signUp(signUpRequestBodyDto: SignUpRequestBodyDto) {
     const { loginType, snsToken } = signUpRequestBodyDto;
-
-    // 동시성 문제
-    const isUserRegistered = this.authRegistrationService.isUserRegistered({
-      loginType,
-      snsToken,
-    });
-    if (!isUserRegistered) {
-      throw new HttpBadRequestException({
-        code: AUTH_ERROR_CODE.ACCOUNT_NOT_FOUND,
-      });
-    }
-
+    
     const snsProfile = await getSnsProfile(loginType, snsToken);
-    if (!snsProfile.snsId) {
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '소셜 프로필 조회 중 알 수 없는 에러',
-      });
-    }
-
+	if (!snsProfile.snsId) {
+	  throw new HttpInternalServerErrorException({
+	    code: COMMON_ERROR_CODE.SERVER_ERROR,
+	    ctx: '소셜 프로필 조회 중 알 수 없는 에러',
+	  });
+	}
+    
     const user = await this.usersService.create({
-      ...signUpRequestBodyDto,
+      loginType,
       snsId: snsProfile.snsId,
     });
 

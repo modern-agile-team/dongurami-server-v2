@@ -6,6 +6,7 @@ import { EncryptionModule } from '@src/libs/encryption/encryption.module';
 import { UsersController } from './controllers/users.controller';
 import { UsersService } from './services/users.service';
 import { MajorModule } from '../major/major.module';
+import { NicknameService } from './services/nickname.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { MajorModule } from '../major/major.module';
     EncryptionModule,
     MajorModule,
   ],
-  providers: [UsersService],
+  providers: [UsersService, NicknameService],
   controllers: [UsersController],
   exports: [UsersService],
 })

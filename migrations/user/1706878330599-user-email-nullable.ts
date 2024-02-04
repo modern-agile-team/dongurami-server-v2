@@ -10,6 +10,7 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         name: 'email',
         type: 'varchar',
         isNullable: true,
+        isUnique: true,
         comment: '이메일'
       })
     );
@@ -21,6 +22,7 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         name: 'email',
         type: 'varchar',
         isNullable: true,
+        isUnique: true,
         comment: '이메일'
       })
     );
@@ -34,6 +36,7 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         name: 'email',
         type: 'varchar',
         isNullable: false,
+        isUnique: true,
         comment: '이메일'
       })
     );
@@ -45,6 +48,7 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         name: 'email',
         type: 'varchar',
         isNullable: false,
+        isUnique: true,
         comment: '이메일'
       })
     );

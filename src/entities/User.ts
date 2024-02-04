@@ -93,11 +93,12 @@ export class User {
 
   @Column('varchar', {
     name: 'email',
+    nullable: true,
     unique: true,
     comment: '이메일',
     length: 255,
   })
-  email: string;
+  email: string | null;
 
   @Column('varchar', {
     name: 'phone_number',

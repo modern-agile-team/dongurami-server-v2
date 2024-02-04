@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiUsers } from '@src/apis/users/controllers/users.swagger';
-import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
+import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UsersService } from '@src/apis/users/services/users.service';
 import { User } from '@src/decorators/user.decorator';
@@ -29,7 +29,7 @@ export class UsersController {
   @SetResponse({ type: ResponseType.Detail, key: 'user' })
   @Post()
   create(
-    @Body() createUserRequestBodyDto: CreateUserRequestBodyDto,
+    @Body() createUserRequestBodyDto: CreateUserDto,
   ): DetailResponse<UserDto> {
     return this.usersService.create(createUserRequestBodyDto);
   }

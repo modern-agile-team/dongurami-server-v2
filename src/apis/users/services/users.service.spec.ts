@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MajorRepository } from '@src/apis/major/repositories/major.repository';
-import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
+import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UsersService } from '@src/apis/users/services/users.service';
@@ -62,14 +62,14 @@ describe(UsersService.name, () => {
   });
 
   describe(UsersService.prototype.create.name, () => {
-    let createUserRequestBodyDto: CreateUserRequestBodyDto;
+    let createUserRequestBodyDto: CreateUserDto;
 
     let existUser: User;
 
     let newUser: User;
 
     beforeEach(() => {
-      createUserRequestBodyDto = new CreateUserRequestBodyDto();
+      createUserRequestBodyDto = new CreateUserDto();
 
       existUser = new User();
 

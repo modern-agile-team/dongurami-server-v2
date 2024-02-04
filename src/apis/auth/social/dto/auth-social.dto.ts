@@ -41,7 +41,8 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
     enum: UserRole,
   })
   @IsEnum(UserRole)
-  role: UserRole = UserRole.Student;
+  @IsNullable()
+  role: UserRole | null;
 
   @ApiProperty({
     description: 'phone number',

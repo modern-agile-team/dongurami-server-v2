@@ -20,6 +20,9 @@ export class AuthSocialService {
     private readonly authRegistrationService: AuthRegistrationService,
   ) {}
 
+  /**
+   * @todo 소셜 회원가입 전용 DTO 생성 후 적용
+   */
   async signUp(signUpRequestBodyDto: SignUpRequestBodyDto) {
     const { loginType, snsToken } = signUpRequestBodyDto;
     

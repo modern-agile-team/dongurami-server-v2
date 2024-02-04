@@ -16,7 +16,8 @@ import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
-import { NicknameService } from './nickname.service';
+import moment from 'moment';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -29,9 +30,11 @@ export class UsersService {
     private readonly dataSource: DataSource,
     private readonly userRepository: UserRepository,
     private readonly majorService: MajorService,
-    private readonly nicknameService: NicknameService,
   ) {}
 
+  /**
+   * @todo 소셜 회원가입 전용 DTO 생성 후 적용
+   */
   async create({ snsId, loginType }: Pick<CreateUserDto, 'snsId' | 'loginType'>) {
     const existUser = await this.userRepository.findOne({
       select: {
@@ -57,7 +60,7 @@ export class UsersService {
     try {
       const entityManager = queryRunner.manager;
 
-      const nickname = this.nicknameService.generateUniqueNickname();
+      const nickname = this.generateUniqueNickname();
 
       const newUser = this.userRepository.create({
         snsId,
@@ -188,5 +191,13 @@ export class UsersService {
         await queryRunner.release();
       }
     }
+  }
+
+  private generateUniqueNickname(): string {
+    const timestamp = moment().format('YYMMDDHHmmss');
+    const randomString = crypto.randomBytes(2).toString('hex'); // 4자리 랜덤 문자열
+    const uniqueNickname = `user_${timestamp}_${randomString}`;
+
+    return uniqueNickname;
   }
 }

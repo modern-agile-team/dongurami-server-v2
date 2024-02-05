@@ -25,7 +25,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentCreate',
           ...apiOperationOptions,
         }),
         ApiBearerAuth(),
@@ -61,7 +60,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentFindAllAndCount',
           ...apiOperationOptions,
         }),
         PaginationResponseDto.swaggerBuilder(
@@ -93,7 +91,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentPutUpdate',
           ...apiOperationOptions,
         }),
         ApiBearerAuth(),
@@ -132,7 +129,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentRemove',
           ...apiOperationOptions,
         }),
         ApiBearerAuth(),
@@ -167,7 +163,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentCreateReaction',
           ...apiOperationOptions,
         }),
         ApiBearerAuth(),
@@ -202,7 +197,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentRemoveReaction',
           ...apiOperationOptions,
         }),
         ApiBearerAuth(),

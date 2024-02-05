@@ -18,7 +18,6 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'CreateNewMajor',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.CREATED, 'major', MajorDto),
@@ -47,7 +46,6 @@ export const ApiMajors: ApiOperator<keyof MajorController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'GetAllMajors',
         ...apiOperationOptions,
       }),
       CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'majors', MajorDto, {

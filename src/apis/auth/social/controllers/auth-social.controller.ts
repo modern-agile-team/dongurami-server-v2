@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthSocialService } from '../service/auth-social.service';
 import {
@@ -15,7 +15,7 @@ import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.s
  * @todo https://eslint.org/docs/latest/rules/no-return-await
  */
 @ApiTags('auth-social')
-@ApiCommonResponse([500])
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('auth/social')
 export class AuthSocialController {
   constructor(

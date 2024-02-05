@@ -18,7 +18,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'CheckRegistration',
         ...apiOperationOptions,
       }),
       ApiCreatedResponse({
@@ -32,7 +31,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'Signup',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.CREATED, 'user', UserDto),
@@ -57,7 +55,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'AuthSignIn',
         ...apiOperationOptions,
       }),
       ApiCreatedResponse({

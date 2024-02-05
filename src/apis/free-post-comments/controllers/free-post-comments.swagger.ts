@@ -22,7 +22,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentCreate',
           ...apiOperationOptions,
         }),
         ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -52,7 +51,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentFindAllAndCount',
           ...apiOperationOptions,
         }),
         PaginationResponseDto.swaggerBuilder(
@@ -81,7 +79,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentPutUpdate',
           ...apiOperationOptions,
         }),
         ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -111,7 +108,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentRemove',
           ...apiOperationOptions,
         }),
         ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -137,7 +133,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentCreateReaction',
           ...apiOperationOptions,
         }),
         ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -166,7 +161,6 @@ export const ApiFreePostComment: ApiOperator<keyof FreePostCommentsController> =
     ): PropertyDecorator => {
       return applyDecorators(
         ApiOperation({
-          operationId: 'FreePostCommentRemoveReaction',
           ...apiOperationOptions,
         }),
         ApiCommonResponse([HttpStatus.UNAUTHORIZED]),

@@ -24,7 +24,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostCreate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -51,7 +50,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
@@ -77,7 +75,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostFindOneOrNotFound',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
@@ -102,7 +99,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostPutUpdate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -128,7 +124,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostPatchUpdate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -157,7 +152,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostRemove',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -183,7 +177,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostIncrementHit',
         ...apiOperationOptions,
       }),
       ApiNoContentResponse(),
@@ -208,7 +201,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostCreateReaction',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -237,7 +229,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostRemoveReaction',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),

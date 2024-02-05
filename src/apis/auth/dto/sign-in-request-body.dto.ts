@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
+import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 
-export class SignInRequestBodyDto extends PickType(CreateUserRequestBodyDto, [
+export class SignInRequestBodyDto extends PickType(CreateUserDto, [
   'loginType',
   'email',
 ] as const) {}

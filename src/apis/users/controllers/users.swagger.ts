@@ -18,7 +18,6 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'UsersCreate',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.CREATED, 'user', UserDto),
@@ -47,7 +46,6 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FindOneUserOrNotFound',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
@@ -71,7 +69,6 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'PutUpdateUser',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MajorService } from '@src/apis/major/services/major.service';
 import { UserStatus } from '@src/apis/users/constants/user.enum';
-import { CreateUserRequestBodyDto } from '@src/apis/users/dto/create-user-request-body.dto';
+import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
@@ -16,6 +16,8 @@ import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
+import moment from 'moment';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -30,51 +32,25 @@ export class UsersService {
     private readonly majorService: MajorService,
   ) {}
 
-  async create(createUserRequestBodyDto: CreateUserRequestBodyDto) {
+  /**
+   * @todo 소셜 회원가입 전용 DTO 생성 후 적용
+   */
+  async create({ snsId, loginType }: Pick<CreateUserDto, 'snsId' | 'loginType'>) {
     const existUser = await this.userRepository.findOne({
       select: {
-        email: true,
-        phoneNumber: true,
+        snsId: true,
       },
-      where: [
+      where: 
         {
-          email: createUserRequestBodyDto.email,
+          snsId,
         },
-        createUserRequestBodyDto.phoneNumber && {
-          phoneNumber: createUserRequestBodyDto.phoneNumber,
-        },
-      ],
     });
 
-    if (existUser) {
-      if (
-        createUserRequestBodyDto.email.toLowerCase() ===
-        existUser.email.toLowerCase()
-      ) {
-        throw new HttpConflictException({
-          code: USER_ERROR_CODE.ALREADY_EXIST_USER_EMAIL,
-        });
-      }
-
-      if (createUserRequestBodyDto.phoneNumber === existUser.phoneNumber) {
-        throw new HttpConflictException({
-          code: USER_ERROR_CODE.ALREADY_EXIST_USER_PHONE_NUMBER,
-        });
-      }
+    if (existUser?.snsId) {
+      throw new HttpConflictException({
+        code: USER_ERROR_CODE.ALREADY_EXIST_USER_SNS_ID,
+      });
     }
-
-    /**
-     * @todo client 에게 받게끔 변경
-     */
-    const major = await this.majorService.findOneMajor({
-      select: {
-        id: true,
-      },
-      where: {
-        code: '01',
-      },
-    });
-    createUserRequestBodyDto.majorId = major.id;
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -84,8 +60,12 @@ export class UsersService {
     try {
       const entityManager = queryRunner.manager;
 
+      const nickname = this.generateUniqueNickname();
+
       const newUser = this.userRepository.create({
-        ...createUserRequestBodyDto,
+        snsId,
+        loginType,
+        nickname,
         status: UserStatus.Active,
       });
 
@@ -211,5 +191,13 @@ export class UsersService {
         await queryRunner.release();
       }
     }
+  }
+
+  private generateUniqueNickname(): string {
+    const timestamp = moment().format('YYMMDDHHmmss');
+    const randomString = crypto.randomBytes(2).toString('hex'); // 4자리 랜덤 문자열
+    const uniqueNickname = `user_${timestamp}_${randomString}`;
+
+    return uniqueNickname;
   }
 }

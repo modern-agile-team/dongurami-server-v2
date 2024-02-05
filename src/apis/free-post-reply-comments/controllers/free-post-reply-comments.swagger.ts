@@ -26,7 +26,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentCreate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -56,7 +55,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
@@ -85,7 +83,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentPutUpdate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -115,7 +112,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentRemove',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -141,7 +137,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentCreateReaction',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -170,7 +165,6 @@ export const ApiFreePostReplyComment: ApiOperator<
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'FreePostReplyCommentRemoveReaction',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),

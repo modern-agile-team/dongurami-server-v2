@@ -20,7 +20,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostCreate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
@@ -47,7 +46,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostFindAllAndCount',
         ...apiOperationOptions,
       }),
       PaginationResponseDto.swaggerBuilder(
@@ -73,7 +71,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostFindOneOrNotFound',
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(
@@ -102,7 +99,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostPutUpdate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -132,7 +128,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostPatchUpdate',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -162,7 +157,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostRemove',
         ...apiOperationOptions,
       }),
       ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
@@ -188,7 +182,6 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
-        operationId: 'NoticePostIncreaseHit',
         ...apiOperationOptions,
       }),
       ApiResponse({ status: HttpStatus.NO_CONTENT }),

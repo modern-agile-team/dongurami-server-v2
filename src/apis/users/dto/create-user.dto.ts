@@ -22,7 +22,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class CreateUserRequestBodyDto
+export class CreateUserDto
   implements
     Pick<UserDto, 'name' | 'email' | 'role' | 'loginType'>,
     Pick<UserDto, 'phoneNumber' | 'grade' | 'gender' | 'profilePath'>

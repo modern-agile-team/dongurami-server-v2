@@ -26,7 +26,6 @@ const decoratorMap: Record<
     ]),
   ],
   [HttpStatus.INTERNAL_SERVER_ERROR]: [
-    ApiBearerAuth(),
     HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
       COMMON_ERROR_CODE.SERVER_ERROR,
     ]),

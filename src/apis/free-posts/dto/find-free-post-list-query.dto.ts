@@ -9,10 +9,10 @@ import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
+import { ParseOptionalBoolean } from '@src/dto/transformer/parse-optional-boolean.decorator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
-import { Type } from 'class-transformer';
 import {
-  IsBooleanString,
+  IsBoolean,
   IsDefined,
   IsNotEmpty,
   IsOptional,
@@ -52,9 +52,9 @@ export class FindFreePostListQueryDto
     description: '익명여부 필터링',
     enum: ['true', 'false', '0', '1'],
   })
-  @IsBooleanString()
+  @IsBoolean()
+  @ParseOptionalBoolean()
   @IsOptional()
-  @Type(() => Boolean)
   isAnonymous?: boolean;
 
   @ApiPropertyOrder(FREE_POST_ORDER_FIELD)

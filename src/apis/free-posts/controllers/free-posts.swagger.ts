@@ -1,15 +1,12 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiNoContentResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { FreePostsController } from '@src/apis/free-posts/controllers/free-posts.controller';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
@@ -29,7 +26,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'freePost',
@@ -44,12 +41,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 
@@ -75,9 +66,6 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 
@@ -113,7 +101,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -124,17 +112,8 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -147,7 +126,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost', FreePostDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -161,17 +140,8 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -184,7 +154,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'freePost'),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -195,17 +165,8 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -242,7 +203,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -253,17 +214,11 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
         REACTION_ERROR_CODE.ALREADY_LIKED,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },
@@ -276,7 +231,7 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
       ApiNoContentResponse(),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -287,17 +242,11 @@ export const ApiFreePost: ApiOperator<keyof FreePostsController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
         REACTION_ERROR_CODE.NOT_LIKED,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },

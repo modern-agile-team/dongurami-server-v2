@@ -23,6 +23,7 @@ import { FreePostReplyCommentsService } from '@src/apis/free-post-reply-comments
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
@@ -30,6 +31,7 @@ import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 
 @ApiTags('free-post-reply-comment')
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('free-posts/:freePostId/comments/:freePostCommentId/reply')
 export class FreePostReplyCommentsController {
   constructor(

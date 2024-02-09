@@ -47,9 +47,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
         USER_ERROR_CODE.ALREADY_EXIST_USER_EMAIL,
         USER_ERROR_CODE.ALREADY_EXIST_USER_PHONE_NUMBER,
       ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
   SignIn: (
@@ -83,9 +80,6 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
-      ]),
     );
   },
 };

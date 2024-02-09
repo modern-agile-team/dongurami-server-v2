@@ -1,10 +1,11 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { ApiOperator } from '@src/types/type';
@@ -70,7 +71,7 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      ApiBearerAuth(),
+      ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN]),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -81,17 +82,8 @@ export const ApiUsers: ApiOperator<keyof UsersController> = {
           type: ValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.UNAUTHORIZED, [
-        COMMON_ERROR_CODE.INVALID_TOKEN,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      ]),
-      HttpException.swaggerBuilder(HttpStatus.INTERNAL_SERVER_ERROR, [
-        COMMON_ERROR_CODE.SERVER_ERROR,
       ]),
     );
   },

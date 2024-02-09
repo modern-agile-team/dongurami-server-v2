@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
@@ -7,8 +7,10 @@ import { CreateMajorRequestBodyDto } from '../dto/create-major-request-body.dto'
 import { MajorDto } from '../dto/major.dto';
 import { MajorService } from '../services/major.service';
 import { ApiMajors } from './major.swagger';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('majors')
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('major')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}

@@ -19,6 +19,7 @@ export class HttpInternalServerErrorExceptionFilter
   ): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     const statusCode = exception.getStatus();
     const exceptionError = exception.getResponse();
@@ -28,8 +29,14 @@ export class HttpInternalServerErrorExceptionFilter
       exceptionError,
     );
 
-    console.error(exception.ctx);
-    console.error(exception.stack);
+    this.httpExceptionService.printLog({
+      ctx: exception.ctx,
+      stack: exception.stack,
+      request,
+      response: {
+        body: responseJson,
+      },
+    });
 
     response.status(statusCode).json(responseJson);
   }

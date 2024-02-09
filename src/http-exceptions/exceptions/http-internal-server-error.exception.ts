@@ -15,7 +15,7 @@ export class HttpInternalServerErrorException extends HttpException {
       stack?: any;
     },
   ) {
-    const { code, errors, ctx } = error;
+    const { code, errors, ctx, stack } = error;
 
     super({
       code,
@@ -24,7 +24,7 @@ export class HttpInternalServerErrorException extends HttpException {
     });
 
     this.ctx = ctx;
-    this.stack = this.stack;
+    this.stack = stack;
   }
 
   getResponse(): HttpInternalServerErrorException {

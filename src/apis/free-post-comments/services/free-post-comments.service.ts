@@ -75,7 +75,6 @@ export class FreePostCommentsService {
         await queryRunner.rollbackTransaction();
       }
 
-      console.error(error);
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '자유게시글 댓글 생성 중 알 수 없는 에러',
@@ -186,7 +185,6 @@ export class FreePostCommentsService {
         await queryRunner.rollbackTransaction();
       }
 
-      console.error(error);
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '자유게시글 댓글 put 수정 중 알 수 없는 에러',
@@ -258,7 +256,6 @@ export class FreePostCommentsService {
         await queryRunner.rollbackTransaction();
       }
 
-      console.error(error);
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '자유게시글 댓글 삭제 중 알 수 없는 에러',

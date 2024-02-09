@@ -11,6 +11,13 @@ interface ExceptionError {
   stack?: any;
 }
 
+interface LogInfo {
+  ctx: string;
+  stack?: any;
+  request: Partial<Request> & { user?: Record<string, any> };
+  response: Partial<Omit<Response, 'body'>> & { body?: Record<any, any> };
+}
+
 @Injectable()
 export class HttpExceptionService {
   constructor(private readonly appConfigService: AppConfigService) {}
@@ -29,6 +36,24 @@ export class HttpExceptionService {
       errors,
       stack:
         statusCode >= 500 && isProduction ? exceptionError.stack : undefined,
+    });
+  }
+
+  printLog(logInfo: LogInfo): void {
+    const { ctx, stack, request, response } = logInfo;
+
+    console.error({
+      ctx,
+      stack,
+      request: {
+        method: request.method,
+        url: request.url,
+        body: request.body,
+        currentUser: request.user,
+      },
+      response: {
+        body: Object.assign({}, response.body),
+      },
     });
   }
 }

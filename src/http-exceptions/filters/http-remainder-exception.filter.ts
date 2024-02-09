@@ -23,6 +23,7 @@ export class HttpRemainderExceptionFilter
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     const statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     const httpInternalServerErrorException =
@@ -38,8 +39,14 @@ export class HttpRemainderExceptionFilter
       exceptionError,
     );
 
-    console.error(exceptionError.ctx);
-    console.error(exceptionError.stack);
+    this.httpExceptionService.printLog({
+      ctx: httpInternalServerErrorException.ctx,
+      stack: httpInternalServerErrorException.stack,
+      request,
+      response: {
+        body: responseJson,
+      },
+    });
 
     response.status(statusCode).json(responseJson);
   }

@@ -11,7 +11,7 @@ import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator'
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { SortOrder } from '@src/constants/enum';
 import { NoticePostStatus } from '../constants/notice-post.enum';
-import { TransformStringToBoolean } from '@src/dto/transformer/parse-optional-boolean.decorator';
+import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
 import { Transform } from 'class-transformer';
 
 export class FindNoticePostListQueryDto
@@ -48,7 +48,7 @@ export class FindNoticePostListQueryDto
     enum: ['true', 'false'],
   })
   @IsBoolean()
-  @Transform(TransformStringToBoolean)
+  @Transform(transformStringToBoolean)
   @IsOptional()
   isAllowComment?: boolean;
 

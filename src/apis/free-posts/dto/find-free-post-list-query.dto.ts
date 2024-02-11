@@ -9,7 +9,7 @@ import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
-import { TransformStringToBoolean } from '@src/dto/transformer/parse-optional-boolean.decorator';
+import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import { Transform } from 'class-transformer';
 import {
@@ -54,7 +54,7 @@ export class FindFreePostListQueryDto
     enum: ['true', 'false', '0', '1'],
   })
   @IsBoolean()
-  @Transform(TransformStringToBoolean)
+  @Transform(transformStringToBoolean)
   @IsOptional()
   isAnonymous?: boolean;
 

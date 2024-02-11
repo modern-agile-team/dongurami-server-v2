@@ -1,4 +1,4 @@
-export function TransformStringToBoolean({ value }) {
+export function transformStringToBoolean({ value }) {
   return value === 'true' || value === '1'
     ? true
     : value === 'false' || value === '0'

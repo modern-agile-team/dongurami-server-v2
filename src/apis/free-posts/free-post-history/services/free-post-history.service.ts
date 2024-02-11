@@ -12,13 +12,12 @@ export class FreePostHistoryService {
   ) {}
 
   create(
-    entityManager: EntityManager,
     userId: number,
     freePostId: number,
     action: HistoryAction,
     createFreePostHistoryDto: CreateFreePostHistoryDto,
   ) {
-    return entityManager.withRepository(this.freePostHistoryRepository).save({
+    return this.freePostHistoryRepository.save({
       userId,
       freePostId,
       action,

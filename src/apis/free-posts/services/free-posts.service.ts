@@ -19,10 +19,9 @@ import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { isNotEmptyObject } from 'class-validator';
-import { DataSource } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 
 @Injectable()
@@ -39,55 +38,27 @@ export class FreePostsService {
 
     private readonly queryHelper: QueryHelper,
 
-    private readonly dataSource: DataSource,
     private readonly freePostRepository: FreePostRepository,
   ) {}
 
+  @Transactional()
   async create(userId: number, createFreePostDto: CreateFreePostDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const newPost = await this.freePostRepository.save({
+      userId,
+      status: FreePostStatus.Posting,
+      ...createFreePostDto,
+    });
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await this.freePostHistoryService.create(
+      userId,
+      newPost.id,
+      HistoryAction.Insert,
+      {
+        ...newPost,
+      },
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
-
-      const newPost = await entityManager
-        .withRepository(this.freePostRepository)
-        .save({
-          userId,
-          status: FreePostStatus.Posting,
-          ...createFreePostDto,
-        });
-
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        newPost.id,
-        HistoryAction.Insert,
-        {
-          ...newPost,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostDto(newPost);
   }
 
   findAllAndCount(
@@ -132,72 +103,47 @@ export class FreePostsService {
     return new FreePostDto(freePost);
   }
 
+  @Transactional()
   async putUpdate(
     userId: number,
     freePostId: number,
     putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
-    const existFreePost = await this.findOneOrNotFound(freePostId);
+    const oldFreePost = await this.findOneOrNotFound(freePostId);
 
-    if (userId !== existFreePost.userId) {
+    if (userId !== oldFreePost.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        ...putUpdateFreePostDto,
+      },
+    );
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const newFreePost = this.freePostRepository.create({
+      ...oldFreePost,
+      ...putUpdateFreePostDto,
+    });
 
-    try {
-      const entityManager = queryRunner.manager;
+    await this.freePostHistoryService.create(
+      userId,
+      freePostId,
+      HistoryAction.Update,
+      {
+        ...newFreePost,
+      },
+    );
 
-      await entityManager.withRepository(this.freePostRepository).update(
-        {
-          id: freePostId,
-        },
-        {
-          ...putUpdateFreePostDto,
-        },
-      );
-
-      const newPost = await entityManager
-        .withRepository(this.freePostRepository)
-        .findOneByOrFail({
-          id: freePostId,
-        });
-
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        HistoryAction.Update,
-        {
-          ...newPost,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostDto(newFreePost);
   }
 
+  @Transactional()
   async patchUpdate(
     userId: number,
     freePostId: number,
@@ -209,70 +155,41 @@ export class FreePostsService {
       });
     }
 
-    const existFreePost = await this.findOneOrNotFound(freePostId);
+    const oldFreePost = await this.findOneOrNotFound(freePostId);
 
-    if (userId !== existFreePost.userId) {
+    if (userId !== oldFreePost.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        ...patchUpdateFreePostDto,
+      },
+    );
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const newPost = this.freePostRepository.create({
+      ...oldFreePost,
+      ...patchUpdateFreePostDto,
+    });
 
-    try {
-      const entityManager = queryRunner.manager;
+    await this.freePostHistoryService.create(
+      userId,
+      freePostId,
+      HistoryAction.Update,
+      {
+        ...newPost,
+      },
+    );
 
-      await entityManager.withRepository(this.freePostRepository).update(
-        {
-          id: freePostId,
-        },
-        {
-          ...patchUpdateFreePostDto,
-        },
-      );
-
-      const newPost = await entityManager
-        .withRepository(this.freePostRepository)
-        .findOneByOrFail({
-          id: freePostId,
-        });
-
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        HistoryAction.Update,
-        {
-          ...newPost,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 patch 수정 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostDto(newPost);
   }
 
-  /**
-   * @todo 게시글 삭제 시 soft delete 를 하기 때문에 DB 상에 댓글, 대댓글이 삭제되지 않음
-   */
+  @Transactional()
   async remove(userId: number, freePostId: number): Promise<number> {
     const existFreePost = await this.findOneOrNotFound(freePostId);
 
@@ -282,55 +199,27 @@ export class FreePostsService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const freePostUpdateResult = await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        status: FreePostStatus.Remove,
+        deletedAt: new Date(),
+      },
+    );
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await this.freePostHistoryService.create(
+      userId,
+      freePostId,
+      HistoryAction.Delete,
+      {
+        ...existFreePost,
+        status: FreePostStatus.Remove,
+      },
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
-
-      const freePostUpdateResult = await entityManager
-        .withRepository(this.freePostRepository)
-        .update(
-          {
-            id: freePostId,
-          },
-          {
-            status: FreePostStatus.Remove,
-            deletedAt: new Date(),
-          },
-        );
-
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        HistoryAction.Delete,
-        {
-          ...existFreePost,
-          status: FreePostStatus.Remove,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return freePostUpdateResult.affected;
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 삭제 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return freePostUpdateResult.affected;
   }
 
   incrementHit(freePostId: number): Promise<void> {

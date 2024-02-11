@@ -17,9 +17,8 @@ import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { DataSource } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class FreePostCommentsService {
@@ -30,10 +29,10 @@ export class FreePostCommentsService {
 
     private readonly queryHelper: QueryHelper,
 
-    private readonly dataSource: DataSource,
     private readonly freePostCommentRepository: FreePostCommentRepository,
   ) {}
 
+  @Transactional()
   async create(
     userId: number,
     freePostId: number,
@@ -41,50 +40,22 @@ export class FreePostCommentsService {
   ): Promise<FreePostCommentDto> {
     const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const newPostComment = await this.freePostCommentRepository.save({
+      userId,
+      status: FreePostCommentStatus.Posting,
+      freePostId: existPost.id,
+      ...createFreePostCommentDto,
+    });
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await this.freePostCommentHistoryService.create(
+      userId,
+      existPost.id,
+      newPostComment.id,
+      HistoryAction.Insert,
+      newPostComment,
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
-
-      const newPostComment = await entityManager
-        .withRepository(this.freePostCommentRepository)
-        .save({
-          userId,
-          status: FreePostCommentStatus.Posting,
-          freePostId: existPost.id,
-          ...createFreePostCommentDto,
-        });
-
-      await this.freePostCommentHistoryService.create(
-        entityManager,
-        userId,
-        existPost.id,
-        newPostComment.id,
-        HistoryAction.Insert,
-        newPostComment,
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostCommentDto(newPostComment);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 댓글 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostCommentDto(newPostComment);
   }
 
   async findAllAndCount(
@@ -129,77 +100,50 @@ export class FreePostCommentsService {
     return new FreePostCommentDto(existComment);
   }
 
+  @Transactional()
   async putUpdate(
     userId: number,
     freePostId: number,
     freePostCommentId: number,
     putUpdateFreePostCommentDto: PutUpdateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
-    const existComment = await this.findOneOrNotFound(
+    const oldComment = await this.findOneOrNotFound(
       freePostId,
       freePostCommentId,
     );
 
-    if (userId !== existComment.userId) {
+    if (userId !== oldComment.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      await entityManager.withRepository(this.freePostCommentRepository).update(
-        {
-          id: freePostCommentId,
-        },
-        {
-          ...putUpdateFreePostCommentDto,
-        },
-      );
-
-      const newComment = {
-        ...existComment,
+    await this.freePostCommentRepository.update(
+      {
+        id: freePostCommentId,
+      },
+      {
         ...putUpdateFreePostCommentDto,
-      };
+      },
+    );
 
-      await this.freePostCommentHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        freePostCommentId,
-        HistoryAction.Update,
-        newComment,
-      );
+    const newComment = this.freePostCommentRepository.create({
+      ...oldComment,
+      ...putUpdateFreePostCommentDto,
+    });
 
-      await queryRunner.commitTransaction();
+    await this.freePostCommentHistoryService.create(
+      userId,
+      freePostId,
+      freePostCommentId,
+      HistoryAction.Update,
+      newComment,
+    );
 
-      return new FreePostCommentDto(newComment);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 댓글 put 수정 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostCommentDto(newComment);
   }
 
-  /**
-   * @todo 댓글 삭제 시 soft delete 를 하기 떄문에 대댓글은 삭제되지 않음
-   */
+  @Transactional()
   async remove(
     userId: number,
     freePostId: number,
@@ -216,56 +160,29 @@ export class FreePostCommentsService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      const freePostCommentUpdateResult = await entityManager
-        .withRepository(this.freePostCommentRepository)
-        .update(
-          {
-            id: freePostCommentId,
-          },
-          {
-            status: FreePostCommentStatus.Remove,
-            deletedAt: new Date(),
-          },
-        );
-
-      await this.freePostCommentHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        freePostCommentId,
-        HistoryAction.Delete,
+    const freePostCommentUpdateResult =
+      await this.freePostCommentRepository.update(
         {
-          ...existComment,
+          id: freePostCommentId,
+        },
+        {
           status: FreePostCommentStatus.Remove,
+          deletedAt: new Date(),
         },
       );
 
-      await queryRunner.commitTransaction();
+    await this.freePostCommentHistoryService.create(
+      userId,
+      freePostId,
+      freePostCommentId,
+      HistoryAction.Delete,
+      {
+        ...existComment,
+        status: FreePostCommentStatus.Remove,
+      },
+    );
 
-      return freePostCommentUpdateResult.affected;
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 댓글 삭제 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return freePostCommentUpdateResult.affected;
   }
 
   async createReaction(

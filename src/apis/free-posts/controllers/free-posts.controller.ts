@@ -23,6 +23,7 @@ import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-p
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
@@ -30,7 +31,6 @@ import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CreateFreePostDto } from '../dto/create-free-post.dto';
 import { FreePostsService } from '../services/free-posts.service';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('free-post')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
@@ -61,25 +61,25 @@ export class FreePostsController {
 
   @ApiFreePost.FindOneOrNotFound({ summary: '자유게시글 상세조회' })
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
-  @Get(':freePostId')
+  @Get(':postId')
   findOneOrNotFound(
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<FreePostDto> {
-    return this.freePostsService.findOneOrNotFound(freePostId);
+    return this.freePostsService.findOneOrNotFound(postId);
   }
 
   @ApiFreePost.PutUpdate({ summary: '자유게시글 수정' })
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
   @UseGuards(JwtAuthGuard)
-  @Put(':freePostId')
+  @Put(':postId')
   putUpdate(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body() putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
     return this.freePostsService.putUpdate(
       user.id,
-      freePostId,
+      postId,
       putUpdateFreePostDto,
     );
   }
@@ -87,15 +87,15 @@ export class FreePostsController {
   @ApiFreePost.PatchUpdate({ summary: '자유게시글 부분 수정' })
   @UseGuards(JwtAuthGuard)
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
-  @Patch(':freePostId')
+  @Patch(':postId')
   patchUpdate(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body() patchUpdateFreePostDto: PatchUpdateFreePostDto,
   ): Promise<FreePostDto> {
     return this.freePostsService.patchUpdate(
       user.id,
-      freePostId,
+      postId,
       patchUpdateFreePostDto,
     );
   }
@@ -105,35 +105,35 @@ export class FreePostsController {
   })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)
-  @Delete(':freePostId')
+  @Delete(':postId')
   remove(
     @User() user: UserDto,
-    @Param('freePostId') freePostId: number,
+    @Param('postId') postId: number,
   ): Promise<number> {
-    return this.freePostsService.remove(user.id, freePostId);
+    return this.freePostsService.remove(user.id, postId);
   }
 
   @ApiFreePost.IncrementHit({ summary: '조회수 증가(1)' })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Put(':freePostId/hit')
+  @Put(':postId/hit')
   incrementHit(
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<void> {
-    return this.freePostsService.incrementHit(freePostId);
+    return this.freePostsService.incrementHit(postId);
   }
 
   @ApiFreePost.CreateReaction({ summary: '자유 게시글 reaction 생성' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
-  @Post(':freePostId/reaction')
+  @Post(':postId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.freePostsService.createReaction(
       user.id,
-      freePostId,
+      postId,
       createReactionDto,
     );
   }
@@ -141,15 +141,15 @@ export class FreePostsController {
   @ApiFreePost.RemoveReaction({ summary: '자유 게시글 reaction 삭제' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
-  @Delete(':freePostId/reaction')
+  @Delete(':postId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.freePostsService.removeReaction(
       user.id,
-      freePostId,
+      postId,
       removeReactionDto,
     );
   }

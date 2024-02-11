@@ -17,6 +17,7 @@ export class TypeOrmModuleOptionsFactory implements TypeOrmOptionsFactory {
       database: this.appConfigService.get<string>(ENV_KEY.RDB_DATABASE),
       entities: ['dist/**/entities/*{.ts,.js}'],
       logging: true,
+      timezone: 'UTC',
     };
   }
 }

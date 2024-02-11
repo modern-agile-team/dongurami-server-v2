@@ -11,12 +11,11 @@ import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.cons
 import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 import * as crypto from 'crypto';
 import moment from 'moment';
-import { DataSource, FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
 
 @Injectable()
@@ -25,9 +24,7 @@ export class UsersService {
 
   constructor(
     private readonly userHistoryService: UserHistoryService,
-    private readonly encryptionService: EncryptionService,
 
-    private readonly dataSource: DataSource,
     private readonly userRepository: UserRepository,
     private readonly majorService: MajorService,
   ) {}
@@ -35,6 +32,7 @@ export class UsersService {
   /**
    * @todo 소셜 회원가입 전용 DTO 생성 후 적용
    */
+  @Transactional()
   async create({
     snsId,
     loginType,
@@ -54,52 +52,22 @@ export class UsersService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const nickname = this.generateUniqueNickname();
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const newUser = this.userRepository.create({
+      snsId,
+      loginType,
+      nickname,
+      status: UserStatus.Active,
+    });
 
-    try {
-      const entityManager = queryRunner.manager;
+    await this.userRepository.save(newUser);
 
-      const nickname = this.generateUniqueNickname();
+    await this.userHistoryService.create(newUser.id, HistoryAction.Insert, {
+      ...newUser,
+    });
 
-      const newUser = this.userRepository.create({
-        snsId,
-        loginType,
-        nickname,
-        status: UserStatus.Active,
-      });
-
-      await entityManager.withRepository(this.userRepository).save(newUser);
-
-      await this.userHistoryService.create(
-        entityManager,
-        newUser.id,
-        HistoryAction.Insert,
-        {
-          ...newUser,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new UserDto(newUser);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '유저 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new UserDto(newUser);
   }
 
   async findOneById(id: number): Promise<UserDto | null> {
@@ -128,6 +96,7 @@ export class UsersService {
     return existUser;
   }
 
+  @Transactional()
   async putUpdate(
     myId: number,
     userId: number,
@@ -141,55 +110,25 @@ export class UsersService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const major = await this.majorService.findOneMajor({
+      select: ['id'],
+      where: { code: '01' },
+    });
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    putUpdateUserDto.majorId = major.id;
 
-    try {
-      const entityManager = queryRunner.manager;
+    await this.userRepository.update(
+      { id: userId, status: UserStatus.Active },
+      { ...putUpdateUserDto },
+    );
 
-      const major = await this.majorService.findOneMajor({
-        select: ['id'],
-        where: { code: '01' },
-      });
+    const updatedUser = Object.assign(existUser, putUpdateUserDto);
 
-      putUpdateUserDto.majorId = major.id;
+    await this.userHistoryService.create(userId, HistoryAction.Update, {
+      ...updatedUser,
+    });
 
-      await entityManager
-        .withRepository(this.userRepository)
-        .update(
-          { id: userId, status: UserStatus.Active },
-          { ...putUpdateUserDto },
-        );
-
-      const updatedUser = Object.assign(existUser, putUpdateUserDto);
-
-      await this.userHistoryService.create(
-        entityManager,
-        userId,
-        HistoryAction.Update,
-        { ...updatedUser },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new UserDto(updatedUser);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-
-        throw new HttpInternalServerErrorException({
-          code: COMMON_ERROR_CODE.SERVER_ERROR,
-          ctx: '유저 업데이트 중 알 수 없는 에러',
-          stack: error.stack,
-        });
-      }
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new UserDto(updatedUser);
   }
 
   private generateUniqueNickname(): string {

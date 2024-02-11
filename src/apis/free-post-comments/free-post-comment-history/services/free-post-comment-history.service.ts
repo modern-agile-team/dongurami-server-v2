@@ -12,22 +12,19 @@ export class FreePostCommentHistoryService {
   ) {}
 
   async create(
-    entityManager: EntityManager,
     userId: number,
     freePostId: number,
     freePostCommentId: number,
     action: HistoryAction,
     createFreePostCommentHistoryDto: CreateFreePostCommentHistoryDto,
   ) {
-    return entityManager
-      .withRepository(this.freePostCommentHistoryRepository)
-      .save({
-        userId,
-        action,
-        freePostId,
-        freePostCommentId,
-        ...new CreateFreePostCommentHistoryDto(createFreePostCommentHistoryDto),
-      });
+    return this.freePostCommentHistoryRepository.save({
+      userId,
+      action,
+      freePostId,
+      freePostCommentId,
+      ...new CreateFreePostCommentHistoryDto(createFreePostCommentHistoryDto),
+    });
   }
 
   findOneOrFail(

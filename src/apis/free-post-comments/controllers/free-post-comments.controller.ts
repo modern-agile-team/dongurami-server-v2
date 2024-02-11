@@ -22,17 +22,17 @@ import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/pu
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { plainToInstance } from 'class-transformer';
 import { FreePostCommentsService } from '../services/free-post-comments.service';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('free-post-comment')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
-@Controller('free-posts/:freePostId/comments')
+@Controller('free-posts/:postId/comments')
 export class FreePostCommentsController {
   constructor(
     private readonly freePostCommentsService: FreePostCommentsService,
@@ -43,13 +43,13 @@ export class FreePostCommentsController {
   @SetResponse({ key: 'freePostComment', type: ResponseType.Detail })
   @Post()
   create(
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @User() user: UserDto,
     @Body() createFreePostCommentDto: CreateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
     return this.freePostCommentsService.create(
       user.id,
-      freePostId,
+      postId,
       createFreePostCommentDto,
     );
   }
@@ -60,12 +60,12 @@ export class FreePostCommentsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'freePostComments' })
   @Get()
   async findAllAndCount(
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Query() findFreePostCommentListQueryDto: FindFreePostCommentListQueryDto,
   ): Promise<[FreePostCommentsItemDto[], number]> {
     const [freePosts, count] =
       await this.freePostCommentsService.findAllAndCount(
-        freePostId,
+        postId,
         findFreePostCommentListQueryDto,
       );
 
@@ -75,17 +75,17 @@ export class FreePostCommentsController {
   @ApiFreePostComment.PutUpdate({ summary: '자유게시글 댓글 수정' })
   @SetResponse({ type: ResponseType.Detail, key: 'freePostComment' })
   @UseGuards(JwtAuthGuard)
-  @Put(':freePostCommentId')
+  @Put(':commentId')
   putUpdate(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
-    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('commentId', ParsePositiveIntPipe) commentId: number,
     @Body() putUpdateFreePostCommentDto: PutUpdateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
     return this.freePostCommentsService.putUpdate(
       user.id,
-      freePostId,
-      freePostCommentId,
+      postId,
+      commentId,
       putUpdateFreePostCommentDto,
     );
   }
@@ -95,17 +95,13 @@ export class FreePostCommentsController {
   })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)
-  @Delete(':freePostCommentId')
+  @Delete(':commentId')
   remove(
     @User() user: UserDto,
-    @Param('freePostId') freePostId: number,
-    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('commentId', ParsePositiveIntPipe) commentId: number,
   ): Promise<number> {
-    return this.freePostCommentsService.remove(
-      user.id,
-      freePostId,
-      freePostCommentId,
-    );
+    return this.freePostCommentsService.remove(user.id, postId, commentId);
   }
 
   @ApiFreePostComment.CreateReaction({
@@ -113,17 +109,17 @@ export class FreePostCommentsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
-  @Post(':freePostCommentId/reaction')
+  @Post(':commentId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
-    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('commentId', ParsePositiveIntPipe) commentId: number,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.freePostCommentsService.createReaction(
       user.id,
-      freePostId,
-      freePostCommentId,
+      postId,
+      commentId,
       createReactionDto,
     );
   }
@@ -133,17 +129,17 @@ export class FreePostCommentsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard)
-  @Delete(':freePostCommentId/reaction')
+  @Delete(':commentId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('freePostId', ParsePositiveIntPipe) freePostId: number,
-    @Param('freePostCommentId', ParsePositiveIntPipe) freePostCommentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('commentId', ParsePositiveIntPipe) commentId: number,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.freePostCommentsService.removeReaction(
       user.id,
-      freePostId,
-      freePostCommentId,
+      postId,
+      commentId,
       removeReactionDto,
     );
   }

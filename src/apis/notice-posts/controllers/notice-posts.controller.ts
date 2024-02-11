@@ -15,6 +15,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
@@ -28,7 +29,6 @@ import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
 import { NoticePostsService } from '../services/notice-posts.service';
 import { ApiNoticePost } from './notice-posts.swagger';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('notice-post')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
@@ -64,24 +64,24 @@ export class NoticePostsController {
 
   @ApiNoticePost.FindOneOrNotFound({ summary: '공지게시글 상세조회 ' })
   @SetResponse({ type: ResponseType.Detail, key: 'noticePost' })
-  @Get(':noticePostId')
+  @Get(':postId')
   findOneOrNotFound(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<NoticePostDto> {
-    return this.noticePostService.findOneOrNotFound(noticePostId);
+    return this.noticePostService.findOneOrNotFound(postId);
   }
 
   @ApiNoticePost.PutUpdate({ summary: '공지게시글 수정' })
   @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
-  @Put(':noticePostId')
+  @Put(':postId')
   putUpdate(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @User() user: UserDto,
     @Body() putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
     return this.noticePostService.putUpdate(
-      noticePostId,
+      postId,
       user.id,
       putUpdateNoticePostDto,
     );
@@ -90,14 +90,14 @@ export class NoticePostsController {
   @ApiNoticePost.PatchUpdate({ summary: '공지게시글 patch 수정 ' })
   @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
-  @Patch(':noticePostId')
+  @Patch(':postId')
   patchUpdate(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @User() user: UserDto,
     @Body() patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
     return this.noticePostService.patchUpdate(
-      noticePostId,
+      postId,
       user.id,
       patchUpdateNoticePostDto,
     );
@@ -106,20 +106,20 @@ export class NoticePostsController {
   @ApiNoticePost.Remove({ summary: '공지 게시글 삭제' })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)
-  @Delete(':noticePostId')
+  @Delete(':postId')
   remove(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @User() user: UserDto,
   ): Promise<number> {
-    return this.noticePostService.remove(user.id, noticePostId);
+    return this.noticePostService.remove(user.id, postId);
   }
 
   @ApiNoticePost.IncreaseHit({ summary: '조회수 1 증가' })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Put(':noticePostId/hit')
+  @Put(':postId/hit')
   increaseHit(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<void> {
-    return this.noticePostService.increaseHit(noticePostId);
+    return this.noticePostService.increaseHit(postId);
   }
 }

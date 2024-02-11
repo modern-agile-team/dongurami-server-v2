@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppService } from '@src/app.service';
+import { BootstrapService } from '@src/bootstrap.service';
 import {
   initializeTransactionalContext,
   StorageDriver,
@@ -12,16 +12,16 @@ async function bootstrap() {
   });
 
   const app = await NestFactory.create(AppModule);
-  const appService = app.get<AppService>(AppService);
+  const bootstrapService = app.get<BootstrapService>(BootstrapService);
 
-  appService.setCors(app);
-  appService.setLogger(app);
-  appService.setPathPrefix(app);
-  appService.setInterceptor(app);
-  appService.setPipe(app);
-  appService.setFilter(app);
-  appService.setSwagger(app);
+  bootstrapService.setCors(app);
+  bootstrapService.setLogger(app);
+  bootstrapService.setPathPrefix(app);
+  bootstrapService.setInterceptor(app);
+  bootstrapService.setPipe(app);
+  bootstrapService.setFilter(app);
+  bootstrapService.setSwagger(app);
 
-  await appService.startingServer(app);
+  await bootstrapService.startingServer(app);
 }
 bootstrap();

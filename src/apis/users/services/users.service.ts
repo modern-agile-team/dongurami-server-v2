@@ -14,10 +14,10 @@ import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-for
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
+import * as crypto from 'crypto';
+import moment from 'moment';
 import { DataSource, FindOptionsWhere } from 'typeorm';
 import { PutUpdateUserDto } from '../dto/put-update-user.dto';
-import moment from 'moment';
-import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -35,15 +35,17 @@ export class UsersService {
   /**
    * @todo 소셜 회원가입 전용 DTO 생성 후 적용
    */
-  async create({ snsId, loginType }: Pick<CreateUserDto, 'snsId' | 'loginType'>) {
+  async create({
+    snsId,
+    loginType,
+  }: Pick<CreateUserDto, 'snsId' | 'loginType'>) {
     const existUser = await this.userRepository.findOne({
       select: {
         snsId: true,
       },
-      where: 
-        {
-          snsId,
-        },
+      where: {
+        snsId,
+      },
     });
 
     if (existUser?.snsId) {
@@ -88,7 +90,6 @@ export class UsersService {
         await queryRunner.rollbackTransaction();
       }
 
-      console.error(error);
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: '유저 생성 중 알 수 없는 에러',
@@ -177,8 +178,6 @@ export class UsersService {
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();
-
-        console.error(error);
 
         throw new HttpInternalServerErrorException({
           code: COMMON_ERROR_CODE.SERVER_ERROR,

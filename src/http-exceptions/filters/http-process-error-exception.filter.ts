@@ -20,6 +20,7 @@ export class HttpProcessErrorExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     const statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     const nodeException = new HttpProcessErrorException({
@@ -32,8 +33,14 @@ export class HttpProcessErrorExceptionFilter implements ExceptionFilter {
       exceptionError,
     );
 
-    console.error('Node Process Error');
-    console.error(exception.stack);
+    this.httpExceptionService.printLog({
+      ctx: 'Node Process Error',
+      stack: exception.stack,
+      request,
+      response: {
+        body: responseJson,
+      },
+    });
 
     response.status(statusCode).json(responseJson);
   }

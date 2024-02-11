@@ -5,13 +5,11 @@ import { FindFreePostCommentListQueryDto } from '@src/apis/free-post-comments/dt
 import { FreePostCommentDto } from '@src/apis/free-post-comments/dto/free-post-comment.dto';
 import { FreePostCommentsItemDto } from '@src/apis/free-post-comments/dto/free-post-comments-item.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/put-update-free-post-comment.dto';
-import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
 import { FreePostCommentRepository } from '@src/apis/free-post-comments/repositories/free-post-comment.repository';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
@@ -24,7 +22,6 @@ import { Transactional } from 'typeorm-transactional';
 export class FreePostCommentsService {
   constructor(
     private readonly freePostsService: FreePostsService,
-    private readonly freePostCommentHistoryService: FreePostCommentHistoryService,
     private readonly reactionsService: ReactionsService<FreePostCommentReaction>,
 
     private readonly queryHelper: QueryHelper,
@@ -46,14 +43,6 @@ export class FreePostCommentsService {
       freePostId: existPost.id,
       ...createFreePostCommentDto,
     });
-
-    await this.freePostCommentHistoryService.create(
-      userId,
-      existPost.id,
-      newPostComment.id,
-      HistoryAction.Insert,
-      newPostComment,
-    );
 
     return new FreePostCommentDto(newPostComment);
   }
@@ -118,26 +107,18 @@ export class FreePostCommentsService {
       });
     }
 
-    await this.freePostCommentRepository.update(
-      {
-        id: freePostCommentId,
-      },
-      {
-        ...putUpdateFreePostCommentDto,
-      },
-    );
-
     const newComment = this.freePostCommentRepository.create({
       ...oldComment,
       ...putUpdateFreePostCommentDto,
     });
 
-    await this.freePostCommentHistoryService.create(
-      userId,
-      freePostId,
-      freePostCommentId,
-      HistoryAction.Update,
-      newComment,
+    await this.freePostCommentRepository.update(
+      {
+        id: freePostCommentId,
+      },
+      {
+        ...newComment,
+      },
     );
 
     return new FreePostCommentDto(newComment);
@@ -166,21 +147,11 @@ export class FreePostCommentsService {
           id: freePostCommentId,
         },
         {
+          ...existComment,
           status: FreePostCommentStatus.Remove,
           deletedAt: new Date(),
         },
       );
-
-    await this.freePostCommentHistoryService.create(
-      userId,
-      freePostId,
-      freePostCommentId,
-      HistoryAction.Delete,
-      {
-        ...existComment,
-        status: FreePostCommentStatus.Remove,
-      },
-    );
 
     return freePostCommentUpdateResult.affected;
   }

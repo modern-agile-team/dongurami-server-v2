@@ -26,7 +26,7 @@ import { SuccessInterceptor } from '@src/interceptors/success-interceptor/succes
 import { singularize } from 'inflection';
 
 @Injectable()
-export class AppService {
+export class BootstrapService {
   setCors(app: INestApplication) {
     app.enableCors();
   }

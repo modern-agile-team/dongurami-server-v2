@@ -1,7 +1,11 @@
 export function transformStringToBoolean({ value }) {
-  return value === 'true' || value === '1'
-    ? true
-    : value === 'false' || value === '0'
-      ? false
-      : value;
+  if (value === 'true' || value === '1') {
+    return true;
+  }
+
+  if (value === 'false' || value === '0') {
+    return false;
+  }
+
+  return value;
 }

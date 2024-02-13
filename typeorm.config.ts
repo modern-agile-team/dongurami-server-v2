@@ -16,5 +16,5 @@ export default new DataSource({
   entities: ['./src/entities/*.ts'],
   migrationsTableName: 'migrations', // migration 이력을 저장하는 테이블
   migrations: ['migrations/**/[0-9]*.ts'], // migration 할 파일들이 있는 directory
-  timezone: 'UTC',
+  timezone: '+00:00',
 });

@@ -1,12 +1,7 @@
 import { PageDto } from '@src/dto/page.dto';
 import { NoticePostDto } from './notice-post.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsBooleanString,
-  IsDefined,
-  IsOptional,
-  Length,
-} from 'class-validator';
+import { IsBoolean, IsDefined, IsOptional, Length } from 'class-validator';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import {
   NOTICE_POST_ORDER_FIELD,
@@ -16,6 +11,8 @@ import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator'
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { SortOrder } from '@src/constants/enum';
 import { NoticePostStatus } from '../constants/notice-post.enum';
+import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
+import { Transform } from 'class-transformer';
 
 export class FindNoticePostListQueryDto
   extends PageDto
@@ -50,7 +47,8 @@ export class FindNoticePostListQueryDto
     description: '댓글 허용 여부',
     enum: ['true', 'false'],
   })
-  @IsBooleanString()
+  @IsBoolean()
+  @Transform(transformStringToBoolean)
   @IsOptional()
   isAllowComment?: boolean;
 

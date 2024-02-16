@@ -4,8 +4,6 @@ import { UserStatus } from '@src/apis/users/constants/user.enum';
 import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
-import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
-import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { User } from '@src/entities/User';
@@ -23,8 +21,6 @@ export class UsersService {
   private readonly SALT = 10;
 
   constructor(
-    private readonly userHistoryService: UserHistoryService,
-
     private readonly userRepository: UserRepository,
     private readonly majorService: MajorService,
   ) {}
@@ -62,10 +58,6 @@ export class UsersService {
     });
 
     await this.userRepository.save(newUser);
-
-    await this.userHistoryService.create(newUser.id, HistoryAction.Insert, {
-      ...newUser,
-    });
 
     return new UserDto(newUser);
   }
@@ -117,16 +109,12 @@ export class UsersService {
 
     putUpdateUserDto.majorId = major.id;
 
-    await this.userRepository.update(
-      { id: userId, status: UserStatus.Active },
-      { ...putUpdateUserDto },
-    );
-
     const updatedUser = Object.assign(existUser, putUpdateUserDto);
 
-    await this.userHistoryService.create(userId, HistoryAction.Update, {
-      ...updatedUser,
-    });
+    await this.userRepository.update(
+      { id: userId, status: UserStatus.Active },
+      { ...updatedUser },
+    );
 
     return new UserDto(updatedUser);
   }

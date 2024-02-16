@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
-import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { NoticePost } from '@src/entities/NoticePost';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -15,7 +14,6 @@ import { NoticePostDto } from '../dto/notice-post.dto';
 import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
 import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
-import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
 import { NoticePostRepository } from '../repositories/notice-post.repository';
 
 @Injectable()
@@ -27,7 +25,6 @@ export class NoticePostsService {
 
   constructor(
     private readonly queryHelper: QueryHelper,
-    private readonly noticePostHistoryService: NoticePostHistoryService,
     private readonly noticePostRepository: NoticePostRepository,
     private readonly commonPostsService: CommonPostsService<NoticePost>,
   ) {}
@@ -38,15 +35,6 @@ export class NoticePostsService {
       userId,
       ...createNoticePostDto,
     });
-
-    await this.noticePostHistoryService.create(
-      newPost.userId,
-      newPost.id,
-      HistoryAction.Insert,
-      {
-        ...newPost,
-      },
-    );
 
     return new NoticePostDto(newPost);
   }
@@ -107,24 +95,15 @@ export class NoticePostsService {
       });
     }
 
-    await this.noticePostRepository.update(
-      {
-        id: noticePostId,
-      },
-      {
-        ...putUpdateNoticePostDto,
-      },
-    );
-
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
       ...putUpdateNoticePostDto,
     });
 
-    await this.noticePostHistoryService.create(
-      userId,
-      noticePostId,
-      HistoryAction.Insert,
+    await this.noticePostRepository.update(
+      {
+        id: noticePostId,
+      },
       {
         ...newNoticePost,
       },
@@ -153,20 +132,13 @@ export class NoticePostsService {
       });
     }
 
-    await this.noticePostRepository.update(
-      { id: noticePostId, status: NoticePostStatus.Posting },
-      { ...patchUpdateNoticePostDto },
-    );
-
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
       ...patchUpdateNoticePostDto,
     });
 
-    await this.noticePostHistoryService.create(
-      userId,
-      noticePostId,
-      HistoryAction.Update,
+    await this.noticePostRepository.update(
+      { id: noticePostId, status: NoticePostStatus.Posting },
       {
         ...newNoticePost,
       },
@@ -187,15 +159,9 @@ export class NoticePostsService {
 
     const updateResult = await this.noticePostRepository.update(
       { id: noticePostId },
-      { deletedAt: new Date(), status: NoticePostStatus.Remove },
-    );
-
-    await this.noticePostHistoryService.create(
-      userId,
-      noticePostId,
-      HistoryAction.Delete,
       {
         ...existPost,
+        deletedAt: new Date(),
         status: NoticePostStatus.Remove,
       },
     );

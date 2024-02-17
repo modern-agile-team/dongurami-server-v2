@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { isNil } from '@src/common/common';
+
 import { Like } from 'typeorm';
+
+import { isNil } from '@src/common/common';
 
 @Injectable()
 export class QueryHelper {

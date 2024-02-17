@@ -1,7 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
+
 import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { CreateFreePostDto } from './create-free-post.dto';
+
+import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
+import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 
 export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
   @ApiPropertyOptional({

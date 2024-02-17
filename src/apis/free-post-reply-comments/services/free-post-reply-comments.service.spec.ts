@@ -1,19 +1,8 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FreePostCommentsService } from '@src/apis/free-post-comments/services/free-post-comments.service';
-import { CreateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/create-free-post-reply-comment.dto';
-import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-post-reply-comments/dto/find-free-post-reply-comment-list-query.dto';
-import { FreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comment.dto';
-import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/put-update-free-post-reply-comment.dto';
-import { FreePostReplyCommentHistoryService } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/services/free-post-reply-comment-history.service';
-import { FreePostReplyCommentRepository } from '@src/apis/free-posts/repositories/free-post-reply-comment.repository';
-import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
-import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
-import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { HistoryAction, SortOrder } from '@src/constants/enum';
-import { QueryHelper } from '@src/helpers/query.helper';
-import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+
+import { faker } from '@faker-js/faker';
+import { DataSource } from 'typeorm';
+
 import { mockQueryHelper } from '@test/mock/mock.helper';
 import {
   mockDataSource,
@@ -24,8 +13,22 @@ import {
   mockFreePostReplyCommentHistoryService,
   mockReactionsService,
 } from '@test/mock/mock.service';
-import { DataSource } from 'typeorm';
-import { FreePostReplyCommentsService } from './free-post-reply-comments.service';
+
+import { FreePostCommentsService } from '@src/apis/free-post-comments/services/free-post-comments.service';
+import { CreateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/create-free-post-reply-comment.dto';
+import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-post-reply-comments/dto/find-free-post-reply-comment-list-query.dto';
+import { FreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comment.dto';
+import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/put-update-free-post-reply-comment.dto';
+import { FreePostReplyCommentHistoryService } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/services/free-post-reply-comment-history.service';
+import { FreePostReplyCommentsService } from '@src/apis/free-post-reply-comments/services/free-post-reply-comments.service';
+import { FreePostReplyCommentRepository } from '@src/apis/free-posts/repositories/free-post-reply-comment.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { HistoryAction, SortOrder } from '@src/constants/enum';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 describe(FreePostReplyCommentsService.name, () => {
   let service: FreePostReplyCommentsService;

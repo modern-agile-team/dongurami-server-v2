@@ -1,15 +1,17 @@
-import { ApiOperator } from '@src/types/type';
-import { AuthSocialController } from './auth-social.controller';
-import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { HttpStatus, applyDecorators } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
-import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
-import { UserDto } from '@src/apis/users/dto/user.dto';
+import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+
 import { ValidationError } from 'class-validator';
-import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
+
+import { AuthSocialController } from '@src/apis/auth/social/controllers/auth-social.controller';
+import { UserDto } from '@src/apis/users/dto/user.dto';
+import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
-import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
+import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
+import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
+import { ApiOperator } from '@src/types/type';
 
 export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   CheckRegistration: (

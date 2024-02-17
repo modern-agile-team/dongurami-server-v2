@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from './User';
+
+import { User } from '@src/entities/User';
 
 @Entity('major')
 export class Major {

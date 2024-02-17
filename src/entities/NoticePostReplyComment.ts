@@ -1,4 +1,3 @@
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -7,11 +6,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticePost } from './NoticePost';
-import { NoticePostComment } from './NoticePostComment';
-import { NoticePostReplyCommentHistory } from './NoticePostReplyCommentHistory';
-import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
-import { User } from './User';
+
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostComment } from '@src/entities/NoticePostComment';
+import { NoticePostReplyCommentHistory } from '@src/entities/NoticePostReplyCommentHistory';
+import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
+import { User } from '@src/entities/User';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Entity('notice_post_reply_comment')
 export class NoticePostReplyComment {

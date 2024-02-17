@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { QueryHelper } from '@src/helpers/query.helper';
 
 describe(QueryHelper.name, () => {

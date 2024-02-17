@@ -1,12 +1,13 @@
-import { HistoryAction } from '@src/constants/enum';
-import { User } from '@src/entities/User';
-import { UserHistory } from '@src/entities/UserHistory';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
   UpdateEvent,
 } from 'typeorm';
+
+import { HistoryAction } from '@src/constants/enum';
+import { User } from '@src/entities/User';
+import { UserHistory } from '@src/entities/UserHistory';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {

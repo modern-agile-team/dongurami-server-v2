@@ -1,6 +1,3 @@
-import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
-import { HistoryAction } from '@src/constants/enum';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -9,7 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticePost } from './NoticePost';
+
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { HistoryAction } from '@src/constants/enum';
+import { NoticePost } from '@src/entities/NoticePost';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Index(['userId'])
 @Entity('notice_post_history')

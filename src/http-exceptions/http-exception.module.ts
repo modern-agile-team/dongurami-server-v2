@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { HttpBadRequestExceptionFilter } from '@src/http-exceptions/filters/http-bad-request-exception.filter';
 import { HttpConflictExceptionFilter } from '@src/http-exceptions/filters/http-conflict-exception.filter';
 import { HttpForbiddenExceptionFilter } from '@src/http-exceptions/filters/http-forbidden-exception.filter';

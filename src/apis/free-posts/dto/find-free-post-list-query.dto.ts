@@ -1,4 +1,14 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDefined,
+  IsNotEmpty,
+  IsOptional,
+  MaxLength,
+} from 'class-validator';
+
 import {
   FREE_POST_ORDER_FIELD,
   FREE_POST_TITLE_LENGTH,
@@ -11,14 +21,6 @@ import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator'
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
 import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
-import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsDefined,
-  IsNotEmpty,
-  IsOptional,
-  MaxLength,
-} from 'class-validator';
 
 export class FindFreePostListQueryDto
   extends PageDto

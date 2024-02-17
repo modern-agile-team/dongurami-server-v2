@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+
+import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { NoticePost } from '@src/entities/NoticePost';
-import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
-import { Exclude } from 'class-transformer';
-import { NoticePostStatus } from '../constants/notice-post.enum';
 
 export class NoticePostDto
   extends BaseDto

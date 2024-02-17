@@ -5,13 +5,15 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { PageDto } from '@src/dto/page.dto';
 import { ResponseBuilder } from '@src/interceptors/success-interceptor/builders/success-response.builder';
 import { SET_RESPONSE } from '@src/interceptors/success-interceptor/constants/success-interceptor.constant';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { Args } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable()
 export class SuccessInterceptor implements NestInterceptor {

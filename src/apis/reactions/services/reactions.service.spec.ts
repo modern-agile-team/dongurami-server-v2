@@ -1,12 +1,15 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { faker } from '@faker-js/faker';
+
+import { mockReactionTypeRepository } from '@test/mock/mock.repository';
+
 import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { mockReactionTypeRepository } from '@test/mock/mock.repository';
 
 const mockReactionRepository = {
   exist: jest.fn(),

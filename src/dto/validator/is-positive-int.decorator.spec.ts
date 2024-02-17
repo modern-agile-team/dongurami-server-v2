@@ -1,6 +1,7 @@
-import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+
+import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 
 describe(IsPositiveInt.name, () => {
   class Test {

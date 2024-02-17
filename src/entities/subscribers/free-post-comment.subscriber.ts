@@ -1,12 +1,13 @@
-import { HistoryAction } from '@src/constants/enum';
-import { FreePostComment } from '@src/entities/FreePostComment';
-import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
   UpdateEvent,
 } from 'typeorm';
+
+import { HistoryAction } from '@src/constants/enum';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
 
 @EventSubscriber()
 export class FreePostCommentSubscriber

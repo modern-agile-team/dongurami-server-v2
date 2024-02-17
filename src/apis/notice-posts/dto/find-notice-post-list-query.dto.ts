@@ -1,18 +1,20 @@
-import { PageDto } from '@src/dto/page.dto';
-import { NoticePostDto } from './notice-post.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+
+import { Transform } from 'class-transformer';
 import { IsBoolean, IsDefined, IsOptional, Length } from 'class-validator';
-import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
+
 import {
   NOTICE_POST_ORDER_FIELD,
   NOTICE_POST_TITLE_LENGTH,
-} from '../constants/notice-post.constant';
+} from '@src/apis/notice-posts/constants/notice-post.constant';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
+import { SortOrder } from '@src/constants/enum';
+import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
-import { SortOrder } from '@src/constants/enum';
-import { NoticePostStatus } from '../constants/notice-post.enum';
 import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
-import { Transform } from 'class-transformer';
+import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 
 export class FindNoticePostListQueryDto
   extends PageDto

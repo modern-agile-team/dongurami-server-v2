@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BCRYPT_TOKEN } from '@src/libs/encryption/constants/encryption.token';
+
 import bcrypt from 'bcrypt';
-import { EncryptionService } from './services/encryption.service';
+
+import { BCRYPT_TOKEN } from '@src/libs/encryption/constants/encryption.token';
+import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 
 @Module({
   providers: [

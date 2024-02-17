@@ -1,10 +1,13 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { faker } from '@faker-js/faker';
+
+import { mockUsersService } from '@test/mock/mock.service';
+
+import { UsersController } from '@src/apis/users/controllers/users.controller';
 import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UsersService } from '@src/apis/users/services/users.service';
-import { mockUsersService } from '@test/mock/mock.service';
-import { UsersController } from './users.controller';
 
 describe(UsersController.name, () => {
   let controller: UsersController;

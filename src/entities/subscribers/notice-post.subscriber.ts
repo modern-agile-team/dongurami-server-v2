@@ -1,12 +1,13 @@
-import { HistoryAction } from '@src/constants/enum';
-import { NoticePost } from '@src/entities/NoticePost';
-import { NoticePostHistory } from '@src/entities/NoticePostHistory';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
   UpdateEvent,
 } from 'typeorm';
+
+import { HistoryAction } from '@src/constants/enum';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostHistory } from '@src/entities/NoticePostHistory';
 
 @EventSubscriber()
 export class NoticePostSubscriber

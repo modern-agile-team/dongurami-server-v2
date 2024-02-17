@@ -12,6 +12,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
+import { plainToInstance } from 'class-transformer';
+
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreePostReplyComment } from '@src/apis/free-post-reply-comments/controllers/free-post-reply-comments.swagger';
 import { CreateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/create-free-post-reply-comment.dto';
@@ -28,7 +31,6 @@ import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
-import { plainToInstance } from 'class-transformer';
 
 @ApiTags('free-post-reply-comment')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])

@@ -1,21 +1,8 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
-import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
-import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
-import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
-import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
-import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
-import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
-import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
-import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
-import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
-import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { SortOrder } from '@src/constants/enum';
-import { QueryHelper } from '@src/helpers/query.helper';
-import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
-import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+
+import { faker } from '@faker-js/faker';
+import { DataSource } from 'typeorm';
+
 import { mockQueryHelper } from '@test/mock/mock.helper';
 import {
   mockDataSource,
@@ -26,8 +13,24 @@ import {
   mockFreePostHistoryService,
   mockReactionsService,
 } from '@test/mock/mock.service';
-import { DataSource } from 'typeorm';
-import { FreePostsService } from './free-posts.service';
+
+import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
+import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
+import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
+import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
+import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
+import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
+import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
+import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { SortOrder } from '@src/constants/enum';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 describe(FreePostsService.name, () => {
   let service: FreePostsService;

@@ -1,4 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
+
+import { MockProvider } from '@test/mock/mock.type';
+
 import { AuthService } from '@src/apis/auth/services/auth.service';
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
@@ -12,7 +15,6 @@ import { UsersService } from '@src/apis/users/services/users.service';
 import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
-import { MockProvider } from '@test/mock/mock.type';
 
 export const mockEncryptionService: MockProvider<EncryptionService> = {
   compare: jest.fn(),

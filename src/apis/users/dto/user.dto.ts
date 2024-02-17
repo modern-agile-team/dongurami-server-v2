@@ -1,4 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+import { IsOptional } from 'class-validator';
+
 import { USER_GRADE } from '@src/apis/users/constants/user.constant';
 import {
   UserGender,
@@ -9,8 +13,6 @@ import {
 import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
 import { BaseDto } from '@src/dto/base.dto';
 import { User } from '@src/entities/User';
-import { Exclude } from 'class-transformer';
-import { IsOptional } from 'class-validator';
 
 export class UserDto
   extends BaseDto

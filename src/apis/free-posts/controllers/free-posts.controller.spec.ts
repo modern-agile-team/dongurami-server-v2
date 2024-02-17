@@ -1,16 +1,19 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { faker } from '@faker-js/faker';
+
+import { mockFreePostsService } from '@test/mock/mock.service';
+
+import { FreePostsController } from '@src/apis/free-posts/controllers/free-posts.controller';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
+import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { mockFreePostsService } from '@test/mock/mock.service';
-import { FreePostsService } from '../services/free-posts.service';
-import { FreePostsController } from './free-posts.controller';
 
 describe(FreePostsController.name, () => {
   let controller: FreePostsController;

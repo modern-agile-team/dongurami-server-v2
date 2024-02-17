@@ -1,14 +1,8 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MajorRepository } from '@src/apis/major/repositories/major.repository';
-import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
-import { UserDto } from '@src/apis/users/dto/user.dto';
-import { UserRepository } from '@src/apis/users/repositories/user.repository';
-import { UsersService } from '@src/apis/users/services/users.service';
-import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
-import { User } from '@src/entities/User';
-import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
-import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
+
+import { faker } from '@faker-js/faker';
+import { DataSource } from 'typeorm';
+
 import {
   mockDataSource,
   mockMajorRepository,
@@ -18,7 +12,16 @@ import {
   mockEncryptionService,
   mockUserHistoryService,
 } from '@test/mock/mock.service';
-import { DataSource } from 'typeorm';
+
+import { MajorRepository } from '@src/apis/major/repositories/major.repository';
+import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
+import { UserRepository } from '@src/apis/users/repositories/user.repository';
+import { UsersService } from '@src/apis/users/services/users.service';
+import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
+import { User } from '@src/entities/User';
+import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 
 describe(UsersService.name, () => {
   let service: UsersService;

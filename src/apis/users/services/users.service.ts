@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
+
+import * as crypto from 'crypto';
+import moment from 'moment';
+import { FindOptionsWhere } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
+
 import { MajorService } from '@src/apis/major/services/major.service';
 import { UserStatus } from '@src/apis/users/constants/user.enum';
 import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
+import { PutUpdateUserDto } from '@src/apis/users/dto/put-update-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -10,11 +17,6 @@ import { User } from '@src/entities/User';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import * as crypto from 'crypto';
-import moment from 'moment';
-import { FindOptionsWhere } from 'typeorm';
-import { Transactional } from 'typeorm-transactional';
-import { PutUpdateUserDto } from '../dto/put-update-user.dto';
 
 @Injectable()
 export class UsersService {

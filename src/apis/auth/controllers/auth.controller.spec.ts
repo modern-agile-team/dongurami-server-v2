@@ -1,10 +1,13 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
-import { UserDto } from '@src/apis/users/dto/user.dto';
+
+import { faker } from '@faker-js/faker';
+
 import { mockAuthService } from '@test/mock/mock.service';
-import { AuthService } from '../services/auth.service';
-import { AuthController } from './auth.controller';
+
+import { AuthController } from '@src/apis/auth/controllers/auth.controller';
+import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
+import { AuthService } from '@src/apis/auth/services/auth.service';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 
 describe(AuthController.name, () => {
   let controller: AuthController;

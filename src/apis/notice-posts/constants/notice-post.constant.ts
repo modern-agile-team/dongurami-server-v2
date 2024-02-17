@@ -1,4 +1,4 @@
-import { NoticePostDto } from '../dto/notice-post.dto';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 
 export const NOTICE_POST_ORDER_FIELD: readonly (keyof NoticePostDto)[] = [
   'id',

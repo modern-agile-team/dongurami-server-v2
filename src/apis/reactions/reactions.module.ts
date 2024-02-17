@@ -1,11 +1,13 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { DataSource } from 'typeorm';
+
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
-import { DataSource } from 'typeorm';
 
 @Module({
   imports: [TypeOrmExModule.forCustomRepository([ReactionTypeRepository])],

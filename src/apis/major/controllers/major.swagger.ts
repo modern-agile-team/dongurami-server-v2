@@ -1,15 +1,16 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+
+import { MajorController } from '@src/apis/major/controllers/major.controller';
+import { MajorDto } from '@src/apis/major/dto/major.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
+import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { ApiOperator } from '@src/types/type';
 import { ValidationError } from '@src/types/validation-errors.type';
-import { MajorController } from './major.controller';
-import { MajorDto } from '../dto/major.dto';
-import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
-import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
 
 export const ApiMajors: ApiOperator<keyof MajorController> = {
   CreateNewMajor: (

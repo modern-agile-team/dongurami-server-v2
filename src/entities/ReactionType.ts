@@ -1,10 +1,11 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { FreePostCommentReaction } from './FreePostCommentReaction';
-import { FreePostReaction } from './FreePostReaction';
-import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
-import { NoticePostCommentReaction } from './NoticePostCommentReaction';
-import { NoticePostReaction } from './NoticePostReaction';
-import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
+
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
+import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
 
 @Entity('reaction_type')
 export class ReactionType {

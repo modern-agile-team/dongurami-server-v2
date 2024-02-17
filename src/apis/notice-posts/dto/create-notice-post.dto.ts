@@ -1,7 +1,9 @@
-import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
-import { NoticePostDto } from './notice-post.dto';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
+
+import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 
 export class CreateNoticePostDto
   implements Pick<NoticePostDto, 'title' | 'description' | 'isAllowComment'>

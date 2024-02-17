@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateFreePostCommentHistoryDto } from '@src/apis/free-post-comments/free-post-comment-history/dto/create-free-post-comment-history.dto';
-import { FreePostCommentHistoryRepository } from '@src/apis/free-post-comments/free-post-comment-history/repositories/free-post-comment-history.repository';
-import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
-import { HistoryAction } from '@src/constants/enum';
+
 import {
   mockEntityManager,
   mockFreePostCommentHistoryRepository,
 } from '@test/mock/mock.repository';
 import { mockFreePostHistoryService } from '@test/mock/mock.service';
-import { FreePostCommentHistoryService } from './free-post-comment-history.service';
+
+import { CreateFreePostCommentHistoryDto } from '@src/apis/free-post-comments/free-post-comment-history/dto/create-free-post-comment-history.dto';
+import { FreePostCommentHistoryRepository } from '@src/apis/free-post-comments/free-post-comment-history/repositories/free-post-comment-history.repository';
+import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
+import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { HistoryAction } from '@src/constants/enum';
 
 describe(FreePostCommentHistoryService.name, () => {
   let service: FreePostCommentHistoryService;

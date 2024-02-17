@@ -1,12 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateFreePostHistoryDto } from '@src/apis/free-posts/free-post-history/dto/create-free-post-history.dto';
-import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
-import { HistoryAction } from '@src/constants/enum';
+
 import {
   mockEntityManager,
   mockFreePostHistoryRepository,
 } from '@test/mock/mock.repository';
-import { FreePostHistoryService } from './free-post-history.service';
+
+import { CreateFreePostHistoryDto } from '@src/apis/free-posts/free-post-history/dto/create-free-post-history.dto';
+import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
+import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { HistoryAction } from '@src/constants/enum';
 
 describe(FreePostHistoryService.name, () => {
   let service: FreePostHistoryService;

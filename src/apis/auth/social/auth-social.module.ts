@@ -1,22 +1,15 @@
-import { Module } from "@nestjs/common";
-import { AuthSocialController } from "./controllers/auth-social.controller";
-import { AuthSocialService } from "./service/auth-social.service";
-import { UsersModule } from "@src/apis/users/users.module";
-import { AuthRegistrationService } from "./service/auth-registration.service";
-import { AuthService } from "../services/auth.service";
-import { EncryptionModule } from "@src/libs/encryption/encryption.module";
-import { JwtModule } from "@nestjs/jwt";
-import { JwtModuleOptionsFactory } from "../jwt/jwt-module-options.factory";
-import { AuthModule } from "../auth.module";
+import { Module } from '@nestjs/common';
+
+import { AuthModule } from '@src/apis/auth/auth.module';
+import { AuthSocialController } from '@src/apis/auth/social/controllers/auth-social.controller';
+import { AuthRegistrationService } from '@src/apis/auth/social/service/auth-registration.service';
+import { AuthSocialService } from '@src/apis/auth/social/service/auth-social.service';
+import { UsersModule } from '@src/apis/users/users.module';
 
 @Module({
-  imports: [
-    UsersModule,
-    AuthModule,
-  ],
+  imports: [UsersModule, AuthModule],
   controllers: [AuthSocialController],
   providers: [AuthSocialService, AuthRegistrationService],
-  exports: [AuthSocialService]
+  exports: [AuthSocialService],
 })
-
-export class AuthSocialModule { }
+export class AuthSocialModule {}

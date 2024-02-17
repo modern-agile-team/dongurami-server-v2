@@ -1,5 +1,3 @@
-import { FreePostReplyCommentStatus } from '@src/apis/free-post-reply-comments/constants/free-post-reply-comment.enum';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -8,11 +6,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePost } from './FreePost';
-import { FreePostComment } from './FreePostComment';
-import { FreePostReplyCommentHistory } from './FreePostReplyCommentHistory';
-import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
-import { User } from './User';
+
+import { FreePostReplyCommentStatus } from '@src/apis/free-post-reply-comments/constants/free-post-reply-comment.enum';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostReplyCommentHistory } from '@src/entities/FreePostReplyCommentHistory';
+import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
+import { User } from '@src/entities/User';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Entity('free_post_reply_comment')
 export class FreePostReplyComment {

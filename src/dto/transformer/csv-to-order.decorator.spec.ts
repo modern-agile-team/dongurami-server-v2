@@ -1,7 +1,8 @@
+import { plainToInstance } from 'class-transformer';
+
 import { SortOrder } from '@src/constants/enum';
 import { CsvToOrder } from '@src/dto/transformer/csv-to-order.decorator';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { plainToInstance } from 'class-transformer';
 
 describe(CsvToOrder.name, () => {
   const allowFields: string[] = ['id', 'createdAt'];

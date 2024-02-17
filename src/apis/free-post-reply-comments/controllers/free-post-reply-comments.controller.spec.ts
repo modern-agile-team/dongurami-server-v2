@@ -1,15 +1,18 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { faker } from '@faker-js/faker';
+
+import { mockFreePostReplyCommentsService } from '@test/mock/mock.service';
+
+import { FreePostReplyCommentsController } from '@src/apis/free-post-reply-comments/controllers/free-post-reply-comments.controller';
 import { CreateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/create-free-post-reply-comment.dto';
 import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-post-reply-comments/dto/find-free-post-reply-comment-list-query.dto';
 import { FreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comment.dto';
 import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/put-update-free-post-reply-comment.dto';
+import { FreePostReplyCommentsService } from '@src/apis/free-post-reply-comments/services/free-post-reply-comments.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { mockFreePostReplyCommentsService } from '@test/mock/mock.service';
-import { FreePostReplyCommentsService } from '../services/free-post-reply-comments.service';
-import { FreePostReplyCommentsController } from './free-post-reply-comments.controller';
 
 describe(FreePostReplyCommentsController.name, () => {
   let controller: FreePostReplyCommentsController;

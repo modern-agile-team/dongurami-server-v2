@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
+
+import { FindOptionsWhere, Repository } from 'typeorm';
+
 import { CommonPostStatus } from '@src/apis/common-posts/constants/common-posts.enum';
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
 import { RequiredCommonPostColumn } from '@src/apis/common-posts/types/common-post.type';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class CommonPostsService<E extends RequiredCommonPostColumn> {

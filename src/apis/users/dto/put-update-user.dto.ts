@@ -1,7 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
-import { CreateUserDto } from './create-user.dto';
 
+import { IsString } from 'class-validator';
+
+import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
 
 export class PutUpdateUserDto extends PickType(CreateUserDto, [

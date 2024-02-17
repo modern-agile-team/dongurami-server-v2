@@ -1,5 +1,5 @@
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { NoticePostHistory } from '@src/entities/NoticePostHistory';
-import { NoticePostStatus } from '../../constants/notice-post.enum';
 
 export class CreateNoticePostHistoryDto
   implements

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
+import { CreateNoticePostHistoryDto } from '@src/apis/notice-posts/notice-post-history/dto/create-notice-post-history.dto';
 import { NoticePostHistoryRepository } from '@src/apis/notice-posts/notice-post-history/repositories/notice-post-history.repository';
 import { HistoryAction } from '@src/constants/enum';
-import { CreateNoticePostHistoryDto } from '../dto/create-notice-post-history.dto';
 
 @Injectable()
 export class NoticePostHistoryService {

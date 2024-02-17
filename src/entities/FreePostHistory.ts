@@ -1,6 +1,3 @@
-import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
-import { HistoryAction } from '@src/constants/enum';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -9,7 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePost } from './FreePost';
+
+import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { HistoryAction } from '@src/constants/enum';
+import { FreePost } from '@src/entities/FreePost';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Index(['userId'], {})
 @Entity('free_post_history')

@@ -1,11 +1,13 @@
-import { IsNumberString, Length } from 'class-validator';
-import { MajorDto } from './major.dto';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { IsNumberString, Length } from 'class-validator';
+
 import {
   MAJOR_CODE_LENGTH,
   MAJOR_MEMO_LENGTH,
   MAJOR_NAME_LENGTH,
-} from '../constants/major.constant';
+} from '@src/apis/major/constants/major.constant';
+import { MajorDto } from '@src/apis/major/dto/major.dto';
 
 export class CreateMajorRequestBodyDto
   implements Pick<MajorDto, 'code' | 'name' | 'memo'>

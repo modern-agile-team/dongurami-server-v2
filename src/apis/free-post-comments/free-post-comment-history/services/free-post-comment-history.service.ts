@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+
+import { EntityManager, FindOneOptions } from 'typeorm';
+
+import { CreateFreePostCommentHistoryDto } from '@src/apis/free-post-comments/free-post-comment-history/dto/create-free-post-comment-history.dto';
+import { FreePostCommentHistoryRepository } from '@src/apis/free-post-comments/free-post-comment-history/repositories/free-post-comment-history.repository';
 import { HistoryAction } from '@src/constants/enum';
 import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
-import { EntityManager, FindOneOptions } from 'typeorm';
-import { CreateFreePostCommentHistoryDto } from '../dto/create-free-post-comment-history.dto';
-import { FreePostCommentHistoryRepository } from '../repositories/free-post-comment-history.repository';
 
 @Injectable()
 export class FreePostCommentHistoryService {

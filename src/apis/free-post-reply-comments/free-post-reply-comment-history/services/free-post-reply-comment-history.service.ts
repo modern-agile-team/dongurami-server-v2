@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
+import { CreateFreePostReplyCommentHistoryDto } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/dto/create-free-post-reply-comment-history.dto';
 import { FreePostReplyCommentHistoryRepository } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/repositories/free-post-reply-comment-history.repository';
 import { HistoryAction } from '@src/constants/enum';
-import { CreateFreePostReplyCommentHistoryDto } from '../dto/create-free-post-reply-comment-history.dto';
 
 @Injectable()
 export class FreePostReplyCommentHistoryService {

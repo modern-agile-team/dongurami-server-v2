@@ -5,9 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePostComment } from './FreePostComment';
-import { ReactionType } from './ReactionType';
-import { User } from './User';
+
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { ReactionType } from '@src/entities/ReactionType';
+import { User } from '@src/entities/User';
 
 @Entity('free_post_comment_reaction')
 export class FreePostCommentReaction {

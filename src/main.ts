@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { BootstrapService } from '@src/bootstrap.service';
+
 import {
-  initializeTransactionalContext,
   StorageDriver,
+  initializeTransactionalContext,
 } from 'typeorm-transactional';
-import { AppModule } from './app.module';
+
+import { AppModule } from '@src/app.module';
+import { BootstrapService } from '@src/bootstrap.service';
 
 async function bootstrap() {
   initializeTransactionalContext({

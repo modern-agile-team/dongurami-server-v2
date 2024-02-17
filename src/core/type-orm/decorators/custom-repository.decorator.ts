@@ -1,4 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
+
 import { TYPE_ORM_EX_CUSTOM_REPOSITORY } from '@src/core/type-orm/constants/type-orm.token';
 
 export function CustomRepository(entity: any): ClassDecorator {

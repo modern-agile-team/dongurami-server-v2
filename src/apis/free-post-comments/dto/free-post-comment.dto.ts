@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+
 import { FREE_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-post-comments/constants/free-post-comment.constant';
 import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePostComment } from '@src/entities/FreePostComment';
-import { Exclude } from 'class-transformer';
 
 export class FreePostCommentDto
   extends BaseDto

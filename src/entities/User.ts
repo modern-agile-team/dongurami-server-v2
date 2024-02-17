@@ -1,10 +1,4 @@
 import {
-  UserGender,
-  UserLoginType,
-  UserRole,
-  UserStatus,
-} from '@src/apis/users/constants/user.enum';
-import {
   Column,
   Entity,
   Index,
@@ -13,20 +7,27 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePost } from './FreePost';
-import { FreePostComment } from './FreePostComment';
-import { FreePostCommentReaction } from './FreePostCommentReaction';
-import { FreePostReaction } from './FreePostReaction';
-import { FreePostReplyComment } from './FreePostReplyComment';
-import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
-import { NoticePost } from './NoticePost';
-import { NoticePostComment } from './NoticePostComment';
-import { NoticePostCommentReaction } from './NoticePostCommentReaction';
-import { NoticePostReaction } from './NoticePostReaction';
-import { NoticePostReplyComment } from './NoticePostReplyComment';
-import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
-import { UserHistory } from './UserHistory';
-import { Major } from './Major';
+
+import {
+  UserGender,
+  UserLoginType,
+  UserRole,
+  UserStatus,
+} from '@src/apis/users/constants/user.enum';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
+import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
+import { Major } from '@src/entities/Major';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostComment } from '@src/entities/NoticePostComment';
+import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostReplyComment } from '@src/entities/NoticePostReplyComment';
+import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
+import { UserHistory } from '@src/entities/UserHistory';
 
 @Index(['email'], { unique: true })
 @Index(['snsId'], { unique: true })

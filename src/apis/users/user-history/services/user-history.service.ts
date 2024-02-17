@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { CreateUserHistoryDto } from '@src/apis/users/user-history/dto/create-user-history.dto';
 import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
 import { HistoryAction } from '@src/constants/enum';

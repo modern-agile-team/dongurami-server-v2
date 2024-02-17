@@ -1,7 +1,17 @@
-import { faker } from '@faker-js/faker';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { faker } from '@faker-js/faker';
+
+import {
+  mockAppConfigService,
+  mockEncryptionService,
+  mockJwtService,
+  mockUsersService,
+} from '@test/mock/mock.service';
+
 import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
+import { AuthService } from '@src/apis/auth/services/auth.service';
 import { Payload } from '@src/apis/auth/type/auth.type';
 import { UserLoginType } from '@src/apis/users/constants/user.enum';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -10,13 +20,6 @@ import { AppConfigService } from '@src/core/app-config/services/app-config.servi
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
-import {
-  mockAppConfigService,
-  mockEncryptionService,
-  mockJwtService,
-  mockUsersService,
-} from '@test/mock/mock.service';
-import { AuthService } from './auth.service';
 
 describe(AuthService.name, () => {
   let service: AuthService;

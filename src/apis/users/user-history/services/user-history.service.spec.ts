@@ -1,13 +1,16 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserHistoryDto } from '@src/apis/users/user-history/dto/create-user-history.dto';
-import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
-import { HistoryAction } from '@src/constants/enum';
+
+import { faker } from '@faker-js/faker';
+
 import {
   mockEntityManager,
   mockUserHistoryRepository,
 } from '@test/mock/mock.repository';
-import { UserHistoryService } from './user-history.service';
+
+import { CreateUserHistoryDto } from '@src/apis/users/user-history/dto/create-user-history.dto';
+import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
+import { UserHistoryService } from '@src/apis/users/user-history/services/user-history.service';
+import { HistoryAction } from '@src/constants/enum';
 
 describe('UserHistoryService', () => {
   let service: UserHistoryService;

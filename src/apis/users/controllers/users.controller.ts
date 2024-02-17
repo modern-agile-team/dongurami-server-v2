@@ -9,18 +9,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiUsers } from '@src/apis/users/controllers/users.swagger';
 import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
+import { PutUpdateUserDto } from '@src/apis/users/dto/put-update-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { UsersService } from '@src/apis/users/services/users.service';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
-import { PutUpdateUserDto } from '../dto/put-update-user.dto';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('user')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])

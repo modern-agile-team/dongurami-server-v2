@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePost } from '@src/entities/FreePost';
-import { Exclude } from 'class-transformer';
 
 export class FreePostDto
   extends BaseDto

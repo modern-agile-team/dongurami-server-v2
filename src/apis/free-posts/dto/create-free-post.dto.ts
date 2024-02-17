@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
+
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
-import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
 
 export class CreateFreePostDto
   implements Pick<FreePostDto, 'title' | 'description' | 'isAnonymous'>

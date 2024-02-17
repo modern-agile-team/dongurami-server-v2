@@ -5,9 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { NoticePost } from './NoticePost';
-import { ReactionType } from './ReactionType';
-import { User } from './User';
+
+import { NoticePost } from '@src/entities/NoticePost';
+import { ReactionType } from '@src/entities/ReactionType';
+import { User } from '@src/entities/User';
 
 @Entity('notice_post_reaction')
 export class NoticePostReaction {

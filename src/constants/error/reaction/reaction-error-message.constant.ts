@@ -1,5 +1,5 @@
+import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { ErrorMessage } from '@src/types/type';
-import { REACTION_ERROR_CODE } from './reaction-error-code.constant';
 
 export const REACTION_ERROR_MESSAGE: ErrorMessage<typeof REACTION_ERROR_CODE> =
   {

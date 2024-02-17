@@ -1,10 +1,4 @@
 import {
-  UserLoginType,
-  UserRole,
-  UserStatus,
-} from '@src/apis/users/constants/user.enum';
-import { HistoryAction } from '@src/constants/enum';
-import {
   Column,
   Entity,
   Index,
@@ -12,7 +6,14 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './User';
+
+import {
+  UserLoginType,
+  UserRole,
+  UserStatus,
+} from '@src/apis/users/constants/user.enum';
+import { HistoryAction } from '@src/constants/enum';
+import { User } from '@src/entities/User';
 
 @Index(['email'], { unique: true })
 @Index(['snsId'], { unique: true })

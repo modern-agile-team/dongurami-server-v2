@@ -1,7 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { CreateNoticePostDto } from './create-notice-post.dto';
-import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
+
 import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
+
+import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
+import { CreateNoticePostDto } from '@src/apis/notice-posts/dto/create-notice-post.dto';
 
 export class PatchUpdateNoticePostDto implements Partial<CreateNoticePostDto> {
   @ApiPropertyOptional({

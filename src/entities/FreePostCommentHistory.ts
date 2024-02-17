@@ -1,6 +1,3 @@
-import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
-import { HistoryAction } from '@src/constants/enum';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 import {
   Column,
   Entity,
@@ -9,7 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePostComment } from './FreePostComment';
+
+import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
+import { HistoryAction } from '@src/constants/enum';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Index(['userId'], {})
 @Index(['freePostId'], {})

@@ -1,8 +1,10 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { faker } from '@faker-js/faker';
+
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
+import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { CommonPostsService } from './common-posts.service';
 
 const mockPostRepository = {
   increment: jest.fn(),

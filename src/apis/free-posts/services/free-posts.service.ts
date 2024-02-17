@@ -11,12 +11,10 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
-import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreePost } from '@src/entities/FreePost';
@@ -34,7 +32,6 @@ export class FreePostsService {
   >)[] = ['title'];
 
   constructor(
-    private readonly freePostHistoryService: FreePostHistoryService,
     private readonly commonPostsService: CommonPostsService<FreePost>,
     private readonly reactionsService: ReactionsService<FreePostReaction>,
 
@@ -50,15 +47,6 @@ export class FreePostsService {
       status: FreePostStatus.Posting,
       ...createFreePostDto,
     });
-
-    await this.freePostHistoryService.create(
-      userId,
-      newPost.id,
-      HistoryAction.Insert,
-      {
-        ...newPost,
-      },
-    );
 
     return new FreePostDto(newPost);
   }
@@ -118,25 +106,15 @@ export class FreePostsService {
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
-
-    await this.freePostRepository.update(
-      {
-        id: freePostId,
-      },
-      {
-        ...putUpdateFreePostDto,
-      },
-    );
-
     const newFreePost = this.freePostRepository.create({
       ...oldFreePost,
       ...putUpdateFreePostDto,
     });
 
-    await this.freePostHistoryService.create(
-      userId,
-      freePostId,
-      HistoryAction.Update,
+    await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
       {
         ...newFreePost,
       },
@@ -165,30 +143,21 @@ export class FreePostsService {
       });
     }
 
+    const newFreePost = this.freePostRepository.create({
+      ...oldFreePost,
+      ...patchUpdateFreePostDto,
+    });
+
     await this.freePostRepository.update(
       {
         id: freePostId,
       },
       {
-        ...patchUpdateFreePostDto,
+        ...newFreePost,
       },
     );
 
-    const newPost = this.freePostRepository.create({
-      ...oldFreePost,
-      ...patchUpdateFreePostDto,
-    });
-
-    await this.freePostHistoryService.create(
-      userId,
-      freePostId,
-      HistoryAction.Update,
-      {
-        ...newPost,
-      },
-    );
-
-    return new FreePostDto(newPost);
+    return new FreePostDto(newFreePost);
   }
 
   @Transactional()
@@ -206,18 +175,9 @@ export class FreePostsService {
         id: freePostId,
       },
       {
-        status: FreePostStatus.Remove,
-        deletedAt: new Date(),
-      },
-    );
-
-    await this.freePostHistoryService.create(
-      userId,
-      freePostId,
-      HistoryAction.Delete,
-      {
         ...existFreePost,
         status: FreePostStatus.Remove,
+        deletedAt: new Date(),
       },
     );
 

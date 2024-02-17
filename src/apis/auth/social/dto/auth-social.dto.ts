@@ -25,6 +25,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
     description: 'name',
     minLength: USER_NAME_LENGTH.MIN,
     maxLength: USER_NAME_LENGTH.MAX,
+    nullable: true,
   })
   @Length(USER_NAME_LENGTH.MIN, USER_NAME_LENGTH.MAX)
   @IsNullable()
@@ -33,6 +34,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
   @ApiProperty({
     description: 'email',
     format: 'email',
+    nullable: true,
   })
   @IsEmail()
   @IsNullable()
@@ -41,6 +43,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
   @ApiProperty({
     description: 'role',
     enum: UserRole,
+    nullable: true,
   })
   @IsEnum(UserRole)
   @IsNullable()

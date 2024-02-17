@@ -9,12 +9,10 @@ import { FindFreePostReplyCommentListQueryDto } from '@src/apis/free-post-reply-
 import { FreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comment.dto';
 import { FreePostReplyCommentsItemDto } from '@src/apis/free-post-reply-comments/dto/free-post-reply-comments-item.dto';
 import { PutUpdateFreePostReplyCommentDto } from '@src/apis/free-post-reply-comments/dto/put-update-free-post-reply-comment.dto';
-import { FreePostReplyCommentHistoryService } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/services/free-post-reply-comment-history.service';
 import { FreePostReplyCommentRepository } from '@src/apis/free-posts/repositories/free-post-reply-comment.repository';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
@@ -26,7 +24,6 @@ import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-
 export class FreePostReplyCommentsService {
   constructor(
     private readonly freePostCommentsService: FreePostCommentsService,
-    private readonly freePostReplyCommentHistoryService: FreePostReplyCommentHistoryService,
     private readonly reactionsService: ReactionsService<FreePostReplyCommentReaction>,
 
     private readonly queryHelper: QueryHelper,
@@ -52,15 +49,6 @@ export class FreePostReplyCommentsService {
       freePostCommentId: existComment.id,
       ...createFreePostReplyCommentDto,
     });
-
-    await this.freePostReplyCommentHistoryService.create(
-      userId,
-      freePostId,
-      freePostCommentId,
-      newPostReplyComment.id,
-      HistoryAction.Insert,
-      newPostReplyComment,
-    );
 
     return new FreePostReplyCommentDto(newPostReplyComment);
   }
@@ -140,27 +128,18 @@ export class FreePostReplyCommentsService {
       });
     }
 
-    await this.freePostReplyCommentRepository.update(
-      {
-        id: freePostCommentId,
-      },
-      {
-        ...putUpdateFreePostReplyCommentDto,
-      },
-    );
-
     const newReplyComment = this.freePostReplyCommentRepository.create({
       ...oldReplyComment,
       ...putUpdateFreePostReplyCommentDto,
     });
 
-    await this.freePostReplyCommentHistoryService.create(
-      userId,
-      freePostId,
-      freePostCommentId,
-      freePostReplyCommentId,
-      HistoryAction.Update,
-      newReplyComment,
+    await this.freePostReplyCommentRepository.update(
+      {
+        id: freePostCommentId,
+      },
+      {
+        ...newReplyComment,
+      },
     );
 
     return new FreePostReplyCommentDto(newReplyComment);
@@ -191,22 +170,11 @@ export class FreePostReplyCommentsService {
           id: freePostReplyCommentId,
         },
         {
+          ...existReplyComment,
           status: FreePostReplyCommentStatus.Remove,
           deletedAt: new Date(),
         },
       );
-
-    await this.freePostReplyCommentHistoryService.create(
-      userId,
-      freePostId,
-      freePostCommentId,
-      freePostReplyCommentId,
-      HistoryAction.Delete,
-      {
-        ...existReplyComment,
-        status: FreePostReplyCommentStatus.Remove,
-      },
-    );
 
     return freePostUpdateResult.affected;
   }

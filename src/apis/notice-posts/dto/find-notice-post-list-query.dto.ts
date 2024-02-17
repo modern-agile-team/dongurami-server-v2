@@ -1,8 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
-import { IsDefined, IsOptional, Length } from 'class-validator';
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsDefined, IsOptional, Length } from 'class-validator';
 
 import {
   NOTICE_POST_ORDER_FIELD,

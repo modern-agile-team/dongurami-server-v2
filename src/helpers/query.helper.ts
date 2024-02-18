@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Like } from 'typeorm';
+import { FindOptionsRelations, Like } from 'typeorm';
 
 import { isNil } from '@src/common/common';
 
@@ -35,5 +35,16 @@ export class QueryHelper {
     }
 
     return where;
+  }
+
+  createNestedChildRelations(loadDepth: number): FindOptionsRelations<any> {
+    if (loadDepth === 0) {
+      return {};
+    }
+
+    return {
+      children:
+        loadDepth > 1 ? this.createNestedChildRelations(loadDepth - 1) : true,
+    };
   }
 }

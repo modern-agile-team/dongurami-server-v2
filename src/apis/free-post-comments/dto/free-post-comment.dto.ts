@@ -15,6 +15,8 @@ export class FreePostCommentDto
       | 'id'
       | 'userId'
       | 'freePostId'
+      | 'parentId'
+      | 'depth'
       | 'description'
       | 'isAnonymous'
       | 'status'
@@ -34,6 +36,19 @@ export class FreePostCommentDto
     format: 'integer',
   })
   userId: number;
+
+  @ApiProperty({
+    description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글임',
+    format: 'integer',
+    nullable: true,
+  })
+  parentId: number | null;
+
+  @ApiProperty({
+    description: '댓글 깊이 0부터 시작',
+    format: 'integer',
+  })
+  depth: number;
 
   @ApiProperty({
     description: '본문',

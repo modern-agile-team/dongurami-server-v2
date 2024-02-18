@@ -5,7 +5,6 @@ import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
-import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
 
 @Entity('reaction_type')
 export class ReactionType {
@@ -66,11 +65,4 @@ export class ReactionType {
     (noticePostReaction) => noticePostReaction.reactionType,
   )
   noticePostReactions: NoticePostReaction[];
-
-  @OneToMany(
-    () => NoticePostReplyCommentReaction,
-    (noticePostReplyCommentReaction) =>
-      noticePostReplyCommentReaction.reactionType,
-  )
-  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 }

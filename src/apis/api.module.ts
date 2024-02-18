@@ -6,6 +6,7 @@ import { FreePostCommentsModule } from '@src/apis/free-post-comments/free-post-c
 import { FreePostReplyCommentsModule } from '@src/apis/free-post-reply-comments/free-post-reply-comments.module';
 import { FreePostsModule } from '@src/apis/free-posts/free-posts.module';
 import { MajorModule } from '@src/apis/major/major.module';
+import { NoticePostCommentsModule } from '@src/apis/notice-post-comments/notice-post-comments.module';
 import { NoticePostsModule } from '@src/apis/notice-posts/notice-posts.module';
 import { RootModule } from '@src/apis/root/root.module';
 import { UsersModule } from '@src/apis/users/users.module';
@@ -17,6 +18,7 @@ import { UsersModule } from '@src/apis/users/users.module';
     UsersModule,
     MajorModule,
     NoticePostsModule,
+    NoticePostCommentsModule,
     FreePostsModule,
     FreePostCommentsModule,
     FreePostReplyCommentsModule,

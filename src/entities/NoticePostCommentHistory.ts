@@ -44,6 +44,22 @@ export class NoticePostCommentHistory {
   })
   noticePostCommentId: number;
 
+  @Column('int', {
+    name: 'parent_id',
+    comment: '부모 댓글 고유 ID',
+    unsigned: true,
+    nullable: true,
+  })
+  parentId: number | null;
+
+  @Column('tinyint', {
+    name: 'depth',
+    comment: '댓글 깊이 (0부터 시작)',
+    unsigned: true,
+    default: () => "'0'",
+  })
+  depth: number;
+
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
 

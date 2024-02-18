@@ -18,8 +18,6 @@ import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
-import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
-import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
 import { Major } from '@src/entities/Major';
 import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
@@ -185,18 +183,6 @@ export class User {
     (freePostReaction) => freePostReaction.user,
   )
   freePostReactions: FreePostReaction[];
-
-  @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.user,
-  )
-  freePostReplyComments: FreePostReplyComment[];
-
-  @OneToMany(
-    () => FreePostReplyCommentReaction,
-    (freePostReplyCommentReaction) => freePostReplyCommentReaction.user,
-  )
-  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
 
   @OneToMany(() => NoticePost, (noticePost) => noticePost.user)
   noticePosts: NoticePost[];

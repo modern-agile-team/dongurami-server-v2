@@ -2,7 +2,6 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
-import { FreePostReplyCommentReaction } from '@src/entities/FreePostReplyCommentReaction';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
@@ -48,12 +47,6 @@ export class ReactionType {
     (freePostReaction) => freePostReaction.reactionType,
   )
   freePostReactions: FreePostReaction[];
-
-  @OneToMany(
-    () => FreePostReplyCommentReaction,
-    (freePostReplyCommentReaction) => freePostReplyCommentReaction.reactionType,
-  )
-  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
 
   @OneToMany(
     () => NoticePostCommentReaction,

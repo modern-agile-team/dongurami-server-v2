@@ -11,7 +11,6 @@ import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/fr
 import { FreePost } from '@src/entities/FreePost';
 import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
-import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
@@ -38,6 +37,22 @@ export class FreePostComment {
     unsigned: true,
   })
   freePostId: number;
+
+  @Column('int', {
+    name: 'parent_id',
+    comment: '부모 댓글 고유 ID',
+    unsigned: true,
+    nullable: true,
+  })
+  parentId: number | null;
+
+  @Column('tinyint', {
+    name: 'depth',
+    comment: '댓글 깊이 (0부터 시작)',
+    unsigned: true,
+    default: () => "'0'",
+  })
+  depth: number;
 
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
@@ -80,6 +95,20 @@ export class FreePostComment {
   })
   deletedAt: Date | null;
 
+  @ManyToOne(
+    () => FreePostComment,
+    (freePostComment) => freePostComment.children,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn([{ name: 'parent_id', referencedColumnName: 'id' }])
+  parent: FreePostComment;
+
+  @OneToMany(() => FreePostComment, (freePostComment) => freePostComment.parent)
+  children: FreePostComment[];
+
   @ManyToOne(() => FreePost, (freePost) => freePost.freePostComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -105,10 +134,4 @@ export class FreePostComment {
     (freePostCommentReaction) => freePostCommentReaction.freePostComment,
   )
   freePostCommentReactions: FreePostCommentReaction[];
-
-  @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.freePostComment,
-  )
-  freePostReplyComments: FreePostReplyComment[];
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { IsNull } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
@@ -18,6 +19,7 @@ import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
@@ -39,6 +41,23 @@ export class FreePostCommentsService {
   ): Promise<FreePostCommentDto> {
     const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
 
+    if (createFreePostCommentDto.parentId !== undefined) {
+      const parentComment = await this.findOneOrNotFound(
+        freePostId,
+        createFreePostCommentDto.parentId,
+        null,
+      );
+
+      createFreePostCommentDto.depth = parentComment.depth + 1;
+    }
+
+    if (createFreePostCommentDto.depth > 1) {
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '자유게시글 댓글 생성 중 depth가 2 이상인 경우가 생김',
+      });
+    }
+
     const newPostComment = await this.freePostCommentRepository.save({
       userId,
       status: FreePostCommentStatus.Posting,
@@ -55,7 +74,7 @@ export class FreePostCommentsService {
   ): Promise<[FreePostCommentsItemDto[], number]> {
     const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
 
-    const { page, pageSize, order, ...filter } =
+    const { page, pageSize, order, loadDepth, ...filter } =
       findFreePostCommentListQueryDto;
 
     const where = this.queryHelper.buildWherePropForFind<FreePostComment>({
@@ -63,22 +82,28 @@ export class FreePostCommentsService {
       freePostId: existPost.id,
     });
 
+    const relations = this.queryHelper.createNestedChildRelations(loadDepth);
+
     return this.freePostCommentRepository.findAndCount({
-      where,
+      where: { ...where, depth: 0 },
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations,
     });
   }
 
   async findOneOrNotFound(
     freePostId: number,
     freePostCommentId: number,
+    parentId?: number | null,
   ): Promise<FreePostCommentDto> {
     const existComment = await this.freePostCommentRepository.findOne({
       where: {
-        freePostId,
         id: freePostCommentId,
+        freePostId,
+        parentId: parentId === null ? IsNull() : parentId,
+        status: FreePostCommentStatus.Posting,
       },
     });
 
@@ -101,6 +126,9 @@ export class FreePostCommentsService {
     const oldComment = await this.findOneOrNotFound(
       freePostId,
       freePostCommentId,
+      putUpdateFreePostCommentDto.parentId === undefined
+        ? null
+        : putUpdateFreePostCommentDto.parentId,
     );
 
     if (userId !== oldComment.userId) {

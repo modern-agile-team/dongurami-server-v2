@@ -11,7 +11,6 @@ import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostHistory } from '@src/entities/FreePostHistory';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
-import { FreePostReplyComment } from '@src/entities/FreePostReplyComment';
 import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
@@ -108,10 +107,4 @@ export class FreePost {
     (freePostReaction) => freePostReaction.freePost,
   )
   freePostReactions: FreePostReaction[];
-
-  @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.freePost,
-  )
-  freePostReplyComments: FreePostReplyComment[];
 }

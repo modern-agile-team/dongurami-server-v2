@@ -6,7 +6,7 @@ import { CreateFreePostCommentDto } from '@src/apis/free-post-comments/dto/creat
 
 export class PutUpdateFreePostCommentDto extends PickType(
   CreateFreePostCommentDto,
-  ['description'] as const,
+  ['parentId', 'description'] as const,
 ) {
   @ApiProperty({
     description: '익명 여부',

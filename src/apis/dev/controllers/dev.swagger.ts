@@ -3,6 +3,7 @@ import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { DevController } from '@src/apis/dev/controllers/dev.controller';
+import { ErrorCodeResponseDto } from '@src/apis/root/dto/error-code-response.dto';
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -35,6 +36,18 @@ export const ApiDev: ApiOperator<keyof DevController> = {
         type: 'string',
         description: '발급된 access-token',
       }),
+    );
+  },
+
+  FindAllErrorCode: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      ApiOkResponse({ type: ErrorCodeResponseDto }),
     );
   },
 };

@@ -8,6 +8,7 @@ import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.s
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
 @ApiTags('_dev')
+@ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('dev')
 export class DevController {
   constructor(
@@ -19,7 +20,6 @@ export class DevController {
     summary: '개발용으로 생성된 accessToken 생성 api',
     description: '개발 환경에서만 사용 가능',
   })
-  @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
   @Get('access-token/:userId')
   getAccessToken(@Param('userId', ParsePositiveIntPipe) userId: number) {
     return this.authService.generateToken({ id: userId });

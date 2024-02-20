@@ -1,35 +1,22 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
-import { AuthController } from '@src/apis/auth/controllers/auth.controller';
-import { UserDto } from '@src/apis/users/dto/user.dto';
+import { DevController } from '@src/apis/dev/controllers/dev.controller';
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
-import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { ApiOperator } from '@src/types/type';
 import { ValidationError } from '@src/types/validation-errors.type';
 
-export const ApiAuth: ApiOperator<keyof AuthController> = {
-  SignIn: (
+export const ApiDev: ApiOperator<keyof DevController> = {
+  GetAccessToken: (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator => {
     return applyDecorators(
       ApiOperation({
         ...apiOperationOptions,
-      }),
-      ApiCreatedResponse({
-        schema: {
-          properties: {
-            accessToken: {
-              description: 'access token',
-              type: 'string',
-            },
-          },
-        },
       }),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
@@ -44,19 +31,10 @@ export const ApiAuth: ApiOperator<keyof AuthController> = {
           type: ValidationError,
         },
       ),
-    );
-  },
-
-  GetProfile: (
-    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
-      Partial<OperationObject>,
-  ): PropertyDecorator => {
-    return applyDecorators(
-      ApiOperation({
-        ...apiOperationOptions,
+      ApiOkResponse({
+        type: 'string',
+        description: '발급된 access-token',
       }),
-      ApiCommonResponse([HttpStatus.UNAUTHORIZED]),
-      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'user', UserDto),
     );
   },
 };

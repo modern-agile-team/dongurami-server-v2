@@ -33,8 +33,15 @@ export const ApiDev: ApiOperator<keyof DevController> = {
         },
       ),
       ApiOkResponse({
-        type: 'string',
         description: '발급된 access-token',
+        schema: {
+          properties: {
+            accessToken: {
+              type: 'string',
+              description: '발급된 accessToken',
+            },
+          },
+        },
       }),
     );
   },

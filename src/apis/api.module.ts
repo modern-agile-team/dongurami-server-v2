@@ -9,6 +9,8 @@ import { NoticePostsModule } from '@src/apis/notice-posts/notice-posts.module';
 import { RootModule } from '@src/apis/root/root.module';
 import { UsersModule } from '@src/apis/users/users.module';
 
+import { DevModule } from './dev/dev.module';
+
 @Module({
   imports: [
     RootModule,
@@ -19,6 +21,7 @@ import { UsersModule } from '@src/apis/users/users.module';
     FreePostsModule,
     FreePostCommentsModule,
     AuthSocialModule,
+    DevModule,
   ],
 })
 export class ApiModule {}

@@ -3,7 +3,7 @@ import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { DevController } from '@src/apis/dev/controllers/dev.controller';
-import { ErrorCodeResponseDto } from '@src/apis/root/dto/error-code-response.dto';
+import { ErrorCodeResponseDto } from '@src/apis/dev/dto/error-code-response.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { ApiOperator } from '@src/types/type';
@@ -28,10 +28,10 @@ export const ApiDev: ApiOperator<keyof DevController> = {
         },
       ),
       ApiOkResponse({
-        description: '발급된 access-token',
+        description: '성공적으로 access-token 발급',
         schema: {
           type: 'string',
-          description: '발급된 accessToken',
+          description: '발급된 access-token',
         },
       }),
     );

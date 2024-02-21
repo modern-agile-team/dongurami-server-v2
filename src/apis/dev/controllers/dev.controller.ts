@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from '@src/apis/auth/services/auth.service';
 import { ApiDev } from '@src/apis/dev/controllers/dev.swagger';
-import { RootService } from '@src/apis/root/services/root.service';
+import { DevService } from '@src/apis/dev/services/dev.service';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
@@ -13,7 +13,7 @@ import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 export class DevController {
   constructor(
     private readonly authService: AuthService,
-    private readonly rootService: RootService,
+    private readonly devService: DevService,
   ) {}
 
   @ApiDev.GetAccessToken({
@@ -31,6 +31,6 @@ export class DevController {
   })
   @Get('error-code')
   findAllErrorCode() {
-    return this.rootService.findAllErrorCode();
+    return this.devService.findAllErrorCode();
   }
 }

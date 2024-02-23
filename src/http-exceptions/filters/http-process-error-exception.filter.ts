@@ -10,6 +10,7 @@ import { Response } from 'express';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpProcessErrorException } from '@src/http-exceptions/exceptions/http-process-error.exception';
 import { HttpExceptionService } from '@src/http-exceptions/services/http-exception.service';
+import { SlackGlobalService } from '@src/core/slack/slack-global.service';
 
 /**
  * node  process error exception
@@ -17,7 +18,10 @@ import { HttpExceptionService } from '@src/http-exceptions/services/http-excepti
  */
 @Catch()
 export class HttpProcessErrorExceptionFilter implements ExceptionFilter {
-  constructor(private readonly httpExceptionService: HttpExceptionService) {}
+  constructor(
+    private readonly httpExceptionService: HttpExceptionService,
+    private readonly slackService: SlackGlobalService,
+  ) {}
 
   catch(exception: any, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -34,6 +38,7 @@ export class HttpProcessErrorExceptionFilter implements ExceptionFilter {
       statusCode,
       exceptionError,
     );
+    this.slackService.sendNotification({ statusCode, processError: exceptionError });
 
     this.httpExceptionService.printLog({
       ctx: 'Node Process Error',

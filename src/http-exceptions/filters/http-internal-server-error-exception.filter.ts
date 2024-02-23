@@ -4,6 +4,7 @@ import { Response } from 'express';
 
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpExceptionService } from '@src/http-exceptions/services/http-exception.service';
+import { SlackGlobalService } from '@src/core/slack/slack-global.service';
 
 /**
  * nestJS 메서드를 이용한 500번 에러 를 잡는 exception filter
@@ -13,7 +14,10 @@ import { HttpExceptionService } from '@src/http-exceptions/services/http-excepti
 export class HttpInternalServerErrorExceptionFilter
   implements ExceptionFilter<HttpInternalServerErrorException>
 {
-  constructor(private readonly httpExceptionService: HttpExceptionService) {}
+  constructor(
+    private readonly httpExceptionService: HttpExceptionService,
+    private readonly slackService: SlackGlobalService,
+  ) {}
 
   catch(
     exception: HttpInternalServerErrorException,
@@ -30,6 +34,7 @@ export class HttpInternalServerErrorExceptionFilter
       statusCode,
       exceptionError,
     );
+    this.slackService.sendNotification({ statusCode, exceptionError });
 
     this.httpExceptionService.printLog({
       ctx: exception.ctx,

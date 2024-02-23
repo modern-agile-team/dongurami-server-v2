@@ -13,7 +13,7 @@ import { InterceptorModule } from '@src/interceptors/interceptor.module';
 import { LibsModule } from '@src/libs/libs.module';
 import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middleware';
-import { SlackGlobalModule } from './core/slack/slack-global.module';
+import { SlackGlobalModule } from '@src/core/slack/slack-global.module';
 
 @Module({
   imports: [

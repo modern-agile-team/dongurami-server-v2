@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpProcessErrorException } from '@src/http-exceptions/exceptions/http-process-error.exception';
 import axios from 'axios';
-import { AppConfigService } from '../app-config/services/app-config.service';
-import { ENV_KEY } from '../app-config/constants/app-config.constant';
+import { AppConfigService } from '@src/core/app-config/services/app-config.service';
+import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 
 @Injectable()
 export class SlackGlobalService {

@@ -14,6 +14,7 @@ import {
   UserRole,
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
+import { Club } from '@src/entities/Club';
 import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
@@ -228,4 +229,7 @@ export class User {
 
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];
+
+  @OneToMany(() => Club, (club) => club.user)
+  clubs: Club[];
 }

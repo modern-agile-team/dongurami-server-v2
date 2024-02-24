@@ -244,7 +244,7 @@ export class User {
   clubTagLinks: ClubTagLink[];
 
   @OneToMany(() => ClubCategory, (clubCategory) => clubCategory.user)
-  clubTagCategories: ClubCategory[];
+  clubCategories: ClubCategory[];
 
   @OneToMany(
     () => ClubCategoryLink,

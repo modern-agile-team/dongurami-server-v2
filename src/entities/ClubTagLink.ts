@@ -60,7 +60,7 @@ export class ClubTagLink {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
-  club: User;
+  club: Club;
 
   @ManyToOne(() => ClubTag, (clubTag) => clubTag.clubTagLinks, {
     onDelete: 'CASCADE',

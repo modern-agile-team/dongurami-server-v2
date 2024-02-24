@@ -50,7 +50,7 @@ export class ClubCategory {
   })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.clubTagCategories, {
+  @ManyToOne(() => User, (user) => user.clubCategories, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

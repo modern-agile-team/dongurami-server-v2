@@ -66,7 +66,7 @@ export class NoticePostCommentDto
   status: NoticePostCommentStatus;
 
   @Exclude()
-  deletedAt: Date;
+  deletedAt: Date | null;
 
   constructor(noticePostDto: Partial<NoticePostCommentDto> = {}) {
     super();

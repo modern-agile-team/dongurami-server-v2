@@ -9,6 +9,7 @@ import {
 
 import { ClubStatus } from '@src/apis/club/enum/club.enum';
 import { ClubHistory } from '@src/entities/ClubHistory';
+import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { User } from '@src/entities/User';
 
 @Entity('club')
@@ -79,4 +80,7 @@ export class Club {
 
   @OneToMany(() => ClubHistory, (clubHistory) => clubHistory.club)
   clubHistories: ClubHistory[];
+
+  @OneToMany(() => ClubTagLink, (clubTagLink) => clubTagLink.club)
+  clubTagLinks: ClubTagLink[];
 }

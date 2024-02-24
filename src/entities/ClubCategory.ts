@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { User } from '@src/entities/User';
 
 @Entity('club_category')
@@ -54,4 +56,10 @@ export class ClubCategory {
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @OneToMany(
+    () => ClubCategoryLink,
+    (clubCategoryLink) => clubCategoryLink.clubCategory,
+  )
+  clubCategoryLinks: ClubCategoryLink[];
 }

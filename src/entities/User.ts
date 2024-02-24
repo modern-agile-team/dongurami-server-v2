@@ -16,6 +16,7 @@ import {
 } from '@src/apis/users/constants/user.enum';
 import { Club } from '@src/entities/Club';
 import { ClubCategory } from '@src/entities/ClubCategory';
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubTag } from '@src/entities/ClubTag';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { FreePost } from '@src/entities/FreePost';
@@ -244,4 +245,10 @@ export class User {
 
   @OneToMany(() => ClubCategory, (clubCategory) => clubCategory.user)
   clubTagCategories: ClubCategory[];
+
+  @OneToMany(
+    () => ClubCategoryLink,
+    (clubCategoryLink) => clubCategoryLink.user,
+  )
+  clubCategoryLinks: ClubCategoryLink[];
 }

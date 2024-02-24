@@ -1,32 +1,47 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { ClubStatus } from '@src/apis/club/enum/club.enum';
-import { ClubHistory } from '@src/entities/ClubHistory';
-import { User } from '@src/entities/User';
+import { HistoryAction } from '@src/constants/enum';
+import { Club } from '@src/entities/Club';
 
-@Entity('club')
-export class Club {
+@Index(['userId'], {})
+@Entity('club_history')
+export class ClubHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '동아리 고유 ID',
+    comment: '동아리 수정이력 고유 ID',
     unsigned: true,
   })
   id: number;
 
   @Column('int', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
+    unsigned: true,
+  })
+  clubId: number;
+
+  @Column('int', {
     name: 'user_id',
-    comment: '동아리 생성 유저 고유 ID',
+    comment: '동아리 수정 유저 고유 ID',
     unsigned: true,
   })
   userId: number;
+
+  @Column('enum', {
+    name: 'action',
+    comment: 'history 를 쌓는 action',
+    enum: ['insert', 'update', 'delete'],
+  })
+  action: HistoryAction;
 
   @Column('varchar', { name: 'name', comment: '동아리 명', length: 255 })
   name: string;
@@ -56,27 +71,10 @@ export class Club {
   })
   createdAt: Date;
 
-  @Column('timestamp', {
-    name: 'updated_at',
-    comment: '수정 일자',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  updatedAt: Date;
-
-  @Column('timestamp', {
-    name: 'deleted_at',
-    nullable: true,
-    comment: '삭제 일자',
-  })
-  deletedAt: Date | null;
-
-  @ManyToOne(() => User, (user) => user.clubs, {
+  @ManyToOne(() => Club, (club) => club.clubHistories, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: User;
-
-  @OneToMany(() => ClubHistory, (clubHistory) => clubHistory.club)
-  clubHistories: ClubHistory[];
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
+  club: Club;
 }

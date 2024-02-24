@@ -84,8 +84,18 @@ export class FreePostCommentsService {
 
     const relations = this.queryHelper.createNestedChildRelations(loadDepth);
 
+    /**
+     * @todo 1 이상 depth도 처리되게 변경
+     * @todo join 후 where 필터링이 아닌 join on 조건으로 필터링되게
+     */
     return this.freePostCommentRepository.findAndCount({
-      where: { ...where, depth: 0 },
+      where: {
+        ...where,
+        depth: 0,
+        children: {
+          status: FreePostCommentStatus.Posting,
+        },
+      },
       order,
       skip: page * pageSize,
       take: pageSize,

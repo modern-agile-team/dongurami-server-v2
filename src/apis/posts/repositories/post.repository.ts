@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
+import { PostType } from '@src/apis/posts/constants/post.enum';
 
 @Injectable()
 export class PostRepository {
@@ -24,7 +25,7 @@ export class PostRepository {
     const [freePostQuery, freePostParams] = this.freePostRepository
       .createQueryBuilder()
       .select('id', 'id')
-      .addSelect(`"free"`, 'type')
+      .addSelect(`"${PostType.Free}"`, 'type')
       .addSelect('user_id', 'userId')
       .addSelect('title', 'title')
       .addSelect('hit', 'hit')
@@ -36,7 +37,7 @@ export class PostRepository {
     const [noticePostQuery, noticePostParams] = this.noticePostRepository
       .createQueryBuilder()
       .select('id', 'id')
-      .addSelect(`"notice"`, 'type')
+      .addSelect(`"${PostType.Notice}"`, 'type')
       .addSelect('user_id', 'userId')
       .addSelect('title', 'title')
       .addSelect('hit', 'hit')

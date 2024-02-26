@@ -57,7 +57,7 @@ export class FindNoticePostListQueryDto
   @ApiPropertyOrder(NOTICE_POST_ORDER_FIELD)
   @CsvToOrder<typeof NOTICE_POST_ORDER_FIELD>([...NOTICE_POST_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof NOTICE_POST_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof NOTICE_POST_ORDER_FIELD> = { id: SortOrder.Asc };
 
   @IsDefined()
   status: NoticePostStatus.Posting = NoticePostStatus.Posting;

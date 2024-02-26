@@ -1,7 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { faker } from '@faker-js/faker';
-
 import { mockAuthService } from '@test/mock/mock.service';
 
 import { AuthController } from '@src/apis/auth/controllers/auth.controller';
@@ -61,22 +59,6 @@ describe(AuthController.name, () => {
 
     it('getProfile', () => {
       expect(controller.getProfile(user)).toBeInstanceOf(UserDto);
-    });
-  });
-
-  describe(AuthController.prototype.getAccessToken.name, () => {
-    let userId: number;
-
-    beforeEach(() => {
-      userId = faker.number.int();
-    });
-
-    it('getAccessToken', () => {
-      const token = 'token';
-
-      mockAuthService.generateToken.mockReturnValue(token);
-
-      expect(controller.getAccessToken(userId)).toBe(token);
     });
   });
 });

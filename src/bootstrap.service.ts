@@ -128,7 +128,7 @@ export class BootstrapService {
       operationIdFactory: (controllerKey: string, methodKey: string) => {
         const controllerName = singularize(
           controllerKey.replace(/Controller$/, ''),
-        ).replace(/^(.)*/, (matchStr) => matchStr.toLowerCase());
+        ).replace(/^(.)/, (matchStr) => matchStr.toLowerCase());
 
         return `${controllerName}_${methodKey}`;
       },

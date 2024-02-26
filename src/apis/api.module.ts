@@ -6,6 +6,7 @@ import { AuthSocialModule } from '@src/apis/auth/social/auth-social.module';
 import { FreePostCommentsModule } from '@src/apis/free-post-comments/free-post-comments.module';
 import { FreePostsModule } from '@src/apis/free-posts/free-posts.module';
 import { MajorModule } from '@src/apis/major/major.module';
+import { NoticePostCommentsModule } from '@src/apis/notice-post-comments/notice-post-comments.module';
 import { NoticePostsModule } from '@src/apis/notice-posts/notice-posts.module';
 import { PostsModule } from '@src/apis/posts/posts.module';
 import { RootModule } from '@src/apis/root/root.module';
@@ -19,6 +20,7 @@ import { UsersModule } from '@src/apis/users/users.module';
     UsersModule,
     MajorModule,
     NoticePostsModule,
+    NoticePostCommentsModule,
     FreePostsModule,
     FreePostCommentsModule,
     AuthSocialModule,

@@ -23,8 +23,6 @@ import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
-import { NoticePostReplyComment } from '@src/entities/NoticePostReplyComment';
-import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
 import { UserHistory } from '@src/entities/UserHistory';
 
 @Index(['email'], { unique: true })
@@ -206,18 +204,6 @@ export class User {
     (noticePostReaction) => noticePostReaction.user,
   )
   noticePostReactions: NoticePostReaction[];
-
-  @OneToMany(
-    () => NoticePostReplyComment,
-    (noticePostReplyComment) => noticePostReplyComment.user,
-  )
-  noticePostReplyComments: NoticePostReplyComment[];
-
-  @OneToMany(
-    () => NoticePostReplyCommentReaction,
-    (noticePostReplyCommentReaction) => noticePostReplyCommentReaction.user,
-  )
-  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
 
   @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',

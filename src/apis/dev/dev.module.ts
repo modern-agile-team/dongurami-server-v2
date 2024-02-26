@@ -3,11 +3,10 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from '@src/apis/auth/auth.module';
 import { DevController } from '@src/apis/dev/controllers/dev.controller';
 import { DevService } from '@src/apis/dev/services/dev.service';
-import { RootModule } from '@src/apis/root/root.module';
 import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middleware';
 
 @Module({
-  imports: [AuthModule, RootModule],
+  imports: [AuthModule],
   controllers: [DevController],
   providers: [DevService],
 })

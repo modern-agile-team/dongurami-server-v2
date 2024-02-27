@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { ApiModule } from '@src/apis/api.module';
+import { AttachmentsModule } from '@src/apis/attachments/attachments.module';
 import { BootstrapService } from '@src/bootstrap.service';
 import { CoreModule } from '@src/core/core.module';
 import { HttpExceptionModule } from '@src/http-exceptions/http-exception.module';
@@ -21,6 +22,7 @@ import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middl
     LibsModule,
     InterceptorModule,
     HttpExceptionModule,
+    AttachmentsModule,
   ],
   providers: [BootstrapService],
 })

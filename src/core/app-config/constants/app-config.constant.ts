@@ -10,10 +10,15 @@ const JWT = {
   JWT_SECRET: 'JWT_SECRET',
 } as const;
 
+const SLACK = {
+    SERVER_ERROR_WEB_HOOK_URL: 'SERVER_ERROR_WEB_HOOK_URL'
+} as const;
+
 export const ENV_KEY = {
   PORT: 'PORT',
   NODE_ENV: 'NODE_ENV',
   DOMAIN: 'DOMAIN',
   ...RDB,
   ...JWT,
+  ...SLACK,
 } as const;

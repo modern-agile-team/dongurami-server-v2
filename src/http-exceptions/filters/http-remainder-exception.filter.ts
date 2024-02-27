@@ -11,6 +11,7 @@ import { Response } from 'express';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpExceptionService } from '@src/http-exceptions/services/http-exception.service';
+import { SlackGlobalService } from '@src/core/slack/slack-global.service';
 
 /**
  * 다른 exception filter 가 잡지않는 exception 을 잡는 필터
@@ -20,7 +21,10 @@ import { HttpExceptionService } from '@src/http-exceptions/services/http-excepti
 export class HttpRemainderExceptionFilter
   implements ExceptionFilter<HttpException>
 {
-  constructor(private readonly httpExceptionService: HttpExceptionService) {}
+  constructor(
+    private readonly httpExceptionService: HttpExceptionService,
+    private readonly slackService: SlackGlobalService,
+  ) {}
 
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -40,6 +44,7 @@ export class HttpRemainderExceptionFilter
       statusCode,
       exceptionError,
     );
+    this.slackService.sendNotification({ statusCode, exceptionError });
 
     this.httpExceptionService.printLog({
       ctx: httpInternalServerErrorException.ctx,

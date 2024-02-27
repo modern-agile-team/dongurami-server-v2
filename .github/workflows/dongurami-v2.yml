@@ -30,6 +30,7 @@ jobs:
           echo "RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }}" >> $GITHUB_ENV
           echo "JWT_SECRET=${{ secrets.DEV_JWT_SECRET }}" >> $GITHUB_ENV
           echo "DOMAIN=${{ secrets.DEV_DOMAIN }}" >> $GITHUB_ENV
+          echo "SERVER_ERROR_WEB_HOOK_URL=${{ secrets.SLACK_DEV_ERROR_WEB_HOOK_URL }}" >> $GITHUB_ENV
           cat $GITHUB_ENV
 
       - name: Build and package
@@ -46,6 +47,7 @@ jobs:
           --build-arg RDB_DATABASE=${{ secrets.DEV_RDB_DATABASE }} \
           --build-arg JWT_SECRET=${{ secrets.DEV_JWT_SECRET }} \
           --build-arg DOMAIN=${{ secrets.DEV_DOMAIN }} \
+          --build-arg SERVER_ERROR_WEB_HOOK_URL=${{ secrets.SLACK_DEV_ERROR_WEB_HOOK_URL }} \
           -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
 
       - name: Login to Docker Hub

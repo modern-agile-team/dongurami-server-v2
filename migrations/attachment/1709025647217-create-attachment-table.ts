@@ -4,7 +4,7 @@ import {
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
-export class CreateImageTable1709025647217 implements MigrationInterface {
+export class CreateAttachmentTable1709025647217 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -16,7 +16,7 @@ export class CreateImageTable1709025647217 implements MigrationInterface {
             isPrimary: true,
             type: 'bigint',
             unsigned: true,
-            comment: '파일 고유 ID',
+            comment: '첨부 파일 고유 ID',
           }),
           new TableColumn({
             name: 'user_id',
@@ -29,7 +29,7 @@ export class CreateImageTable1709025647217 implements MigrationInterface {
             name: 'url',
             isNullable: false,
             type: 'varchar',
-            comment: 'image url',
+            comment: 'file url',
           }),
           new TableColumn({
             name: 'path',

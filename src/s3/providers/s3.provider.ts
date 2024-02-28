@@ -4,7 +4,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
-import { S3_CLIENT_TOKEN } from '@src/core/s3/constants/s3-client.token';
+import { S3_CLIENT_TOKEN } from '@src/s3/constants/s3-client.token';
 
 export const S3Provider: FactoryProvider[] = [
   {

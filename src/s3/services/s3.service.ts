@@ -5,7 +5,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
-import { S3_CLIENT_TOKEN } from '@src/core/s3/constants/s3-client.token';
+import { S3_CLIENT_TOKEN } from '@src/s3/constants/s3-client.token';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 
 @Injectable()

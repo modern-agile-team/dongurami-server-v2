@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
 
 import { AttachmentsController } from '@src/apis/attachments/controllers/attachments.controller';
+import { AttachmentRepository } from '@src/apis/attachments/repository/attachment.repository';
 import { AttachmentsService } from '@src/apis/attachments/services/attachments.service';
+import { S3Module } from '@src/s3/s3.module';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
-import { Attachment } from '@src/entities/Attachment';
 
 @Module({
-  imports: [TypeOrmExModule.forCustomRepository([Attachment])],
+  imports: [
+    TypeOrmExModule.forCustomRepository([AttachmentRepository]),
+    S3Module,
+  ],
   controllers: [AttachmentsController],
   providers: [AttachmentsService],
 })

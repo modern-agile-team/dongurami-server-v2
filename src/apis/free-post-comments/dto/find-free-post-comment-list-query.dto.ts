@@ -13,7 +13,9 @@ export class FindFreePostCommentListQueryDto
   implements Partial<FreePostCommentDto>
 {
   @ApiPropertyOrder(FREE_POST_COMMENT_ORDER_FIELD)
-  @CsvToOrder<typeof FREE_POST_COMMENT_ORDER_FIELD>([...FREE_POST_COMMENT_ORDER_FIELD])
+  @CsvToOrder<typeof FREE_POST_COMMENT_ORDER_FIELD>([
+    ...FREE_POST_COMMENT_ORDER_FIELD,
+  ])
   @IsOptional()
   order: Order<typeof FREE_POST_COMMENT_ORDER_FIELD> = { id: SortOrder.Desc };
 

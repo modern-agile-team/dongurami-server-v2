@@ -39,8 +39,12 @@ export class AttachmentsController {
   @ApiAttachments.UploadFiles({ summary: '파일 업로드 api' })
   @SetResponse({ type: ResponseType.Common, key: 'attachments' })
   @UseInterceptors(
+    /**
+     * Custom 3번째 localOptions의 메서드 fileFilter에서는 Custom Exception을 throw 할 수 있음.
+     * 일단은 FileInterceptor에서 maxCount를 정의해주는 방법보단 service 에서 maxCount를 핸들링 하는게 좋을 것 같은 생각.
+     */
     FilesInterceptor('files', 2, {
-      fileFilter(req, file, callback) {
+      fileFilter(req: Request, file, callback) {
         if (file.originalname !== 'test') {
           callback(
             new HttpBadRequestException({

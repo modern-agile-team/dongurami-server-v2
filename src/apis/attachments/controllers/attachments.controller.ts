@@ -3,6 +3,7 @@ import {
   HttpStatus,
   ParseFilePipe,
   Post,
+  Req,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -11,6 +12,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 
 import { plainToInstance } from 'class-transformer';
+import { Request } from 'express';
 
 import { ApiAttachments } from '@src/apis/attachments/controllers/attachments.swagger';
 import { AttachmentDto } from '@src/apis/attachments/dto/attachment.dto';
@@ -36,7 +38,28 @@ export class AttachmentsController {
   ])
   @ApiAttachments.UploadFiles({ summary: '파일 업로드 api' })
   @SetResponse({ type: ResponseType.Common, key: 'attachments' })
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(
+    FilesInterceptor('files', 2, {
+      fileFilter(req, file, callback) {
+        if (file.originalname !== 'test') {
+          callback(
+            new HttpBadRequestException({
+              code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+              errors: [
+                {
+                  reason: 'test',
+                  value: '흐엉',
+                },
+              ],
+            }),
+            false,
+          );
+        }
+
+        callback(null, true);
+      },
+    }),
+  )
   @UseGuards(JwtAuthGuard)
   @Post()
   async uploadFiles(

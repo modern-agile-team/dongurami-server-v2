@@ -19,7 +19,7 @@ export class Attachment {
   @Column('varchar', {
     name: 'url',
     comment: 'file url',
-    length: 255,
+    length: 100,
     nullable: false,
   })
   url: string;
@@ -27,7 +27,7 @@ export class Attachment {
   @Column('varchar', {
     name: 'path',
     comment: 'domain을 제외한 path',
-    length: 255,
+    length: 18,
     nullable: false,
   })
   path: string;
@@ -35,18 +35,18 @@ export class Attachment {
   @Column('varchar', {
     name: 'mime_type',
     comment: 'MIME-Type',
-    length: 255,
+    length: 30,
     nullable: false,
   })
   mimeType: string;
 
-  @Column('varchar', {
+  @Column('int', {
     name: 'capacity',
     comment: '파일 용량(byte)',
-    length: 255,
+    unsigned: true,
     nullable: false,
   })
-  capacity: string;
+  capacity: number;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -54,13 +54,6 @@ export class Attachment {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
-
-  @Column('timestamp', {
-    name: 'updated_at',
-    comment: '수정 일자',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.attachments, {
     onDelete: 'CASCADE',

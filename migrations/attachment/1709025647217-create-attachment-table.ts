@@ -1,7 +1,4 @@
-import {
-  generateCreatedAtColumn,
-  generateUpdatedAtColumn,
-} from 'migrations/__utils/util';
+import { generateCreatedAtColumn } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
 export class CreateAttachmentTable1709025647217 implements MigrationInterface {
@@ -15,6 +12,7 @@ export class CreateAttachmentTable1709025647217 implements MigrationInterface {
             isNullable: false,
             isPrimary: true,
             type: 'bigint',
+            length: '18',
             unsigned: true,
             comment: '첨부 파일 고유 ID',
           }),
@@ -29,28 +27,31 @@ export class CreateAttachmentTable1709025647217 implements MigrationInterface {
             name: 'url',
             isNullable: false,
             type: 'varchar',
+            length: '100',
             comment: 'file url',
           }),
           new TableColumn({
             name: 'path',
             isNullable: false,
             type: 'varchar',
+            length: '18',
             comment: 'domain을 제외한 path',
           }),
           new TableColumn({
             name: 'mime_type',
             isNullable: false,
+            length: '30',
             type: 'varchar',
             comment: 'MIME-Type',
           }),
           new TableColumn({
             name: 'capacity',
             isNullable: false,
-            type: 'varchar',
+            unsigned: true,
+            type: 'int',
             comment: '파일 용량(byte)',
           }),
           generateCreatedAtColumn(),
-          generateUpdatedAtColumn(),
         ],
         foreignKeys: [
           {

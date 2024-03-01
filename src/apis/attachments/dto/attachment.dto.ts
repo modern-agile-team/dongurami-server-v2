@@ -5,7 +5,7 @@ import { Attachment } from '@src/entities/Attachment';
 export class AttachmentDto implements Omit<Attachment, 'user'> {
   @ApiProperty({
     description: '첨부 파일 고유 ID',
-    format: 'bigint',
+    format: 'integer',
   })
   id: string;
 
@@ -32,8 +32,9 @@ export class AttachmentDto implements Omit<Attachment, 'user'> {
 
   @ApiProperty({
     description: '파일 용량(byte)',
+    format: 'integer',
   })
-  capacity: string;
+  capacity: number;
 
   @ApiProperty({
     description: '생성 일자',

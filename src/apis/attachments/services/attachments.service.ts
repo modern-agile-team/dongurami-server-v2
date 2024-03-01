@@ -50,7 +50,7 @@ export class AttachmentsService {
         url: uploadedUrls[index],
         path: filenames[index],
         mimeType: file.mimetype,
-        capacity: `${file.size}`,
+        capacity: file.size,
       });
     });
 

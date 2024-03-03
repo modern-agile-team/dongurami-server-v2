@@ -4,7 +4,6 @@ import {
   Injectable,
   Logger,
   ValidationError,
-  ValidationPipe,
   ValidationPipeOptions,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -12,7 +11,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { singularize } from 'inflection';
 
-import { CustomValidationPipe } from '@src/pipes/custom-validation.pipe';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
@@ -27,6 +25,7 @@ import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/ht
 import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
 import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
+import { CustomValidationPipe } from '@src/pipes/custom-validation.pipe';
 
 @Injectable()
 export class BootstrapService {

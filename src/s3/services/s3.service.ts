@@ -1,6 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectsCommand,
+  ObjectIdentifier,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { MemoryStoredFile } from 'nestjs-form-data';
 
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
@@ -23,7 +29,7 @@ export class S3Service {
     this.S3_ADDRESS = `https://${BUCKET}.s3.${S3_REGION}.amazonaws.com`;
   }
 
-  async uploadImagesToS3(file: Express.Multer.File, filename: string) {
+  async uploadFileToS3(file: MemoryStoredFile, filename: string) {
     try {
       const command = new PutObjectCommand({
         Bucket: this.appConfigService.get<string>(ENV_KEY.AWS_S3_BUCKET),
@@ -39,7 +45,33 @@ export class S3Service {
     } catch (error) {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: error,
+        ctx: 'Failed upload file to S3',
+        stack: error,
+      });
+    }
+  }
+
+  async deleteFilesFromS3(filenames: string[]) {
+    try {
+      const objects: ObjectIdentifier[] = filenames.map((filename) => {
+        return {
+          Key: filename,
+        };
+      });
+
+      const command = new DeleteObjectsCommand({
+        Bucket: this.appConfigService.get<string>(ENV_KEY.AWS_S3_BUCKET),
+        Delete: {
+          Objects: [...objects],
+        },
+      });
+
+      await this.s3Client.send(command);
+    } catch (error) {
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: 'Failed delete s3 objects',
+        stack: error,
       });
     }
   }

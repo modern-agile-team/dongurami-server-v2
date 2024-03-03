@@ -4,9 +4,10 @@ import { getTsid } from 'tsid-ts';
 import { Transactional } from 'typeorm-transactional';
 
 import { CreateAttachmentDto } from '@src/apis/attachments/dto/create-attachment.dto';
+import { FileUploadDto } from '@src/apis/attachments/dto/file-upload.dto';
 import { AttachmentRepository } from '@src/apis/attachments/repository/attachment.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { S3Service } from '@src/s3/services/s3.service';
 
 @Injectable()
@@ -17,43 +18,44 @@ export class AttachmentsService {
   ) {}
 
   @Transactional()
-  async uploadFiles(userId: number, files: Express.Multer.File[]) {
-    if (files.length > 1) {
-      throw new HttpBadRequestException({
-        code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
-        errors: [
-          {
-            reason: `can't upload more than one file.`,
-            property: 'files',
-          },
-        ],
-      });
-    }
+  async uploadFiles(userId: number, fileUploadDto: FileUploadDto) {
+    const { files } = fileUploadDto;
 
     const uploadedUrls: string[] = [];
     const filenames: string[] = [];
 
-    for (const file of files) {
-      const filename = getTsid().toBigInt().toString();
+    await Promise.all(
+      files.map(async (file) => {
+        const filename = getTsid().toBigInt().toString();
 
-      const fileUrl = await this.s3Service.uploadImagesToS3(file, filename);
+        const fileUrl = await this.s3Service.uploadFileToS3(file, filename);
 
-      uploadedUrls.push(fileUrl);
+        uploadedUrls.push(fileUrl);
+        filenames.push(filename);
+      }),
+    );
 
-      filenames.push(filename);
-    }
-
-    const attachmentsItemDto = files.map((file, index) => {
-      return new CreateAttachmentDto({
-        id: filenames[index],
-        userId,
-        url: uploadedUrls[index],
-        path: filenames[index],
-        mimeType: file.mimetype,
-        capacity: file.size,
+    try {
+      const attachmentsItemDto = files.map((file, index) => {
+        return new CreateAttachmentDto({
+          id: filenames[index],
+          userId,
+          url: uploadedUrls[index],
+          path: filenames[index],
+          mimeType: file.mimetype,
+          capacity: file.size,
+        });
       });
-    });
 
-    return this.attachmentRepository.save(attachmentsItemDto);
+      return await this.attachmentRepository.save(attachmentsItemDto);
+    } catch (error) {
+      await this.s3Service.deleteFilesFromS3(filenames);
+
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: 'Failed file upload',
+        stack: error,
+      });
+    }
   }
 }

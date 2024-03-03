@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+
 import { AttachmentsController } from '@src/apis/attachments/controllers/attachments.controller';
 import { AttachmentRepository } from '@src/apis/attachments/repository/attachment.repository';
 import { AttachmentsService } from '@src/apis/attachments/services/attachments.service';
@@ -10,6 +12,7 @@ import { S3Module } from '@src/s3/s3.module';
   imports: [
     TypeOrmExModule.forCustomRepository([AttachmentRepository]),
     S3Module,
+    NestjsFormDataModule.config({ storage: MemoryStoredFile }),
   ],
   controllers: [AttachmentsController],
   providers: [AttachmentsService],

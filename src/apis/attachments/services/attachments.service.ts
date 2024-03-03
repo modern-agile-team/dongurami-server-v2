@@ -5,7 +5,7 @@ import { Transactional } from 'typeorm-transactional';
 
 import { CreateAttachmentDto } from '@src/apis/attachments/dto/create-attachment.dto';
 import { FileUploadDto } from '@src/apis/attachments/dto/file-upload.dto';
-import { AttachmentRepository } from '@src/apis/attachments/repository/attachment.repository';
+import { AttachmentRepository } from '@src/apis/attachments/repositories/attachment.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { S3Service } from '@src/s3/services/s3.service';
@@ -53,7 +53,7 @@ export class AttachmentsService {
 
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: 'Failed file upload',
+        ctx: 'Failed files upload',
         stack: error,
       });
     }

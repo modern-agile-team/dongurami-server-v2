@@ -1,4 +1,3 @@
-// extends global pipe
 import { ArgumentMetadata, Injectable, ValidationPipe } from '@nestjs/common';
 
 import { REWRITE_VALIDATION_OPTIONS_TOKEN } from '@src/pipes/constants/rewrite-validation-options.token';
@@ -11,22 +10,19 @@ export class CustomValidationPipe extends ValidationPipe {
       metadata.metatype,
     );
 
-    let originOptions;
+    let originOptions: Record<string, any> = {};
 
     if (options) {
-      originOptions = Object.assign({}, this.validatorOptions);
+      originOptions = { ...this.validatorOptions };
       this.validatorOptions = Object.assign(this.validatorOptions, options);
     }
-    try {
-      const result = super.transform(value, metadata);
 
-      if (originOptions) {
-        this.validatorOptions = originOptions;
-      }
+    const result = await super.transform(value, metadata);
 
-      return result;
-    } catch (error) {
-      throw error;
+    if (originOptions) {
+      this.validatorOptions = originOptions;
     }
+
+    return result;
   }
 }

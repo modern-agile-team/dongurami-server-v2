@@ -24,10 +24,6 @@ async function bootstrap() {
   bootstrapService.setFilter(app);
   bootstrapService.setSwagger(app);
 
-  BigInt.prototype['toJSON'] = function () {
-    return this.toString();
-  };
-
   await bootstrapService.startingServer(app);
 }
 bootstrap();

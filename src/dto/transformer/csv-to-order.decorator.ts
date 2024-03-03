@@ -25,7 +25,7 @@ export const CsvToOrder = <T extends readonly string[] = readonly string[]>(
       const getSortOrder = (field: string): SortOrder => {
         const isStartsWithDash = field.startsWith('-');
 
-        return isStartsWithDash ? SortOrder.Asc : SortOrder.Desc;
+        return isStartsWithDash ? SortOrder.Desc : SortOrder.Asc;
       };
 
       // queryString 에 들어가는 transformer 인데 string 형태가 아닌 경우는 서버에러로 판단한다.

@@ -17,7 +17,7 @@ export class FindFreePostCommentListQueryDto
     ...FREE_POST_COMMENT_ORDER_FIELD,
   ])
   @IsOptional()
-  order: Order<typeof FREE_POST_COMMENT_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof FREE_POST_COMMENT_ORDER_FIELD> = { id: SortOrder.Asc };
 
   /**
    * 대댓글의 깊이가 1인 정책을 우선 백엔드에서 가져가고 변경사항이 있을 경우 처리

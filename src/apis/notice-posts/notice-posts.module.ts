@@ -15,5 +15,6 @@ import { QueryHelper } from '@src/helpers/query.helper';
   ],
   controllers: [NoticePostsController],
   providers: [NoticePostsService, QueryHelper],
+  exports: [NoticePostsService],
 })
 export class NoticePostsModule {}

@@ -27,7 +27,6 @@ export const ApiAttachments: ApiOperator<keyof AttachmentsController> = {
           type: 'object',
           properties: {
             files: {
-              maxItems: 1,
               type: 'array',
               items: {
                 type: 'string',

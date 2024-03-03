@@ -12,7 +12,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { singularize } from 'inflection';
 
-import { CustomValidationPipe } from '@src/apis/attachments/pipes/custom-validation.pipe';
+import { CustomValidationPipe } from '@src/pipes/custom-validation.pipe';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';

@@ -9,7 +9,7 @@ import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.co
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { ApiOperator } from '@src/types/type';
-import { ValidationError } from '@src/types/validation-errors.type';
+import { CustomValidationError } from '@src/types/custom-validation-errors.type';
 
 export const ApiAdmins: ApiOperator<keyof AdminsController> = {
   CreateNewMajor: function (
@@ -27,7 +27,7 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [

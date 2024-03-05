@@ -54,7 +54,7 @@ export class AttachmentsService {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: 'Failed files upload',
-        stack: error,
+        stack: error.stack,
       });
     }
   }

@@ -16,18 +16,11 @@ import { S3_CLIENT_TOKEN } from '@src/s3/constants/s3-client.token';
 
 @Injectable()
 export class S3Service {
-  private readonly S3_ADDRESS: string;
-
   constructor(
     @Inject(S3_CLIENT_TOKEN)
     private readonly s3Client: S3Client,
     private readonly appConfigService: AppConfigService,
-  ) {
-    const BUCKET = this.appConfigService.get<string>(ENV_KEY.AWS_S3_BUCKET);
-    const S3_REGION = this.appConfigService.get<string>(ENV_KEY.AWS_REGION);
-
-    this.S3_ADDRESS = `https://${BUCKET}.s3.${S3_REGION}.amazonaws.com`;
-  }
+  ) {}
 
   async uploadFileToS3(file: MemoryStoredFile, filename: string) {
     try {
@@ -41,12 +34,16 @@ export class S3Service {
 
       await this.s3Client.send(command);
 
-      return `${this.S3_ADDRESS}/${filename}`;
+      const S3_ADDRESS = this.appConfigService.get<string>(
+        ENV_KEY.AWS_S3_ADDRESS,
+      );
+
+      return `${S3_ADDRESS}/${filename}`;
     } catch (error) {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: 'Failed upload file to S3',
-        stack: error,
+        stack: error.stack,
       });
     }
   }
@@ -71,7 +68,7 @@ export class S3Service {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
         ctx: 'Failed delete s3 objects',
-        stack: error,
+        stack: error.stack,
       });
     }
   }

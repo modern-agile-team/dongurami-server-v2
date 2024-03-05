@@ -42,12 +42,6 @@ export class AttachmentDto implements Omit<Attachment, 'user'> {
   })
   createdAt: Date;
 
-  @ApiProperty({
-    description: '수정 일자',
-    format: 'timestamp',
-  })
-  updatedAt: Date;
-
   constructor(attachmentDto: AttachmentDto) {
     Object.assign(this, attachmentDto);
   }

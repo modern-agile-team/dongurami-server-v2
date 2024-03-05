@@ -54,6 +54,7 @@ jobs:
           --build-arg AWS_S3_SECRET_KEY=${{ secrets.DEV_AWS_S3_SECRET_KEY }} \
           --build-arg AWS_REGION=${{ secrets.DEV_AWS_REGION }} \
           --build-arg AWS_S3_BUCKET=${{ secrets.DEV_AWS_S3_BUCKET }} \
+          --build-arg AWS_S3_ADDRESS=${{ secrets.DEV_AWS_S3_ADDRESS }} \
           -t ${{ secrets.DOCKER_IMAGE_NAME }}:latest .
 
       - name: Login to Docker Hub

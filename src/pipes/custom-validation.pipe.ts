@@ -1,8 +1,7 @@
-import { ArgumentMetadata, Injectable, ValidationPipe } from '@nestjs/common';
+import { ArgumentMetadata, ValidationPipe } from '@nestjs/common';
 
 import { REWRITE_VALIDATION_OPTIONS_TOKEN } from '@src/pipes/constants/rewrite-validation-options.token';
 
-@Injectable()
 export class CustomValidationPipe extends ValidationPipe {
   async transform(value: any, metadata: ArgumentMetadata) {
     const options = Reflect.getMetadata(

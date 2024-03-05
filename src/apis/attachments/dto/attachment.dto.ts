@@ -34,7 +34,7 @@ export class AttachmentDto implements Omit<Attachment, 'user'> {
     description: '파일 용량(byte)',
     format: 'integer',
   })
-  capacity: number;
+  capacity: string;
 
   @ApiProperty({
     description: '생성 일자',

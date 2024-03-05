@@ -48,7 +48,7 @@ export class CreateAttachmentTable1709025647217 implements MigrationInterface {
             name: 'capacity',
             isNullable: false,
             unsigned: true,
-            type: 'int',
+            type: 'bigint',
             comment: '파일 용량(byte)',
           }),
           generateCreatedAtColumn(),

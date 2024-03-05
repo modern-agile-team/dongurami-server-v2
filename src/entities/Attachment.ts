@@ -40,13 +40,13 @@ export class Attachment {
   })
   mimeType: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'capacity',
     comment: '파일 용량(byte)',
     unsigned: true,
     nullable: false,
   })
-  capacity: number;
+  capacity: string;
 
   @Column('timestamp', {
     name: 'created_at',

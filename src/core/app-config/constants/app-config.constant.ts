@@ -15,6 +15,7 @@ const AWS = {
   AWS_S3_SECRET_KEY: 'AWS_S3_SECRET_KEY',
   AWS_REGION: 'AWS_REGION',
   AWS_S3_BUCKET: 'AWS_S3_BUCKET',
+  AWS_S3_ADDRESS: 'AWS_S3_ADDRESS',
 } as const;
 
 export const ENV_KEY = {

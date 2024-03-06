@@ -34,6 +34,7 @@ jobs:
           echo "AWS_S3_SECRET_KEY=${{ secrets.DEV_AWS_S3_SECRET_KEY }}" >> $GITHUB_ENV
           echo "AWS_REGION=${{ secrets.DEV_AWS_REGION }}" >> $GITHUB_ENV
           echo "AWS_S3_BUCKET=${{ secrets.DEV_AWS_S3_BUCKET }}" >> $GITHUB_ENV
+          echo "AWS_S3_ADDRESS=${{ secrets.DEV_AWS_S3_ADDRESS }}" >> $GITHUB_ENV
           cat $GITHUB_ENV
 
       - name: Build and package

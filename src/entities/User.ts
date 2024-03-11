@@ -14,6 +14,7 @@ import {
   UserRole,
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
+import { Attachment } from '@src/entities/Attachment';
 import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
@@ -214,4 +215,7 @@ export class User {
 
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];
+
+  @OneToMany(() => Attachment, (attachment) => attachment.user)
+  attachments: Attachment[];
 }

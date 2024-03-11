@@ -25,6 +25,12 @@ import { AppConfigService } from 'src/core/app-config/services/app-config.servic
         [ENV_KEY.RDB_DATABASE]: Joi.string().required(),
 
         [ENV_KEY.JWT_SECRET]: Joi.string().required(),
+
+        [ENV_KEY.AWS_S3_ACCESS_KEY]: Joi.string().required(),
+        [ENV_KEY.AWS_S3_SECRET_KEY]: Joi.string().required(),
+        [ENV_KEY.AWS_REGION]: Joi.string().required(),
+        [ENV_KEY.AWS_S3_BUCKET]: Joi.string().required(),
+        [ENV_KEY.AWS_S3_ADDRESS]: Joi.string().required(),
       }),
       isGlobal: true,
     }),

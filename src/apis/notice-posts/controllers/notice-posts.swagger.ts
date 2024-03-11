@@ -12,7 +12,7 @@ import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/del
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
 import { ApiOperator } from '@src/types/type';
-import { ValidationError } from '@src/types/validation-errors.type';
+import { CustomValidationError } from '@src/types/custom-validation-errors.type';
 
 export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
   Create: (
@@ -35,7 +35,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
     );
@@ -60,7 +60,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
     );
@@ -85,7 +85,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
@@ -114,7 +114,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
@@ -143,7 +143,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
@@ -168,7 +168,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
@@ -192,7 +192,7 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [

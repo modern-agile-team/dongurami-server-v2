@@ -9,8 +9,8 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
+import { CustomValidationError } from '@src/types/custom-validation-errors.type';
 import { ApiOperator } from '@src/types/type';
-import { ValidationError } from '@src/types/validation-errors.type';
 
 export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
   CheckRegistration: (
@@ -41,7 +41,7 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
@@ -78,7 +78,7 @@ export const ApiAuthSocial: ApiOperator<keyof AuthSocialController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
     );

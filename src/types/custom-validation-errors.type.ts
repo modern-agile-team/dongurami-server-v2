@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ValidationError {
+export class CustomValidationError {
   @ApiProperty({
     description: 'property name',
     example: 'id',

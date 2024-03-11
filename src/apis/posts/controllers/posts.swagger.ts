@@ -7,8 +7,8 @@ import { PostsItemDto } from '@src/apis/posts/dto/posts-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
+import { CustomValidationError } from '@src/types/custom-validation-errors.type';
 import { ApiOperator } from '@src/types/type';
-import { ValidationError } from '@src/types/validation-errors.type';
 
 export const ApiPost: ApiOperator<keyof PostsController> = {
   FindAllAndCount: (
@@ -30,7 +30,7 @@ export const ApiPost: ApiOperator<keyof PostsController> = {
         {
           description:
             '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
-          type: ValidationError,
+          type: CustomValidationError,
         },
       ),
     );

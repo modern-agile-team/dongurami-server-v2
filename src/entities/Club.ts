@@ -30,10 +30,15 @@ export class Club {
   })
   userId: number;
 
-  @Column('varchar', { name: 'name', comment: '동아리 명', length: 255 })
+  @Column('varchar', {
+    name: 'name',
+    comment: '동아리 명',
+    length: 255,
+    nullable: true,
+  })
   name: string;
 
-  @Column('text', { name: 'introduce', comment: '동아리 소개' })
+  @Column('text', { name: 'introduce', comment: '동아리 소개', nullable: true })
   introduce: string | null;
 
   @Column('varchar', {

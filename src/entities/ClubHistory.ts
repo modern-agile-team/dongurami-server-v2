@@ -46,15 +46,16 @@ export class ClubHistory {
   @Column('varchar', { name: 'name', comment: '동아리 명', length: 255 })
   name: string;
 
-  @Column('text', { name: 'introduce', comment: '동아리 소개' })
-  introduce: string;
+  @Column('text', { name: 'introduce', comment: '동아리 소개', nullable: true })
+  introduce: string | null;
 
   @Column('varchar', {
     name: 'logo_path',
     comment: '동아리 로고 경로',
+    nullable: true,
     length: 255,
   })
-  logoPath: string;
+  logoPath: string | null;
 
   @Column('enum', {
     name: 'status',

@@ -47,5 +47,5 @@ export class ClubDto
   status: ClubStatus;
 
   @Exclude()
-  deletedAt: Date;
+  deletedAt: Date | null;
 }

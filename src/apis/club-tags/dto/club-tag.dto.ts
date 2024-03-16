@@ -1,10 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { BaseDto } from '@src/dto/base.dto';
 import { ClubTag } from '@src/entities/ClubTag';
 
 export class ClubTagDto
-  extends BaseDto
+  extends OmitType(BaseDto, ['updatedAt'])
   implements Pick<ClubTag, 'id' | 'userId' | 'name' | 'createdAt'>
 {
   @ApiProperty({

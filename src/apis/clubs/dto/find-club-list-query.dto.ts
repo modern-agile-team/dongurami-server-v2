@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { CLUB_ORDER_FIELD } from '@src/apis/clubs/constants/club.constant';
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
@@ -16,7 +16,6 @@ export class FindClubListQueryDto extends PageDto implements Partial<ClubDto> {
     description: '동아리 명',
   })
   @IsNotEmpty()
-  @IsString()
   @IsOptional()
   name?: string;
 

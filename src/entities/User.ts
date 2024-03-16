@@ -24,6 +24,7 @@ import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { PostTag } from '@src/entities/PostTag';
 import { UserHistory } from '@src/entities/UserHistory';
 
 @Index(['email'], { unique: true })
@@ -218,4 +219,7 @@ export class User {
 
   @OneToMany(() => Attachment, (attachment) => attachment.user)
   attachments: Attachment[];
+
+  @OneToMany(() => PostTag, (postTag) => postTag.user)
+  postTags: PostTag[];
 }

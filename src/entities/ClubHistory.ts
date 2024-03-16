@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { ClubStatus } from '@src/apis/club/enum/club.enum';
+import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { Club } from '@src/entities/Club';
 

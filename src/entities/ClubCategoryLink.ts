@@ -70,6 +70,6 @@ export class ClubCategoryLink {
       onUpdate: 'CASCADE',
     },
   )
-  @JoinColumn([{ name: 'club_tag_id', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'club_category_id', referencedColumnName: 'id' }])
   clubCategory: ClubCategory;
 }

@@ -36,7 +36,7 @@ export class ClubCategory {
   name: string;
 
   @Column('varchar', {
-    name: 'name',
+    name: 'memo',
     comment: '메모',
     length: 255,
     unique: true,

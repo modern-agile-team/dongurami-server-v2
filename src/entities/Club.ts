@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { ClubStatus } from '@src/apis/club/enum/club.enum';
+import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubHistory } from '@src/entities/ClubHistory';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
@@ -34,14 +34,14 @@ export class Club {
   name: string;
 
   @Column('text', { name: 'introduce', comment: '동아리 소개' })
-  introduce: string;
+  introduce: string | null;
 
   @Column('varchar', {
     name: 'logo_path',
     comment: '동아리 로고 경로',
     length: 255,
   })
-  logoPath: string;
+  logoPath: string | null;
 
   @Column('enum', {
     name: 'status',

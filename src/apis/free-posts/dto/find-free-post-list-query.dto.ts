@@ -63,7 +63,7 @@ export class FindFreePostListQueryDto
   @ApiPropertyOrder(FREE_POST_ORDER_FIELD)
   @CsvToOrder<typeof FREE_POST_ORDER_FIELD>([...FREE_POST_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof FREE_POST_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof FREE_POST_ORDER_FIELD> = { id: SortOrder.Asc };
 
   @IsDefined()
   status: FreePostStatus = FreePostStatus.Posting;

@@ -4,7 +4,6 @@ import {
   Injectable,
   Logger,
   ValidationError,
-  ValidationPipe,
   ValidationPipeOptions,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -26,6 +25,7 @@ import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/ht
 import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
 import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
+import { CustomValidationPipe } from '@src/pipes/custom-validation.pipe';
 
 @Injectable()
 export class BootstrapService {
@@ -71,7 +71,7 @@ export class BootstrapService {
     };
 
     app.useGlobalPipes(
-      new ValidationPipe({
+      new CustomValidationPipe({
         ...options,
         exceptionFactory,
       }),
@@ -128,7 +128,7 @@ export class BootstrapService {
       operationIdFactory: (controllerKey: string, methodKey: string) => {
         const controllerName = singularize(
           controllerKey.replace(/Controller$/, ''),
-        ).replace(/^(.)*/, (matchStr) => matchStr.toLowerCase());
+        ).replace(/^(.)/, (matchStr) => matchStr.toLowerCase());
 
         return `${controllerName}_${methodKey}`;
       },

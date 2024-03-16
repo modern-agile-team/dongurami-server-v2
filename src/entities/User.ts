@@ -14,6 +14,7 @@ import {
   UserRole,
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
+import { Attachment } from '@src/entities/Attachment';
 import { Club } from '@src/entities/Club';
 import { ClubCategory } from '@src/entities/ClubCategory';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
@@ -28,8 +29,6 @@ import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
-import { NoticePostReplyComment } from '@src/entities/NoticePostReplyComment';
-import { NoticePostReplyCommentReaction } from '@src/entities/NoticePostReplyCommentReaction';
 import { UserHistory } from '@src/entities/UserHistory';
 
 @Index(['email'], { unique: true })
@@ -212,18 +211,6 @@ export class User {
   )
   noticePostReactions: NoticePostReaction[];
 
-  @OneToMany(
-    () => NoticePostReplyComment,
-    (noticePostReplyComment) => noticePostReplyComment.user,
-  )
-  noticePostReplyComments: NoticePostReplyComment[];
-
-  @OneToMany(
-    () => NoticePostReplyCommentReaction,
-    (noticePostReplyCommentReaction) => noticePostReplyCommentReaction.user,
-  )
-  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
-
   @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -251,4 +238,6 @@ export class User {
     (clubCategoryLink) => clubCategoryLink.user,
   )
   clubCategoryLinks: ClubCategoryLink[];
+  @OneToMany(() => Attachment, (attachment) => attachment.user)
+  attachments: Attachment[];
 }

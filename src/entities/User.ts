@@ -25,6 +25,7 @@ import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
 import { PostTag } from '@src/entities/PostTag';
 import { UserHistory } from '@src/entities/UserHistory';
 
@@ -226,4 +227,10 @@ export class User {
 
   @OneToMany(() => FreePostTagLink, (freePostTagLink) => freePostTagLink.user)
   freePostTagLinks: FreePostTagLink[];
+
+  @OneToMany(
+    () => NoticePostTagLink,
+    (noticePostTagLink) => noticePostTagLink.user,
+  )
+  noticePostTagLinks: NoticePostTagLink[];
 }

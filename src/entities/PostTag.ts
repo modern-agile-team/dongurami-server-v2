@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { FreePostTagLink } from '@src/entities/FreePostTagLink';
+import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
 import { User } from '@src/entities/User';
 
 @Entity('post_tag')
@@ -54,4 +55,10 @@ export class PostTag {
     (freePostTagLink) => freePostTagLink.postTag,
   )
   freePostTagLinks: FreePostTagLink[];
+
+  @OneToMany(
+    () => NoticePostTagLink,
+    (noticePostTagLink) => noticePostTagLink.postTag,
+  )
+  noticePostTagLinks: NoticePostTagLink[];
 }

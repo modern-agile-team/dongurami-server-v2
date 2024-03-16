@@ -32,13 +32,15 @@ export class ClubDto
 
   @ApiProperty({
     description: '동아리 소개',
+    nullable: true,
   })
-  introduce: string;
+  introduce: string | null;
 
   @ApiProperty({
     description: '동아리 로고 path',
+    nullable: true,
   })
-  logoPath: string;
+  logoPath: string | null;
 
   @ApiProperty({
     description: '동아리 상태',

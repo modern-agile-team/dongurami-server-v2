@@ -4,6 +4,9 @@ import { AdminsModule } from '@src/apis/admins/admins.module';
 import { AttachmentsModule } from '@src/apis/attachments/attachments.module';
 import { AuthModule } from '@src/apis/auth/auth.module';
 import { AuthSocialModule } from '@src/apis/auth/social/auth-social.module';
+import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
+import { ClubTagLinksModule } from '@src/apis/club-tag-links/club-tag-links.module';
+import { ClubsModule } from '@src/apis/clubs/clubs.module';
 import { DevModule } from '@src/apis/dev/dev.module';
 import { FreePostCommentsModule } from '@src/apis/free-post-comments/free-post-comments.module';
 import { FreePostsModule } from '@src/apis/free-posts/free-posts.module';
@@ -24,6 +27,9 @@ import { UsersModule } from '@src/apis/users/users.module';
     FreePostsModule,
     FreePostCommentsModule,
     AuthSocialModule,
+    ClubsModule,
+    ClubTagLinksModule,
+    ClubCategoryLinksModule,
     AttachmentsModule,
     DevModule,
     PostsModule,

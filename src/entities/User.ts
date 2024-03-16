@@ -15,6 +15,11 @@ import {
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
 import { Attachment } from '@src/entities/Attachment';
+import { Club } from '@src/entities/Club';
+import { ClubCategory } from '@src/entities/ClubCategory';
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { ClubTag } from '@src/entities/ClubTag';
+import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
@@ -216,6 +221,23 @@ export class User {
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];
 
+  @OneToMany(() => Club, (club) => club.user)
+  clubs: Club[];
+
+  @OneToMany(() => ClubTag, (clubTag) => clubTag.user)
+  clubTags: ClubTag[];
+
+  @OneToMany(() => ClubTagLink, (clubTagLink) => clubTagLink.user)
+  clubTagLinks: ClubTagLink[];
+
+  @OneToMany(() => ClubCategory, (clubCategory) => clubCategory.user)
+  clubCategories: ClubCategory[];
+
+  @OneToMany(
+    () => ClubCategoryLink,
+    (clubCategoryLink) => clubCategoryLink.user,
+  )
+  clubCategoryLinks: ClubCategoryLink[];
   @OneToMany(() => Attachment, (attachment) => attachment.user)
   attachments: Attachment[];
 }

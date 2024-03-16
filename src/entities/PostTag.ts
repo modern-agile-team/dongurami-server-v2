@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { FreePostTagLink } from '@src/entities/FreePostTagLink';
 import { User } from '@src/entities/User';
 
 @Entity('post_tag')
@@ -46,4 +48,10 @@ export class PostTag {
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @OneToMany(
+    () => FreePostTagLink,
+    (freePostTagLink) => freePostTagLink.postTag,
+  )
+  freePostTagLinks: FreePostTagLink[];
 }

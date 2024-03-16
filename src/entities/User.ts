@@ -19,6 +19,7 @@ import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostTagLink } from '@src/entities/FreePostTagLink';
 import { Major } from '@src/entities/Major';
 import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
@@ -222,4 +223,7 @@ export class User {
 
   @OneToMany(() => PostTag, (postTag) => postTag.user)
   postTags: PostTag[];
+
+  @OneToMany(() => FreePostTagLink, (freePostTagLink) => freePostTagLink.user)
+  freePostTagLinks: FreePostTagLink[];
 }

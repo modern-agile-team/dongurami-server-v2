@@ -44,7 +44,11 @@ export class QueryHelper {
 
     return {
       children:
-        loadDepth > 1 ? this.createNestedChildRelations(loadDepth - 1) : true,
+        loadDepth > 1
+          ? this.createNestedChildRelations(loadDepth - 1)
+          : {
+              user: true,
+            },
     };
   }
 }

@@ -75,6 +75,9 @@ export class FreePostsService {
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations: {
+        user: true,
+      },
     });
   }
 

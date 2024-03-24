@@ -24,11 +24,14 @@ import { FreePost } from '@src/entities/FreePost';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostTagLink } from '@src/entities/FreePostTagLink';
 import { Major } from '@src/entities/Major';
 import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
+import { PostTag } from '@src/entities/PostTag';
 import { UserHistory } from '@src/entities/UserHistory';
 
 @Index(['email'], { unique: true })
@@ -240,4 +243,16 @@ export class User {
   clubCategoryLinks: ClubCategoryLink[];
   @OneToMany(() => Attachment, (attachment) => attachment.user)
   attachments: Attachment[];
+
+  @OneToMany(() => PostTag, (postTag) => postTag.user)
+  postTags: PostTag[];
+
+  @OneToMany(() => FreePostTagLink, (freePostTagLink) => freePostTagLink.user)
+  freePostTagLinks: FreePostTagLink[];
+
+  @OneToMany(
+    () => NoticePostTagLink,
+    (noticePostTagLink) => noticePostTagLink.user,
+  )
+  noticePostTagLinks: NoticePostTagLink[];
 }

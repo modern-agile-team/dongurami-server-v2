@@ -13,6 +13,7 @@ import { FreePostsModule } from '@src/apis/free-posts/free-posts.module';
 import { MajorModule } from '@src/apis/major/major.module';
 import { NoticePostCommentsModule } from '@src/apis/notice-post-comments/notice-post-comments.module';
 import { NoticePostsModule } from '@src/apis/notice-posts/notice-posts.module';
+import { PostTagsModule } from '@src/apis/post-tags/post-tags.module';
 import { PostsModule } from '@src/apis/posts/posts.module';
 import { UsersModule } from '@src/apis/users/users.module';
 
@@ -33,6 +34,7 @@ import { UsersModule } from '@src/apis/users/users.module';
     AttachmentsModule,
     DevModule,
     PostsModule,
+    PostTagsModule,
   ],
 })
 export class ApiModule {}

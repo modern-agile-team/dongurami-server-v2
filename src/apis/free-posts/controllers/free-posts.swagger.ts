@@ -12,8 +12,8 @@ import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
-import { ApiOperator } from '@src/types/type';
 import { CustomValidationError } from '@src/types/custom-validation-errors.type';
+import { ApiOperator } from '@src/types/type';
 
 /**
  * @todo

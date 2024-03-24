@@ -11,6 +11,7 @@ import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.e
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostHistory } from '@src/entities/NoticePostHistory';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
 import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
@@ -107,4 +108,10 @@ export class NoticePost {
     (noticePostReaction) => noticePostReaction.noticePost,
   )
   noticePostReactions: NoticePostReaction[];
+
+  @OneToMany(
+    () => NoticePostTagLink,
+    (noticePostTagLink) => noticePostTagLink.noticePost,
+  )
+  noticePostTagLinks: NoticePostTagLink[];
 }

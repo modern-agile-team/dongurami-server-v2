@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { CommonPostStatus } from '@src/apis/common-posts/constants/common-posts.enum';
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
@@ -16,14 +17,13 @@ export class CommonPostsService<E extends RequiredCommonPostColumn> {
   ) {}
 
   async incrementHit(postId: number): Promise<void> {
-    const updateResult = await this.postRepository.increment(
-      {
-        id: postId,
-        status: CommonPostStatus.Posting,
-      } as FindOptionsWhere<E>,
-      'hit',
-      1,
-    );
+    const updateResult = await this.postRepository
+      .createQueryBuilder('post')
+      .update()
+      .set({ hit: () => 'hit + 1' } as QueryDeepPartialEntity<E>)
+      .where({ id: postId, status: CommonPostStatus.Posting })
+      .callListeners(false)
+      .execute();
 
     if (!updateResult.affected) {
       throw new HttpNotFoundException({

@@ -13,7 +13,7 @@ import { FreePostHistory } from '@src/entities/FreePostHistory';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { FreePostTagLink } from '@src/entities/FreePostTagLink';
 import { User } from '@src/entities/User';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
+import { DefaultBooleanTransformer } from '@src/entities/transformers/default-boolean.transformer';
 
 @Entity('free_post')
 export class FreePost {
@@ -51,7 +51,7 @@ export class FreePost {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new BooleanTransformer(),
+    transformer: new DefaultBooleanTransformer(false),
   })
   isAnonymous: boolean;
 

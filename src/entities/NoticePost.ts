@@ -13,7 +13,7 @@ import { NoticePostHistory } from '@src/entities/NoticePostHistory';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
 import { User } from '@src/entities/User';
-import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
+import { DefaultBooleanTransformer } from '@src/entities/transformers/default-boolean.transformer';
 
 @Entity('notice_post')
 export class NoticePost {
@@ -51,7 +51,7 @@ export class NoticePost {
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     unsigned: true,
     default: () => "'1'",
-    transformer: new BooleanTransformer(),
+    transformer: new DefaultBooleanTransformer(true),
   })
   isAllowComment: boolean;
 

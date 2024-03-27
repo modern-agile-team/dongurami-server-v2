@@ -10,7 +10,7 @@ import {
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { NoticePost } from '@src/entities/NoticePost';
-import { DefaultTrueBooleanTransformer } from '@src/entities/transformers/default-true-boolean.transformer';
+import { DefaultBooleanTransformer } from '@src/entities/transformers/default-boolean.transformer';
 
 @Index(['userId'])
 @Entity('notice_post_history')
@@ -56,7 +56,7 @@ export class NoticePostHistory {
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     unsigned: true,
     default: () => "'1'",
-    transformer: new DefaultTrueBooleanTransformer(),
+    transformer: new DefaultBooleanTransformer(true),
   })
   isAllowComment: boolean;
 

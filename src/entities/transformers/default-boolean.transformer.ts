@@ -1,7 +1,7 @@
 import { ValueTransformer } from 'typeorm';
 
 export class DefaultBooleanTransformer implements ValueTransformer {
-  constructor(private readonly defaultValue?: boolean) {}
+  constructor(private readonly defaultValue: boolean) {}
 
   public from(value?: number): boolean {
     return !!value;

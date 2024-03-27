@@ -9,7 +9,7 @@ import {
 
 import { HistoryAction } from '@src/constants/enum';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
-import { DefaultFalseBooleanTransformer } from '@src/entities/transformers/default-false-boolean.transformer';
+import { DefaultBooleanTransformer } from '@src/entities/transformers/default-boolean.transformer';
 
 @Index(['userId'], {})
 @Index(['noticePostId'], {})
@@ -68,7 +68,7 @@ export class NoticePostCommentHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new DefaultFalseBooleanTransformer(),
+    transformer: new DefaultBooleanTransformer(true),
   })
   isAnonymous: boolean;
 

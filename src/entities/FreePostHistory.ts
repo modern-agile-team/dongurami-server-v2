@@ -10,7 +10,7 @@ import {
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { FreePost } from '@src/entities/FreePost';
-import { DefaultFalseBooleanTransformer } from '@src/entities/transformers/default-false-boolean.transformer';
+import { DefaultBooleanTransformer } from '@src/entities/transformers/default-boolean.transformer';
 
 @Index(['userId'], {})
 @Entity('free_post_history')
@@ -63,7 +63,7 @@ export class FreePostHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new DefaultFalseBooleanTransformer(),
+    transformer: new DefaultBooleanTransformer(false),
   })
   isAnonymous: boolean;
 

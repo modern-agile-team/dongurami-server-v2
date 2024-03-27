@@ -18,7 +18,7 @@ describe(DefaultBooleanTransformer.name, () => {
         expect(defaultBooleanTransformer.from(0)).toBe(false);
       });
 
-      it('value가 1일 때', () => {
+      it('value가 null일 때', () => {
         expect(defaultBooleanTransformer.from(null)).toBe(false);
       });
     });

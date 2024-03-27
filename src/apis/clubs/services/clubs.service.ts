@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DeepPartial, In } from 'typeorm';
+import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
@@ -11,7 +11,6 @@ import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
-import { SortOrder } from '@src/constants/enum';
 import { Club } from '@src/entities/Club';
 import { QueryHelper } from '@src/helpers/query.helper';
 
@@ -81,13 +80,41 @@ export class ClubsService {
     ]);
 
     const newClub = await this.clubRepository.save({
+      userId,
       name,
       introduce,
       logoPath,
       status,
     });
 
-    // await Promise.all([this.clubCategoryLinkRepository.save(exist)]);
+    const newClubCategoryLinks = this.clubCategoryLinkRepository.create(
+      existClubCategories.concat(newClubCategories).map((clubCategory) => {
+        return {
+          userId,
+          clubId: newClub.id,
+          clubCategoryId: clubCategory.id,
+        };
+      }),
+    );
+
+    const newClubTagLinks = this.clubTagLinkRepository.create(
+      existClubTags.concat(newClubTags).map((clubTag) => {
+        return {
+          userId,
+          clubId: newClub.id,
+          clubTagId: clubTag.id,
+        };
+      }),
+    );
+
+    await Promise.all([
+      this.clubCategoryLinkRepository.save(newClubCategoryLinks, {
+        reload: false,
+      }),
+      this.clubTagLinkRepository.save(newClubTagLinks, { reload: false }),
+    ]);
+
+    return new ClubDto(newClub);
   }
 
   /**

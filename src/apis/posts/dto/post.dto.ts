@@ -43,9 +43,9 @@ export class PostDto extends BaseDto {
   @Exclude()
   deletedAt: Date;
 
-  constructor(noticePostDto: Partial<PostDto> = {}) {
+  constructor(postDto: Partial<PostDto> = {}) {
     super();
 
-    Object.assign(this, noticePostDto);
+    Object.assign(this, postDto);
   }
 }

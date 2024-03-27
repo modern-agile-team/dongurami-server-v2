@@ -65,6 +65,9 @@ export class NoticePostsService {
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations: {
+        user: true,
+      },
     });
   }
 

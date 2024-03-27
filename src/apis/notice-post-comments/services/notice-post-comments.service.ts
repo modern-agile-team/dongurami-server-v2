@@ -101,7 +101,10 @@ export class NoticePostCommentsService {
       order,
       skip: page * pageSize,
       take: pageSize,
-      relations,
+      relations: {
+        ...relations,
+        user: true,
+      },
     });
   }
 

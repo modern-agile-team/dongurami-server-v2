@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 
-import { In } from 'typeorm';
+import { DeepPartial, In } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 
+import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
+import { ClubTagRepository } from '@src/apis/club-tags/repositories/club-tag.repository';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
+import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
+import { SortOrder } from '@src/constants/enum';
 import { Club } from '@src/entities/Club';
 import { QueryHelper } from '@src/helpers/query.helper';
 
@@ -18,8 +23,72 @@ export class ClubsService {
     private readonly clubRepository: ClubRepository,
     private readonly clubCategoryLinkRepository: ClubCategoryLinkRepository,
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
+    private readonly clubCategoryRepository: ClubCategoryRepository,
+    private readonly clubTagRepository: ClubTagRepository,
     private readonly queryHelper: QueryHelper,
   ) {}
+
+  @Transactional()
+  async create(
+    userId: number,
+    createClubRequestBodyDto: CreateClubRequestBodyDto,
+  ) {
+    const { name, introduce, logoPath, tags, categories, status } =
+      createClubRequestBodyDto;
+
+    const [existClubCategories, existClubTags] = await Promise.all([
+      this.clubCategoryRepository.find({
+        where: {
+          name: In(categories),
+        },
+      }),
+      this.clubTagRepository.find({
+        where: {
+          name: In(tags),
+        },
+      }),
+    ]);
+
+    const existClubCategoryNames = existClubCategories.map(
+      (existClubCategory) => existClubCategory.name,
+    );
+    const existClubTagNames = existClubTags.map(
+      (existClubTag) => existClubTag.name,
+    );
+
+    const notExistClubCategoryNames = categories.filter(
+      (category) => !existClubCategoryNames.includes(category),
+    );
+    const notExistClubTagNames = tags.filter(
+      (tag) => !existClubTagNames.includes(tag),
+    );
+
+    const newClubCategories = this.clubCategoryRepository.create(
+      notExistClubCategoryNames.map((categoryName) => {
+        return { userId, name: categoryName, memo: '어라' };
+      }),
+    );
+
+    const newClubTags = this.clubTagRepository.create(
+      notExistClubTagNames.map((tagName) => {
+        return { userId, name: tagName };
+      }),
+    );
+
+    await Promise.all([
+      this.clubCategoryRepository.save(newClubCategories),
+      this.clubTagRepository.save(newClubTags),
+    ]);
+
+    const newClub = await this.clubRepository.save({
+      name,
+      introduce,
+      logoPath,
+      status,
+    });
+
+    // await Promise.all([this.clubCategoryLinkRepository.save(exist)]);
+  }
 
   /**
    * 카테고리 및 태그 필터링때문에 다소 복잡하게 짜여져있음

@@ -1,6 +1,7 @@
-import { Controller, Get, HttpStatus } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { FindClubCategoryListQueryDto } from '@src/apis/club-categories/dto/find-club-category-list-query.dto';
 import { ClubCategoriesService } from '@src/apis/club-categories/services/club-categories.service';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -14,5 +15,7 @@ export class ClubCategoriesController {
 
   @Get()
   @SetResponse({ type: ResponseType.Common, key: 'clubCategories' })
-  findAll() {}
+  findAll(@Query() findClubCategoryListQueryDto: FindClubCategoryListQueryDto) {
+    this.clubCategoriesService;
+  }
 }

@@ -50,12 +50,12 @@ export class ClubsService {
       },
     });
 
-    const existClubCategoryNames = existClubCategories.map(
-      (existClubCategory) => existClubCategory.name,
+    const existClubCategoryNamesSet = new Set(
+      existClubCategories.map((cat) => cat.name),
     );
 
     const notExistClubCategoryNames = categories.filter(
-      (category) => !existClubCategoryNames.includes(category),
+      (category) => !existClubCategoryNamesSet.has(category),
     );
 
     if (notExistClubCategoryNames.length) {

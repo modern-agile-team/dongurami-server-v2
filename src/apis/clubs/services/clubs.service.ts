@@ -75,9 +75,11 @@ export class ClubsService {
       status,
     });
 
-    const clubTags = await this.clubTagsService.create(userId, newClub.id, {
-      names: tags,
-    });
+    const clubTags = tags
+      ? await this.clubTagsService.create(userId, newClub.id, {
+          names: tags,
+        })
+      : [];
 
     await this.clubCategoryLinksService.create(
       existClubCategories.map((clubCategory) => {

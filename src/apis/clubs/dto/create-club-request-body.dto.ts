@@ -1,9 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
   IsArray,
   IsDefined,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
 } from 'class-validator';
@@ -47,14 +48,15 @@ export class CreateClubRequestBodyDto
   @Length(CLUB_LOGO_PATH.MIN, CLUB_LOGO_PATH.MAX)
   logoPath: string | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '동아리 태그 명',
     minLength: CLUB_TAG_NAME.MIN,
     maxLength: CLUB_TAG_NAME.MAX,
   })
+  @IsOptional()
   @IsArray()
   @Length(CLUB_TAG_NAME.MIN, CLUB_TAG_NAME.MAX, { each: true })
-  tags: string[];
+  tags?: string[];
 
   @ApiProperty({
     description: '동아리 카테고리 명',

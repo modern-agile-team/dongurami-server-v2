@@ -4,6 +4,7 @@ import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.i
 
 import { AdminsController } from '@src/apis/admins/controllers/admins.controller';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
+import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { MajorDto } from '@src/apis/major/dto/major.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
@@ -38,7 +39,7 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
     );
   },
 
-  CreateNewClubCategory: function (
+  CreateNewClub: function (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
   ): PropertyDecorator {
@@ -49,6 +50,34 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'club',
+        ClubWithCategoryAndTagDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  CreateNewClubCategory: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.CREATED,
+        'clubCategory',
         ClubCategoryDto,
       ),
       HttpException.swaggerBuilder(
@@ -60,9 +89,8 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
           type: CustomValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
-        MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_NAME,
-        MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_CODE,
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
     );
   },

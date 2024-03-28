@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { AdminsController } from '@src/apis/admins/controllers/admins.controller';
-import { ClubDto } from '@src/apis/clubs/dto/club.dto';
+import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { MajorDto } from '@src/apis/major/dto/major.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
@@ -46,7 +46,11 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      DetailResponseDto.swaggerBuilder(HttpStatus.CREATED, 'club', ClubDto),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.CREATED,
+        'club',
+        ClubWithCategoryAndTagDto,
+      ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
@@ -56,9 +60,8 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
           type: CustomValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
-        MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_NAME,
-        MAJOR_ERROR_CODE.ALREADY_EXIST_MAJOR_CODE,
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
     );
   },

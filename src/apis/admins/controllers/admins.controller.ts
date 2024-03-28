@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { ApiAdmins } from '@src/apis/admins/controllers/admins.swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateMajorRequestBodyDto } from '@src/apis/major/dto/create-major-request-body.dto';
@@ -54,7 +55,7 @@ export class AdminsController {
   createNewClub(
     @User() user: UserDto,
     @Body() createClubRequestBodyDto: CreateClubRequestBodyDto,
-  ) {
+  ): DetailResponse<ClubWithCategoryAndTagDto> {
     return this.clubsService.create(user.id, createClubRequestBodyDto);
   }
 }

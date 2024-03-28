@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ApiAdmins } from '@src/apis/admins/controllers/admins.swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { CreateClubCategoryRequestBodyDto } from '@src/apis/club-categories/dto/create-club-category-request-body.dto';
+import { ClubCategoriesService } from '@src/apis/club-categories/services/club-categories.service';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
@@ -28,6 +29,7 @@ export class AdminsController {
   constructor(
     private readonly majorsService: MajorService,
     private readonly clubsService: ClubsService,
+    private readonly clubCategoriesService: ClubCategoriesService,
   ) {}
 
   /**
@@ -69,5 +71,7 @@ export class AdminsController {
   @Post('club-categories')
   createNewClubCategory(
     @Body() createClubCategoryRequestBodyDto: CreateClubCategoryRequestBodyDto,
-  ) {}
+  ) {
+    return this.clubCategoriesService;
+  }
 }

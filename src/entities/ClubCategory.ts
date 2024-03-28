@@ -50,6 +50,13 @@ export class ClubCategory {
   })
   createdAt: Date;
 
+  @Column('timestamp', {
+    name: 'updated_at',
+    comment: '수정 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
   @ManyToOne(() => User, (user) => user.clubCategories, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

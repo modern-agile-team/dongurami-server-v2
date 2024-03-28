@@ -1,13 +1,13 @@
-import { DefaultBooleanTransformer } from '@src/entities/transformers/default-boolean.transformer';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
-describe(DefaultBooleanTransformer.name, () => {
+describe(BooleanTransformer.name, () => {
   // from의 경우에는 default값이 관련 없다고 판단 되어 constructor에 true를 넣은 test suite만 생성
-  describe(DefaultBooleanTransformer.prototype.from, () => {
+  describe(BooleanTransformer.prototype.from, () => {
     describe('defaultValue값이 true일 때', () => {
-      let defaultBooleanTransformer: DefaultBooleanTransformer;
+      let defaultBooleanTransformer: BooleanTransformer;
 
       beforeAll(() => {
-        defaultBooleanTransformer = new DefaultBooleanTransformer(true);
+        defaultBooleanTransformer = new BooleanTransformer(true);
       });
 
       it('value가 1일 때', () => {
@@ -24,12 +24,12 @@ describe(DefaultBooleanTransformer.name, () => {
     });
   });
 
-  describe(DefaultBooleanTransformer.prototype.to, () => {
+  describe(BooleanTransformer.prototype.to, () => {
     describe('defaultValue값이 true일 때', () => {
-      let defaultBooleanTransformer: DefaultBooleanTransformer;
+      let defaultBooleanTransformer: BooleanTransformer;
 
       beforeAll(() => {
-        defaultBooleanTransformer = new DefaultBooleanTransformer(true);
+        defaultBooleanTransformer = new BooleanTransformer(true);
       });
 
       it('value가 true일 때', () => {
@@ -46,12 +46,12 @@ describe(DefaultBooleanTransformer.name, () => {
     });
   });
 
-  describe(DefaultBooleanTransformer.prototype.to, () => {
+  describe(BooleanTransformer.prototype.to, () => {
     describe('defaultValue값이 false일 때', () => {
-      let defaultBooleanTransformer: DefaultBooleanTransformer;
+      let defaultBooleanTransformer: BooleanTransformer;
 
       beforeAll(() => {
-        defaultBooleanTransformer = new DefaultBooleanTransformer(false);
+        defaultBooleanTransformer = new BooleanTransformer(false);
       });
 
       it('value가 true일 때', () => {

@@ -38,6 +38,10 @@ export class AdminsController {
     return this.majorsService.create(createMajorRequestBodyDto);
   }
 
+  @ApiAdmins.CreateNewClubCategory({
+    summary: '클럽 카테고리 생성',
+    description: '관리자만 사용 가능하게끔 설정돼있지 않음 추후 추가 예정',
+  })
   @UseGuards(JwtAuthGuard)
   @SetResponse({ type: ResponseType.Detail, key: 'category' })
   @Post('club-categories')

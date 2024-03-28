@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { ApiAdmins } from '@src/apis/admins/controllers/admins.swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { CreateClubCategoryRequestBodyDto } from '@src/apis/club-categories/dto/create-club-category-request-body.dto';
 import { CreateMajorRequestBodyDto } from '@src/apis/major/dto/create-major-request-body.dto';
 import { MajorDto } from '@src/apis/major/dto/major.dto';
 import { MajorService } from '@src/apis/major/services/major.service';
@@ -36,4 +37,11 @@ export class AdminsController {
   ): DetailResponse<MajorDto> {
     return this.majorsService.create(createMajorRequestBodyDto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ type: ResponseType.Detail, key: 'category' })
+  @Post('club-categories')
+  createNewClubCategory(
+    @Body() createClubCategoryRequestBodyDto: CreateClubCategoryRequestBodyDto,
+  ) {}
 }

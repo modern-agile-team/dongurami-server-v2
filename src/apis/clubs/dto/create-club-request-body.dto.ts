@@ -8,6 +8,7 @@ import {
   Length,
 } from 'class-validator';
 
+import { CLUB_TAG_NAME } from '@src/apis/club-tags/constants/club-tag.constant';
 import {
   CLUB_LOGO_PATH,
   CLUB_NAME_LENGTH,
@@ -48,10 +49,11 @@ export class CreateClubRequestBodyDto
 
   @ApiProperty({
     description: '동아리 태그 명',
+    minLength: CLUB_TAG_NAME.MIN,
+    maxLength: CLUB_TAG_NAME.MAX,
   })
   @IsArray()
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
+  @Length(CLUB_TAG_NAME.MIN, CLUB_TAG_NAME.MAX, { each: true })
   tags: string[];
 
   @ApiProperty({

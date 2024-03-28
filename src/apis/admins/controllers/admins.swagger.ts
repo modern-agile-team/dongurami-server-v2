@@ -6,6 +6,7 @@ import { AdminsController } from '@src/apis/admins/controllers/admins.controller
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { MajorDto } from '@src/apis/major/dto/major.dto';
+import { CLUB_CATEGORY_ERROR_CODE } from '@src/constants/error/club-category/club-category-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -89,8 +90,8 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
           type: CustomValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
-        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        CLUB_CATEGORY_ERROR_CODE.ALREADY_EXIST_CLUB_CATEGORY_NAME,
       ]),
     );
   },

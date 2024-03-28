@@ -39,7 +39,6 @@ export class ClubCategory {
     name: 'memo',
     comment: '메모',
     length: 255,
-    unique: true,
   })
   memo: string;
 

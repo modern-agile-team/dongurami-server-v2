@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
 
+import { plainToInstance } from 'class-transformer';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
+import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
+import { ClubCategoryLinksService } from '@src/apis/club-category-links/services/club-category-links.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
-import { ClubTagRepository } from '@src/apis/club-tags/repositories/club-tag.repository';
+import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
+import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
+import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
+import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { Club } from '@src/entities/Club';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
 export class ClubsService {
@@ -21,9 +29,10 @@ export class ClubsService {
   constructor(
     private readonly clubRepository: ClubRepository,
     private readonly clubCategoryLinkRepository: ClubCategoryLinkRepository,
+    private readonly clubCategoryLinksService: ClubCategoryLinksService,
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
     private readonly clubCategoryRepository: ClubCategoryRepository,
-    private readonly clubTagRepository: ClubTagRepository,
+    private readonly clubTagsService: ClubTagsService,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -31,53 +40,32 @@ export class ClubsService {
   async create(
     userId: number,
     createClubRequestBodyDto: CreateClubRequestBodyDto,
-  ) {
+  ): Promise<ClubWithCategoryAndTagDto> {
     const { name, introduce, logoPath, tags, categories, status } =
       createClubRequestBodyDto;
 
-    const [existClubCategories, existClubTags] = await Promise.all([
-      this.clubCategoryRepository.find({
-        where: {
-          name: In(categories),
-        },
-      }),
-      this.clubTagRepository.find({
-        where: {
-          name: In(tags),
-        },
-      }),
-    ]);
+    const existClubCategories = await this.clubCategoryRepository.find({
+      where: {
+        name: In(categories),
+      },
+    });
 
     const existClubCategoryNames = existClubCategories.map(
       (existClubCategory) => existClubCategory.name,
-    );
-    const existClubTagNames = existClubTags.map(
-      (existClubTag) => existClubTag.name,
     );
 
     const notExistClubCategoryNames = categories.filter(
       (category) => !existClubCategoryNames.includes(category),
     );
-    const notExistClubTagNames = tags.filter(
-      (tag) => !existClubTagNames.includes(tag),
-    );
 
-    const newClubCategories = this.clubCategoryRepository.create(
-      notExistClubCategoryNames.map((categoryName) => {
-        return { userId, name: categoryName, memo: '어라' };
-      }),
-    );
-
-    const newClubTags = this.clubTagRepository.create(
-      notExistClubTagNames.map((tagName) => {
-        return { userId, name: tagName };
-      }),
-    );
-
-    await Promise.all([
-      this.clubCategoryRepository.save(newClubCategories),
-      this.clubTagRepository.save(newClubTags),
-    ]);
+    if (notExistClubCategoryNames.length) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+        errors: notExistClubCategoryNames.map(
+          (name) => `The category ${name} does not exist.`,
+        ),
+      });
+    }
 
     const newClub = await this.clubRepository.save({
       userId,
@@ -87,8 +75,12 @@ export class ClubsService {
       status,
     });
 
-    const newClubCategoryLinks = this.clubCategoryLinkRepository.create(
-      existClubCategories.concat(newClubCategories).map((clubCategory) => {
+    const clubTags = await this.clubTagsService.create(userId, newClub.id, {
+      names: tags,
+    });
+
+    await this.clubCategoryLinksService.create(
+      existClubCategories.map((clubCategory) => {
         return {
           userId,
           clubId: newClub.id,
@@ -97,24 +89,11 @@ export class ClubsService {
       }),
     );
 
-    const newClubTagLinks = this.clubTagLinkRepository.create(
-      existClubTags.concat(newClubTags).map((clubTag) => {
-        return {
-          userId,
-          clubId: newClub.id,
-          clubTagId: clubTag.id,
-        };
-      }),
-    );
-
-    await Promise.all([
-      this.clubCategoryLinkRepository.save(newClubCategoryLinks, {
-        reload: false,
-      }),
-      this.clubTagLinkRepository.save(newClubTagLinks, { reload: false }),
-    ]);
-
-    return new ClubDto(newClub);
+    return new ClubWithCategoryAndTagDto({
+      ...newClub,
+      clubTags: plainToInstance(ClubTagDto, clubTags),
+      clubCategories: plainToInstance(ClubCategoryDto, existClubCategories),
+    });
   }
 
   /**
@@ -191,5 +170,20 @@ export class ClubsService {
     });
 
     return [clubs, count];
+  }
+
+  async findOneOrNotFound(clubId: number): Promise<ClubDto> {
+    const existClub = await this.clubRepository.findOneBy({
+      id: clubId,
+      status: ClubStatus.Active,
+    });
+
+    if (!existClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return new ClubDto(existClub);
   }
 }

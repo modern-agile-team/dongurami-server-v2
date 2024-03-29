@@ -32,12 +32,12 @@ export class ClubTagsService {
       },
     });
 
-    const existClubTagNames = existClubTags.map(
-      (existClubTag) => existClubTag.name,
+    const existClubTagNamesSet = new Set(
+      existClubTags.map((existClubTag) => existClubTag.name),
     );
 
     const notExistClubTagNames = names.filter(
-      (name) => !existClubTagNames.includes(name),
+      (name) => !existClubTagNamesSet.has(name),
     );
 
     const newClubTags = this.clubTagRepository.create(

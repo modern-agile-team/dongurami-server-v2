@@ -49,7 +49,7 @@ export class ClubsService {
     });
 
     const existClubCategoryNamesSet = new Set(
-      existClubCategories.map((cat) => cat.name),
+      existClubCategories.map((category) => category.name),
     );
 
     const notExistClubCategoryNames = categories.filter(

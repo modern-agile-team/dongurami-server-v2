@@ -13,11 +13,15 @@ import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service'
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
+import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
+import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { Club } from '@src/entities/Club';
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { HttpUnprocessableEntityException } from '@src/http-exceptions/exceptions/http-unprocessable-entity.exception';
@@ -75,21 +79,31 @@ export class ClubsService {
     });
 
     const clubTags = tagNames
-      ? await this.clubTagsService.create(userId, newClub.id, {
+      ? await this.clubTagsService.bulkCreateClubTagsForCreateClub(userId, {
           names: tagNames,
         })
       : [];
 
-    await this.clubCategoryLinkRepository.save(
-      this.clubCategoryLinkRepository.create(
-        existClubCategories.map((clubCategory) => {
+    if (clubTags.length) {
+      await this.bulkCreateClubTagLinks(
+        clubTags.map((clubTag) => {
           return {
             userId,
+            clubTagId: clubTag.id,
             clubId: newClub.id,
-            clubCategoryId: clubCategory.id,
           };
         }),
-      ),
+      );
+    }
+
+    await this.bulkCreateClubCategoryLinks(
+      existClubCategories.map((clubCategory) => {
+        return {
+          userId,
+          clubId: newClub.id,
+          clubCategoryId: clubCategory.id,
+        };
+      }),
     );
 
     return new ClubWithCategoryAndTagDto({
@@ -188,5 +202,42 @@ export class ClubsService {
     }
 
     return new ClubDto(existClub);
+  }
+
+  async bulkCreateClubTagLinks(
+    createClubTagLinkDtos: CreateClubTagLinkDto[],
+  ): Promise<ClubTagLink[]> {
+    return this.clubTagLinkRepository.save(
+      this.clubTagLinkRepository.create(
+        createClubTagLinkDtos.map((createClubTagLinkDto) => {
+          const { userId, clubId, clubTagId } = createClubTagLinkDto;
+
+          return {
+            userId,
+            clubId,
+            clubTagId,
+          };
+        }),
+      ),
+      { reload: false },
+    );
+  }
+
+  async bulkCreateClubCategoryLinks(
+    createClubCategoryLinkDtos: CreateClubCategoryLinkDto[],
+  ): Promise<ClubCategoryLink[]> {
+    return this.clubCategoryLinkRepository.save(
+      this.clubCategoryLinkRepository.create(
+        createClubCategoryLinkDtos.map((createClubCategoryLinkDto) => {
+          const { userId, clubId, clubCategoryId } = createClubCategoryLinkDto;
+
+          return {
+            userId,
+            clubId,
+            clubCategoryId,
+          };
+        }),
+      ),
+    );
   }
 }

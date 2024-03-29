@@ -53,7 +53,7 @@ export class ClubsService {
     );
 
     const notExistClubCategoryNames = categories.filter(
-      (category) => !existClubCategoryNamesSet.has(category),
+      (categoryName) => !existClubCategoryNamesSet.has(categoryName),
     );
 
     if (notExistClubCategoryNames.length) {

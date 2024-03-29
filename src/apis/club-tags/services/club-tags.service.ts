@@ -17,13 +17,10 @@ export class ClubTagsService {
     private readonly clubsService: ClubsService,
   ) {}
 
-  async create(
+  async bulkCreateClubTagsForCreateClub(
     userId: number,
-    clubId: number,
     createClubTagDto: CreateClubTagDto,
   ): Promise<ClubTag[]> {
-    const existClub = await this.clubsService.findOneOrNotFound(clubId);
-
     const { names } = createClubTagDto;
 
     const existClubTags = await this.clubTagRepository.find({
@@ -31,6 +28,10 @@ export class ClubTagsService {
         name: In(names),
       },
     });
+
+    if (existClubTags.length === createClubTagDto.names.length) {
+      return existClubTags;
+    }
 
     const existClubTagNamesSet = new Set(
       existClubTags.map((existClubTag) => existClubTag.name),
@@ -47,18 +48,6 @@ export class ClubTagsService {
     );
 
     await this.clubTagRepository.save(newClubTags);
-
-    await this.clubTagLinkRepository.save(
-      this.clubTagLinkRepository.create(
-        existClubTags.concat(newClubTags).map((clubTag) => {
-          return {
-            userId,
-            clubId: existClub.id,
-            clubTagId: clubTag.id,
-          };
-        }),
-      ),
-    );
 
     return existClubTags.concat(newClubTags);
   }

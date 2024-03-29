@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
+  ArrayNotEmpty,
+  ArrayUnique,
   IsArray,
   IsDefined,
   IsNotEmpty,
@@ -55,6 +57,8 @@ export class CreateClubRequestBodyDto
   })
   @IsOptional()
   @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
   @Length(CLUB_TAG_NAME.MIN, CLUB_TAG_NAME.MAX, { each: true })
   tagNames?: string[];
 
@@ -62,6 +66,8 @@ export class CreateClubRequestBodyDto
     description: '동아리 카테고리 명',
   })
   @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   categoryNames: string[];

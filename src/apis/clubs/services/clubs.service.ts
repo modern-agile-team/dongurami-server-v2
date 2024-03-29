@@ -20,6 +20,7 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { Club } from '@src/entities/Club';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { HttpUnprocessableEntityException } from '@src/http-exceptions/exceptions/http-unprocessable-entity.exception';
 
 @Injectable()
 export class ClubsService {
@@ -39,12 +40,12 @@ export class ClubsService {
     userId: number,
     createClubRequestBodyDto: CreateClubRequestBodyDto,
   ): Promise<ClubWithCategoryAndTagDto> {
-    const { name, introduce, logoPath, tags, categories, status } =
+    const { name, introduce, logoPath, tagNames, categoryNames, status } =
       createClubRequestBodyDto;
 
     const existClubCategories = await this.clubCategoryRepository.find({
       where: {
-        name: In(categories),
+        name: In(categoryNames),
       },
     });
 
@@ -52,13 +53,13 @@ export class ClubsService {
       existClubCategories.map((category) => category.name),
     );
 
-    const notExistClubCategoryNames = categories.filter(
+    const notExistClubCategoryNames = categoryNames.filter(
       (categoryName) => !existClubCategoryNamesSet.has(categoryName),
     );
 
     if (notExistClubCategoryNames.length) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      throw new HttpUnprocessableEntityException({
+        code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
         errors: notExistClubCategoryNames.map(
           (name) => `The category ${name} does not exist.`,
         ),
@@ -73,9 +74,9 @@ export class ClubsService {
       status,
     });
 
-    const clubTags = tags
+    const clubTags = tagNames
       ? await this.clubTagsService.create(userId, newClub.id, {
-          names: tags,
+          names: tagNames,
         })
       : [];
 

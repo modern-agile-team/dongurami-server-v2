@@ -56,7 +56,7 @@ export class CreateClubRequestBodyDto
   @IsOptional()
   @IsArray()
   @Length(CLUB_TAG_NAME.MIN, CLUB_TAG_NAME.MAX, { each: true })
-  tags?: string[];
+  tagNames?: string[];
 
   @ApiProperty({
     description: '동아리 카테고리 명',
@@ -64,7 +64,7 @@ export class CreateClubRequestBodyDto
   @IsArray()
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
-  categories: string[];
+  categoryNames: string[];
 
   @IsDefined()
   status: ClubStatus = ClubStatus.Active;

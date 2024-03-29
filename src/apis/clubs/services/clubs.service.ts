@@ -7,7 +7,6 @@ import { Transactional } from 'typeorm-transactional';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
-import { ClubCategoryLinksService } from '@src/apis/club-category-links/services/club-category-links.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
@@ -29,7 +28,6 @@ export class ClubsService {
   constructor(
     private readonly clubRepository: ClubRepository,
     private readonly clubCategoryLinkRepository: ClubCategoryLinkRepository,
-    private readonly clubCategoryLinksService: ClubCategoryLinksService,
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
     private readonly clubCategoryRepository: ClubCategoryRepository,
     private readonly clubTagsService: ClubTagsService,
@@ -81,14 +79,16 @@ export class ClubsService {
         })
       : [];
 
-    await this.clubCategoryLinksService.create(
-      existClubCategories.map((clubCategory) => {
-        return {
-          userId,
-          clubId: newClub.id,
-          clubCategoryId: clubCategory.id,
-        };
-      }),
+    await this.clubCategoryLinkRepository.save(
+      this.clubCategoryLinkRepository.create(
+        existClubCategories.map((clubCategory) => {
+          return {
+            userId,
+            clubId: newClub.id,
+            clubCategoryId: clubCategory.id,
+          };
+        }),
+      ),
     );
 
     return new ClubWithCategoryAndTagDto({

@@ -269,4 +269,19 @@ export class NoticePostsService {
       (postTagLink) => new PostTagDto(postTagLink.postTag),
     );
   }
+
+  private async findPostTags(noticePostId: number): Promise<PostTagDto[]> {
+    const postTagLinks = await this.noticePostTagLinkRepository.find({
+      where: {
+        noticePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
+  }
 }

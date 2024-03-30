@@ -308,4 +308,19 @@ export class FreePostsService {
       (postTagLink) => new PostTagDto(postTagLink.postTag),
     );
   }
+
+  private async findPostTags(freePostId: number): Promise<PostTagDto[]> {
+    const postTagLinks = await this.freePostTagLinkRepository.find({
+      where: {
+        freePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
+  }
 }

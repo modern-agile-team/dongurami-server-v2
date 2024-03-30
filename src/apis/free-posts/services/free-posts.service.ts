@@ -113,6 +113,19 @@ export class FreePostsService {
     return new FreePostDto(freePost);
   }
 
+  async findOne(freePostId: number): Promise<FreePostDto | void> {
+    const freePost = await this.freePostRepository.findOneBy({
+      id: freePostId,
+      status: FreePostStatus.Posting,
+    });
+
+    if (!freePost) {
+      return;
+    }
+
+    return new FreePostDto(freePost);
+  }
+
   @Transactional()
   async putUpdate(
     userId: number,

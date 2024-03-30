@@ -25,6 +25,8 @@ import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item
 import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '@src/apis/notice-posts/dto/put-update-notice-post.dto';
 import { NoticePostsService } from '@src/apis/notice-posts/services/notice-posts.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
@@ -123,5 +125,37 @@ export class NoticePostsController {
     @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<void> {
     return this.noticePostService.increaseHit(postId);
+  }
+
+  @ApiNoticePost.CreateReaction({ summary: '공지 게시글 reaction 생성' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/reaction')
+  createReaction(
+    @User() user: UserDto,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.noticePostService.createReaction(
+      user.id,
+      postId,
+      createReactionDto,
+    );
+  }
+
+  @ApiNoticePost.RemoveReaction({ summary: '공지 게시글 reaction 삭제' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':postId/reaction')
+  removeReaction(
+    @User() user: UserDto,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.noticePostService.removeReaction(
+      user.id,
+      postId,
+      removeReactionDto,
+    );
   }
 }

@@ -111,6 +111,8 @@ export class NoticePostsService {
     userId: number,
     putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
+    const { tagNames, ...postProps } = putUpdateNoticePostDto;
+
     const oldNoticePost = await this.findOneOrNotFound(noticePostId);
 
     if (oldNoticePost.userId !== userId) {
@@ -121,7 +123,7 @@ export class NoticePostsService {
 
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
-      ...putUpdateNoticePostDto,
+      ...postProps,
     });
 
     await this.noticePostRepository.update(
@@ -133,7 +135,18 @@ export class NoticePostsService {
       },
     );
 
-    return new NoticePostDto(newNoticePost);
+    await this.noticePostTagLinkRepository.delete({
+      noticePostId,
+    });
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
+    await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
   }
 
   @Transactional()

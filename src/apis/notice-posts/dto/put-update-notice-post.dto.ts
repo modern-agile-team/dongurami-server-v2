@@ -6,4 +6,5 @@ export class PutUpdateNoticePostDto extends PickType(CreateNoticePostDto, [
   'title',
   'description',
   'isAllowComment',
+  'tagNames',
 ] as const) {}

@@ -119,6 +119,8 @@ export class FreePostsService {
     freePostId: number,
     putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
+    const { tagNames, ...postProps } = putUpdateFreePostDto;
+
     const oldFreePost = await this.findOneOrNotFound(freePostId);
 
     if (userId !== oldFreePost.userId) {
@@ -128,7 +130,7 @@ export class FreePostsService {
     }
     const newFreePost = this.freePostRepository.create({
       ...oldFreePost,
-      ...putUpdateFreePostDto,
+      ...postProps,
     });
 
     await this.freePostRepository.update(
@@ -140,7 +142,18 @@ export class FreePostsService {
       },
     );
 
-    return new FreePostDto(newFreePost);
+    await this.freePostTagLinkRepository.delete({
+      freePostId,
+    });
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
+    await this.bulkAppendTagLink(userId, newFreePost.id, postTags);
+
+    return new FreePostDto({ ...newFreePost, postTags });
   }
 
   @Transactional()

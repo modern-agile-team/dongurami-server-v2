@@ -110,7 +110,9 @@ export class FreePostsService {
       });
     }
 
-    return new FreePostDto(freePost);
+    const postTags = await this.findPostTags(freePostId);
+
+    return new FreePostDto({ ...freePost, postTags });
   }
 
   async findOne(freePostId: number): Promise<FreePostDto | void> {
@@ -305,21 +307,6 @@ export class FreePostsService {
     await this.freePostTagLinkRepository.insert(newAppendTags);
 
     return newAppendTags;
-  }
-
-  private async findPostTags(freePostId: number): Promise<PostTagDto[]> {
-    const postTagLinks = await this.freePostTagLinkRepository.find({
-      where: {
-        freePostId,
-      },
-      relations: {
-        postTag: true,
-      },
-    });
-
-    return postTagLinks.map(
-      (postTagLink) => new PostTagDto(postTagLink.postTag),
-    );
   }
 
   private async findPostTags(freePostId: number): Promise<PostTagDto[]> {

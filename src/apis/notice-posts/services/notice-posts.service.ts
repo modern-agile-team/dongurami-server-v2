@@ -105,6 +105,19 @@ export class NoticePostsService {
     return new NoticePostDto(noticePost);
   }
 
+  async findOne(noticePostId: number): Promise<NoticePostDto | void> {
+    const noticePost = await this.noticePostRepository.findOneBy({
+      id: noticePostId,
+      status: NoticePostStatus.Posting,
+    });
+
+    if (!noticePost) {
+      return;
+    }
+
+    return new NoticePostDto(noticePost);
+  }
+
   @Transactional()
   async putUpdate(
     noticePostId: number,

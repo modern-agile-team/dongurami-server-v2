@@ -102,7 +102,9 @@ export class NoticePostsService {
       });
     }
 
-    return new NoticePostDto(noticePost);
+    const postTags = await this.findPostTags(noticePostId);
+
+    return new NoticePostDto({ ...noticePost, postTags });
   }
 
   async findOne(noticePostId: number): Promise<NoticePostDto | void> {
@@ -266,21 +268,6 @@ export class NoticePostsService {
     await this.noticePostTagLinkRepository.insert(newAppendTags);
 
     return newAppendTags;
-  }
-
-  private async findPostTags(noticePostId: number): Promise<PostTagDto[]> {
-    const postTagLinks = await this.noticePostTagLinkRepository.find({
-      where: {
-        noticePostId,
-      },
-      relations: {
-        postTag: true,
-      },
-    });
-
-    return postTagLinks.map(
-      (postTagLink) => new PostTagDto(postTagLink.postTag),
-    );
   }
 
   private async findPostTags(noticePostId: number): Promise<PostTagDto[]> {

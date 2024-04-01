@@ -47,7 +47,7 @@ export class ClubTagsService {
       }),
     );
 
-    await this.clubTagRepository.save(newClubTags);
+    await this.clubTagRepository.insert(newClubTags);
 
     return existClubTags.concat(newClubTags);
   }

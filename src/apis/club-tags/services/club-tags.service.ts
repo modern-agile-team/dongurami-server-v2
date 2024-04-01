@@ -17,7 +17,7 @@ export class ClubTagsService {
     private readonly clubsService: ClubsService,
   ) {}
 
-  async bulkCreateClubTagsForCreateClub(
+  async bulkCreate(
     userId: number,
     createClubTagDto: CreateClubTagDto,
   ): Promise<ClubTag[]> {

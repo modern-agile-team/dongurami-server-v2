@@ -79,7 +79,7 @@ export class ClubsService {
     });
 
     const clubTags = tagNames
-      ? await this.clubTagsService.bulkCreateClubTagsForCreateClub(userId, {
+      ? await this.clubTagsService.bulkCreate(userId, {
           names: tagNames,
         })
       : [];

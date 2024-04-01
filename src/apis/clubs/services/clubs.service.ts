@@ -78,7 +78,7 @@ export class ClubsService {
       status,
     });
 
-    const clubTags = tagNames
+    const clubTags = tagNames.length
       ? await this.clubTagsService.bulkCreate(userId, {
           names: tagNames,
         })
@@ -207,37 +207,40 @@ export class ClubsService {
   async bulkCreateClubTagLinks(
     createClubTagLinkDtos: CreateClubTagLinkDto[],
   ): Promise<ClubTagLink[]> {
-    return this.clubTagLinkRepository.save(
-      this.clubTagLinkRepository.create(
-        createClubTagLinkDtos.map((createClubTagLinkDto) => {
-          const { userId, clubId, clubTagId } = createClubTagLinkDto;
+    const newClubTagLinks = this.clubTagLinkRepository.create(
+      createClubTagLinkDtos.map((createClubTagLinkDto) => {
+        const { userId, clubId, clubTagId } = createClubTagLinkDto;
 
-          return {
-            userId,
-            clubId,
-            clubTagId,
-          };
-        }),
-      ),
-      { reload: false },
+        return {
+          userId,
+          clubId,
+          clubTagId,
+        };
+      }),
     );
+
+    await this.clubTagLinkRepository.insert(newClubTagLinks);
+
+    return newClubTagLinks;
   }
 
   async bulkCreateClubCategoryLinks(
     createClubCategoryLinkDtos: CreateClubCategoryLinkDto[],
   ): Promise<ClubCategoryLink[]> {
-    return this.clubCategoryLinkRepository.save(
-      this.clubCategoryLinkRepository.create(
-        createClubCategoryLinkDtos.map((createClubCategoryLinkDto) => {
-          const { userId, clubId, clubCategoryId } = createClubCategoryLinkDto;
+    const newClubCategoryLinks = this.clubCategoryLinkRepository.create(
+      createClubCategoryLinkDtos.map((createClubCategoryLinkDto) => {
+        const { userId, clubId, clubCategoryId } = createClubCategoryLinkDto;
 
-          return {
-            userId,
-            clubId,
-            clubCategoryId,
-          };
-        }),
-      ),
+        return {
+          userId,
+          clubId,
+          clubCategoryId,
+        };
+      }),
     );
+
+    await this.clubCategoryLinkRepository.insert(newClubCategoryLinks);
+
+    return newClubCategoryLinks;
   }
 }

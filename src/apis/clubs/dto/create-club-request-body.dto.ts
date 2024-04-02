@@ -55,6 +55,7 @@ export class CreateClubRequestBodyDto
     minLength: CLUB_TAG_NAME.MIN,
     maxLength: CLUB_TAG_NAME.MAX,
     default: [],
+    uniqueItems: true,
   })
   @IsOptional()
   @IsArray()
@@ -63,7 +64,9 @@ export class CreateClubRequestBodyDto
   tagNames: string[] = [];
 
   @ApiProperty({
-    description: '동아리 카테고리 명',
+    description: '동아리 카테고리 명(존재하는 카테고리 명을 보내야 함.)',
+    minItems: 1,
+    uniqueItems: true,
   })
   @IsArray()
   @ArrayNotEmpty()

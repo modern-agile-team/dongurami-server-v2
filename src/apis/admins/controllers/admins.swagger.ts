@@ -27,9 +27,7 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
         {
           description:
-            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다. <br>' +
-            '해당 api의 request 중 categoryNames, tagNames 프로퍼티는 배열 내의 중복 데이터 또한 에러 처리. <br>' +
-            'categoryNames의 경우엔 빈 배열인 경우 또한 에러 처리.',
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
           type: CustomValidationError,
         },
       ),
@@ -64,6 +62,9 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.UNPROCESSABLE_ENTITY, [
+        COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
       ]),
     );
   },

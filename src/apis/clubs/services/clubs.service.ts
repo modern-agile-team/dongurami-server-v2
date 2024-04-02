@@ -84,17 +84,15 @@ export class ClubsService {
         })
       : [];
 
-    if (clubTags.length) {
-      await this.bulkCreateClubTagLinks(
-        clubTags.map((clubTag) => {
-          return {
-            userId,
-            clubTagId: clubTag.id,
-            clubId: newClub.id,
-          };
-        }),
-      );
-    }
+    await this.bulkCreateClubTagLinks(
+      clubTags.map((clubTag) => {
+        return {
+          userId,
+          clubTagId: clubTag.id,
+          clubId: newClub.id,
+        };
+      }),
+    );
 
     await this.bulkCreateClubCategoryLinks(
       existClubCategories.map((clubCategory) => {
@@ -206,7 +204,11 @@ export class ClubsService {
 
   async bulkCreateClubTagLinks(
     createClubTagLinkDtos: CreateClubTagLinkDto[],
-  ): Promise<ClubTagLink[]> {
+  ): Promise<ClubTagLink[] | undefined> {
+    if (!createClubTagLinkDtos.length) {
+      return;
+    }
+
     const newClubTagLinks = this.clubTagLinkRepository.create(
       createClubTagLinkDtos.map((createClubTagLinkDto) => {
         const { userId, clubId, clubTagId } = createClubTagLinkDto;

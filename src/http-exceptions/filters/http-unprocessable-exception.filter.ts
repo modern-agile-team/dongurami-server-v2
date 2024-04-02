@@ -6,7 +6,7 @@ import { HttpUnprocessableEntityException } from '@src/http-exceptions/exception
 import { HttpExceptionService } from '@src/http-exceptions/services/http-exception.service';
 
 /**
- * 400 번 에러를 잡는 exception filter
+ * 422 번 에러를 잡는 exception filter
  */
 @Catch(HttpUnprocessableEntityException)
 export class HttpUnprocessableEntityExceptionFilter

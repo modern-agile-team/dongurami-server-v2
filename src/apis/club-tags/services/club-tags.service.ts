@@ -1,21 +1,14 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { In } from 'typeorm';
 
-import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { CreateClubTagDto } from '@src/apis/club-tags/dto/create-club-tag.dto';
 import { ClubTagRepository } from '@src/apis/club-tags/repositories/club-tag.repository';
-import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { ClubTag } from '@src/entities/ClubTag';
 
 @Injectable()
 export class ClubTagsService {
-  constructor(
-    private readonly clubTagRepository: ClubTagRepository,
-    private readonly clubTagLinkRepository: ClubTagLinkRepository,
-    @Inject(forwardRef(() => ClubsService))
-    private readonly clubsService: ClubsService,
-  ) {}
+  constructor(private readonly clubTagRepository: ClubTagRepository) {}
 
   async bulkCreate(
     userId: number,
@@ -29,7 +22,7 @@ export class ClubTagsService {
       },
     });
 
-    if (existClubTags.length === createClubTagDto.names.length) {
+    if (existClubTags.length === names.length) {
       return existClubTags;
     }
 

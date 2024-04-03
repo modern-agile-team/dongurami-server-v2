@@ -204,9 +204,9 @@ export class ClubsService {
 
   async bulkCreateClubTagLinks(
     createClubTagLinkDtos: CreateClubTagLinkDto[],
-  ): Promise<ClubTagLink[] | undefined> {
+  ): Promise<ClubTagLink[]> {
     if (!createClubTagLinkDtos.length) {
-      return;
+      return [];
     }
 
     const newClubTagLinks = this.clubTagLinkRepository.create(
@@ -229,6 +229,10 @@ export class ClubsService {
   async bulkCreateClubCategoryLinks(
     createClubCategoryLinkDtos: CreateClubCategoryLinkDto[],
   ): Promise<ClubCategoryLink[]> {
+    if (!createClubCategoryLinkDtos.length) {
+      return [];
+    }
+
     const newClubCategoryLinks = this.clubCategoryLinkRepository.create(
       createClubCategoryLinkDtos.map((createClubCategoryLinkDto) => {
         const { userId, clubId, clubCategoryId } = createClubCategoryLinkDto;

@@ -7,20 +7,24 @@ import { Transactional } from 'typeorm-transactional';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
-import { ClubCategoryLinksService } from '@src/apis/club-category-links/services/club-category-links.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
+import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
+import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { Club } from '@src/entities/Club';
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
+import { HttpUnprocessableEntityException } from '@src/http-exceptions/exceptions/http-unprocessable-entity.exception';
 
 @Injectable()
 export class ClubsService {
@@ -29,7 +33,6 @@ export class ClubsService {
   constructor(
     private readonly clubRepository: ClubRepository,
     private readonly clubCategoryLinkRepository: ClubCategoryLinkRepository,
-    private readonly clubCategoryLinksService: ClubCategoryLinksService,
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
     private readonly clubCategoryRepository: ClubCategoryRepository,
     private readonly clubTagsService: ClubTagsService,
@@ -41,26 +44,26 @@ export class ClubsService {
     userId: number,
     createClubRequestBodyDto: CreateClubRequestBodyDto,
   ): Promise<ClubWithCategoryAndTagDto> {
-    const { name, introduce, logoPath, tags, categories, status } =
+    const { name, introduce, logoPath, tagNames, categoryNames, status } =
       createClubRequestBodyDto;
 
     const existClubCategories = await this.clubCategoryRepository.find({
       where: {
-        name: In(categories),
+        name: In(categoryNames),
       },
     });
 
     const existClubCategoryNamesSet = new Set(
-      existClubCategories.map((cat) => cat.name),
+      existClubCategories.map((category) => category.name),
     );
 
-    const notExistClubCategoryNames = categories.filter(
-      (category) => !existClubCategoryNamesSet.has(category),
+    const notExistClubCategoryNames = categoryNames.filter(
+      (categoryName) => !existClubCategoryNamesSet.has(categoryName),
     );
 
     if (notExistClubCategoryNames.length) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      throw new HttpUnprocessableEntityException({
+        code: COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
         errors: notExistClubCategoryNames.map(
           (name) => `The category ${name} does not exist.`,
         ),
@@ -75,11 +78,23 @@ export class ClubsService {
       status,
     });
 
-    const clubTags = await this.clubTagsService.create(userId, newClub.id, {
-      names: tags,
-    });
+    const clubTags = tagNames.length
+      ? await this.clubTagsService.bulkCreate(userId, {
+          names: tagNames,
+        })
+      : [];
 
-    await this.clubCategoryLinksService.create(
+    await this.bulkCreateClubTagLinks(
+      clubTags.map((clubTag) => {
+        return {
+          userId,
+          clubTagId: clubTag.id,
+          clubId: newClub.id,
+        };
+      }),
+    );
+
+    await this.bulkCreateClubCategoryLinks(
       existClubCategories.map((clubCategory) => {
         return {
           userId,
@@ -185,5 +200,53 @@ export class ClubsService {
     }
 
     return new ClubDto(existClub);
+  }
+
+  async bulkCreateClubTagLinks(
+    createClubTagLinkDtos: CreateClubTagLinkDto[],
+  ): Promise<ClubTagLink[]> {
+    if (!createClubTagLinkDtos.length) {
+      return [];
+    }
+
+    const newClubTagLinks = this.clubTagLinkRepository.create(
+      createClubTagLinkDtos.map((createClubTagLinkDto) => {
+        const { userId, clubId, clubTagId } = createClubTagLinkDto;
+
+        return {
+          userId,
+          clubId,
+          clubTagId,
+        };
+      }),
+    );
+
+    await this.clubTagLinkRepository.insert(newClubTagLinks);
+
+    return newClubTagLinks;
+  }
+
+  async bulkCreateClubCategoryLinks(
+    createClubCategoryLinkDtos: CreateClubCategoryLinkDto[],
+  ): Promise<ClubCategoryLink[]> {
+    if (!createClubCategoryLinkDtos.length) {
+      return [];
+    }
+
+    const newClubCategoryLinks = this.clubCategoryLinkRepository.create(
+      createClubCategoryLinkDtos.map((createClubCategoryLinkDto) => {
+        const { userId, clubId, clubCategoryId } = createClubCategoryLinkDto;
+
+        return {
+          userId,
+          clubId,
+          clubCategoryId,
+        };
+      }),
+    );
+
+    await this.clubCategoryLinkRepository.insert(newClubCategoryLinks);
+
+    return newClubCategoryLinks;
   }
 }

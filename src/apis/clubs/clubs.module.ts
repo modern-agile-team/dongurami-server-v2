@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
@@ -15,7 +15,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     TypeOrmExModule.forCustomRepository([ClubRepository]),
     ClubTagLinksModule,
     ClubCategoryLinksModule,
-    forwardRef(() => ClubTagsModule),
+    ClubTagsModule,
     ClubCategoriesModule,
   ],
   controllers: [ClubsController],

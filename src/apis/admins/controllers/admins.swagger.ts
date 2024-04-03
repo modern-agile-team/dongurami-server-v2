@@ -65,6 +65,9 @@ export const ApiAdmins: ApiOperator<keyof AdminsController> = {
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
+      HttpException.swaggerBuilder(HttpStatus.UNPROCESSABLE_ENTITY, [
+        COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+      ]),
     );
   },
 

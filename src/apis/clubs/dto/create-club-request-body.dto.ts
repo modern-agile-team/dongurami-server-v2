@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
   ArrayNotEmpty,
@@ -50,7 +50,7 @@ export class CreateClubRequestBodyDto
   @Length(CLUB_LOGO_PATH.MIN, CLUB_LOGO_PATH.MAX)
   logoPath: string | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '동아리 태그 명',
     minLength: CLUB_TAG_NAME.MIN,
     maxLength: CLUB_TAG_NAME.MAX,

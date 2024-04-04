@@ -24,6 +24,7 @@ import { HttpPathNotFoundExceptionFilter } from '@src/http-exceptions/filters/ht
 import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/http-process-error-exception.filter';
 import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
 import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
+import { HttpUnprocessableEntityExceptionFilter } from '@src/http-exceptions/filters/http-unprocessable-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success-interceptor/success.interceptor';
 import { CustomValidationPipe } from '@src/pipes/custom-validation.pipe';
 
@@ -83,6 +84,7 @@ export class BootstrapService {
       app.get(HttpProcessErrorExceptionFilter),
       app.get(HttpRemainderExceptionFilter),
       app.get(HttpInternalServerErrorExceptionFilter),
+      app.get(HttpUnprocessableEntityExceptionFilter),
       app.get(HttpConflictExceptionFilter),
       app.get(HttpNotFoundExceptionFilter),
       app.get(HttpPathNotFoundExceptionFilter),

@@ -7,6 +7,7 @@ import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto
 export class PutUpdateFreePostDto extends PickType(CreateFreePostDto, [
   'title',
   'description',
+  'tagNames',
 ] as const) {
   @ApiProperty({
     description: '익명 여부',

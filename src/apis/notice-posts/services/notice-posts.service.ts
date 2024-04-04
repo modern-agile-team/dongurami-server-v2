@@ -15,8 +15,12 @@ import { NoticePostTagLinkRepository } from '@src/apis/notice-posts/repositories
 import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -30,6 +34,7 @@ export class NoticePostsService {
   >)[] = ['title'];
 
   constructor(
+    private readonly reactionsService: ReactionsService<NoticePostReaction>,
     private readonly commonPostsService: CommonPostsService<NoticePost>,
     private readonly postTagsService: PostTagsService,
 
@@ -267,6 +272,54 @@ export class NoticePostsService {
 
     return postTagLinks.map(
       (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
+  }
+
+  async createReaction(
+    userId: number,
+    noticePostId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    const isExistPost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      noticePostId,
+    );
+  }
+
+  async removeReaction(
+    userId: number,
+    noticePostId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    const isExistPost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      noticePostId,
     );
   }
 }

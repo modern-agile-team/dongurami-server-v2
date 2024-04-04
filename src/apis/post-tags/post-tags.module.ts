@@ -9,5 +9,6 @@ import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
   imports: [TypeOrmExModule.forCustomRepository([PostTagRepository])],
   controllers: [PostTagsController],
   providers: [PostTagsService],
+  exports: [PostTagsService],
 })
 export class PostTagsModule {}

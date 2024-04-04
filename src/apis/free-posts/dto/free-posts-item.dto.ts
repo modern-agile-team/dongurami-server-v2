@@ -7,6 +7,7 @@ import { UserDto } from '@src/apis/users/dto/user.dto';
 
 export class FreePostsItemDto extends OmitType(FreePostDto, [
   'description',
+  'postTags',
 ] as const) {
   @ApiProperty({
     description: '게시글 작성 유저 정보',

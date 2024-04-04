@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { isNotEmptyObject } from 'class-validator';
+import { differenceWith } from 'lodash';
 import { Transactional } from 'typeorm-transactional';
 
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
@@ -11,7 +12,10 @@ import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
+import { FreePostTagLinkRepository } from '@src/apis/free-posts/repositories/free-post-tag-link.repository';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
@@ -34,21 +38,34 @@ export class FreePostsService {
   constructor(
     private readonly commonPostsService: CommonPostsService<FreePost>,
     private readonly reactionsService: ReactionsService<FreePostReaction>,
+    private readonly postTagsService: PostTagsService,
 
     private readonly queryHelper: QueryHelper,
 
     private readonly freePostRepository: FreePostRepository,
+    private readonly freePostTagLinkRepository: FreePostTagLinkRepository,
   ) {}
 
   @Transactional()
   async create(userId: number, createFreePostDto: CreateFreePostDto) {
+    const { tagNames, ...postProps } = createFreePostDto;
+
     const newPost = await this.freePostRepository.save({
       userId,
       status: FreePostStatus.Posting,
-      ...createFreePostDto,
+      ...postProps,
     });
 
-    return new FreePostDto(newPost);
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({
+        name: tagName,
+      })),
+    );
+
+    await this.bulkAppendTagLink(userId, newPost.id, postTags);
+
+    return new FreePostDto({ ...newPost, postTags });
   }
 
   findAllAndCount(
@@ -217,5 +234,31 @@ export class FreePostsService {
       userId,
       existPost.id,
     );
+  }
+
+  async bulkAppendTagLink(
+    userId: number,
+    postId: number,
+    postTags: PostTagDto[],
+  ) {
+    const existTagLinks = await this.freePostTagLinkRepository.findBy({
+      freePostId: postId,
+    });
+
+    const newAppendTags = differenceWith(
+      postTags,
+      existTagLinks,
+      (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
+    ).map((postTag) =>
+      this.freePostTagLinkRepository.create({
+        userId,
+        freePostId: postId,
+        postTagId: postTag.id,
+      }),
+    );
+
+    await this.freePostTagLinkRepository.insert(newAppendTags);
+
+    return newAppendTags;
   }
 }

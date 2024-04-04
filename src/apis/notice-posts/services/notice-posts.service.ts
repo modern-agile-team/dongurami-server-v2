@@ -111,6 +111,8 @@ export class NoticePostsService {
     userId: number,
     putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
+    const { tagNames, ...postProps } = putUpdateNoticePostDto;
+
     const oldNoticePost = await this.findOneOrNotFound(noticePostId);
 
     if (oldNoticePost.userId !== userId) {
@@ -121,7 +123,7 @@ export class NoticePostsService {
 
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
-      ...putUpdateNoticePostDto,
+      ...postProps,
     });
 
     await this.noticePostRepository.update(
@@ -133,7 +135,18 @@ export class NoticePostsService {
       },
     );
 
-    return new NoticePostDto(newNoticePost);
+    await this.noticePostTagLinkRepository.delete({
+      noticePostId,
+    });
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
+    await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
   }
 
   @Transactional()
@@ -142,6 +155,8 @@ export class NoticePostsService {
     userId: number,
     patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
+    const { tagNames, ...postProps } = patchUpdateNoticePostDto;
+
     if (!Object.values(patchUpdateNoticePostDto).length) {
       throw new HttpBadRequestException({
         code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
@@ -158,7 +173,7 @@ export class NoticePostsService {
 
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
-      ...patchUpdateNoticePostDto,
+      ...postProps,
     });
 
     await this.noticePostRepository.update(
@@ -168,7 +183,24 @@ export class NoticePostsService {
       },
     );
 
-    return new NoticePostDto(newNoticePost);
+    let postTags: PostTagDto[];
+
+    if (tagNames) {
+      await this.noticePostTagLinkRepository.delete({
+        noticePostId,
+      });
+
+      postTags = await this.postTagsService.bulkCreate(
+        userId,
+        tagNames.map((tagName) => ({ name: tagName })),
+      );
+
+      await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+    } else {
+      postTags = await this.findPostTags(noticePostId);
+    }
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
   }
 
   @Transactional()
@@ -221,5 +253,20 @@ export class NoticePostsService {
     await this.noticePostTagLinkRepository.insert(newAppendTags);
 
     return newAppendTags;
+  }
+
+  private async findPostTags(noticePostId: number): Promise<PostTagDto[]> {
+    const postTagLinks = await this.noticePostTagLinkRepository.find({
+      where: {
+        noticePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
   }
 }

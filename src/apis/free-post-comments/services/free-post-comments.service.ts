@@ -99,7 +99,10 @@ export class FreePostCommentsService {
       order,
       skip: page * pageSize,
       take: pageSize,
-      relations,
+      relations: {
+        ...relations,
+        user: true,
+      },
     });
   }
 

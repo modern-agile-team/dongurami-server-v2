@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { differenceWith } from 'lodash';
 import { Transactional } from 'typeorm-transactional';
 
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
@@ -10,7 +11,10 @@ import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
 import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '@src/apis/notice-posts/dto/put-update-notice-post.dto';
+import { NoticePostTagLinkRepository } from '@src/apis/notice-posts/repositories/notice-post-tag-links.repository';
 import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { NoticePost } from '@src/entities/NoticePost';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -26,19 +30,34 @@ export class NoticePostsService {
   >)[] = ['title'];
 
   constructor(
-    private readonly queryHelper: QueryHelper,
-    private readonly noticePostRepository: NoticePostRepository,
     private readonly commonPostsService: CommonPostsService<NoticePost>,
+    private readonly postTagsService: PostTagsService,
+
+    private readonly noticePostRepository: NoticePostRepository,
+    private readonly noticePostTagLinkRepository: NoticePostTagLinkRepository,
+
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   @Transactional()
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
+    const { tagNames, ...postProps } = createNoticePostDto;
+
     const newPost = await this.noticePostRepository.save({
       userId,
-      ...createNoticePostDto,
+      ...postProps,
     });
 
-    return new NoticePostDto(newPost);
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({
+        name: tagName,
+      })),
+    );
+
+    await this.bulkAppendTagLink(userId, newPost.id, postTags);
+
+    return new NoticePostDto({ ...newPost, postTags });
   }
 
   async findAllAndCount(
@@ -65,6 +84,9 @@ export class NoticePostsService {
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations: {
+        user: true,
+      },
     });
   }
 
@@ -173,5 +195,31 @@ export class NoticePostsService {
 
   async increaseHit(noticePostId: number): Promise<void> {
     return this.commonPostsService.incrementHit(noticePostId);
+  }
+
+  async bulkAppendTagLink(
+    userId: number,
+    postId: number,
+    postTags: PostTagDto[],
+  ) {
+    const existTagLinks = await this.noticePostTagLinkRepository.findBy({
+      noticePostId: postId,
+    });
+
+    const newAppendTags = differenceWith(
+      postTags,
+      existTagLinks,
+      (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
+    ).map((postTag) =>
+      this.noticePostTagLinkRepository.create({
+        userId,
+        noticePostId: postId,
+        postTagId: postTag.id,
+      }),
+    );
+
+    await this.noticePostTagLinkRepository.insert(newAppendTags);
+
+    return newAppendTags;
   }
 }

@@ -10,7 +10,7 @@ import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
-import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
+import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
 import { FreePostTagLinkRepository } from '@src/apis/free-posts/repositories/free-post-tag-link.repository';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
@@ -119,6 +119,8 @@ export class FreePostsService {
     freePostId: number,
     putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
+    const { tagNames, ...postProps } = putUpdateFreePostDto;
+
     const oldFreePost = await this.findOneOrNotFound(freePostId);
 
     if (userId !== oldFreePost.userId) {
@@ -128,7 +130,7 @@ export class FreePostsService {
     }
     const newFreePost = this.freePostRepository.create({
       ...oldFreePost,
-      ...putUpdateFreePostDto,
+      ...postProps,
     });
 
     await this.freePostRepository.update(
@@ -140,7 +142,18 @@ export class FreePostsService {
       },
     );
 
-    return new FreePostDto(newFreePost);
+    await this.freePostTagLinkRepository.delete({
+      freePostId,
+    });
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
+    await this.bulkAppendTagLink(userId, newFreePost.id, postTags);
+
+    return new FreePostDto({ ...newFreePost, postTags });
   }
 
   @Transactional()
@@ -155,6 +168,8 @@ export class FreePostsService {
       });
     }
 
+    const { tagNames, ...postProps } = patchUpdateFreePostDto;
+
     const oldFreePost = await this.findOneOrNotFound(freePostId);
 
     if (userId !== oldFreePost.userId) {
@@ -165,7 +180,7 @@ export class FreePostsService {
 
     const newFreePost = this.freePostRepository.create({
       ...oldFreePost,
-      ...patchUpdateFreePostDto,
+      ...postProps,
     });
 
     await this.freePostRepository.update(
@@ -177,7 +192,24 @@ export class FreePostsService {
       },
     );
 
-    return new FreePostDto(newFreePost);
+    let postTags: PostTagDto[];
+
+    if (tagNames) {
+      await this.freePostTagLinkRepository.delete({
+        freePostId,
+      });
+
+      postTags = await this.postTagsService.bulkCreate(
+        userId,
+        tagNames.map((tagName) => ({ name: tagName })),
+      );
+
+      await this.bulkAppendTagLink(userId, newFreePost.id, postTags);
+    } else {
+      postTags = await this.findPostTags(freePostId);
+    }
+
+    return new FreePostDto({ ...newFreePost, postTags });
   }
 
   @Transactional()
@@ -260,5 +292,20 @@ export class FreePostsService {
     await this.freePostTagLinkRepository.insert(newAppendTags);
 
     return newAppendTags;
+  }
+
+  private async findPostTags(freePostId: number): Promise<PostTagDto[]> {
+    const postTagLinks = await this.freePostTagLinkRepository.find({
+      where: {
+        freePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
   }
 }

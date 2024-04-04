@@ -1,11 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
   ArrayMaxSize,
   IsBoolean,
   IsNotEmpty,
   IsOptional,
-  IsString,
   Length,
 } from 'class-validator';
 
@@ -43,7 +42,7 @@ export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
   @IsBoolean()
   isAnonymous?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '태그 명',
     minLength: POST_TAG_NAME_LENGTH.MIN,
     maxLength: POST_TAG_NAME_LENGTH.MAX,
@@ -51,7 +50,7 @@ export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
     maxItems: POST_TAG_COUNT.MAX,
   })
   @ArrayMaxSize(POST_TAG_COUNT.MAX)
-  @IsString({ each: true })
+  @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, { each: true })
   @IsOptional()
   tagNames?: string[];
 }

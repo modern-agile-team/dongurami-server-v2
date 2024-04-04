@@ -9,6 +9,7 @@ import { HttpPathNotFoundExceptionFilter } from '@src/http-exceptions/filters/ht
 import { HttpProcessErrorExceptionFilter } from '@src/http-exceptions/filters/http-process-error-exception.filter';
 import { HttpRemainderExceptionFilter } from '@src/http-exceptions/filters/http-remainder-exception.filter';
 import { HttpUnauthorizedExceptionFilter } from '@src/http-exceptions/filters/http-unauthorized-exception.filter';
+import { HttpUnprocessableEntityExceptionFilter } from '@src/http-exceptions/filters/http-unprocessable-exception.filter';
 import { HttpExceptionService } from '@src/http-exceptions/services/http-exception.service';
 
 @Module({
@@ -20,6 +21,7 @@ import { HttpExceptionService } from '@src/http-exceptions/services/http-excepti
     HttpPathNotFoundExceptionFilter,
     HttpNotFoundExceptionFilter,
     HttpConflictExceptionFilter,
+    HttpUnprocessableEntityExceptionFilter,
     HttpInternalServerErrorExceptionFilter,
     HttpRemainderExceptionFilter,
     HttpProcessErrorExceptionFilter,

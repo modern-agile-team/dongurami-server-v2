@@ -4,6 +4,7 @@ import { Exclude } from 'class-transformer';
 
 import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { NoticePost } from '@src/entities/NoticePost';
 
@@ -60,6 +61,12 @@ export class NoticePostDto
 
   @Exclude()
   deletedAt: Date;
+
+  @ApiProperty({
+    description: '게시글 태그 리스트',
+    type: [PostTagDto],
+  })
+  postTags: PostTagDto[];
 
   constructor(noticePostDto: Partial<NoticePostDto> = {}) {
     super();

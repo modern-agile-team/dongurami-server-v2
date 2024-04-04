@@ -50,4 +50,10 @@ export class ClubDto
 
   @Exclude()
   deletedAt: Date | null;
+
+  constructor(clubDto: ClubDto) {
+    super();
+
+    Object.assign(this, clubDto);
+  }
 }

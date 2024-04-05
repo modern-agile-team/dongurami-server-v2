@@ -202,6 +202,34 @@ export class ClubsService {
     return new ClubDto(existClub);
   }
 
+  async findAllTags(clubId: number): Promise<ClubTagDto[]> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const clubTagLinks = await this.clubTagLinkRepository.find({
+      select: {
+        id: true,
+      },
+      where: {
+        clubId,
+      },
+      relations: {
+        clubTag: true,
+      },
+    });
+
+    return clubTagLinks.map((clubTagLink) => {
+      return new ClubTagDto(clubTagLink.clubTag);
+    });
+  }
+
   async bulkCreateClubTagLinks(
     createClubTagLinkDtos: CreateClubTagLinkDto[],
   ): Promise<ClubTagLink[]> {

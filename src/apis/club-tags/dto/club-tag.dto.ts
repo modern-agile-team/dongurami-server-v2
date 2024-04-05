@@ -17,4 +17,10 @@ export class ClubTagDto
     description: '태그 명',
   })
   name: string;
+
+  constructor(clubTagDto: Partial<ClubTagDto> = {}) {
+    super();
+
+    Object.assign(this, clubTagDto);
+  }
 }

@@ -7,6 +7,8 @@ import { Transactional } from 'typeorm-transactional';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
+import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
+import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
@@ -31,6 +33,7 @@ export class ClubsService {
   private readonly LIKE_SEARCH_FIELD: readonly (keyof Pick<ClubDto, 'name'>)[] =
     ['name'];
   constructor(
+    private readonly clubMembersService: ClubMembersService,
     private readonly clubRepository: ClubRepository,
     private readonly clubCategoryLinkRepository: ClubCategoryLinkRepository,
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
@@ -248,5 +251,19 @@ export class ClubsService {
     await this.clubCategoryLinkRepository.insert(newClubCategoryLinks);
 
     return newClubCategoryLinks;
+  }
+
+  async findAllMembers(clubId: number): Promise<ClubMemberItemDto[]> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.clubMembersService.findAllByClubId(clubId);
   }
 }

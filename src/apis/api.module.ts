@@ -6,6 +6,7 @@ import { AuthModule } from '@src/apis/auth/auth.module';
 import { AuthSocialModule } from '@src/apis/auth/social/auth-social.module';
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
+import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
 import { ClubTagLinksModule } from '@src/apis/club-tag-links/club-tag-links.module';
 import { ClubTagsModule } from '@src/apis/club-tags/club-tags.module';
 import { ClubsModule } from '@src/apis/clubs/clubs.module';
@@ -39,6 +40,7 @@ import { UsersModule } from '@src/apis/users/users.module';
     PostTagsModule,
     ClubTagsModule,
     ClubCategoriesModule,
+    ClubMembersModule,
   ],
 })
 export class ApiModule {}

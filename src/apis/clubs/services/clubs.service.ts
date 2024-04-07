@@ -249,4 +249,42 @@ export class ClubsService {
 
     return newClubCategoryLinks;
   }
+
+  async findAllCategoryByClubId(clubId: number): Promise<ClubCategoryDto[]> {
+    const isExistClub = await this.clubRepository.exist({
+      where: {
+        id: clubId,
+        status: ClubStatus.Active,
+      },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const clubCategoryLinks = await this.clubCategoryLinkRepository.find({
+      select: {
+        id: true,
+      },
+      where: {
+        clubId,
+      },
+      relations: {
+        clubCategory: true,
+      },
+    });
+
+    return clubCategoryLinks.map((clubCategoryLink) => {
+      const { id, userId, name, createdAt } = clubCategoryLink.clubCategory;
+
+      return new ClubCategoryDto({
+        id,
+        userId,
+        name,
+        createdAt,
+      });
+    });
+  }
 }

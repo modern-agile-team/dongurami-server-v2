@@ -1,15 +1,17 @@
-import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { plainToInstance } from 'class-transformer';
 
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
+import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
 @ApiTags('club')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
@@ -25,5 +27,14 @@ export class ClubsController {
       await this.clubsService.findAllAndCount(findClubListQueryDto);
 
     return [plainToInstance(ClubsItemDto, clubs), count];
+  }
+
+  @ApiClub.FindOneOrNotFound({ summary: '동아리 상세 조회' })
+  @SetResponse({ key: 'club', type: ResponseType.Detail })
+  @Get(':clubId')
+  findOneOrNotFound(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+  ): Promise<ClubDto> {
+    return this.clubsService.findOneOrNotFound(clubId);
   }
 }

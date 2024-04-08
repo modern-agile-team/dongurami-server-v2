@@ -50,6 +50,7 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
         HttpStatus.CREATED,
         'clubTags',
         ClubTagDto,
+        { isArray: true },
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

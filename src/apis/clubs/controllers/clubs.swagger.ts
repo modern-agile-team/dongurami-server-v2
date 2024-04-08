@@ -7,6 +7,7 @@ import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
+import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
 import { CustomValidationError } from '@src/types/custom-validation-errors.type';
 import { ApiOperator } from '@src/types/type';
@@ -45,10 +46,11 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      PaginationResponseDto.swaggerBuilder(
+      CommonResponseDto.swaggerBuilder(
         HttpStatus.OK,
-        'clubs',
+        'clubMembers',
         ClubMemberItemDto,
+        { isArray: true },
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

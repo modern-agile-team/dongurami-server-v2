@@ -110,6 +110,21 @@ export class FreePostsService {
       });
     }
 
+    const postTags = await this.findPostTags(freePostId);
+
+    return new FreePostDto({ ...freePost, postTags });
+  }
+
+  async findOne(freePostId: number): Promise<FreePostDto | void> {
+    const freePost = await this.freePostRepository.findOneBy({
+      id: freePostId,
+      status: FreePostStatus.Posting,
+    });
+
+    if (!freePost) {
+      return;
+    }
+
     return new FreePostDto(freePost);
   }
 

@@ -46,7 +46,9 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'clubTags', ClubTagDto),
+      CommonResponseDto.swaggerBuilder(HttpStatus.OK, 'clubTags', ClubTagDto, {
+        isArray: true,
+      }),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

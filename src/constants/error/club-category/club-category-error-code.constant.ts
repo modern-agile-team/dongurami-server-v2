@@ -1,0 +1,6 @@
+/**
+ * 5000 ~ 5999
+ */
+export const CLUB_CATEGORY_ERROR_CODE = {
+  ALREADY_EXIST_CLUB_CATEGORY_NAME: 5000,
+} as const;

@@ -107,6 +107,21 @@ export class NoticePostsService {
       });
     }
 
+    const postTags = await this.findPostTags(noticePostId);
+
+    return new NoticePostDto({ ...noticePost, postTags });
+  }
+
+  async findOne(noticePostId: number): Promise<NoticePostDto | void> {
+    const noticePost = await this.noticePostRepository.findOneBy({
+      id: noticePostId,
+      status: NoticePostStatus.Posting,
+    });
+
+    if (!noticePost) {
+      return;
+    }
+
     return new NoticePostDto(noticePost);
   }
 

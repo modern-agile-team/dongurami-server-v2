@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -27,6 +28,7 @@ import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
+import { ParseSeparablePositiveIntPipe } from '@src/pipes/parse-separable-positive-int.pipe';
 
 @ApiTags('club')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
@@ -77,6 +79,18 @@ export class ClubsController {
       clubId,
       bulkAppendClubTagDto,
     );
+  }
+
+  @ApiClub.RemoveTags({ summary: '동아리 태그 제거' })
+  @UseGuards(JwtAuthGuard)
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ type: ResponseType.Delete })
+  @Delete(':clubId/tags/:tagIds')
+  removeTags(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('tagIds', ParseSeparablePositiveIntPipe) tagIds: number[],
+  ): Promise<number> {
+    return this.clubsService.bulkRemoveClubTagLinks(clubId, tagIds);
   }
 
   @ApiClub.FindAllCategories({ summary: '동아리 카테고리 리스트 조회' })

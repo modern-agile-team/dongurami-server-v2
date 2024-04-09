@@ -295,6 +295,37 @@ export class ClubsService {
     return newClubTagLinks;
   }
 
+  @Transactional()
+  async bulkRemoveClubTagLinks(
+    clubId: number,
+    tagIds: number[],
+  ): Promise<number> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const uniqueTagIds = [...new Set(tagIds)];
+
+    const { affected } = await this.clubTagLinkRepository.delete({
+      clubId,
+      clubTagId: In(uniqueTagIds),
+    });
+
+    if (affected !== uniqueTagIds.length) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return affected;
+  }
+
   async bulkCreateClubCategoryLinks(
     createClubCategoryLinkDtos: CreateClubCategoryLinkDto[],
   ): Promise<ClubCategoryLink[]> {

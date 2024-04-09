@@ -11,6 +11,7 @@ import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubHistory } from '@src/entities/ClubHistory';
+import { ClubMember } from '@src/entities/ClubMember';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { User } from '@src/entities/User';
 
@@ -90,6 +91,9 @@ export class Club {
 
   @OneToMany(() => ClubTagLink, (clubTagLink) => clubTagLink.club)
   clubTagLinks: ClubTagLink[];
+
+  @OneToMany(() => ClubMember, (clubMember) => clubMember.club)
+  clubMembers: ClubMember[];
 
   @OneToMany(
     () => ClubCategoryLink,

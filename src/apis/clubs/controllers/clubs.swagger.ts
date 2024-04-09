@@ -3,6 +3,7 @@ import { ApiOperation, ApiParam } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
+import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
@@ -51,6 +52,35 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
         ...apiOperationOptions,
       }),
       DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'club', ClubDto),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  FindAllMembers: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      CommonResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubMembers',
+        ClubMemberItemDto,
+        { isArray: true },
+      ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

@@ -15,6 +15,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
+import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
@@ -53,6 +54,15 @@ export class ClubsController {
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
   ): Promise<ClubDto> {
     return this.clubsService.findOneOrNotFound(clubId);
+  }
+
+  @ApiClub.FindAllMembers({ summary: '동아리 구성원 리스트 조회' })
+  @SetResponse({ key: 'clubMembers', type: ResponseType.Common })
+  @Get(':clubId/members')
+  findAllMembers(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+  ): Promise<ClubMemberItemDto[]> {
+    return this.clubsService.findAllMembers(clubId);
   }
 
   @ApiClub.FindAllTags({ summary: '동아리 태그 리스트 조회' })

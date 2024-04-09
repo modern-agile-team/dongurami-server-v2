@@ -3,6 +3,9 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { ApiAdmins } from '@src/apis/admins/controllers/admins.swagger';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
+import { CreateClubCategoryRequestBodyDto } from '@src/apis/club-categories/dto/create-club-category-request-body.dto';
+import { ClubCategoriesService } from '@src/apis/club-categories/services/club-categories.service';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
@@ -27,6 +30,7 @@ export class AdminsController {
   constructor(
     private readonly majorsService: MajorService,
     private readonly clubsService: ClubsService,
+    private readonly clubCategoriesService: ClubCategoriesService,
   ) {}
 
   /**
@@ -57,5 +61,22 @@ export class AdminsController {
     @Body() createClubRequestBodyDto: CreateClubRequestBodyDto,
   ): DetailResponse<ClubWithCategoryAndTagDto> {
     return this.clubsService.create(user.id, createClubRequestBodyDto);
+  }
+
+  @ApiAdmins.CreateNewClubCategory({
+    summary: '클럽 카테고리 생성',
+    description: '관리자만 사용 가능하게끔 설정돼있지 않음 추후 추가 예정',
+  })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ type: ResponseType.Detail, key: 'clubCategory' })
+  @Post('club-categories')
+  createNewClubCategory(
+    @User() user: UserDto,
+    @Body() createClubCategoryRequestBodyDto: CreateClubCategoryRequestBodyDto,
+  ): DetailResponse<ClubCategoryDto> {
+    return this.clubCategoriesService.create(
+      user.id,
+      createClubCategoryRequestBodyDto,
+    );
   }
 }

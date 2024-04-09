@@ -42,6 +42,15 @@ export class ClubsController {
     return [plainToInstance(ClubsItemDto, clubs), count];
   }
 
+  @ApiClub.FindAllTags({ summary: '동아리 태그 리스트 조회' })
+  @SetResponse({ key: 'clubTags', type: ResponseType.Common })
+  @Get(':clubId/tags')
+  async findAllTags(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+  ): Promise<ClubTagDto[]> {
+    return this.clubsService.findAllTags(clubId);
+  }
+
   @ApiClub.AppendTags({ summary: '동아리에 태그 추가' })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
   @UseGuards(JwtAuthGuard)

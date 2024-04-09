@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
@@ -90,5 +91,14 @@ export class ClubsController {
     @Param('tagIds', ParseSeparablePositiveIntPipe) tagIds: number[],
   ): Promise<number> {
     return this.clubsService.bulkRemoveClubTagLinks(clubId, tagIds);
+  }
+
+  @ApiClub.FindAllCategories({ summary: '동아리 카테고리 리스트 조회' })
+  @SetResponse({ key: 'clubCategories', type: ResponseType.Common })
+  @Get(':clubId/categories')
+  findAllCategories(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+  ): Promise<ClubCategoryDto[]> {
+    return this.clubsService.findAllCategoryByClubId(clubId);
   }
 }

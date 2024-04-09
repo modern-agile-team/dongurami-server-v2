@@ -17,7 +17,7 @@ export class ClubMember1712482591735 implements MigrationInterface {
             type: 'int',
             unsigned: true,
             isNullable: false,
-            comment: '동아리 카테고리 링크 생성 유저 고유 ID',
+            comment: '동아리 구성원 유저 고유 ID',
           },
           {
             name: 'club_id',

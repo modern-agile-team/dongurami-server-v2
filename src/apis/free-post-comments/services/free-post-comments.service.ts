@@ -39,7 +39,13 @@ export class FreePostCommentsService {
     freePostId: number,
     createFreePostCommentDto: CreateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
-    const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
+    const existPost = await this.freePostsService.findOne(freePostId);
+
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     if (createFreePostCommentDto.parentId !== undefined) {
       const parentComment = await this.findOneOrNotFound(
@@ -72,7 +78,13 @@ export class FreePostCommentsService {
     freePostId: number,
     findFreePostCommentListQueryDto: FindFreePostCommentListQueryDto,
   ): Promise<[FreePostCommentsItemDto[], number]> {
-    const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
+    const existPost = await this.freePostsService.findOne(freePostId);
+
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     const { page, pageSize, order, loadDepth, ...filter } =
       findFreePostCommentListQueryDto;

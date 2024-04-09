@@ -17,4 +17,10 @@ export class ClubCategoryDto
     description: '카테고리 명',
   })
   name: string;
+
+  constructor(clubCategoryDto: Partial<ClubCategoryDto> = {}) {
+    super();
+
+    Object.assign(this, clubCategoryDto);
+  }
 }

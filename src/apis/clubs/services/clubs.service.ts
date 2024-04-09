@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { plainToInstance } from 'class-transformer';
+import { differenceWith } from 'lodash';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -13,6 +14,7 @@ import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/clu
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
+import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
@@ -205,6 +207,79 @@ export class ClubsService {
     return new ClubDto(existClub);
   }
 
+  async findAllMembers(clubId: number): Promise<ClubMemberItemDto[]> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.clubMembersService.findAllByClubId(clubId);
+  }
+
+  async findAllTags(clubId: number): Promise<ClubTagDto[]> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const clubTagLinks = await this.clubTagLinkRepository.find({
+      select: {
+        id: true,
+      },
+      where: {
+        clubId,
+      },
+      relations: {
+        clubTag: true,
+      },
+    });
+
+    return clubTagLinks.map((clubTagLink) => {
+      return new ClubTagDto(clubTagLink.clubTag);
+    });
+  }
+
+  @Transactional()
+  async bulkAppendTags(
+    userId: number,
+    clubId: number,
+    bulkAppendClubTagDto: BulkAppendClubTagDto,
+  ): Promise<ClubTagDto[]> {
+    const isExistClub = await this.clubRepository.exist({
+      where: {
+        id: clubId,
+      },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const tags = await this.clubTagsService.bulkCreate(userId, {
+      names: bulkAppendClubTagDto.tagNames,
+    });
+
+    const createClubTagLinkDtos = tags.map(
+      (tag) => new CreateClubTagLinkDto({ userId, clubId, clubTagId: tag.id }),
+    );
+
+    await this.bulkCreateClubTagLinks(createClubTagLinkDtos);
+
+    return tags;
+  }
+
   async bulkCreateClubTagLinks(
     createClubTagLinkDtos: CreateClubTagLinkDto[],
   ): Promise<ClubTagLink[]> {
@@ -212,17 +287,25 @@ export class ClubsService {
       return [];
     }
 
-    const newClubTagLinks = this.clubTagLinkRepository.create(
-      createClubTagLinkDtos.map((createClubTagLinkDto) => {
-        const { userId, clubId, clubTagId } = createClubTagLinkDto;
+    const existClubTagLinks = await this.clubTagLinkRepository.findBy({
+      clubId: In([...new Set(createClubTagLinkDtos.map((el) => el.clubId))]),
+    });
 
-        return {
-          userId,
-          clubId,
-          clubTagId,
-        };
-      }),
-    );
+    const newClubTagLinks = differenceWith(
+      createClubTagLinkDtos,
+      existClubTagLinks,
+      (a, b) => {
+        return a.clubId === b.clubId && a.clubTagId === b.clubTagId;
+      },
+    ).map((createClubTagLinkDto) => {
+      const { userId, clubId, clubTagId } = createClubTagLinkDto;
+
+      return this.clubTagLinkRepository.create({
+        userId,
+        clubId,
+        clubTagId,
+      });
+    });
 
     await this.clubTagLinkRepository.insert(newClubTagLinks);
 
@@ -253,9 +336,12 @@ export class ClubsService {
     return newClubCategoryLinks;
   }
 
-  async findAllMembers(clubId: number): Promise<ClubMemberItemDto[]> {
+  async findAllCategoryByClubId(clubId: number): Promise<ClubCategoryDto[]> {
     const isExistClub = await this.clubRepository.exist({
-      where: { id: clubId },
+      where: {
+        id: clubId,
+        status: ClubStatus.Active,
+      },
     });
 
     if (!isExistClub) {
@@ -264,6 +350,27 @@ export class ClubsService {
       });
     }
 
-    return this.clubMembersService.findAllByClubId(clubId);
+    const clubCategoryLinks = await this.clubCategoryLinkRepository.find({
+      select: {
+        id: true,
+      },
+      where: {
+        clubId,
+      },
+      relations: {
+        clubCategory: true,
+      },
+    });
+
+    return clubCategoryLinks.map((clubCategoryLink) => {
+      const { id, userId, name, createdAt } = clubCategoryLink.clubCategory;
+
+      return new ClubCategoryDto({
+        id,
+        userId,
+        name,
+        createdAt,
+      });
+    });
   }
 }

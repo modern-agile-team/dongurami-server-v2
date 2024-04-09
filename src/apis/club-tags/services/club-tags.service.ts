@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { In } from 'typeorm';
 
+import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { CreateClubTagDto } from '@src/apis/club-tags/dto/create-club-tag.dto';
 import { ClubTagRepository } from '@src/apis/club-tags/repositories/club-tag.repository';
-import { ClubTag } from '@src/entities/ClubTag';
 
 @Injectable()
 export class ClubTagsService {
@@ -13,7 +13,7 @@ export class ClubTagsService {
   async bulkCreate(
     userId: number,
     createClubTagDto: CreateClubTagDto,
-  ): Promise<ClubTag[]> {
+  ): Promise<ClubTagDto[]> {
     const { names } = createClubTagDto;
 
     const existClubTags = await this.clubTagRepository.find({
@@ -23,7 +23,7 @@ export class ClubTagsService {
     });
 
     if (existClubTags.length === names.length) {
-      return existClubTags;
+      return existClubTags.map((clubTag) => new ClubTagDto(clubTag));
     }
 
     const existClubTagNamesSet = new Set(
@@ -42,6 +42,8 @@ export class ClubTagsService {
 
     await this.clubTagRepository.insert(newClubTags);
 
-    return existClubTags.concat(newClubTags);
+    return existClubTags
+      .concat(newClubTags)
+      .map((clubTag) => new ClubTagDto(clubTag));
   }
 }

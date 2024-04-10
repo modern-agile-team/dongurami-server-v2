@@ -50,7 +50,7 @@ export class ClubCategoriesService {
 
   async findAll(
     findClubCategoryListQueryDto: FindClubCategoryListQueryDto,
-  ): Promise<ClubCategory[]> {
+  ): Promise<ClubCategoryDto[]> {
     const { order, ...filter } = findClubCategoryListQueryDto;
 
     const where = this.queryHelper.buildWherePropForFind(
@@ -58,9 +58,14 @@ export class ClubCategoriesService {
       this.LIKE_SEARCH_FIELD,
     );
 
-    return this.clubCategoryRepository.find({
+    const clubCategories = await this.clubCategoryRepository.find({
       where,
       order,
+    });
+
+    return clubCategories.map((clubCategory) => {
+      const { id, userId, name, createdAt, updatedAt } = clubCategory;
+      return new ClubCategoryDto({ id, userId, name, createdAt, updatedAt });
     });
   }
 }

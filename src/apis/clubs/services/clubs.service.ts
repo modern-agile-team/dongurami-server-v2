@@ -38,7 +38,6 @@ export class ClubsService {
     private readonly clubMembersService: ClubMembersService,
     private readonly clubRepository: ClubRepository,
     private readonly clubCategoryLinkRepository: ClubCategoryLinkRepository,
-    private readonly clubCategoryLinksService: ClubCategoryLinksService,
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
     private readonly clubCategoryRepository: ClubCategoryRepository,
     private readonly clubTagsService: ClubTagsService,

@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ClubCategoriesController } from '@src/apis/club-categories/controllers/club-categories.controller';
-import { ClubCategoryItemDto } from '@src/apis/club-categories/dto/club-category-item.dto';
+import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
@@ -22,7 +22,7 @@ export const ApiClubCategories: ApiOperator<keyof ClubCategoriesController> = {
       CommonResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'clubCategories',
-        ClubCategoryItemDto,
+        ClubCategoryDto,
         { isArray: true },
       ),
       HttpException.swaggerBuilder(

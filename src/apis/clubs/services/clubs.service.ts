@@ -5,6 +5,8 @@ import { differenceWith } from 'lodash';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
+import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
+import { ClubApplicationFormService } from '@src/apis/club-application-form/services/club-application-form.service';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
@@ -41,6 +43,7 @@ export class ClubsService {
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
     private readonly clubCategoryRepository: ClubCategoryRepository,
     private readonly clubTagsService: ClubTagsService,
+    private readonly clubApplicationFormService: ClubApplicationFormService,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -106,6 +109,15 @@ export class ClubsService {
           clubId: newClub.id,
           clubCategoryId: clubCategory.id,
         };
+      }),
+    );
+
+    await this.clubApplicationFormService.create(
+      newClub.id,
+      new CreateClubApplicationFormDto({
+        customQuestion: [],
+        startsAt: null,
+        endsAt: null,
       }),
     );
 

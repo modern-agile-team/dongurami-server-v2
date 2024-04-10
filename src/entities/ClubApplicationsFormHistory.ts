@@ -20,6 +20,13 @@ export class ClubApplicationsFormHistory {
   })
   id: number;
 
+  @Column('int', {
+    name: 'club_applications_form_id',
+    comment: '동아리 지원서 폼 고유 ID',
+    unsigned: true,
+  })
+  clubApplicationsFormId: number;
+
   @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
   clubId: number;
 

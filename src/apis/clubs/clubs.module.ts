@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { ClubApplicationFormModule } from '@src/apis/club-application-form/club-application-form.module';
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
 import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
@@ -19,6 +20,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     ClubTagsModule,
     ClubCategoriesModule,
     ClubMembersModule,
+    ClubApplicationFormModule,
   ],
   controllers: [ClubsController],
   providers: [ClubsService, QueryHelper],

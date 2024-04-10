@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';

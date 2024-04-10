@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { plainToInstance } from 'class-transformer';
 
+import { ApiClubCategories } from '@src/apis/club-categories/controllers/club-categories.swagger';
 import { ClubCategoryItemDto } from '@src/apis/club-categories/dto/club-category-item.dto';
 import { FindClubCategoryListQueryDto } from '@src/apis/club-categories/dto/find-club-category-list-query.dto';
 import { ClubCategoriesService } from '@src/apis/club-categories/services/club-categories.service';
@@ -16,6 +17,7 @@ import { SetResponse } from '@src/interceptors/success-interceptor/decorators/su
 export class ClubCategoriesController {
   constructor(private readonly clubCategoriesService: ClubCategoriesService) {}
 
+  @ApiClubCategories.FindAll({ summary: '모든 동아리 카테고리 전체 조회' })
   @Get()
   @SetResponse({ type: ResponseType.Common, key: 'clubCategories' })
   async findAll(

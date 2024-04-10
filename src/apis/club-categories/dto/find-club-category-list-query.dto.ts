@@ -26,5 +26,5 @@ export class FindClubCategoryListQueryDto
   @ApiPropertyOrder(CLUB_CATEGORY_ORDER_FIELD)
   @CsvToOrder<typeof CLUB_CATEGORY_ORDER_FIELD>([...CLUB_CATEGORY_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof CLUB_CATEGORY_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof CLUB_CATEGORY_ORDER_FIELD> = { id: SortOrder.Asc };
 }

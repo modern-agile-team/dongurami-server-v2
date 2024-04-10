@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { differenceWith } from 'lodash';
 import { Transactional } from 'typeorm-transactional';
 
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
@@ -10,9 +11,16 @@ import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
 import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
 import { PutUpdateNoticePostDto } from '@src/apis/notice-posts/dto/put-update-notice-post.dto';
+import { NoticePostTagLinkRepository } from '@src/apis/notice-posts/repositories/notice-post-tag-links.repository';
 import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -26,19 +34,35 @@ export class NoticePostsService {
   >)[] = ['title'];
 
   constructor(
-    private readonly queryHelper: QueryHelper,
-    private readonly noticePostRepository: NoticePostRepository,
+    private readonly reactionsService: ReactionsService<NoticePostReaction>,
     private readonly commonPostsService: CommonPostsService<NoticePost>,
+    private readonly postTagsService: PostTagsService,
+
+    private readonly noticePostRepository: NoticePostRepository,
+    private readonly noticePostTagLinkRepository: NoticePostTagLinkRepository,
+
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   @Transactional()
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
+    const { tagNames, ...postProps } = createNoticePostDto;
+
     const newPost = await this.noticePostRepository.save({
       userId,
-      ...createNoticePostDto,
+      ...postProps,
     });
 
-    return new NoticePostDto(newPost);
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({
+        name: tagName,
+      })),
+    );
+
+    await this.bulkAppendTagLink(userId, newPost.id, postTags);
+
+    return new NoticePostDto({ ...newPost, postTags });
   }
 
   async findAllAndCount(
@@ -65,6 +89,9 @@ export class NoticePostsService {
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations: {
+        user: true,
+      },
     });
   }
 
@@ -80,6 +107,21 @@ export class NoticePostsService {
       });
     }
 
+    const postTags = await this.findPostTags(noticePostId);
+
+    return new NoticePostDto({ ...noticePost, postTags });
+  }
+
+  async findOne(noticePostId: number): Promise<NoticePostDto | void> {
+    const noticePost = await this.noticePostRepository.findOneBy({
+      id: noticePostId,
+      status: NoticePostStatus.Posting,
+    });
+
+    if (!noticePost) {
+      return;
+    }
+
     return new NoticePostDto(noticePost);
   }
 
@@ -89,6 +131,8 @@ export class NoticePostsService {
     userId: number,
     putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
+    const { tagNames, ...postProps } = putUpdateNoticePostDto;
+
     const oldNoticePost = await this.findOneOrNotFound(noticePostId);
 
     if (oldNoticePost.userId !== userId) {
@@ -99,7 +143,7 @@ export class NoticePostsService {
 
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
-      ...putUpdateNoticePostDto,
+      ...postProps,
     });
 
     await this.noticePostRepository.update(
@@ -111,7 +155,18 @@ export class NoticePostsService {
       },
     );
 
-    return new NoticePostDto(newNoticePost);
+    await this.noticePostTagLinkRepository.delete({
+      noticePostId,
+    });
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
+    await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
   }
 
   @Transactional()
@@ -120,6 +175,8 @@ export class NoticePostsService {
     userId: number,
     patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
+    const { tagNames, ...postProps } = patchUpdateNoticePostDto;
+
     if (!Object.values(patchUpdateNoticePostDto).length) {
       throw new HttpBadRequestException({
         code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
@@ -136,7 +193,7 @@ export class NoticePostsService {
 
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
-      ...patchUpdateNoticePostDto,
+      ...postProps,
     });
 
     await this.noticePostRepository.update(
@@ -146,7 +203,24 @@ export class NoticePostsService {
       },
     );
 
-    return new NoticePostDto(newNoticePost);
+    let postTags: PostTagDto[];
+
+    if (tagNames) {
+      await this.noticePostTagLinkRepository.delete({
+        noticePostId,
+      });
+
+      postTags = await this.postTagsService.bulkCreate(
+        userId,
+        tagNames.map((tagName) => ({ name: tagName })),
+      );
+
+      await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+    } else {
+      postTags = await this.findPostTags(noticePostId);
+    }
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
   }
 
   @Transactional()
@@ -173,5 +247,94 @@ export class NoticePostsService {
 
   async increaseHit(noticePostId: number): Promise<void> {
     return this.commonPostsService.incrementHit(noticePostId);
+  }
+
+  async bulkAppendTagLink(
+    userId: number,
+    postId: number,
+    postTags: PostTagDto[],
+  ) {
+    const existTagLinks = await this.noticePostTagLinkRepository.findBy({
+      noticePostId: postId,
+    });
+
+    const newAppendTags = differenceWith(
+      postTags,
+      existTagLinks,
+      (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
+    ).map((postTag) =>
+      this.noticePostTagLinkRepository.create({
+        userId,
+        noticePostId: postId,
+        postTagId: postTag.id,
+      }),
+    );
+
+    await this.noticePostTagLinkRepository.insert(newAppendTags);
+
+    return newAppendTags;
+  }
+
+  private async findPostTags(noticePostId: number): Promise<PostTagDto[]> {
+    const postTagLinks = await this.noticePostTagLinkRepository.find({
+      where: {
+        noticePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
+  }
+
+  async createReaction(
+    userId: number,
+    noticePostId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    const isExistPost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      noticePostId,
+    );
+  }
+
+  async removeReaction(
+    userId: number,
+    noticePostId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    const isExistPost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      noticePostId,
+    );
   }
 }

@@ -1,11 +1,13 @@
 import { ValueTransformer } from 'typeorm';
 
 export class BooleanTransformer implements ValueTransformer {
-  public from(value?: number | null): boolean | undefined {
-    return !!value;
+  constructor(private readonly defaultValue: boolean) {}
+
+  public from(value: number | null): boolean | null {
+    return value === null ? null : !!value;
   }
 
-  public to(value?: boolean | null): number | undefined {
-    return Number(value);
+  public to(value?: boolean): number {
+    return Number(value ?? this.defaultValue);
   }
 }

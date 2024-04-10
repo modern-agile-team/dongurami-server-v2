@@ -18,7 +18,7 @@ export class ClubCategoryDto
   })
   name: string;
 
-  constructor(clubCategoryDto: Partial<ClubCategoryDto>) {
+  constructor(clubCategoryDto: Partial<ClubCategoryDto> = {}) {
     super();
 
     Object.assign(this, clubCategoryDto);

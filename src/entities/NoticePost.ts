@@ -51,7 +51,7 @@ export class NoticePost {
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     unsigned: true,
     default: () => "'1'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(true),
   })
   isAllowComment: boolean;
 

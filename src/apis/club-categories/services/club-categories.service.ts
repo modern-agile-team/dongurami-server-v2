@@ -19,7 +19,7 @@ export class ClubCategoriesService {
   ): Promise<ClubCategoryDto> {
     const { name, memo } = createClubCategoryRequestBodyDto;
 
-    const existClubCategory: Pick<ClubCategory, 'id' | 'name'> =
+    const existClubCategory: Pick<ClubCategory, 'name'> =
       await this.clubCategoryRepository.findOne({
         select: ['name'],
         where: { name },
@@ -39,4 +39,6 @@ export class ClubCategoriesService {
 
     return new ClubCategoryDto(newClubCategory);
   }
+
+  findAll() {}
 }

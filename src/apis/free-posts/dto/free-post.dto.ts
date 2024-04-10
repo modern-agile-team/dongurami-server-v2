@@ -4,6 +4,7 @@ import { Exclude } from 'class-transformer';
 
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePost } from '@src/entities/FreePost';
 
@@ -59,6 +60,12 @@ export class FreePostDto
 
   @Exclude()
   deletedAt: Date;
+
+  @ApiProperty({
+    description: '게시글 태그 리스트',
+    type: [PostTagDto],
+  })
+  postTags: PostTagDto[];
 
   constructor(freePostDto: Partial<FreePostDto> = {}) {
     super();

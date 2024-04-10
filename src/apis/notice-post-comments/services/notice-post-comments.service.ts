@@ -39,8 +39,13 @@ export class NoticePostCommentsService {
     noticePostId: number,
     createNoticePostCommentDto: CreateNoticePostCommentDto,
   ): Promise<NoticePostCommentDto> {
-    const existPost =
-      await this.noticePostsService.findOneOrNotFound(noticePostId);
+    const existPost = await this.noticePostsService.findOne(noticePostId);
+
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     if (createNoticePostCommentDto.parentId !== undefined) {
       const parentComment = await this.findOneOrNotFound(
@@ -73,8 +78,13 @@ export class NoticePostCommentsService {
     noticePostId: number,
     findNoticePostCommentListQueryDto: FindNoticePostCommentListQueryDto,
   ): Promise<[NoticePostCommentsItemDto[], number]> {
-    const existPost =
-      await this.noticePostsService.findOneOrNotFound(noticePostId);
+    const existPost = await this.noticePostsService.findOne(noticePostId);
+
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     const { page, pageSize, order, loadDepth, ...filter } =
       findNoticePostCommentListQueryDto;
@@ -101,7 +111,10 @@ export class NoticePostCommentsService {
       order,
       skip: page * pageSize,
       take: pageSize,
-      relations,
+      relations: {
+        ...relations,
+        user: true,
+      },
     });
   }
 

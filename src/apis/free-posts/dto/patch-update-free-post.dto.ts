@@ -1,9 +1,19 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  Length,
+} from 'class-validator';
 
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
+import {
+  POST_TAG_COUNT,
+  POST_TAG_NAME_LENGTH,
+} from '@src/apis/post-tags/constants/post-tag.constant';
 
 export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
   @ApiPropertyOptional({
@@ -31,4 +41,16 @@ export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
   @IsOptional()
   @IsBoolean()
   isAnonymous?: boolean;
+
+  @ApiPropertyOptional({
+    description: '태그 명',
+    minLength: POST_TAG_NAME_LENGTH.MIN,
+    maxLength: POST_TAG_NAME_LENGTH.MAX,
+    minItems: POST_TAG_COUNT.MIN,
+    maxItems: POST_TAG_COUNT.MAX,
+  })
+  @ArrayMaxSize(POST_TAG_COUNT.MAX)
+  @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, { each: true })
+  @IsOptional()
+  tagNames?: string[];
 }

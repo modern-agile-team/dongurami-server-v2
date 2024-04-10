@@ -7,6 +7,7 @@ import {
   CLUB_CATEGORY_ORDER_FIELD,
 } from '@src/apis/club-categories/constants/club-category.constant';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
+import { SortOrder } from '@src/constants/enum';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 
@@ -25,5 +26,5 @@ export class FindClubCategoryListQueryDto
   @ApiPropertyOrder(CLUB_CATEGORY_ORDER_FIELD)
   @CsvToOrder<typeof CLUB_CATEGORY_ORDER_FIELD>([...CLUB_CATEGORY_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof CLUB_CATEGORY_ORDER_FIELD>;
+  order: Order<typeof CLUB_CATEGORY_ORDER_FIELD> = { id: SortOrder.Desc };
 }

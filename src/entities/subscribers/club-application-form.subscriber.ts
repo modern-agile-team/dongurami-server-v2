@@ -6,36 +6,34 @@ import {
 } from 'typeorm';
 
 import { HistoryAction } from '@src/constants/enum';
-import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
-import { ClubApplicationsFormHistory } from '@src/entities/ClubApplicationsFormHistory';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
+import { ClubApplicationFormHistory } from '@src/entities/ClubApplicationFormHistory';
 
 @EventSubscriber()
 export class ClubApplicationFormSubscriber
-  implements EntitySubscriberInterface<ClubApplicationsForm>
+  implements EntitySubscriberInterface<ClubApplicationForm>
 {
   listenTo() {
-    return ClubApplicationsForm;
+    return ClubApplicationForm;
   }
 
-  async afterInsert(event: InsertEvent<ClubApplicationsForm>): Promise<void> {
+  async afterInsert(event: InsertEvent<ClubApplicationForm>): Promise<void> {
     await this.createHistory(event, HistoryAction.Insert);
   }
 
   private async createHistory(
-    event:
-      | InsertEvent<ClubApplicationsForm>
-      | UpdateEvent<ClubApplicationsForm>,
+    event: InsertEvent<ClubApplicationForm> | UpdateEvent<ClubApplicationForm>,
     action: HistoryAction,
     userId?: number,
   ) {
     const historyRepository = event.connection.getRepository(
-      ClubApplicationsFormHistory,
+      ClubApplicationFormHistory,
     );
 
     const newHistory = historyRepository.create({
       ...event.entity,
       action,
-      clubApplicationsFormId: event.entity.id,
+      clubApplicationFormId: event.entity.id,
       id: undefined,
       createdAt: undefined,
       userId,

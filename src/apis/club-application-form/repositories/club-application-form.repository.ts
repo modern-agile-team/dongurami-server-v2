@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 
 import { CustomRepository } from '@src/core/type-orm/decorators/custom-repository.decorator';
-import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
 
-@CustomRepository(ClubApplicationsForm)
-export class ClubApplicationFormRepository extends Repository<ClubApplicationsForm> {}
+@CustomRepository(ClubApplicationForm)
+export class ClubApplicationFormRepository extends Repository<ClubApplicationForm> {}

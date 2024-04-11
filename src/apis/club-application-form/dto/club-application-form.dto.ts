@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { ClubApplicationFormQuestionItemDto } from '@src/apis/club-application-form/dto/club-application-form-question-item.dto';
 import { BaseDto } from '@src/dto/base.dto';
-import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
 
 export class ClubApplicationFormDto
   extends BaseDto
   implements
     Pick<
-      ClubApplicationsForm,
+      ClubApplicationForm,
       | 'id'
       | 'commonQuestion'
       | 'customQuestion'

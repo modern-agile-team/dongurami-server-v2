@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
 
 @Index('FK_bb889933fee11d659b3ef8fc5dd', ['clubId'], {})
-@Entity('club_applications_form_history')
-export class ClubApplicationsFormHistory {
+@Entity('club_application_form_history')
+export class ClubApplicationFormHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -21,11 +21,11 @@ export class ClubApplicationsFormHistory {
   id: number;
 
   @Column('int', {
-    name: 'club_applications_form_id',
+    name: 'club_application_form_id',
     comment: '동아리 지원서 폼 고유 ID',
     unsigned: true,
   })
-  clubApplicationsFormId: number;
+  clubApplicationFormId: number;
 
   @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
   clubId: number;
@@ -73,13 +73,12 @@ export class ClubApplicationsFormHistory {
   userId: number | null;
 
   @ManyToOne(
-    () => ClubApplicationsForm,
-    (clubApplicationsForm) =>
-      clubApplicationsForm.clubApplicationsFormHistories,
+    () => ClubApplicationForm,
+    (clubApplicationForm) => clubApplicationForm.clubApplicationFormHistories,
     { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   @JoinColumn([
-    { name: 'club_applications_form_id', referencedColumnName: 'id' },
+    { name: 'club_application_form_id', referencedColumnName: 'id' },
   ])
-  clubApplicationsForm: ClubApplicationsForm;
+  clubApplicationForm: ClubApplicationForm;
 }

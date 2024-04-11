@@ -9,10 +9,10 @@ import {
 
 import { ClubApplicationFormQuestionItem } from '@src/apis/club-application-form/types/club-application-form.type';
 import { Club } from '@src/entities/Club';
-import { ClubApplicationsFormHistory } from '@src/entities/ClubApplicationsFormHistory';
+import { ClubApplicationFormHistory } from '@src/entities/ClubApplicationFormHistory';
 
-@Entity('club_applications_form')
-export class ClubApplicationsForm {
+@Entity('club_application_form')
+export class ClubApplicationForm {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -62,7 +62,7 @@ export class ClubApplicationsForm {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Club, (club) => club.clubApplicationsForms, {
+  @ManyToOne(() => Club, (club) => club.clubApplicationForms, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -70,9 +70,9 @@ export class ClubApplicationsForm {
   club: Club;
 
   @OneToMany(
-    () => ClubApplicationsFormHistory,
-    (clubApplicationsFormHistory) =>
-      clubApplicationsFormHistory.clubApplicationsForm,
+    () => ClubApplicationFormHistory,
+    (clubApplicationFormHistory) =>
+      clubApplicationFormHistory.clubApplicationForm,
   )
-  clubApplicationsFormHistories: ClubApplicationsFormHistory[];
+  clubApplicationFormHistories: ClubApplicationFormHistory[];
 }

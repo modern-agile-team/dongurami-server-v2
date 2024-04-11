@@ -22,6 +22,20 @@ export class ClubPost {
   })
   id: number;
 
+  @Column('int', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
+    unsigned: true,
+  })
+  clubId: number;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '동아리 게시글 생성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
   @Column('text', { name: 'description', comment: '동아리 게시글 본문' })
   description: string;
 

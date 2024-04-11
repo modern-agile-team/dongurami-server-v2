@@ -27,10 +27,9 @@ export class ClubPost {
 
   @Column('json', {
     name: 'hash_tag',
-    nullable: true,
     comment: '동아리 게시글 해시태그',
   })
-  hashTag: object | null;
+  hashTag: string[];
 
   @Column('enum', {
     name: 'status',

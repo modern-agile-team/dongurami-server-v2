@@ -34,7 +34,7 @@ export class ClubPost1712839843648 implements MigrationInterface {
             comment: '동아리 게시글 본문',
           }),
           new TableColumn({
-            name: 'hash_tag',
+            name: 'hashtag',
             type: 'json',
             isNullable: false,
             comment: '동아리 게시글 해시태그',

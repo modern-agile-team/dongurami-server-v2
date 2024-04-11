@@ -1,0 +1,82 @@
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Club } from '@src/entities/Club';
+import { ClubPostHistory } from '@src/entities/ClubPostHistory';
+import { User } from '@src/entities/User';
+
+@Entity('club_post', { schema: 'dongurami_local_db' })
+export class ClubPost {
+  @PrimaryGeneratedColumn({
+    type: 'int',
+    name: 'id',
+    comment: '동아리 게시글 고유 ID',
+    unsigned: true,
+  })
+  id: number;
+
+  @Column('text', { name: 'description', comment: '동아리 게시글 본문' })
+  description: string;
+
+  @Column('json', {
+    name: 'hash_tag',
+    nullable: true,
+    comment: '동아리 게시글 해시태그',
+  })
+  hashTag: object | null;
+
+  @Column('enum', {
+    name: 'status',
+    comment: '동아리 게시글 상태',
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
+  })
+  status: 'posting' | 'remove';
+
+  @Column('timestamp', {
+    name: 'created_at',
+    comment: '생성 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  @Column('timestamp', {
+    name: 'updated_at',
+    comment: '수정 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
+  @Column('timestamp', {
+    name: 'deleted_at',
+    nullable: true,
+    comment: '삭제 일자',
+  })
+  deletedAt: Date | null;
+
+  @ManyToOne(() => User, (user) => user.clubPosts, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
+
+  @ManyToOne(() => Club, (club) => club.clubPosts, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
+  club: Club;
+
+  @OneToMany(
+    () => ClubPostHistory,
+    (clubPostHistory) => clubPostHistory.clubPost,
+  )
+  clubPostHistories: ClubPostHistory[];
+}

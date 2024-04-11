@@ -12,6 +12,7 @@ import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubHistory } from '@src/entities/ClubHistory';
 import { ClubMember } from '@src/entities/ClubMember';
+import { ClubPost } from '@src/entities/ClubPost';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { User } from '@src/entities/User';
 
@@ -106,4 +107,7 @@ export class Club {
     (clubApplicationsForm) => clubApplicationsForm.club,
   )
   clubApplicationsForms: ClubApplicationsForm[];
+
+  @OneToMany(() => ClubPost, (clubPost) => clubPost.club)
+  clubPosts: ClubPost[];
 }

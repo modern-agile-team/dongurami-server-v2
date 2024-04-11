@@ -48,4 +48,13 @@ export class ClubMembersService {
       });
     });
   }
+
+  isExistClubMember(clubId: number, userId: number): Promise<boolean> {
+    return this.clubMemberRepository.exist({
+      where: {
+        userId,
+        clubId,
+      },
+    });
+  }
 }

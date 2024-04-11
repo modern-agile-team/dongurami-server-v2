@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { Club } from '@src/entities/Club';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
 import { User } from '@src/entities/User';
@@ -37,7 +38,7 @@ export class ClubPost {
     enum: ['posting', 'remove'],
     default: () => "'posting'",
   })
-  status: 'posting' | 'remove';
+  status: ClubPostStatus;
 
   @Column('timestamp', {
     name: 'created_at',

@@ -18,7 +18,7 @@ export class ClubPostHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
-    comment: '동아리 게시글 고유 ID',
+    comment: '동아리 게시글 수정 이력 고유 ID',
     unsigned: true,
   })
   id: number;
@@ -28,7 +28,7 @@ export class ClubPostHistory {
 
   @Column('int', {
     name: 'user_id',
-    comment: '동아리 게시글 생성 유저 고유 ID',
+    comment: '동아리 게시글 수정 유저 고유 ID',
     unsigned: true,
   })
   userId: number;

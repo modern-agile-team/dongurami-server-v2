@@ -7,11 +7,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
+import { HistoryAction } from '@src/constants/enum';
 import { ClubPost } from '@src/entities/ClubPost';
 
 @Index('FK_aa300120c9c17afbe05038bed8b', ['clubId'], {})
 @Index('FK_16ddac5d0ad7139092b9df29288', ['userId'], {})
-@Entity('club_post_history', { schema: 'dongurami_local_db' })
+@Entity('club_post_history')
 export class ClubPostHistory {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -46,7 +48,7 @@ export class ClubPostHistory {
     enum: ['posting', 'remove'],
     default: () => "'posting'",
   })
-  status: 'posting' | 'remove';
+  status: ClubPostStatus;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -60,7 +62,7 @@ export class ClubPostHistory {
     comment: 'history를 쌓는 action',
     enum: ['insert', 'update', 'delete'],
   })
-  action: 'insert' | 'update' | 'delete';
+  action: HistoryAction;
 
   @ManyToOne(() => ClubPost, (clubPost) => clubPost.clubPostHistories, {
     onDelete: 'CASCADE',

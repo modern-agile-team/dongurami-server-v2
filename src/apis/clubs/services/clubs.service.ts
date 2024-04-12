@@ -123,6 +123,15 @@ export class ClubsService {
       }),
     );
 
+    await this.clubApplicationFormService.create(
+      newClub.id,
+      new CreateClubApplicationFormDto({
+        customQuestion: [],
+        startsAt: null,
+        endsAt: null,
+      }),
+    );
+
     return new ClubWithCategoryAndTagDto({
       ...newClub,
       clubTags: plainToInstance(ClubTagDto, clubTags),

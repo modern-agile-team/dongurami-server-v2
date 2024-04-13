@@ -119,7 +119,7 @@ export class ClubsController {
     summary: '최신 동아리 지원서 폼 조회',
   })
   @SetResponse({ key: 'clubApplicationForm', type: ResponseType.Detail })
-  @Get(':clubId/application-form/latest')
+  @Get(':clubId/application-forms/latest')
   findLatestApplicationForm(
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
   ): Promise<ClubApplicationFormDto> {

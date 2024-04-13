@@ -17,11 +17,13 @@ import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
+import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
+import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -111,6 +113,23 @@ export class ClubsController {
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
   ): Promise<ClubCategoryDto[]> {
     return this.clubsService.findAllCategoryByClubId(clubId);
+  }
+
+  @ApiClub.CreateClubPost({ summary: '동아리 게시글 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubPost', type: ResponseType.Detail })
+  @Post(':clubId/posts')
+  @UseGuards(JwtAuthGuard)
+  createClubPost(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Body() createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
+  ): Promise<ClubPostDto> {
+    return this.clubsService.createClubPost(
+      user.id,
+      clubId,
+      createClubPostRequestBodyDto,
+    );
   }
 
   @ApiClub.FindLatestApplicationForm({

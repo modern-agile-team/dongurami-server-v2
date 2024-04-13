@@ -13,6 +13,8 @@ import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/c
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
+import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
@@ -21,6 +23,7 @@ import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.d
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
+import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
@@ -30,6 +33,7 @@ import { Club } from '@src/entities/Club';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { HttpUnprocessableEntityException } from '@src/http-exceptions/exceptions/http-unprocessable-entity.exception';
@@ -45,6 +49,7 @@ export class ClubsService {
     private readonly clubTagLinkRepository: ClubTagLinkRepository,
     private readonly clubCategoryRepository: ClubCategoryRepository,
     private readonly clubTagsService: ClubTagsService,
+    private readonly clubPostsService: ClubPostsService,
     private readonly clubApplicationFormService: ClubApplicationFormService,
     private readonly queryHelper: QueryHelper,
   ) {}
@@ -416,6 +421,44 @@ export class ClubsService {
         name,
         createdAt,
       });
+    });
+  }
+
+  @Transactional()
+  async createClubPost(
+    userId: number,
+    clubId: number,
+    createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
+  ): Promise<ClubPostDto> {
+    const isExistClub = await this.clubRepository.exist({
+      where: {
+        id: clubId,
+      },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const isExistClubMember = await this.clubMembersService.isExistClubMember(
+      clubId,
+      userId,
+    );
+
+    /**
+     * @todo 추후 guard를 통해 access control 되도록 변경
+     */
+    if (!isExistClubMember) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    return this.clubPostsService.create(userId, clubId, {
+      ...createClubPostRequestBodyDto,
+      tags: [...new Set(createClubPostRequestBodyDto.tags)],
     });
   }
 

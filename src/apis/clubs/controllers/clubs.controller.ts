@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -129,5 +130,16 @@ export class ClubsController {
       clubId,
       createClubPostRequestBodyDto,
     );
+  }
+
+  @ApiClub.FindLatestApplicationForm({
+    summary: '최신 동아리 지원서 폼 조회',
+  })
+  @SetResponse({ key: 'clubApplicationForm', type: ResponseType.Detail })
+  @Get(':clubId/application-form/latest')
+  findLatestApplicationForm(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+  ): Promise<ClubApplicationFormDto> {
+    return this.clubsService.findLatestApplicationForm(clubId);
   }
 }

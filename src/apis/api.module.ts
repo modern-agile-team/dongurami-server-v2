@@ -4,6 +4,7 @@ import { AdminsModule } from '@src/apis/admins/admins.module';
 import { AttachmentsModule } from '@src/apis/attachments/attachments.module';
 import { AuthModule } from '@src/apis/auth/auth.module';
 import { AuthSocialModule } from '@src/apis/auth/social/auth-social.module';
+import { ClubApplicationFormModule } from '@src/apis/club-application-form/club-application-form.module';
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
 import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
@@ -43,6 +44,7 @@ import { UsersModule } from '@src/apis/users/users.module';
     ClubCategoriesModule,
     ClubMembersModule,
     ClubPostsModule,
+    ClubApplicationFormModule,
   ],
 })
 export class ApiModule {}

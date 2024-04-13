@@ -5,6 +5,9 @@ import { differenceWith } from 'lodash';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
+import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
+import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
+import { ClubApplicationFormService } from '@src/apis/club-application-form/services/club-application-form.service';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
@@ -31,6 +34,7 @@ import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 import { HttpUnprocessableEntityException } from '@src/http-exceptions/exceptions/http-unprocessable-entity.exception';
 
@@ -46,6 +50,7 @@ export class ClubsService {
     private readonly clubCategoryRepository: ClubCategoryRepository,
     private readonly clubTagsService: ClubTagsService,
     private readonly clubPostsService: ClubPostsService,
+    private readonly clubApplicationFormService: ClubApplicationFormService,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -111,6 +116,15 @@ export class ClubsService {
           clubId: newClub.id,
           clubCategoryId: clubCategory.id,
         };
+      }),
+    );
+
+    await this.clubApplicationFormService.create(
+      newClub.id,
+      new CreateClubApplicationFormDto({
+        customQuestion: [],
+        startsAt: null,
+        endsAt: null,
       }),
     );
 
@@ -442,5 +456,32 @@ export class ClubsService {
       ...createClubPostRequestBodyDto,
       hashtag: [...new Set(createClubPostRequestBodyDto.hashtag)],
     });
+  }
+
+  async findLatestApplicationForm(
+    clubId: number,
+  ): Promise<ClubApplicationFormDto> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const latestApplicationForm =
+      await this.clubApplicationFormService.findLatestByClubId(clubId);
+
+    if (latestApplicationForm === undefined) {
+      throw new HttpInternalServerErrorException({
+        code: COMMON_ERROR_CODE.SERVER_ERROR,
+        ctx: '동아리는 존재하지만 동아리 지원서 폼이 존재하지 않음',
+        stack: new Error().stack,
+      });
+    }
+
+    return latestApplicationForm;
   }
 }

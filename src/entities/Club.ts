@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
-import { ClubApplicationsForm } from '@src/entities/ClubApplicationsForm';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubHistory } from '@src/entities/ClubHistory';
 import { ClubMember } from '@src/entities/ClubMember';
@@ -103,10 +103,10 @@ export class Club {
   clubCategoryLinks: ClubCategoryLink[];
 
   @OneToMany(
-    () => ClubApplicationsForm,
-    (clubApplicationsForm) => clubApplicationsForm.club,
+    () => ClubApplicationForm,
+    (clubApplicationForm) => clubApplicationForm.club,
   )
-  clubApplicationsForms: ClubApplicationsForm[];
+  clubApplicationForms: ClubApplicationForm[];
 
   @OneToMany(() => ClubPost, (clubPost) => clubPost.club)
   clubPosts: ClubPost[];

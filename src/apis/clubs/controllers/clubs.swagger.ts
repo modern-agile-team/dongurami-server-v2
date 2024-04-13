@@ -2,6 +2,7 @@ import { HttpStatus, applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiParam } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
+import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -221,6 +222,34 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
         HttpStatus.CREATED,
         'clubPost',
         ClubPostDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  FindLatestApplicationForm: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubApplicationForm',
+        ClubApplicationFormDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

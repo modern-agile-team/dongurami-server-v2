@@ -7,39 +7,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubApplicationFormQuestionItem } from '@src/apis/club-application-form/types/club-application-form.type';
 import { Club } from '@src/entities/Club';
-import { ClubApplicationsFormHistory } from '@src/entities/ClubApplicationsFormHistory';
+import { ClubApplicationFormHistory } from '@src/entities/ClubApplicationFormHistory';
 
-/**
- * @todo 동아리 지원서 관련 module 생성 시 소스코드 이동
- */
-enum QuestionInputType {
-  Text = 'text',
-  CheckBox = 'checkBox',
-  Radio = 'radio',
-  File = 'file',
-}
-
-interface Question {
-  inputType: QuestionInputType;
-  isRequired: boolean;
-}
-
-interface CommonQuestion {
-  userName: Question;
-  studentNumber: Question;
-  major: Question;
-  grade: Question;
-  gender: Question;
-  phoneNumber: Question;
-}
-
-interface CustomQuestion {
-  [key: string]: Question;
-}
-
-@Entity('club_applications_form')
-export class ClubApplicationsForm {
+@Entity('club_application_form')
+export class ClubApplicationForm {
   @PrimaryGeneratedColumn({
     type: 'int',
     name: 'id',
@@ -48,11 +21,18 @@ export class ClubApplicationsForm {
   })
   id: number;
 
+  @Column('int', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
+    unsigned: true,
+  })
+  clubId: number;
+
   @Column('json', { name: 'common_question', comment: '공통 질문' })
-  commonQuestion: CommonQuestion;
+  commonQuestion: ClubApplicationFormQuestionItem[];
 
   @Column('json', { name: 'custom_question', comment: '동아리 커스텀 질문' })
-  customQuestion: CustomQuestion;
+  customQuestion: ClubApplicationFormQuestionItem[];
 
   @Column('timestamp', {
     name: 'starts_at',
@@ -82,7 +62,7 @@ export class ClubApplicationsForm {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Club, (club) => club.clubApplicationsForms, {
+  @ManyToOne(() => Club, (club) => club.clubApplicationForms, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
@@ -90,9 +70,9 @@ export class ClubApplicationsForm {
   club: Club;
 
   @OneToMany(
-    () => ClubApplicationsFormHistory,
-    (clubApplicationsFormHistory) =>
-      clubApplicationsFormHistory.clubApplicationsForm,
+    () => ClubApplicationFormHistory,
+    (clubApplicationFormHistory) =>
+      clubApplicationFormHistory.clubApplicationForm,
   )
-  clubApplicationsFormHistories: ClubApplicationsFormHistory[];
+  clubApplicationFormHistories: ClubApplicationFormHistory[];
 }

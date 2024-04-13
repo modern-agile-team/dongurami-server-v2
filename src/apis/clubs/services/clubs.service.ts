@@ -446,6 +446,9 @@ export class ClubsService {
       userId,
     );
 
+    /**
+     * @todo 추후 guard를 통해 access control 되도록 변경
+     */
     if (!isExistClubMember) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,

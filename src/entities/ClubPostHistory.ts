@@ -27,6 +27,13 @@ export class ClubPostHistory {
   clubId: number;
 
   @Column('int', {
+    name: 'club_post_id',
+    comment: '동아리 게시글 고유 ID',
+    unsigned: true,
+  })
+  clubPostId: number;
+
+  @Column('int', {
     name: 'user_id',
     comment: '동아리 게시글 수정 유저 고유 ID',
     unsigned: true,

@@ -12,7 +12,7 @@ import { Club } from '@src/entities/Club';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
 import { User } from '@src/entities/User';
 
-@Entity('club_post', { schema: 'dongurami_local_db' })
+@Entity('club_post')
 export class ClubPost {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -40,10 +40,10 @@ export class ClubPost {
   description: string;
 
   @Column('json', {
-    name: 'hashtag',
+    name: 'tags',
     comment: '동아리 게시글 해시태그',
   })
-  hashtag: string[];
+  tags: string[];
 
   @Column('enum', {
     name: 'status',

@@ -37,10 +37,10 @@ export class ClubPostHistory {
   description: string;
 
   @Column('json', {
-    name: 'hashtag',
+    name: 'tags',
     comment: '동아리 게시글 해시태그',
   })
-  hashtag: string[];
+  tags: string[];
 
   @Column('enum', {
     name: 'status',

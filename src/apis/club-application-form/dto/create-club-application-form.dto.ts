@@ -25,7 +25,7 @@ const COMMON_QUESTION: readonly ClubApplicationFormQuestionItem[] = [
     question: '학년',
     inputType: QuestionInputType.Radio,
     isRequired: true,
-    allowValues: ['1', '2', '3', ' 4'],
+    allowValues: ['1', '2', '3', '4'],
   },
   {
     question: '성별',

@@ -457,7 +457,7 @@ export class ClubsService {
 
     return this.clubPostsService.create(userId, clubId, {
       ...createClubPostRequestBodyDto,
-      hashtag: [...new Set(createClubPostRequestBodyDto.hashtag)],
+      tags: [...new Set(createClubPostRequestBodyDto.tags)],
     });
   }
 

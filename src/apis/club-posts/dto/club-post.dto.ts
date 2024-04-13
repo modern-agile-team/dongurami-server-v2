@@ -42,7 +42,7 @@ export class ClubPostDto
     minItems: CLUB_POST_HASH_TAG_COUNT.MIN,
     maxItems: CLUB_POST_HASH_TAG_COUNT.MAX,
   })
-  hashtag: string[];
+  tags: string[];
 
   @Exclude()
   status: ClubPostStatus;

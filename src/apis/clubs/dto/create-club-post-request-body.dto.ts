@@ -10,7 +10,7 @@ import {
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 
 export class CreateClubPostRequestBodyDto
-  implements Pick<ClubPostDto, 'description' | 'hashtag'>
+  implements Pick<ClubPostDto, 'description' | 'tags'>
 {
   @ApiProperty({
     description: '동아리 게시글 본문',
@@ -33,5 +33,5 @@ export class CreateClubPostRequestBodyDto
     CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MAX,
     { each: true },
   )
-  hashtag: string[] = [];
+  tags: string[] = [];
 }

@@ -13,10 +13,12 @@ export class ClubApplicationFormService {
 
   async create(
     clubId: number,
+    userId: number,
     createClubApplicationFormDto: CreateClubApplicationFormDto,
   ): Promise<ClubApplicationFormDto> {
     const newClubApplication = this.clubApplicationFormRepository.create({
       clubId,
+      userId,
       ...createClubApplicationFormDto,
     });
 

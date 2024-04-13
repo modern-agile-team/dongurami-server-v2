@@ -116,6 +116,7 @@ export class ClubsService {
 
     await this.clubApplicationFormService.create(
       newClub.id,
+      userId,
       new CreateClubApplicationFormDto({
         customQuestion: [],
         startsAt: null,

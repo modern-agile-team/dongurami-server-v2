@@ -21,6 +21,10 @@ export class ClubApplicationFormSubscriber
     await this.createHistory(event, HistoryAction.Insert);
   }
 
+  async afterUpdate(event: UpdateEvent<ClubApplicationForm>): Promise<void> {
+    await this.createHistory(event, HistoryAction.Update);
+  }
+
   private async createHistory(
     event: InsertEvent<ClubApplicationForm> | UpdateEvent<ClubApplicationForm>,
     action: HistoryAction,

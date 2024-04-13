@@ -424,6 +424,7 @@ export class ClubsService {
     });
   }
 
+  @Transactional()
   async createClubPost(
     userId: number,
     clubId: number,

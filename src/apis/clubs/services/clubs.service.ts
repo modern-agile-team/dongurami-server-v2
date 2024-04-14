@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { plainToInstance } from 'class-transformer';
 import { differenceWith } from 'lodash';
-import { In } from 'typeorm';
+import { In, Raw } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
@@ -22,6 +22,7 @@ import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
+import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
@@ -29,7 +30,6 @@ import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.d
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { Club } from '@src/entities/Club';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -136,13 +136,9 @@ export class ClubsService {
     });
   }
 
-  /**
-   * 카테고리 및 태그 필터링때문에 다소 복잡하게 짜여져있음
-   * 추후 성능이슈가 없는지 검토해볼 필요가 있음
-   */
   async findAllAndCount(
     findClubListQueryDto: FindClubListQueryDto,
-  ): Promise<[Club[], number]> {
+  ): Promise<[ClubsItemDto[], number]> {
     const { page, pageSize, order, categoryId, tagId, ...filter } =
       findClubListQueryDto;
 
@@ -154,62 +150,68 @@ export class ClubsService {
     const [clubs, count] = await this.clubRepository.findAndCount({
       select: {
         id: true,
+        userId: true,
         name: true,
         logoPath: true,
         status: true,
+        tags: true,
+        createdAt: true,
+        updatedAt: true,
       },
       where: {
         ...where,
+        tags:
+          tagId &&
+          Raw(
+            (columnAlias) =>
+              `JSON_CONTAINS(${columnAlias}, '${JSON.stringify({
+                id: tagId,
+              })}')`,
+          ),
         clubCategoryLinks: {
           clubCategoryId: categoryId,
-        },
-        clubTagLinks: {
-          clubTagId: tagId,
         },
       },
       order,
       skip: page * pageSize,
       take: pageSize,
-    });
-
-    const clubIds = clubs.map((club) => club.id);
-
-    const [clubCategoryLinks, clubTagLinks] = await Promise.all([
-      this.clubCategoryLinkRepository.find({
-        where: {
-          clubId: In(clubIds),
-        },
-        relations: {
+      relations: {
+        clubCategoryLinks: {
           clubCategory: true,
         },
+      },
+    });
+
+    return [
+      clubs.map((club) => {
+        const {
+          id,
+          userId,
+          name,
+          logoPath,
+          status,
+          tags,
+          createdAt,
+          updatedAt,
+          clubCategoryLinks,
+        } = club;
+
+        return {
+          id,
+          userId,
+          name,
+          logoPath,
+          status,
+          createdAt,
+          updatedAt,
+          clubTags: tags,
+          clubCategories: clubCategoryLinks.map(
+            (clubCategoryLink) => clubCategoryLink.clubCategory,
+          ),
+        };
       }),
-      this.clubTagLinkRepository.find({
-        where: {
-          clubId: In(clubIds),
-        },
-        relations: {
-          clubTag: true,
-        },
-      }),
-    ]);
-
-    const clubMap = new Map(clubs.map((club) => [club.id, club]));
-
-    clubs.forEach((club) => {
-      club.clubCategoryLinks = [];
-      club.clubTagLinks = [];
-    });
-
-    clubCategoryLinks.forEach((clubCategoryLink) => {
-      const club = clubMap.get(clubCategoryLink.clubId);
-      club.clubCategoryLinks.push(clubCategoryLink);
-    });
-    clubTagLinks.forEach((clubTagLink) => {
-      const club = clubMap.get(clubTagLink.clubId);
-      club.clubTagLinks.push(clubTagLink);
-    });
-
-    return [clubs, count];
+      count,
+    ];
   }
 
   async findOneOrNotFound(clubId: number): Promise<ClubDto> {

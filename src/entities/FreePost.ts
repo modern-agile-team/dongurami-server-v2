@@ -12,6 +12,7 @@ import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostHistory } from '@src/entities/FreePostHistory';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { FreePostTagLink } from '@src/entities/FreePostTagLink';
+import { PostTag } from '@src/entities/PostTag';
 import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
@@ -62,6 +63,12 @@ export class FreePost {
     default: () => "'posting'",
   })
   status: FreePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '자유 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

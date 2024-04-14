@@ -70,6 +70,16 @@ export class FreePostDto
   constructor(freePostDto: Partial<FreePostDto> = {}) {
     super();
 
-    Object.assign(this, freePostDto);
+    this.id = freePostDto.id;
+    this.userId = freePostDto.userId;
+    this.title = freePostDto.title;
+    this.description = freePostDto.description;
+    this.hit = freePostDto.hit;
+    this.isAnonymous = freePostDto.isAnonymous;
+    this.status = freePostDto.status;
+    this.createdAt = freePostDto.createdAt;
+    this.updatedAt = freePostDto.updatedAt;
+    this.deletedAt = freePostDto.deletedAt;
+    this.postTags = freePostDto.postTags;
   }
 }

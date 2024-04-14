@@ -10,6 +10,7 @@ import {
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { FreePost } from '@src/entities/FreePost';
+import { PostTag } from '@src/entities/PostTag';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Index(['userId'], {})
@@ -74,6 +75,12 @@ export class FreePostHistory {
     default: () => "'posting'",
   })
   status: FreePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '자유 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

@@ -10,6 +10,7 @@ import {
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { Club } from '@src/entities/Club';
+import { ClubTag } from '@src/entities/ClubTag';
 
 @Index(['userId'], {})
 @Entity('club_history')
@@ -64,6 +65,12 @@ export class ClubHistory {
     default: () => "'pending'",
   })
   status: ClubStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '동아리 태그',
+  })
+  tags: Pick<ClubTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

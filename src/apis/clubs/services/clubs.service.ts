@@ -85,19 +85,20 @@ export class ClubsService {
       });
     }
 
+    const clubTags = tagNames.length
+      ? await this.clubTagsService.bulkCreate(userId, {
+          names: tagNames,
+        })
+      : [];
+
     const newClub = await this.clubRepository.save({
       userId,
       name,
       introduce,
       logoPath,
       status,
+      tags: clubTags,
     });
-
-    const clubTags = tagNames.length
-      ? await this.clubTagsService.bulkCreate(userId, {
-          names: tagNames,
-        })
-      : [];
 
     await this.bulkCreateClubTagLinks(
       clubTags.map((clubTag) => {
@@ -296,6 +297,8 @@ export class ClubsService {
 
     await this.bulkCreateClubTagLinks(createClubTagLinkDtos);
 
+    await this.syncTagLinkFromMapping(clubId);
+
     return tags;
   }
 
@@ -358,6 +361,8 @@ export class ClubsService {
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       });
     }
+
+    await this.syncTagLinkFromMapping(clubId);
 
     return affected;
   }
@@ -487,5 +492,32 @@ export class ClubsService {
     }
 
     return latestApplicationForm;
+  }
+
+  private async syncTagLinkFromMapping(clubId: number): Promise<ClubTagDto[]> {
+    const tagLinks = await this.clubTagLinkRepository.find({
+      select: {
+        id: true,
+      },
+      relations: {
+        clubTag: true,
+      },
+      where: {
+        clubId,
+      },
+    });
+
+    const tags = tagLinks.map((tagLink) => new ClubTagDto(tagLink.clubTag));
+
+    await this.clubRepository.update(
+      {
+        id: clubId,
+      },
+      {
+        tags,
+      },
+    );
+
+    return tags;
   }
 }

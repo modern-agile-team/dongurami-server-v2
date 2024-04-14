@@ -48,17 +48,18 @@ export class NoticePostsService {
   async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
     const { tagNames, ...postProps } = createNoticePostDto;
 
-    const newPost = await this.noticePostRepository.save({
-      userId,
-      ...postProps,
-    });
-
     const postTags = await this.postTagsService.bulkCreate(
       userId,
       tagNames.map((tagName) => ({
         name: tagName,
       })),
     );
+
+    const newPost = await this.noticePostRepository.save({
+      userId,
+      ...postProps,
+      tags: postTags,
+    });
 
     await this.bulkAppendTagLink(userId, newPost.id, postTags);
 
@@ -141,9 +142,15 @@ export class NoticePostsService {
       });
     }
 
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
     const newNoticePost = this.noticePostRepository.create({
       ...oldNoticePost,
       ...postProps,
+      tags: postTags,
     });
 
     await this.noticePostRepository.update(
@@ -158,11 +165,6 @@ export class NoticePostsService {
     await this.noticePostTagLinkRepository.delete({
       noticePostId,
     });
-
-    const postTags = await this.postTagsService.bulkCreate(
-      userId,
-      tagNames.map((tagName) => ({ name: tagName })),
-    );
 
     await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
 
@@ -191,18 +193,6 @@ export class NoticePostsService {
       });
     }
 
-    const newNoticePost = this.noticePostRepository.create({
-      ...oldNoticePost,
-      ...postProps,
-    });
-
-    await this.noticePostRepository.update(
-      { id: noticePostId, status: NoticePostStatus.Posting },
-      {
-        ...newNoticePost,
-      },
-    );
-
     let postTags: PostTagDto[];
 
     if (tagNames) {
@@ -215,10 +205,23 @@ export class NoticePostsService {
         tagNames.map((tagName) => ({ name: tagName })),
       );
 
-      await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+      await this.bulkAppendTagLink(userId, noticePostId, postTags);
     } else {
       postTags = await this.findPostTags(noticePostId);
     }
+
+    const newNoticePost = this.noticePostRepository.create({
+      ...oldNoticePost,
+      ...postProps,
+      tags: postTags,
+    });
+
+    await this.noticePostRepository.update(
+      { id: noticePostId, status: NoticePostStatus.Posting },
+      {
+        ...newNoticePost,
+      },
+    );
 
     return new NoticePostDto({ ...newNoticePost, postTags });
   }

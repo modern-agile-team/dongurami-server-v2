@@ -12,6 +12,7 @@ import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostHistory } from '@src/entities/NoticePostHistory';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
+import { PostTag } from '@src/entities/PostTag';
 import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
@@ -62,6 +63,12 @@ export class NoticePost {
     default: () => "'posting'",
   })
   status: NoticePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '공지 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

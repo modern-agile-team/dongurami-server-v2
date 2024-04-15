@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enum';
 import { Club } from '@src/entities/Club';
 import { User } from '@src/entities/User';
 
@@ -34,7 +35,7 @@ export class ClubMember {
   clubId: number;
 
   @Column('json', { name: 'roles', comment: '구성원의 역할 리스트' })
-  roles: string[];
+  roles: ClubMemberRole[];
 
   @Column('timestamp', {
     name: 'created_at',

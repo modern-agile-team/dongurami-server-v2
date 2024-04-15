@@ -7,6 +7,7 @@ import { Transactional } from 'typeorm-transactional';
 
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
+import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
 import { ClubApplicationFormService } from '@src/apis/club-application-form/services/club-application-form.service';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
@@ -122,6 +123,7 @@ export class ClubsService {
 
     await this.clubApplicationFormService.create(
       newClub.id,
+      userId,
       new CreateClubApplicationFormDto({
         customQuestion: [],
         startsAt: null,
@@ -494,6 +496,29 @@ export class ClubsService {
     }
 
     return latestApplicationForm;
+  }
+
+  async putUpdateClubApplicationForm(
+    userId: number,
+    clubId: number,
+    formId: number,
+    putUpdateClubApplicationFormDto: PutUpdateClubApplicationFormDto,
+  ): Promise<ClubApplicationFormDto> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.clubApplicationFormService.putUpdate(
+      userId,
+      formId,
+      putUpdateClubApplicationFormDto,
+    );
   }
 
   private async syncTagLinkFromMapping(clubId: number): Promise<ClubTagDto[]> {

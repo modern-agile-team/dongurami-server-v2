@@ -13,6 +13,7 @@ import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubHistory } from '@src/entities/ClubHistory';
 import { ClubMember } from '@src/entities/ClubMember';
 import { ClubPost } from '@src/entities/ClubPost';
+import { ClubTag } from '@src/entities/ClubTag';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { User } from '@src/entities/User';
 
@@ -58,6 +59,12 @@ export class Club {
     default: () => "'pending'",
   })
   status: ClubStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '동아리 태그',
+  })
+  tags: Pick<ClubTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

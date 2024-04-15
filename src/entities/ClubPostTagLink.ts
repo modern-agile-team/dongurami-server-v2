@@ -20,6 +20,27 @@ export class ClubPostTagLink {
   })
   id: number;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '동아리 게시글 태그 링크 생성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
+  @Column('int', {
+    name: 'club_post_id',
+    comment: '동아리 게시글 고유 ID',
+    unsigned: true,
+  })
+  clubPostId: number;
+
+  @Column('int', {
+    name: 'club_post_tag_id',
+    comment: '동아리 게시글 태그 고유 ID',
+    unsigned: true,
+  })
+  clubPostTagId: number;
+
   @Column('timestamp', {
     name: 'created_at',
     comment: '생성 일자',

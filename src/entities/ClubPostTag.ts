@@ -22,6 +22,13 @@ export class ClubPostTag {
   })
   id: number;
 
+  @Column('int', {
+    name: 'user_id',
+    comment: '동아리 게시글 태그 생성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
+
   @Column('varchar', {
     name: 'name',
     unique: true,

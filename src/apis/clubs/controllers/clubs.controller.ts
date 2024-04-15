@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
+import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -136,10 +138,29 @@ export class ClubsController {
     summary: '최신 동아리 지원서 폼 조회',
   })
   @SetResponse({ key: 'clubApplicationForm', type: ResponseType.Detail })
-  @Get(':clubId/application-form/latest')
+  @Get(':clubId/application-forms/latest')
   findLatestApplicationForm(
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
   ): Promise<ClubApplicationFormDto> {
     return this.clubsService.findLatestApplicationForm(clubId);
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @ApiClub.PutUpdateApplicationForm({ summary: '동아리 지원서 폼 수정' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'clubApplicationForm', type: ResponseType.Detail })
+  @Put(':clubId/application-forms/:formId')
+  putUpdateApplicationForm(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('formId', ParsePositiveIntPipe) formId: number,
+    @Body() putUpdateClubApplicationFormDto: PutUpdateClubApplicationFormDto,
+  ): Promise<ClubApplicationFormDto> {
+    return this.clubsService.putUpdateClubApplicationForm(
+      user.id,
+      clubId,
+      formId,
+      putUpdateClubApplicationFormDto,
+    );
   }
 }

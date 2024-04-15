@@ -10,6 +10,7 @@ import {
 import { ClubApplicationFormQuestionItem } from '@src/apis/club-application-form/types/club-application-form.type';
 import { Club } from '@src/entities/Club';
 import { ClubApplicationFormHistory } from '@src/entities/ClubApplicationFormHistory';
+import { User } from '@src/entities/User';
 
 @Entity('club_application_form')
 export class ClubApplicationForm {
@@ -27,6 +28,13 @@ export class ClubApplicationForm {
     unsigned: true,
   })
   clubId: number;
+
+  @Column('int', {
+    name: 'user_id',
+    comment: '동아리 신청서 폼 생성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: number;
 
   @Column('json', { name: 'common_question', comment: '공통 질문' })
   commonQuestion: ClubApplicationFormQuestionItem[];
@@ -68,6 +76,13 @@ export class ClubApplicationForm {
   })
   @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
   club: Club;
+
+  @ManyToOne(() => User, (user) => user.clubApplicationForms, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
 
   @OneToMany(
     () => ClubApplicationFormHistory,

@@ -10,6 +10,7 @@ import {
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { Club } from '@src/entities/Club';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
+import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { User } from '@src/entities/User';
 
 @Entity('club_post')
@@ -93,4 +94,10 @@ export class ClubPost {
     (clubPostHistory) => clubPostHistory.clubPost,
   )
   clubPostHistories: ClubPostHistory[];
+
+  @OneToMany(
+    () => ClubPostTagLink,
+    (clubPostTagLink) => clubPostTagLink.clubPost,
+  )
+  clubPostTagLinks: ClubPostTagLink[];
 }

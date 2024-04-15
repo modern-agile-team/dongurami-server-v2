@@ -13,7 +13,8 @@ import { ClubPost } from '@src/entities/ClubPost';
 
 export class ClubPostDto
   extends BaseDto
-  implements Omit<ClubPost, 'club' | 'user' | 'clubPostHistories'>
+  implements
+    Omit<ClubPost, 'club' | 'user' | 'clubPostHistories' | 'clubPostTagLinks'>
 {
   @ApiProperty({
     description: '동아리 고유 ID',

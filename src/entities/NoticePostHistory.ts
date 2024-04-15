@@ -10,6 +10,7 @@ import {
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { NoticePost } from '@src/entities/NoticePost';
+import { PostTag } from '@src/entities/PostTag';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Index(['userId'])
@@ -74,6 +75,12 @@ export class NoticePostHistory {
     default: () => "'posting'",
   })
   status: NoticePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '공지 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

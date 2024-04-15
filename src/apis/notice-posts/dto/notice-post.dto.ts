@@ -71,6 +71,16 @@ export class NoticePostDto
   constructor(noticePostDto: Partial<NoticePostDto> = {}) {
     super();
 
-    Object.assign(this, noticePostDto);
+    this.id = noticePostDto.id;
+    this.userId = noticePostDto.userId;
+    this.title = noticePostDto.title;
+    this.description = noticePostDto.description;
+    this.hit = noticePostDto.hit;
+    this.isAllowComment = noticePostDto.isAllowComment;
+    this.status = noticePostDto.status;
+    this.createdAt = noticePostDto.createdAt;
+    this.updatedAt = noticePostDto.updatedAt;
+    this.deletedAt = noticePostDto.deletedAt;
+    this.postTags = noticePostDto.postTags;
   }
 }

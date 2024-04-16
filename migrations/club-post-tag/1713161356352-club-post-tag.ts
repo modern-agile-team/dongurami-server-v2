@@ -1,23 +1,23 @@
 import {
   generateCreatedAtColumn,
+  generateFkColumnAndOption,
   generatePrimaryColumn,
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
 export class ClubPostTag1713161356352 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    const { column, fk } = generateFkColumnAndOption(
+      'user',
+      '동아리 게시글 태그 생성 유저 고유 ID',
+    );
+
     await queryRunner.createTable(
       new Table({
         name: 'club_post_tag',
         columns: [
           generatePrimaryColumn('동아리 게시글 태그'),
-          new TableColumn({
-            name: 'user_id',
-            type: 'int',
-            unsigned: true,
-            isNullable: false,
-            comment: '동아리 게시글 태그 생성 유저 고유 ID',
-          }),
+          column,
           new TableColumn({
             name: 'name',
             type: 'varchar',
@@ -28,15 +28,7 @@ export class ClubPostTag1713161356352 implements MigrationInterface {
           }),
           generateCreatedAtColumn(),
         ],
-        foreignKeys: [
-          {
-            columnNames: ['user_id'],
-            referencedTableName: 'user',
-            referencedColumnNames: ['id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          },
-        ],
+        foreignKeys: [fk],
       }),
     );
   }

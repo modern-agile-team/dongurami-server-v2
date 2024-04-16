@@ -10,6 +10,7 @@ import {
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { Club } from '@src/entities/Club';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
+import { ClubPostTag } from '@src/entities/ClubPostTag';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { User } from '@src/entities/User';
 
@@ -44,7 +45,7 @@ export class ClubPost {
     name: 'tags',
     comment: '동아리 게시글 해시태그',
   })
-  tags: string[];
+  tags: Pick<ClubPostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('enum', {
     name: 'status',

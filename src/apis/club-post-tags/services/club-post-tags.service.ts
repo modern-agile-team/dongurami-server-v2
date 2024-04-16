@@ -53,7 +53,7 @@ export class ClubPostTagsService {
 
     await this.clubPostTagRepository.insert(newClubPostTags);
 
-    return newClubPostTags.map(
+    return [...existClubPostTags, ...newClubPostTags].map(
       (newClubPostTag) => new ClubPostTagDto(newClubPostTag),
     );
   }

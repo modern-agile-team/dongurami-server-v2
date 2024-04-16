@@ -4,6 +4,7 @@ import { ClubApplicationFormModule } from '@src/apis/club-application-form/club-
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
 import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
+import { ClubPostTagLinksModule } from '@src/apis/club-post-tag-links/club-post-tag-links.module';
 import { ClubPostTagsModule } from '@src/apis/club-post-tags/club-post-tags.module';
 import { ClubPostsModule } from '@src/apis/club-posts/club-posts.module';
 import { ClubTagLinksModule } from '@src/apis/club-tag-links/club-tag-links.module';
@@ -25,6 +26,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     ClubPostsModule,
     ClubApplicationFormModule,
     ClubPostTagsModule,
+    ClubPostTagLinksModule,
   ],
   controllers: [ClubsController],
   providers: [ClubsService, QueryHelper],

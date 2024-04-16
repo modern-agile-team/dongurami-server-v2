@@ -13,8 +13,11 @@ import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/c
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
+import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
+import { CreateClubPostTagDto } from '@src/apis/club-post-tags/dto/create-club-post-tag.dto';
 import { ClubPostTagsService } from '@src/apis/club-post-tags/services/club-post-tags.service';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -25,6 +28,7 @@ import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-categor
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
+import { CreateClubPostTagLinkDto } from '@src/apis/clubs/dto/create-club-post-tag-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
@@ -32,6 +36,7 @@ import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { Club } from '@src/entities/Club';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -53,6 +58,7 @@ export class ClubsService {
     private readonly clubPostsService: ClubPostsService,
     private readonly clubApplicationFormService: ClubApplicationFormService,
     private readonly clubPostTagsService: ClubPostTagsService,
+    private readonly clubPostTagLinkRepository: ClubPostTagLinkRepository,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -432,6 +438,8 @@ export class ClubsService {
     clubId: number,
     createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
   ): Promise<ClubPostDto> {
+    const { tagNames } = createClubPostRequestBodyDto;
+
     const isExistClub = await this.clubRepository.exist({
       where: {
         id: clubId,
@@ -458,12 +466,32 @@ export class ClubsService {
       });
     }
 
-    await this.clubPostTagsService;
+    const newClubPostTags = await this.clubPostTagsService.bulkCreate(
+      userId,
+      tagNames.map((name) => new CreateClubPostTagDto({ name })),
+    );
 
-    return this.clubPostsService.create(userId, clubId, {
-      ...createClubPostRequestBodyDto,
-      tags: [...new Set(createClubPostRequestBodyDto.tags)],
-    });
+    const newClubPost = await this.clubPostsService.create(
+      new CreateClubPostDto({
+        ...createClubPostRequestBodyDto,
+        userId,
+        clubId,
+        tags: newClubPostTags,
+      }),
+    );
+
+    await this.bulkCreateClubPostTagLinks(
+      newClubPostTags.map(
+        (newClubPostTag) =>
+          new CreateClubPostTagLinkDto({
+            userId,
+            clubPostId: newClubPost.id,
+            clubPostTagId: newClubPostTag.id,
+          }),
+      ),
+    );
+
+    return newClubPost;
   }
 
   async findLatestApplicationForm(
@@ -491,5 +519,41 @@ export class ClubsService {
     }
 
     return latestApplicationForm;
+  }
+
+  async bulkCreateClubPostTagLinks(
+    createClubPostTagLinkDtos: CreateClubPostTagLinkDto[],
+  ): Promise<ClubPostTagLink[]> {
+    if (!createClubPostTagLinkDtos.length) {
+      return [];
+    }
+
+    const existClubPostTagLinks = await this.clubPostTagLinkRepository.findBy({
+      clubPostId: In([
+        ...new Set(createClubPostTagLinkDtos.map((el) => el.clubPostId)),
+      ]),
+    });
+
+    const newClubPostTagLinks = differenceWith(
+      createClubPostTagLinkDtos,
+      existClubPostTagLinks,
+      (a, b) => {
+        return (
+          a.clubPostId === b.clubPostId && a.clubPostTagId === b.clubPostTagId
+        );
+      },
+    ).map((createClubPostTagLinkDto: CreateClubPostTagLinkDto) => {
+      const { userId, clubPostId, clubPostTagId } = createClubPostTagLinkDto;
+
+      return this.clubPostTagLinkRepository.create({
+        userId,
+        clubPostId,
+        clubPostTagId,
+      });
+    });
+
+    await this.clubPostTagLinkRepository.insert(newClubPostTagLinks);
+
+    return newClubPostTagLinks;
   }
 }

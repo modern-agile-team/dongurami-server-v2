@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Exclude } from 'class-transformer';
 
+import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { Club } from '@src/entities/Club';
@@ -17,6 +18,7 @@ export class ClubDto
       | 'introduce'
       | 'logoPath'
       | 'status'
+      | 'tags'
       | 'createdAt'
       | 'updatedAt'
       | 'deletedAt'
@@ -47,6 +49,9 @@ export class ClubDto
     enum: ClubStatus,
   })
   status: ClubStatus;
+
+  @Exclude()
+  tags: ClubTagDto[];
 
   @Exclude()
   deletedAt: Date | null;

@@ -16,6 +16,7 @@ import {
 } from '@src/apis/users/constants/user.enum';
 import { Attachment } from '@src/entities/Attachment';
 import { Club } from '@src/entities/Club';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
 import { ClubCategory } from '@src/entities/ClubCategory';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubMember } from '@src/entities/ClubMember';
@@ -230,6 +231,12 @@ export class User {
 
   @OneToMany(() => Club, (club) => club.user)
   clubs: Club[];
+
+  @OneToMany(
+    () => ClubApplicationForm,
+    (clubApplicationForm) => clubApplicationForm.user,
+  )
+  clubApplicationForms: ClubApplicationForm[];
 
   @OneToMany(() => ClubTag, (clubTag) => clubTag.user)
   clubTags: ClubTag[];

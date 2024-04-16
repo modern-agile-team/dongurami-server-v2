@@ -50,18 +50,19 @@ export class FreePostsService {
   async create(userId: number, createFreePostDto: CreateFreePostDto) {
     const { tagNames, ...postProps } = createFreePostDto;
 
-    const newPost = await this.freePostRepository.save({
-      userId,
-      status: FreePostStatus.Posting,
-      ...postProps,
-    });
-
     const postTags = await this.postTagsService.bulkCreate(
       userId,
       tagNames.map((tagName) => ({
         name: tagName,
       })),
     );
+
+    const newPost = await this.freePostRepository.save({
+      userId,
+      status: FreePostStatus.Posting,
+      ...postProps,
+      tags: postTags,
+    });
 
     await this.bulkAppendTagLink(userId, newPost.id, postTags);
 
@@ -143,9 +144,20 @@ export class FreePostsService {
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
+
+    await this.freePostTagLinkRepository.delete({
+      freePostId,
+    });
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
     const newFreePost = this.freePostRepository.create({
       ...oldFreePost,
       ...postProps,
+      tags: postTags,
     });
 
     await this.freePostRepository.update(
@@ -155,15 +167,6 @@ export class FreePostsService {
       {
         ...newFreePost,
       },
-    );
-
-    await this.freePostTagLinkRepository.delete({
-      freePostId,
-    });
-
-    const postTags = await this.postTagsService.bulkCreate(
-      userId,
-      tagNames.map((tagName) => ({ name: tagName })),
     );
 
     await this.bulkAppendTagLink(userId, newFreePost.id, postTags);
@@ -193,20 +196,6 @@ export class FreePostsService {
       });
     }
 
-    const newFreePost = this.freePostRepository.create({
-      ...oldFreePost,
-      ...postProps,
-    });
-
-    await this.freePostRepository.update(
-      {
-        id: freePostId,
-      },
-      {
-        ...newFreePost,
-      },
-    );
-
     let postTags: PostTagDto[];
 
     if (tagNames) {
@@ -219,10 +208,25 @@ export class FreePostsService {
         tagNames.map((tagName) => ({ name: tagName })),
       );
 
-      await this.bulkAppendTagLink(userId, newFreePost.id, postTags);
+      await this.bulkAppendTagLink(userId, freePostId, postTags);
     } else {
       postTags = await this.findPostTags(freePostId);
     }
+
+    const newFreePost = this.freePostRepository.create({
+      ...oldFreePost,
+      ...postProps,
+      tags: postTags,
+    });
+
+    await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        ...newFreePost,
+      },
+    );
 
     return new FreePostDto({ ...newFreePost, postTags });
   }

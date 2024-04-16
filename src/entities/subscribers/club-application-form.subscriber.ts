@@ -21,10 +21,13 @@ export class ClubApplicationFormSubscriber
     await this.createHistory(event, HistoryAction.Insert);
   }
 
+  async afterUpdate(event: UpdateEvent<ClubApplicationForm>): Promise<void> {
+    await this.createHistory(event, HistoryAction.Update);
+  }
+
   private async createHistory(
     event: InsertEvent<ClubApplicationForm> | UpdateEvent<ClubApplicationForm>,
     action: HistoryAction,
-    userId?: number,
   ) {
     const historyRepository = event.connection.getRepository(
       ClubApplicationFormHistory,
@@ -36,7 +39,6 @@ export class ClubApplicationFormSubscriber
       clubApplicationFormId: event.entity.id,
       id: undefined,
       createdAt: undefined,
-      userId,
     });
 
     await historyRepository.save(newHistory, {

@@ -2,10 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Exclude } from 'class-transformer';
 
+import { CLUB_POST_TAG_NAME_LENGTH } from '@src/apis/club-post-tags/constants/club-post-tag.constant';
+import { ClubPostTagDto } from '@src/apis/club-post-tags/dto/club-post-tag.dto';
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
-  CLUB_POST_HASH_TAG_COUNT,
-  CLUB_POST_HASH_TAG_ELEMENT_LENGTH,
+  CLUB_POST_TAG_COUNT,
 } from '@src/apis/club-posts/constants/club-post.constant';
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { BaseDto } from '@src/dto/base.dto';
@@ -38,12 +39,13 @@ export class ClubPostDto
 
   @ApiProperty({
     description: '동아리 게시글 해시태그',
-    minLength: CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MIN,
-    maxLength: CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MAX,
-    minItems: CLUB_POST_HASH_TAG_COUNT.MIN,
-    maxItems: CLUB_POST_HASH_TAG_COUNT.MAX,
+    minLength: CLUB_POST_TAG_NAME_LENGTH.MIN,
+    maxLength: CLUB_POST_TAG_NAME_LENGTH.MAX,
+    minItems: CLUB_POST_TAG_COUNT.MIN,
+    maxItems: CLUB_POST_TAG_COUNT.MAX,
+    type: [ClubPostTagDto],
   })
-  tags: string[];
+  tags: ClubPostTagDto[];
 
   @Exclude()
   status: ClubPostStatus;

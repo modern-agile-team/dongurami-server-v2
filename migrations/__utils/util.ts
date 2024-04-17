@@ -379,24 +379,24 @@ export const createReplyCommentTable = async (
   );
 };
 
-export const generateFkColumnAndOption = (
+export const generateFkColumn = (
   referencedTableName: string,
-  comment?: string,
-): { column: TableColumnOptions; fk: TableForeignKeyOptions } => {
-  return {
-    column: {
+  comment: string,
+): [TableColumnOptions, TableForeignKeyOptions] => {
+  return [
+    {
       name: `${referencedTableName}_id`,
       type: 'int',
       unsigned: true,
       isNullable: false,
       comment,
     },
-    fk: {
+    {
       columnNames: [`${referencedTableName}_id`],
       referencedTableName,
       referencedColumnNames: ['id'],
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-  };
+  ];
 };

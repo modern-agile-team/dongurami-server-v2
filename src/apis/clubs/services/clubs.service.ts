@@ -447,8 +447,6 @@ export class ClubsService {
     clubId: number,
     createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
   ): Promise<ClubPostDto> {
-    const { tagNames } = createClubPostRequestBodyDto;
-
     const isExistClub = await this.clubRepository.exist({
       where: {
         id: clubId,
@@ -474,6 +472,8 @@ export class ClubsService {
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
+
+    const { tagNames } = createClubPostRequestBodyDto;
 
     const newClubPostTags = await this.clubPostTagsService.bulkCreate(
       userId,

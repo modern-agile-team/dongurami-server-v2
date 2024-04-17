@@ -1,13 +1,13 @@
 import {
   generateCreatedAtColumn,
-  generateFkColumnAndOption,
+  generateFkColumn,
   generatePrimaryColumn,
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
 export class ClubPostTag1713161356352 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const { column, fk } = generateFkColumnAndOption(
+    const [userColumn, userFk] = generateFkColumn(
       'user',
       '동아리 게시글 태그 생성 유저 고유 ID',
     );
@@ -17,7 +17,7 @@ export class ClubPostTag1713161356352 implements MigrationInterface {
         name: 'club_post_tag',
         columns: [
           generatePrimaryColumn('동아리 게시글 태그'),
-          column,
+          userColumn,
           new TableColumn({
             name: 'name',
             type: 'varchar',
@@ -28,7 +28,7 @@ export class ClubPostTag1713161356352 implements MigrationInterface {
           }),
           generateCreatedAtColumn(),
         ],
-        foreignKeys: [fk],
+        foreignKeys: [userFk],
       }),
     );
   }

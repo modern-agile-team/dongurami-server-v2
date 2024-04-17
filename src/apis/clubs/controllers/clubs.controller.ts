@@ -26,6 +26,7 @@ import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.d
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
+import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';

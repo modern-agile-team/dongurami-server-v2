@@ -163,4 +163,15 @@ export class ClubsController {
       putUpdateClubApplicationFormDto,
     );
   }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @ApiClub.CreateClubReview({ summary: '동아리 후기 생성' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'clubReview', type: ResponseType.Detail })
+  @Post(':clubId/reviews')
+  createClubReview(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Body() createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
+  ) {}
 }

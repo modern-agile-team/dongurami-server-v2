@@ -5,7 +5,6 @@ import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
 import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
-import { ClubPostTagsModule } from '@src/apis/club-post-tags/club-post-tags.module';
 import { ClubPostsModule } from '@src/apis/club-posts/club-posts.module';
 import { ClubReviewsModule } from '@src/apis/club-reviews/club-reviews.module';
 import { ClubTagLinksModule } from '@src/apis/club-tag-links/club-tag-links.module';
@@ -13,6 +12,7 @@ import { ClubTagsModule } from '@src/apis/club-tags/club-tags.module';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
+import { PostTagsModule } from '@src/apis/post-tags/post-tags.module';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { QueryHelper } from '@src/helpers/query.helper';
 
@@ -29,7 +29,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     ClubMembersModule,
     ClubPostsModule,
     ClubApplicationFormModule,
-    ClubPostTagsModule,
+    PostTagsModule,
     ClubReviewsModule,
   ],
   controllers: [ClubsController],

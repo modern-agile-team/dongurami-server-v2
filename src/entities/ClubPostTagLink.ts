@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 import { ClubPost } from '@src/entities/ClubPost';
-import { ClubPostTag } from '@src/entities/ClubPostTag';
+import { PostTag } from '@src/entities/PostTag';
 import { User } from '@src/entities/User';
 
 @Entity('club_post_tag_link')
@@ -35,11 +35,11 @@ export class ClubPostTagLink {
   clubPostId: number;
 
   @Column('int', {
-    name: 'club_post_tag_id',
-    comment: '동아리 게시글 태그 고유 ID',
+    name: 'post_tag_id',
+    comment: '게시글 태그 고유 ID',
     unsigned: true,
   })
-  clubPostTagId: number;
+  postTagId: number;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -62,10 +62,10 @@ export class ClubPostTagLink {
   @JoinColumn([{ name: 'club_post_id', referencedColumnName: 'id' }])
   clubPost: ClubPost;
 
-  @ManyToOne(() => ClubPostTag, (clubPostTag) => clubPostTag.clubPostTagLinks, {
+  @ManyToOne(() => PostTag, (postTag) => postTag.clubPostTagLinks, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn([{ name: 'club_post_tag_id', referencedColumnName: 'id' }])
-  clubPostTag: ClubPostTag;
+  @JoinColumn([{ name: 'post_tag_id', referencedColumnName: 'id' }])
+  postTag: PostTag;
 }

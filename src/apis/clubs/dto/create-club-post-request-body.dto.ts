@@ -2,12 +2,12 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { ArrayMaxSize, Length, MinLength } from 'class-validator';
 
-import { CLUB_POST_TAG_NAME_LENGTH } from '@src/apis/club-post-tags/constants/club-post-tag.constant';
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
   CLUB_POST_TAG_COUNT,
 } from '@src/apis/club-posts/constants/club-post.constant';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { POST_TAG_NAME_LENGTH } from '@src/apis/post-tags/constants/post-tag.constant';
 
 export class CreateClubPostRequestBodyDto
   implements Pick<ClubPostDto, 'description'>
@@ -21,14 +21,14 @@ export class CreateClubPostRequestBodyDto
 
   @ApiPropertyOptional({
     description: '동아리 게시글 해시 태그',
-    minLength: CLUB_POST_TAG_NAME_LENGTH.MIN,
-    maxLength: CLUB_POST_TAG_NAME_LENGTH.MAX,
+    minLength: POST_TAG_NAME_LENGTH.MIN,
+    maxLength: POST_TAG_NAME_LENGTH.MAX,
     minItems: CLUB_POST_TAG_COUNT.MIN,
     maxItems: CLUB_POST_TAG_COUNT.MAX,
     default: [],
   })
   @ArrayMaxSize(CLUB_POST_TAG_COUNT.MAX)
-  @Length(CLUB_POST_TAG_NAME_LENGTH.MIN, CLUB_POST_TAG_NAME_LENGTH.MAX, {
+  @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, {
     each: true,
   })
   tagNames: string[] = [];

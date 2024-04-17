@@ -15,8 +15,6 @@ import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/reposi
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
-import { CreateClubPostTagDto } from '@src/apis/club-post-tags/dto/create-club-post-tag.dto';
-import { ClubPostTagsService } from '@src/apis/club-post-tags/services/club-post-tags.service';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
@@ -39,6 +37,7 @@ import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
+import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
@@ -62,7 +61,7 @@ export class ClubsService {
     private readonly clubTagsService: ClubTagsService,
     private readonly clubPostsService: ClubPostsService,
     private readonly clubApplicationFormService: ClubApplicationFormService,
-    private readonly clubPostTagsService: ClubPostTagsService,
+    private readonly postTagsService: PostTagsService,
     private readonly clubPostTagLinkRepository: ClubPostTagLinkRepository,
     private readonly clubReviewsService: ClubReviewsService,
     private readonly queryHelper: QueryHelper,
@@ -480,9 +479,9 @@ export class ClubsService {
 
     const { tagNames } = createClubPostRequestBodyDto;
 
-    const newClubPostTags = await this.clubPostTagsService.bulkCreate(
+    const postTags = await this.postTagsService.bulkCreate(
       userId,
-      tagNames.map((name) => new CreateClubPostTagDto({ name })),
+      tagNames.map((name) => ({ name })),
     );
 
     const newClubPost = await this.clubPostsService.create(
@@ -490,17 +489,17 @@ export class ClubsService {
         ...createClubPostRequestBodyDto,
         userId,
         clubId,
-        tags: newClubPostTags,
+        tags: postTags,
       }),
     );
 
     await this.bulkCreateClubPostTagLinks(
-      newClubPostTags.map(
+      postTags.map(
         (newClubPostTag) =>
           new CreateClubPostTagLinkDto({
             userId,
             clubPostId: newClubPost.id,
-            clubPostTagId: newClubPostTag.id,
+            postTagId: newClubPostTag.id,
           }),
       ),
     );
@@ -557,12 +556,12 @@ export class ClubsService {
         );
       },
     ).map((createClubPostTagLinkDto: CreateClubPostTagLinkDto) => {
-      const { userId, clubPostId, clubPostTagId } = createClubPostTagLinkDto;
+      const { userId, clubPostId, postTagId } = createClubPostTagLinkDto;
 
       return this.clubPostTagLinkRepository.create({
         userId,
         clubPostId,
-        clubPostTagId,
+        postTagId,
       });
     });
 

@@ -36,7 +36,7 @@ export class ClubPostTagLink {
 
   @Column('int', {
     name: 'post_tag_id',
-    comment: '동아리 게시글 태그 고유 ID',
+    comment: '게시글 태그 고유 ID',
     unsigned: true,
   })
   postTagId: number;

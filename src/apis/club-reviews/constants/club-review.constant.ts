@@ -1,0 +1,4 @@
+export const CLUB_REVIEW_DESCRIPTION_LENGTH = {
+  MIN: 1,
+  MAX: 255,
+};

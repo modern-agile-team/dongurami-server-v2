@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { FreePostTagLink } from '@src/entities/FreePostTagLink';
 import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
 import { User } from '@src/entities/User';
@@ -61,4 +62,10 @@ export class PostTag {
     (noticePostTagLink) => noticePostTagLink.postTag,
   )
   noticePostTagLinks: NoticePostTagLink[];
+
+  @OneToMany(
+    () => ClubPostTagLink,
+    (clubPostTagLink) => clubPostTagLink.postTag,
+  )
+  clubPostTagLinks: ClubPostTagLink[];
 }

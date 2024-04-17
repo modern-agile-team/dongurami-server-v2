@@ -8,7 +8,6 @@ import { ClubApplicationFormModule } from '@src/apis/club-application-form/club-
 import { ClubCategoriesModule } from '@src/apis/club-categories/club-categories.module';
 import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-category-links.module';
 import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
-import { ClubPostTagsModule } from '@src/apis/club-post-tags/club-post-tags.module';
 import { ClubPostsModule } from '@src/apis/club-posts/club-posts.module';
 import { ClubTagLinksModule } from '@src/apis/club-tag-links/club-tag-links.module';
 import { ClubTagsModule } from '@src/apis/club-tags/club-tags.module';
@@ -46,7 +45,6 @@ import { UsersModule } from '@src/apis/users/users.module';
     ClubMembersModule,
     ClubPostsModule,
     ClubApplicationFormModule,
-    ClubPostTagsModule,
   ],
 })
 export class ApiModule {}

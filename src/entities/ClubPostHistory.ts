@@ -10,7 +10,7 @@ import {
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { HistoryAction } from '@src/constants/enum';
 import { ClubPost } from '@src/entities/ClubPost';
-import { ClubPostTag } from '@src/entities/ClubPostTag';
+import { PostTag } from '@src/entities/PostTag';
 
 @Index('FK_aa300120c9c17afbe05038bed8b', ['clubId'], {})
 @Index('FK_16ddac5d0ad7139092b9df29288', ['userId'], {})
@@ -48,7 +48,7 @@ export class ClubPostHistory {
     name: 'tags',
     comment: '동아리 게시글 해시태그',
   })
-  tags: Pick<ClubPostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('enum', {
     name: 'status',

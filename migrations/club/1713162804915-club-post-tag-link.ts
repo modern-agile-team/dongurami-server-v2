@@ -17,9 +17,9 @@ export class ClubPostTagLink1713162804915 implements MigrationInterface {
       '동아리 게시글 고유 ID',
     );
 
-    const [clubPostTagColumn, clubPostTagFk] = generateFkColumn(
-      'club_post_tag',
-      '동아리 게시글 태그 고유 ID',
+    const [postTagColumn, postTagFk] = generateFkColumn(
+      'post_tag',
+      '게시글 태그 고유 ID',
     );
 
     await queryRunner.createTable(
@@ -29,10 +29,10 @@ export class ClubPostTagLink1713162804915 implements MigrationInterface {
           generatePrimaryColumn('동아리 게시글 태그 링크 고유 ID'),
           userColumn,
           clubPostColumn,
-          clubPostTagColumn,
+          postTagColumn,
           generateCreatedAtColumn(),
         ],
-        foreignKeys: [userFk, clubPostFk, clubPostTagFk],
+        foreignKeys: [userFk, clubPostFk, postTagFk],
       }),
     );
   }

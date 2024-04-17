@@ -6,6 +6,7 @@ import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
@@ -305,7 +306,7 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       DetailResponseDto.swaggerBuilder(
         HttpStatus.CREATED,
         'clubReview',
-        ClubApplicationFormDto,
+        ClubReviewDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

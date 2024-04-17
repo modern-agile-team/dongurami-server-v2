@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Exclude } from 'class-transformer';
 
+import {
+  CLUB_REVIEW_DESCRIPTION_LENGTH,
+  CLUB_REVIEW_STAR_RATE_RANGE,
+} from '@src/apis/club-reviews/constants/club-review.constant';
+import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { ClubReview } from '@src/entities/ClubReview';
 
@@ -16,6 +21,7 @@ export class ClubReviewDto
       | 'description'
       | 'starRate'
       | 'isAnonymous'
+      | 'status'
       | 'createdAt'
       | 'updatedAt'
       | 'deletedAt'
@@ -37,14 +43,29 @@ export class ClubReviewDto
 
   @ApiProperty({
     description: '동아리 후기 본문',
-    minimum: 1,
+    nullable: true,
+    minLength: CLUB_REVIEW_DESCRIPTION_LENGTH.MIN,
+    maxLength: CLUB_REVIEW_DESCRIPTION_LENGTH.MAX,
   })
-  description: string;
+  description: string | null;
 
+  @ApiProperty({
+    description: '별점',
+    format: 'integer',
+    minimum: CLUB_REVIEW_STAR_RATE_RANGE.MIN,
+    maximum: CLUB_REVIEW_STAR_RATE_RANGE.MAX,
+  })
   starRate: number;
 
+  @ApiProperty({
+    description: '익명 여부',
+    default: true,
+  })
   isAnonymous: boolean;
 
   @Exclude()
-  deletedAt: Date;
+  status: ClubReviewStatus;
+
+  @Exclude()
+  deletedAt: Date | null;
 }

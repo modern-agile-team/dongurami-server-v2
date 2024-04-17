@@ -11,6 +11,7 @@ import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
+import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
@@ -319,6 +320,9 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        CLUB_REVIEW_ERROR_CODE.ALREADY_REVIEWED,
       ]),
     );
   },

@@ -68,4 +68,10 @@ export class ClubReviewDto
 
   @Exclude()
   deletedAt: Date | null;
+
+  constructor(clubReviewDto: Partial<ClubReviewDto> = {}) {
+    super();
+
+    Object.assign(this, clubReviewDto);
+  }
 }

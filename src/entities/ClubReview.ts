@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { Club } from '@src/entities/Club';
 import { ClubReviewHistory } from '@src/entities/ClubReviewHistory';
 import { User } from '@src/entities/User';
@@ -59,6 +60,14 @@ export class ClubReview {
     transformer: new BooleanTransformer(true),
   })
   isAnonymous: boolean;
+
+  @Column('enum', {
+    name: 'status',
+    comment: '동아리 후기 상태',
+    enum: ['posting', 'remove'],
+    default: () => "'posting'",
+  })
+  status: ClubReviewStatus;
 
   @Column('timestamp', {
     name: 'created_at',

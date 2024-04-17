@@ -601,7 +601,7 @@ export class ClubsService {
     createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
   ): Promise<ClubReviewDto> {
     const isExistClub = await this.clubRepository.exist({
-      where: { id: clubId },
+      where: { id: clubId, status: ClubStatus.Active },
     });
 
     if (!isExistClub) {

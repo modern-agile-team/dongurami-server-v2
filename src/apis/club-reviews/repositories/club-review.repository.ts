@@ -23,6 +23,8 @@ export class ClubReviewRepository
   }
 
   isExistClubReview(clubId: number, userId: number): Promise<boolean> {
-    return this.exist({ where: { clubId, userId } });
+    return this.exist({
+      where: { clubId, userId, status: ClubReviewStatus.Posting },
+    });
   }
 }

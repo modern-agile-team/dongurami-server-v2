@@ -3,13 +3,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Club } from '@src/entities/Club';
+import { ClubReviewHistory } from '@src/entities/ClubReviewHistory';
 import { User } from '@src/entities/User';
 
-@Entity('club_review', { schema: 'dongurami_local_db' })
+@Entity('club_review')
 export class ClubReview {
   @PrimaryGeneratedColumn({
     type: 'int',
@@ -90,4 +92,10 @@ export class ClubReview {
   })
   @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
   club: Club;
+
+  @OneToMany(
+    () => ClubReviewHistory,
+    (clubReviewHistory) => clubReviewHistory.clubReview,
+  )
+  clubReviewHistories: ClubReviewHistory[];
 }

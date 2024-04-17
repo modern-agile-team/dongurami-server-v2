@@ -5,4 +5,6 @@ export interface IClubReviewRepository {
   createClubReview: (
     createClubReviewDto: CreateClubReviewDto,
   ) => Promise<ClubReview>;
+
+  isExistClubReview: (clubId: number, userId: number) => Promise<boolean>;
 }

@@ -10,6 +10,7 @@ import {
 import { Club } from '@src/entities/Club';
 import { ClubReviewHistory } from '@src/entities/ClubReviewHistory';
 import { User } from '@src/entities/User';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Entity('club_review')
 export class ClubReview {
@@ -55,8 +56,9 @@ export class ClubReview {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'1'",
+    transformer: new BooleanTransformer(true),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

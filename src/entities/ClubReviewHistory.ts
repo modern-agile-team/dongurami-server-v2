@@ -9,6 +9,7 @@ import {
 
 import { HistoryAction } from '@src/constants/enum';
 import { ClubReview } from '@src/entities/ClubReview';
+import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
 @Index('FK_4a00334d6a00958f6c1c74c9ff3', ['userId'], {})
 @Index('FK_ab802f92a6582ef0802e0a821dd', ['clubId'], {})
@@ -52,8 +53,9 @@ export class ClubReviewHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'1'",
+    transformer: new BooleanTransformer(true),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('timestamp', {
     name: 'created_at',

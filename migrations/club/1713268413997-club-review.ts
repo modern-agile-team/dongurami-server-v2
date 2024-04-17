@@ -1,7 +1,7 @@
 import {
   generateCreatedAtColumn,
   generateDeletedAtColumn,
-  generateFkColumnAndOption,
+  generateFkColumn,
   generatePrimaryColumn,
   generateUpdatedAtColumn,
 } from 'migrations/__utils/util';
@@ -9,14 +9,11 @@ import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
 export class ClubReview1713268413997 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const { column: userColumn, fk: userFk } = generateFkColumnAndOption(
+    const [userColumn, userFk] = generateFkColumn(
       'user',
       '동아리 후기 생성 유저 고유 ID',
     );
-    const { column: clubColumn, fk: clubFk } = generateFkColumnAndOption(
-      'club',
-      '동아리 고유 ID',
-    );
+    const [clubColumn, clubFk] = generateFkColumn('club', '동아리 고유 ID');
 
     await queryRunner.createTable(
       new Table({

@@ -1,22 +1,26 @@
 import {
   generateCreatedAtColumn,
-  generateFkColumnAndOption,
+  generateFkColumn,
   generatePrimaryColumn,
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class ClubPostTagLink1713162804915 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const { column: userColumn, fk: userFk } = generateFkColumnAndOption(
+    const [userColumn, userFk] = generateFkColumn(
       'user',
       '동아리 게시글 태그 링크 생성 유저 고유 ID',
     );
 
-    const { column: clubPostColumn, fk: clubPostFk } =
-      generateFkColumnAndOption('club_post', '동아리 게시글 고유 ID');
+    const [clubPostColumn, clubPostFk] = generateFkColumn(
+      'club_post',
+      '동아리 게시글 고유 ID',
+    );
 
-    const { column: clubPostTagColumn, fk: clubPostTagFk } =
-      generateFkColumnAndOption('club_post_tag', '동아리 게시글 태그 고유 ID');
+    const [clubPostTagColumn, clubPostTagFk] = generateFkColumn(
+      'club_post_tag',
+      '동아리 게시글 태그 고유 ID',
+    );
 
     await queryRunner.createTable(
       new Table({

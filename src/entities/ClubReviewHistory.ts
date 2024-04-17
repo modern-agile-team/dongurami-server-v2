@@ -34,6 +34,13 @@ export class ClubReviewHistory {
   @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
   clubId: number;
 
+  @Column('int', {
+    name: 'club_review_id',
+    comment: '동아리 리뷰 고유 ID',
+    unsigned: true,
+  })
+  clubReviewId: number;
+
   @Column('varchar', {
     name: 'description',
     nullable: true,

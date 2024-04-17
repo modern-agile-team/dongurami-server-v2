@@ -20,6 +20,9 @@ import { ClubPostTagsService } from '@src/apis/club-post-tags/services/club-post
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
+import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
+import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
+import { ClubReviewsService } from '@src/apis/club-reviews/services/club-reviews.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubTagsService } from '@src/apis/club-tags/services/club-tags.service';
@@ -32,6 +35,7 @@ import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-categ
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubPostTagLinkDto } from '@src/apis/clubs/dto/create-club-post-tag-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
+import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
@@ -60,6 +64,7 @@ export class ClubsService {
     private readonly clubApplicationFormService: ClubApplicationFormService,
     private readonly clubPostTagsService: ClubPostTagsService,
     private readonly clubPostTagLinkRepository: ClubPostTagLinkRepository,
+    private readonly clubReviewsService: ClubReviewsService,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -586,6 +591,47 @@ export class ClubsService {
       userId,
       formId,
       putUpdateClubApplicationFormDto,
+    );
+  }
+
+  @Transactional()
+  async createClubReview(
+    userId: number,
+    clubId: number,
+    createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
+  ): Promise<ClubReviewDto> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const isExistClubMember = await this.clubMembersService.isExistClubMember(
+      clubId,
+      userId,
+    );
+
+    /**
+     * @todo 추후 guard를 통해 access control 되도록 변경
+     * @todo 추후 기획에 따라 후기 작성 가능 여부에 대한 기준이 변경될 가능성 높음.
+     * 현재는 club member인지만 판별
+     */
+    if (!isExistClubMember) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    return this.clubReviewsService.create(
+      new CreateClubReviewDto({
+        userId,
+        clubId,
+        ...createClubReviewRequestBodyDto,
+      }),
     );
   }
 

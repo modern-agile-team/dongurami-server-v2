@@ -20,6 +20,7 @@ import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
@@ -174,5 +175,11 @@ export class ClubsController {
     @User() user: UserDto,
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
     @Body() createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
-  ) {}
+  ): Promise<ClubReviewDto> {
+    return this.clubsService.createClubReview(
+      user.id,
+      clubId,
+      createClubReviewRequestBodyDto,
+    );
+  }
 }

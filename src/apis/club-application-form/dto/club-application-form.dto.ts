@@ -20,11 +20,13 @@ export class ClubApplicationFormDto
 {
   @ApiProperty({
     description: '공통 기본 지원서 질문항목',
+    type: [ClubApplicationFormQuestionItemDto],
   })
   commonQuestion: ClubApplicationFormQuestionItemDto[];
 
   @ApiProperty({
     description: '커스텀 질문 항목',
+    type: [ClubApplicationFormQuestionItemDto],
   })
   customQuestion: ClubApplicationFormQuestionItemDto[];
 

@@ -546,9 +546,7 @@ export class ClubsService {
       createClubPostTagLinkDtos,
       existClubPostTagLinks,
       (a, b) => {
-        return (
-          a.clubPostId === b.clubPostId && a.clubPostTagId === b.clubPostTagId
-        );
+        return a.clubPostId === b.clubPostId && a.postTagId === b.postTagId;
       },
     ).map((createClubPostTagLinkDto: CreateClubPostTagLinkDto) => {
       const { userId, clubPostId, postTagId } = createClubPostTagLinkDto;

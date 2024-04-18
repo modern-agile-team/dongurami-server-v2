@@ -10,6 +10,8 @@ import {
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { Club } from '@src/entities/Club';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
+import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
+import { PostTag } from '@src/entities/PostTag';
 import { User } from '@src/entities/User';
 
 @Entity('club_post')
@@ -43,7 +45,7 @@ export class ClubPost {
     name: 'tags',
     comment: '동아리 게시글 해시태그',
   })
-  tags: string[];
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('enum', {
     name: 'status',
@@ -93,4 +95,10 @@ export class ClubPost {
     (clubPostHistory) => clubPostHistory.clubPost,
   )
   clubPostHistories: ClubPostHistory[];
+
+  @OneToMany(
+    () => ClubPostTagLink,
+    (clubPostTagLink) => clubPostTagLink.clubPost,
+  )
+  clubPostTagLinks: ClubPostTagLink[];
 }

@@ -21,6 +21,7 @@ import { ClubCategory } from '@src/entities/ClubCategory';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubMember } from '@src/entities/ClubMember';
 import { ClubPost } from '@src/entities/ClubPost';
+import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { ClubTag } from '@src/entities/ClubTag';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { FreePost } from '@src/entities/FreePost';
@@ -270,4 +271,7 @@ export class User {
 
   @OneToMany(() => ClubPost, (clubPost) => clubPost.user)
   clubPosts: ClubPost[];
+
+  @OneToMany(() => ClubPostTagLink, (clubPostTagLink) => clubPostTagLink.user)
+  clubPostTagLinks: ClubPostTagLink[];
 }

@@ -4,13 +4,13 @@ import { ArrayMaxSize, Length, MinLength } from 'class-validator';
 
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
-  CLUB_POST_HASH_TAG_COUNT,
-  CLUB_POST_HASH_TAG_ELEMENT_LENGTH,
+  CLUB_POST_TAG_COUNT,
 } from '@src/apis/club-posts/constants/club-post.constant';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { POST_TAG_NAME_LENGTH } from '@src/apis/post-tags/constants/post-tag.constant';
 
 export class CreateClubPostRequestBodyDto
-  implements Pick<ClubPostDto, 'description' | 'tags'>
+  implements Pick<ClubPostDto, 'description'>
 {
   @ApiProperty({
     description: '동아리 게시글 본문',
@@ -20,18 +20,16 @@ export class CreateClubPostRequestBodyDto
   description: string;
 
   @ApiPropertyOptional({
-    description: '동아리 해시 태그',
-    minLength: CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MIN,
-    maxLength: CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MAX,
-    minItems: CLUB_POST_HASH_TAG_COUNT.MIN,
-    maxItems: CLUB_POST_HASH_TAG_COUNT.MAX,
+    description: '동아리 게시글 해시 태그',
+    minLength: POST_TAG_NAME_LENGTH.MIN,
+    maxLength: POST_TAG_NAME_LENGTH.MAX,
+    minItems: CLUB_POST_TAG_COUNT.MIN,
+    maxItems: CLUB_POST_TAG_COUNT.MAX,
     default: [],
   })
-  @ArrayMaxSize(CLUB_POST_HASH_TAG_COUNT.MAX)
-  @Length(
-    CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MIN,
-    CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MAX,
-    { each: true },
-  )
-  tags: string[] = [];
+  @ArrayMaxSize(CLUB_POST_TAG_COUNT.MAX)
+  @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, {
+    each: true,
+  })
+  tagNames: string[] = [];
 }

@@ -1,22 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
+import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.repository';
-import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 
 @Injectable()
 export class ClubPostsService {
   constructor(private readonly clubPostRepository: ClubPostRepository) {}
 
-  async create(
-    userId: number,
-    clubId: number,
-    createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
-  ): Promise<ClubPostDto> {
+  async create(createClubPostDto: CreateClubPostDto): Promise<ClubPostDto> {
     const newClubPost = this.clubPostRepository.create({
-      userId,
-      clubId,
-      ...createClubPostRequestBodyDto,
+      ...createClubPostDto,
+      status: ClubPostStatus.Posting,
     });
 
     await this.clubPostRepository.save(newClubPost);

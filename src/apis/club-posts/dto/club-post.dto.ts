@@ -4,16 +4,18 @@ import { Exclude } from 'class-transformer';
 
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
-  CLUB_POST_HASH_TAG_COUNT,
-  CLUB_POST_HASH_TAG_ELEMENT_LENGTH,
+  CLUB_POST_TAG_COUNT,
 } from '@src/apis/club-posts/constants/club-post.constant';
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
+import { POST_TAG_NAME_LENGTH } from '@src/apis/post-tags/constants/post-tag.constant';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { ClubPost } from '@src/entities/ClubPost';
 
 export class ClubPostDto
   extends BaseDto
-  implements Omit<ClubPost, 'club' | 'user' | 'clubPostHistories'>
+  implements
+    Omit<ClubPost, 'club' | 'user' | 'clubPostHistories' | 'clubPostTagLinks'>
 {
   @ApiProperty({
     description: '동아리 고유 ID',
@@ -37,12 +39,13 @@ export class ClubPostDto
 
   @ApiProperty({
     description: '동아리 게시글 해시태그',
-    minLength: CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MIN,
-    maxLength: CLUB_POST_HASH_TAG_ELEMENT_LENGTH.MAX,
-    minItems: CLUB_POST_HASH_TAG_COUNT.MIN,
-    maxItems: CLUB_POST_HASH_TAG_COUNT.MAX,
+    minLength: POST_TAG_NAME_LENGTH.MIN,
+    maxLength: POST_TAG_NAME_LENGTH.MAX,
+    minItems: CLUB_POST_TAG_COUNT.MIN,
+    maxItems: CLUB_POST_TAG_COUNT.MAX,
+    type: [PostTagDto],
   })
-  tags: string[];
+  tags: PostTagDto[];
 
   @Exclude()
   status: ClubPostStatus;

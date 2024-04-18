@@ -4,6 +4,7 @@ import {
   TableColumn,
   TableColumnOptions,
   TableForeignKey,
+  TableForeignKeyOptions,
 } from 'typeorm';
 
 export const generatePrimaryColumn = (
@@ -376,4 +377,26 @@ export const createReplyCommentTable = async (
   await queryRunner.query(
     `ALTER TABLE \`${replyCommentTableName}\` COMMENT = "${postDescription} 게시글 대댓글"`,
   );
+};
+
+export const generateFkColumn = (
+  referencedTableName: string,
+  comment: string,
+): [TableColumnOptions, TableForeignKeyOptions] => {
+  return [
+    {
+      name: `${referencedTableName}_id`,
+      type: 'int',
+      unsigned: true,
+      isNullable: false,
+      comment,
+    },
+    {
+      columnNames: [`${referencedTableName}_id`],
+      referencedTableName,
+      referencedColumnNames: ['id'],
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+  ];
 };

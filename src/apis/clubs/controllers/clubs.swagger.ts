@@ -322,7 +322,7 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
-        CLUB_REVIEW_ERROR_CODE.ALREADY_REVIEWED,
+        CLUB_REVIEW_ERROR_CODE.ALREADY_EXIST_REVIEWED,
       ]),
     );
   },

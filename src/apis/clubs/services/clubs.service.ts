@@ -608,7 +608,9 @@ export class ClubsService {
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       });
     }
-
+    /**
+     * @todo 현재 clubMember인지만을 판별하는 로직에서 동아리 지원서 승인 이력을 조회하는 로직으로 수정
+     */
     return this.clubReviewsService.create(
       new CreateClubReviewDto({
         userId,

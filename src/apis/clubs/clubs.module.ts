@@ -6,6 +6,7 @@ import { ClubCategoryLinksModule } from '@src/apis/club-category-links/club-cate
 import { ClubMembersModule } from '@src/apis/club-members/club-members.module';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostsModule } from '@src/apis/club-posts/club-posts.module';
+import { ClubReviewsModule } from '@src/apis/club-reviews/club-reviews.module';
 import { ClubTagLinksModule } from '@src/apis/club-tag-links/club-tag-links.module';
 import { ClubTagsModule } from '@src/apis/club-tags/club-tags.module';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
@@ -29,6 +30,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     ClubPostsModule,
     ClubApplicationFormModule,
     PostTagsModule,
+    ClubReviewsModule,
   ],
   controllers: [ClubsController],
   providers: [ClubsService, QueryHelper],

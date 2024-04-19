@@ -20,12 +20,14 @@ import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
+import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -161,6 +163,23 @@ export class ClubsController {
       clubId,
       formId,
       putUpdateClubApplicationFormDto,
+    );
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @ApiClub.CreateClubReview({ summary: '동아리 후기 생성' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'clubReview', type: ResponseType.Detail })
+  @Post(':clubId/reviews')
+  createClubReview(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Body() createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
+  ): Promise<ClubReviewDto> {
+    return this.clubsService.createClubReview(
+      user.id,
+      clubId,
+      createClubReviewRequestBodyDto,
     );
   }
 }

@@ -1,5 +1,6 @@
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { CLUB_CATEGORY_ERROR_CODE } from '@src/constants/error/club-category/club-category-error-code.constant';
+import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
@@ -18,4 +19,6 @@ export const ERROR_CODE = {
   ...REACTION_ERROR_CODE,
   // 5000 ~ 5999
   ...CLUB_CATEGORY_ERROR_CODE,
+  // 6000 ~ 6999
+  ...CLUB_REVIEW_ERROR_CODE,
 } as const;

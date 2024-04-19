@@ -13,6 +13,7 @@ import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubHistory } from '@src/entities/ClubHistory';
 import { ClubMember } from '@src/entities/ClubMember';
 import { ClubPost } from '@src/entities/ClubPost';
+import { ClubReview } from '@src/entities/ClubReview';
 import { ClubTag } from '@src/entities/ClubTag';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { User } from '@src/entities/User';
@@ -117,4 +118,7 @@ export class Club {
 
   @OneToMany(() => ClubPost, (clubPost) => clubPost.club)
   clubPosts: ClubPost[];
+
+  @OneToMany(() => ClubReview, (clubReview) => clubReview.club)
+  clubReviews: ClubReview[];
 }

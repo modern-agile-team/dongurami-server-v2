@@ -1,9 +1,9 @@
-/**
- * 6000 ~ 6999
- */
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { ErrorMessage } from '@src/types/type';
 
+/**
+ * 6000 ~ 6999
+ */
 export const CLUB_REVIEW_ERROR_MESSAGE: ErrorMessage<
   typeof CLUB_REVIEW_ERROR_CODE
 > = {

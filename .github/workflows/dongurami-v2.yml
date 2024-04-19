@@ -70,6 +70,7 @@ jobs:
   build-notify-slack:
     needs: build
     runs-on: ubuntu-latest
+    if: always()
 
     steps:
       - name: Slack Notification
@@ -124,6 +125,7 @@ jobs:
   deploy-notify-slack:
     needs: deploy
     runs-on: ubuntu-latest
+    if: always()
 
     steps:
       - name: Slack Notification

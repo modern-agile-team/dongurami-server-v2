@@ -7,6 +7,6 @@ import { ErrorMessage } from '@src/types/type';
 export const CLUB_REVIEW_ERROR_MESSAGE: ErrorMessage<
   typeof CLUB_REVIEW_ERROR_CODE
 > = {
-  [CLUB_REVIEW_ERROR_CODE.ALREADY_REVIEWED]:
+  [CLUB_REVIEW_ERROR_CODE.ALREADY_EXIST_REVIEWED]:
     "You've already reviewed this club.",
 } as const;

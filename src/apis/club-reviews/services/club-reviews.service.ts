@@ -24,7 +24,7 @@ export class ClubReviewsService {
 
     if (isExistClubReview) {
       throw new HttpConflictException({
-        code: CLUB_REVIEW_ERROR_CODE.ALREADY_REVIEWED,
+        code: CLUB_REVIEW_ERROR_CODE.ALREADY_EXIST_REVIEWED,
       });
     }
 

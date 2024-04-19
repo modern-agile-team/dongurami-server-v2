@@ -615,8 +615,7 @@ export class ClubsService {
     );
 
     /**
-     * @todo 추후 guard를 통해 access control 되도록 변경
-     * @todo 추후 기획에 따라 후기 작성 가능 여부에 대한 기준이 변경될 가능성 높음.
+     * @todo 현재 clubMember인지만을 판별하는 로직에서 동아리 지원서 승인 이력을 조회하는 로직으로 수정
      * 현재는 club member인지만 판별
      */
     if (!isExistClubMember) {

@@ -47,7 +47,7 @@ export class ClubReview {
 
   @Column('tinyint', {
     name: 'star_rate',
-    comment: '동아리 후기 별점',
+    comment: '동아리 후기 별점(1 ~ 5점)',
     unsigned: true,
   })
   starRate: number;

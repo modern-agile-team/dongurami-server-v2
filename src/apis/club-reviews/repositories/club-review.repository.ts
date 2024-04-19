@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 
 import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
-import { IClubReviewRepository } from '@src/apis/club-reviews/repositories/iclub-review.repository';
+import { IClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository.interface';
 import { CustomRepository } from '@src/core/type-orm/decorators/custom-repository.decorator';
 import { ClubReview } from '@src/entities/ClubReview';
 

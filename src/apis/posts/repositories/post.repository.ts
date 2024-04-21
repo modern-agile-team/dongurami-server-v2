@@ -54,10 +54,34 @@ export class PostRepository {
       .createQueryBuilder()
       .from(virtualTableQuery, 'post')
       .leftJoin(User, 'user', 'user.id = post.userId')
-      .select('*')
+      .select([
+        'post.id',
+        'type',
+        'userId',
+        'title',
+        'hit',
+        'createdAt',
+        'updatedAt',
+        'major_id',
+        'login_type',
+        'sns_id',
+        'student_number',
+        'name',
+        'nickname',
+        'phone_number',
+        'grade',
+        'gender',
+        'profile_path',
+        'role',
+        'status',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'email',
+      ])
       .orderBy(order)
-      .skip(skip)
-      .take(take)
+      .limit(take)
+      .offset(skip)
       .getQueryAndParameters();
 
     const postRaws = await this.dataSource.query(postQuery, [

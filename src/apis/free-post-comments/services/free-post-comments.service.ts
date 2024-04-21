@@ -100,22 +100,31 @@ export class FreePostCommentsService {
      * @todo 1 이상 depth도 처리되게 변경
      * @todo join 후 where 필터링이 아닌 join on 조건으로 필터링되게
      */
-    return this.freePostCommentRepository.findAndCount({
-      where: {
-        ...where,
-        depth: 0,
-        children: {
-          status: FreePostCommentStatus.Posting,
+    const [comments, count] = await this.freePostCommentRepository.findAndCount(
+      {
+        where: {
+          ...where,
+          depth: 0,
+        },
+        order,
+        skip: page * pageSize,
+        take: pageSize,
+        relations: {
+          ...relations,
+          user: true,
         },
       },
-      order,
-      skip: page * pageSize,
-      take: pageSize,
-      relations: {
-        ...relations,
-        user: true,
-      },
+    );
+
+    const filteredComments = comments.map((comment) => {
+      comment.children = comment.children.filter(
+        (c) => c.status === FreePostCommentStatus.Posting,
+      );
+
+      return comment;
     });
+
+    return [filteredComments, count];
   }
 
   async findOneOrNotFound(

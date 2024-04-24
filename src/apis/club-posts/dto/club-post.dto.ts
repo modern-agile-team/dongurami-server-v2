@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Exclude } from 'class-transformer';
 
+import { AttachmentDto } from '@src/apis/attachments/dto/attachment.dto';
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
   CLUB_POST_TAG_COUNT,
@@ -15,7 +16,14 @@ import { ClubPost } from '@src/entities/ClubPost';
 export class ClubPostDto
   extends BaseDto
   implements
-    Omit<ClubPost, 'club' | 'user' | 'clubPostHistories' | 'clubPostTagLinks'>
+    Omit<
+      ClubPost,
+      | 'club'
+      | 'user'
+      | 'clubPostHistories'
+      | 'clubPostTagLinks'
+      | 'clubPostAttachments'
+    >
 {
   @ApiProperty({
     description: '동아리 고유 ID',
@@ -46,6 +54,12 @@ export class ClubPostDto
     type: [PostTagDto],
   })
   tags: PostTagDto[];
+
+  @ApiProperty({
+    description: '동아리 게시글 첨부파일',
+    type: [AttachmentDto],
+  })
+  attachments: AttachmentDto[];
 
   @Exclude()
   status: ClubPostStatus;

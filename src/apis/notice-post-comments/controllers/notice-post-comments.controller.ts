@@ -40,11 +40,7 @@ export class NoticePostCommentsController {
     private readonly noticePostCommentsService: NoticePostCommentsService,
   ) {}
 
-  @ApiNoticePostComment.Create({
-    summary: '공지 게시글 댓글 생성',
-    description:
-      'path가 가리키는 공지 게시글이 댓글을 비 허용할 시 403 에러 발생',
-  })
+  @ApiNoticePostComment.Create({ summary: '공지 게시글 댓글 생성' })
   @UseGuards(JwtAuthGuard)
   @SetResponse({ key: 'noticePostComment', type: ResponseType.Detail })
   @Post()

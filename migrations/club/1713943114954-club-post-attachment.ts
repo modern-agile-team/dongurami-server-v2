@@ -1,6 +1,7 @@
 import {
   generateCreatedAtColumn,
   generateFkColumn,
+  generatePrimaryColumn,
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
@@ -15,6 +16,7 @@ export class ClubPostAttachment1713943114954 implements MigrationInterface {
       new Table({
         name: 'club_post_attachment',
         columns: [
+          generatePrimaryColumn('동아리 게시글 첨부 파일 고유 ID'),
           new TableColumn({
             /**
              * @todo 현재 attachment 테이블의 path 컬럼은 index가 존재하지 않아서 외래 키를 생성하지 못함.

@@ -147,8 +147,6 @@ export class NoticePostCommentsService {
       },
     });
 
-    console.log(existComment);
-
     if (!existComment) {
       throw new HttpNotFoundException({
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,

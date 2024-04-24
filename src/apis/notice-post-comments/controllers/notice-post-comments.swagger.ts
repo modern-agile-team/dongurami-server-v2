@@ -6,14 +6,15 @@ import { NoticePostCommentsController } from '@src/apis/notice-post-comments/con
 import { NoticePostCommentDto } from '@src/apis/notice-post-comments/dto/notice-post-comment.dto';
 import { NoticePostCommentsItemDto } from '@src/apis/notice-post-comments/dto/notice-post-comments-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { NOTICE_POST_COMMENT_ERROR_CODE } from '@src/constants/error/notice-post-comment/notice-post-comment-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
-import { ApiOperator } from '@src/types/type';
 import { CustomValidationError } from '@src/types/custom-validation-errors.type';
+import { ApiOperator } from '@src/types/type';
 
 export const ApiNoticePostComment: ApiOperator<
   keyof NoticePostCommentsController
@@ -41,6 +42,9 @@ export const ApiNoticePostComment: ApiOperator<
           type: CustomValidationError,
         },
       ),
+      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
+        NOTICE_POST_COMMENT_ERROR_CODE.COMMENTS_DISABLED,
+      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),

@@ -10,13 +10,15 @@ export class ClubPostsService {
   constructor(private readonly clubPostRepository: ClubPostRepository) {}
 
   async create(createClubPostDto: CreateClubPostDto): Promise<ClubPostDto> {
+    const { attachments, ...createClubPostProps } = createClubPostDto;
+
     const newClubPost = this.clubPostRepository.create({
-      ...createClubPostDto,
+      ...createClubPostProps,
       status: ClubPostStatus.Posting,
     });
 
     await this.clubPostRepository.save(newClubPost);
 
-    return new ClubPostDto(newClubPost);
+    return new ClubPostDto({ ...newClubPost, attachments });
   }
 }

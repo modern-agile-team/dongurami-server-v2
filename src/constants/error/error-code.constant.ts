@@ -3,7 +3,7 @@ import { CLUB_CATEGORY_ERROR_CODE } from '@src/constants/error/club-category/clu
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
-import { NOTICE_COMMENT_ERROR_CODE } from '@src/constants/error/notice-comment/notice-comment-error-code.constant';
+import { NOTICE_POST_COMMENT_ERROR_CODE } from '@src/constants/error/notice-post-comment/notice-post-comment-error-code.constant';
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 
@@ -23,5 +23,5 @@ export const ERROR_CODE = {
   // 6000 ~ 6999
   ...CLUB_REVIEW_ERROR_CODE,
   // 7000 ~ 7999
-  ...NOTICE_COMMENT_ERROR_CODE,
+  ...NOTICE_POST_COMMENT_ERROR_CODE,
 } as const;

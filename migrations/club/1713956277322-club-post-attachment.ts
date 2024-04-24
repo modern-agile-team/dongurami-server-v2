@@ -5,7 +5,7 @@ import {
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
-export class ClubPostAttachment1713943114954 implements MigrationInterface {
+export class ClubPostAttachment1713956277322 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const [clubPostColumn, clubPostFk] = generateFkColumn(
       'club_post',
@@ -24,7 +24,7 @@ export class ClubPostAttachment1713943114954 implements MigrationInterface {
              */
             name: 'attachment_path',
             type: 'varchar',
-            length: '18',
+            length: '19',
             isNullable: false,
             comment: 'domain을 제외한 path',
           }),

@@ -10,9 +10,7 @@ export const CLUB_POST_ATTACHMENT_COUNT = {
 
 export const CLUB_POST_ATTACHMENT_MIME_TYPE = [
   'image/png',
-  'image/jpg',
   'image/jpeg',
   'video/mp4',
-  'video/mov',
-  'video/mpeg4',
+  'video/quicktime',
 ];

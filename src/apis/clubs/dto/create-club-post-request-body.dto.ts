@@ -4,6 +4,7 @@ import { ArrayMaxSize, Length, MinLength } from 'class-validator';
 
 import {
   CLUB_POST_ATTACHMENT_COUNT,
+  CLUB_POST_ATTACHMENT_MIME_TYPE,
   CLUB_POST_ATTACHMENT_PATH_LENGTH,
 } from '@src/apis/club-post-attachments/constants/club-post-attachment.constant';
 import {
@@ -39,9 +40,8 @@ export class CreateClubPostRequestBodyDto
 
   @ApiPropertyOptional({
     description:
-      '동아리 게시글 첨부파일. url이 아닌 path' +
-      '<br> 이미지의 경우 JPG,JPEG,PNG 형식만 업로드 가능' +
-      '<br> 비디오의 경우 MP4, MPEG4, MOV 형식만 업로드 가능',
+      '동아리 게시글 첨부파일. url이 아닌 path <br>' +
+      `허용하는 MIME-Type: ${[...CLUB_POST_ATTACHMENT_MIME_TYPE]}`,
     minLength: CLUB_POST_ATTACHMENT_PATH_LENGTH.MIN,
     maxLength: CLUB_POST_ATTACHMENT_PATH_LENGTH.MAX,
     minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,

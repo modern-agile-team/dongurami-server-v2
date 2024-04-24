@@ -38,11 +38,21 @@ export class CreateClubPostRequestBodyDto
   tagNames: string[] = [];
 
   @ApiPropertyOptional({
-    description: '동아리 게시글 첨부 파일',
+    description:
+      '동아리 게시글 첨부파일. url이 아닌 path' +
+      '<br> 이미지의 경우 JPG,JPEG,PNG 형식만 업로드 가능' +
+      '<br> 비디오의 경우 MP4, MPEG4, MOV 형식만 업로드 가능',
     minLength: CLUB_POST_ATTACHMENT_PATH_LENGTH.MIN,
     maxLength: CLUB_POST_ATTACHMENT_PATH_LENGTH.MAX,
     minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,
     maxItems: CLUB_POST_ATTACHMENT_COUNT.MAX,
+    default: [],
   })
-  paths: string[] = [];
+  @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
+  @Length(
+    CLUB_POST_ATTACHMENT_PATH_LENGTH.MIN,
+    CLUB_POST_ATTACHMENT_PATH_LENGTH.MAX,
+    { each: true },
+  )
+  filePaths: string[] = [];
 }

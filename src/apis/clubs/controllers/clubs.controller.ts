@@ -120,7 +120,7 @@ export class ClubsController {
   }
 
   @ApiClub.CreateClubPost({ summary: '동아리 게시글 생성' })
-  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
   @SetResponse({ key: 'clubPost', type: ResponseType.Detail })
   @Post(':clubId/posts')
   @UseGuards(JwtAuthGuard)

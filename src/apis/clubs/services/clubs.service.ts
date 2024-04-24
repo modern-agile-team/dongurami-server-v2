@@ -41,6 +41,7 @@ import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.d
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
+import { ATTACHMENT_ERROR_CODE } from '@src/constants/error/attachment/attachment-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
@@ -495,6 +496,16 @@ export class ClubsService {
 
     const filteredAttachments =
       this.clubPostAttachmentsService.filterAttachments(attachments);
+
+    const isAttachmentsOwner = filteredAttachments.every(
+      (filteredAttachment) => filteredAttachment.userId === userId,
+    );
+
+    if (!isAttachmentsOwner) {
+      throw new HttpForbiddenException({
+        code: ATTACHMENT_ERROR_CODE.PERMISSION_DENIED_ON_FILE,
+      });
+    }
 
     const newClubPost = await this.clubPostsService.create(
       new CreateClubPostDto({

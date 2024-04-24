@@ -1,3 +1,4 @@
+import { ATTACHMENT_ERROR_CODE } from '@src/constants/error/attachment/attachment-error-code.constant';
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
 import { CLUB_CATEGORY_ERROR_CODE } from '@src/constants/error/club-category/club-category-error-code.constant';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
@@ -21,4 +22,6 @@ export const ERROR_CODE = {
   ...CLUB_CATEGORY_ERROR_CODE,
   // 6000 ~ 6999
   ...CLUB_REVIEW_ERROR_CODE,
+  // 8000 ~ 8999
+  ...ATTACHMENT_ERROR_CODE,
 } as const;

@@ -15,6 +15,7 @@ import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { NOTICE_POST_COMMENT_ERROR_CODE } from '@src/constants/error/notice-post-comment/notice-post-comment-error-code.constant';
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -44,6 +45,12 @@ export class NoticePostCommentsService {
     if (!existPost) {
       throw new HttpNotFoundException({
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (!existPost.isAllowComment) {
+      throw new HttpForbiddenException({
+        code: NOTICE_POST_COMMENT_ERROR_CODE.COMMENTS_DISABLED,
       });
     }
 

@@ -11,7 +11,6 @@ import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
-import { ATTACHMENT_ERROR_CODE } from '@src/constants/error/attachment/attachment-error-code.constant';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -235,10 +234,6 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
           type: CustomValidationError,
         },
       ),
-      HttpException.swaggerBuilder(HttpStatus.FORBIDDEN, [
-        COMMON_ERROR_CODE.PERMISSION_DENIED,
-        ATTACHMENT_ERROR_CODE.PERMISSION_DENIED_ON_FILE,
-      ]),
       HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
         COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),

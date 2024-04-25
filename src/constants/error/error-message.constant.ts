@@ -1,4 +1,3 @@
-import { ATTACHMENT_ERROR_MESSAGE } from '@src/constants/error/attachment/attachment-error-message.constant';
 import { AUTH_ERROR_MESSAGE } from '@src/constants/error/auth/auth-error-message.constant';
 import { CLUB_CATEGORY_ERROR_MESSAGE } from '@src/constants/error/club-category/club-category-error-message.constant';
 import { CLUB_REVIEW_ERROR_MESSAGE } from '@src/constants/error/club-review/club-review-error-message.constant';
@@ -17,5 +16,4 @@ export const ERROR_MESSAGE = {
   ...CLUB_CATEGORY_ERROR_MESSAGE,
   ...CLUB_REVIEW_ERROR_MESSAGE,
   ...NOTICE_POST_COMMENT_ERROR_MESSAGE,
-  ...ATTACHMENT_ERROR_MESSAGE,
 } as const;

@@ -13,10 +13,10 @@ export class ClubPostAttachmentsService {
   ) {}
 
   async bulkCreateClubPostAttachments(
-    createClubPostAttachmentDto: CreateClubPostAttachmentDto[],
+    createClubPostAttachmentDtos: CreateClubPostAttachmentDto[],
   ): Promise<ClubPostAttachment[]> {
     const clubPostAttachments = this.clubPostAttachmentRepository.create(
-      createClubPostAttachmentDto,
+      createClubPostAttachmentDtos,
     );
 
     await this.clubPostAttachmentRepository.save(clubPostAttachments);

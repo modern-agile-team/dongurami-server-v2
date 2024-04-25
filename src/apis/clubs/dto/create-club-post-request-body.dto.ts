@@ -5,7 +5,6 @@ import { ArrayMaxSize, Length, MinLength } from 'class-validator';
 import {
   CLUB_POST_ATTACHMENT_COUNT,
   CLUB_POST_ATTACHMENT_MIME_TYPE,
-  CLUB_POST_ATTACHMENT_PATH_LENGTH,
 } from '@src/apis/club-post-attachments/constants/club-post-attachment.constant';
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
@@ -42,17 +41,11 @@ export class CreateClubPostRequestBodyDto
     description:
       '동아리 게시글 첨부파일. url이 아닌 path <br>' +
       `허용하는 MIME-Type: ${[...CLUB_POST_ATTACHMENT_MIME_TYPE]}`,
-    minLength: CLUB_POST_ATTACHMENT_PATH_LENGTH.MIN,
-    maxLength: CLUB_POST_ATTACHMENT_PATH_LENGTH.MAX,
+
     minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,
     maxItems: CLUB_POST_ATTACHMENT_COUNT.MAX,
     default: [],
   })
   @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
-  @Length(
-    CLUB_POST_ATTACHMENT_PATH_LENGTH.MIN,
-    CLUB_POST_ATTACHMENT_PATH_LENGTH.MAX,
-    { each: true },
-  )
   filePaths: string[] = [];
 }

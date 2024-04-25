@@ -5,7 +5,7 @@ export class ModifyAttachmentPathLength1713955105509
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      'ALTER TABLE attachment MODIFY path VARCHAR(19) NOT NULL COMMENT "domain을 제외한 path"',
+      'ALTER TABLE attachment MODIFY path VARCHAR(255) NOT NULL COMMENT "domain을 제외한 path"',
     );
   }
 

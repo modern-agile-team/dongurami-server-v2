@@ -27,7 +27,7 @@ export class Attachment {
   @Column('varchar', {
     name: 'path',
     comment: 'domain을 제외한 path',
-    length: 19,
+    length: 255,
     nullable: false,
   })
   path: string;

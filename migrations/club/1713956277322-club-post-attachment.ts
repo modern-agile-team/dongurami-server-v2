@@ -18,10 +18,6 @@ export class ClubPostAttachment1713956277322 implements MigrationInterface {
         columns: [
           generatePrimaryColumn('동아리 게시글 첨부 파일 고유 ID'),
           new TableColumn({
-            /**
-             * @todo 현재 attachment 테이블의 path 컬럼은 index가 존재하지 않아서 외래 키를 생성하지 못함.
-             * 추후 url 혹은 path 중 어떤 것에 index를 생성할 것인지에 대해서 정해지면 그에 맞게 컬럼명 수정 및 외래키 생성
-             */
             name: 'attachment_path',
             type: 'varchar',
             length: '19',

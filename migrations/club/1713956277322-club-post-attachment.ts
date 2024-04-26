@@ -18,16 +18,25 @@ export class ClubPostAttachment1713956277322 implements MigrationInterface {
         columns: [
           generatePrimaryColumn('동아리 게시글 첨부 파일 고유 ID'),
           new TableColumn({
-            name: 'attachment_path',
-            type: 'varchar',
-            length: '19',
+            name: 'attachment_id',
+            type: 'bigint',
+            unsigned: true,
             isNullable: false,
-            comment: 'domain을 제외한 path',
+            comment: '첨부 파일 고유 ID',
           }),
           clubPostColumn,
           generateCreatedAtColumn(),
         ],
-        foreignKeys: [clubPostFk],
+        foreignKeys: [
+          {
+            columnNames: ['attachment_id'],
+            referencedTableName: 'attachment',
+            referencedColumnNames: ['id'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
+          clubPostFk,
+        ],
       }),
     );
 

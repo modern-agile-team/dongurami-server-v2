@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Attachment } from '@src/entities/Attachment';
 import { ClubPost } from '@src/entities/ClubPost';
 
 @Entity('club_post_attachment')
@@ -18,12 +19,12 @@ export class ClubPostAttachment {
   })
   id: number;
 
-  @Column('varchar', {
-    name: 'attachment_path',
-    comment: 'domain을 제외한 path',
-    length: 19,
+  @Column('bigint', {
+    name: 'attachment_id',
+    unsigned: true,
+    comment: '첨부 파일 고유 ID',
   })
-  attachmentPath: string;
+  attachmentId: string;
 
   @Column('int', {
     name: 'club_post_id',
@@ -45,4 +46,11 @@ export class ClubPostAttachment {
   })
   @JoinColumn([{ name: 'club_post_id', referencedColumnName: 'id' }])
   clubPost: ClubPost;
+
+  @ManyToOne(() => Attachment, (attachment) => attachment.clubPostAttachments, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'attachment_id', referencedColumnName: 'id' }])
+  attachment: Attachment;
 }

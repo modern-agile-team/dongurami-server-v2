@@ -15,7 +15,6 @@ import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/c
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
-import { CreateClubPostAttachmentDto } from '@src/apis/club-post-attachments/dto/create-club-post-attachment.dto';
 import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/services/club-post-attachments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -489,12 +488,7 @@ export class ClubsService {
       tagNames.map((name) => ({ name })),
     );
 
-    const { filePaths } = createClubPostRequestBodyDto;
-
-    const attachments = await this.attachmentsService.findByPaths(filePaths);
-
-    const filteredAttachments =
-      this.clubPostAttachmentsService.filterAttachments(attachments);
+    const { attachmentPaths } = createClubPostRequestBodyDto;
 
     const newClubPost = await this.clubPostsService.create(
       new CreateClubPostDto({
@@ -502,7 +496,7 @@ export class ClubsService {
         userId,
         clubId,
         tags: postTags,
-        attachments: filteredAttachments,
+        attachmentPaths,
       }),
     );
 
@@ -513,16 +507,6 @@ export class ClubsService {
             userId,
             clubPostId: newClubPost.id,
             postTagId: newClubPostTag.id,
-          }),
-      ),
-    );
-
-    await this.clubPostAttachmentsService.bulkCreateClubPostAttachments(
-      filteredAttachments.map(
-        (filteredAttachment) =>
-          new CreateClubPostAttachmentDto({
-            clubPostId: newClubPost.id,
-            attachmentId: filteredAttachment.id,
           }),
       ),
     );

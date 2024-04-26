@@ -54,5 +54,5 @@ export class CreateClubPostRequestBodyDto
   @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
   @IsNotEmpty({ each: true })
   @IsString({ each: true })
-  filePaths: string[] = [];
+  attachmentPaths: string[] = [];
 }

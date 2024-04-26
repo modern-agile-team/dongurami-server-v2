@@ -19,7 +19,7 @@ export class ClubPostAttachmentsService {
       createClubPostAttachmentDtos,
     );
 
-    await this.clubPostAttachmentRepository.save(clubPostAttachments);
+    await this.clubPostAttachmentRepository.insert(clubPostAttachments);
 
     return clubPostAttachments;
   }

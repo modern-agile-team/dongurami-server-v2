@@ -47,7 +47,6 @@ export class CreateClubPostRequestBodyDto
     description:
       '동아리 게시글 첨부파일. url이 아닌 path <br>' +
       `허용하는 MIME-Type: ${[...CLUB_POST_ATTACHMENT_MIME_TYPE]}`,
-
     minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,
     maxItems: CLUB_POST_ATTACHMENT_COUNT.MAX,
     default: [],

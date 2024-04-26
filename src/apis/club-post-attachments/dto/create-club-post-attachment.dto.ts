@@ -1,15 +1,15 @@
 import { ClubPostAttachment } from '@src/entities/ClubPostAttachment';
 
 export class CreateClubPostAttachmentDto
-  implements Pick<ClubPostAttachment, 'clubPostId' | 'attachmentPath'>
+  implements Pick<ClubPostAttachment, 'clubPostId' | 'attachmentId'>
 {
   clubPostId: number;
-  attachmentPath: string;
+  attachmentId: string;
 
   constructor(
     createClubPostAttachmentDto: Partial<CreateClubPostAttachmentDto> = {},
   ) {
-    this.attachmentPath = createClubPostAttachmentDto.attachmentPath;
+    this.attachmentId = createClubPostAttachmentDto.attachmentId;
     this.clubPostId = createClubPostAttachmentDto.clubPostId;
   }
 }

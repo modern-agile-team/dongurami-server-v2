@@ -522,7 +522,7 @@ export class ClubsService {
         (filteredAttachment) =>
           new CreateClubPostAttachmentDto({
             clubPostId: newClubPost.id,
-            attachmentPath: filteredAttachment.path,
+            attachmentId: filteredAttachment.id,
           }),
       ),
     );

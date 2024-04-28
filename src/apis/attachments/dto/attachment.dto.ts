@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Attachment } from '@src/entities/Attachment';
 
-export class AttachmentDto implements Omit<Attachment, 'user'> {
+export class AttachmentDto
+  implements Omit<Attachment, 'user' | 'clubPostAttachments'>
+{
   @ApiProperty({
     description: '첨부 파일 고유 ID',
     format: 'int64',

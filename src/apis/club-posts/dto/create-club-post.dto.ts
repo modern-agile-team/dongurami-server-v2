@@ -8,8 +8,11 @@ export class CreateClubPostDto extends PickType(ClubPostDto, [
   'description',
   'tags',
 ]) {
+  attachmentPaths: string[];
+
   constructor(createClubPostDto: Partial<CreateClubPostDto> = {}) {
-    const { clubId, userId, description, tags } = createClubPostDto;
+    const { clubId, userId, description, tags, attachmentPaths } =
+      createClubPostDto;
 
     super();
 
@@ -17,5 +20,6 @@ export class CreateClubPostDto extends PickType(ClubPostDto, [
     this.userId = userId;
     this.description = description;
     this.tags = tags;
+    this.attachmentPaths = attachmentPaths;
   }
 }

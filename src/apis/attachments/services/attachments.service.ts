@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 import { getTsid } from 'tsid-ts';
+import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
+import { AttachmentDto } from '@src/apis/attachments/dto/attachment.dto';
 import { CreateAttachmentDto } from '@src/apis/attachments/dto/create-attachment.dto';
 import { FileUploadDto } from '@src/apis/attachments/dto/file-upload.dto';
 import { AttachmentRepository } from '@src/apis/attachments/repositories/attachment.repository';
@@ -57,5 +59,17 @@ export class AttachmentsService {
         stack: error.stack,
       });
     }
+  }
+
+  async findByPaths(paths: string[]): Promise<AttachmentDto[]> {
+    if (!paths.length) {
+      return [];
+    }
+
+    const attachments = await this.attachmentRepository.findBy({
+      path: In([...new Set(paths)]),
+    });
+
+    return attachments.map((attachment) => new AttachmentDto(attachment));
   }
 }

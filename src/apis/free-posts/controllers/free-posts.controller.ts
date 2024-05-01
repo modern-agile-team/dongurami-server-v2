@@ -150,7 +150,7 @@ export class FreePostsController {
   async findAllAndCountReactions(
     @Param('postId') postId: number,
     @Query() findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
-  ) {
+  ): Promise<[FreePostReactionsItemDto[], number]> {
     const [freePostReactions, count] =
       await this.freePostsService.findAllAndCountReactions(
         postId,

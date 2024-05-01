@@ -2,7 +2,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 
 import { Exclude, Expose } from 'class-transformer';
 
-import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionTypes } from '@src/apis/reactions/constants/reaction.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
 
@@ -31,7 +31,7 @@ export class FreePostReactionDto
 
   @ApiProperty({
     description: 'reaction type',
-    enum: ReactionType,
+    enum: ReactionTypes,
   })
   @Expose({ toPlainOnly: true })
   type: string;

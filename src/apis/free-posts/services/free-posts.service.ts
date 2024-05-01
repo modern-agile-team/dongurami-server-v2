@@ -8,6 +8,7 @@ import { CommonPostsService } from '@src/apis/common-posts/services/common-posts
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
+import { FindFreePostReactionListQueryDto } from '@src/apis/free-posts/dto/find-free-post-reactions-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto';
@@ -270,6 +271,34 @@ export class FreePostsService {
       createReactionDto.type,
       userId,
       existPost.id,
+    );
+  }
+
+  async findAllAndCountReactions(
+    freePostId: number,
+    findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
+  ): Promise<[FreePostReaction[], number]> {
+    const { page, pageSize, order, type, ...filter } =
+      findFreePostReactionListQueryDto;
+
+    const existFreePost = await this.findOne(freePostId);
+
+    if (!existFreePost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    return this.reactionsService.findAllAndCount(
+      {
+        where: { ...where, parentId: freePostId },
+        skip: page * pageSize,
+        take: pageSize,
+        order,
+      },
+      type,
     );
   }
 

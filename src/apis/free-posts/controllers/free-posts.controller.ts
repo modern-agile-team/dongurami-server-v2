@@ -20,6 +20,8 @@ import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreePost } from '@src/apis/free-posts/controllers/free-posts.swagger';
 import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
+import { FindFreePostReactionListQueryDto } from '@src/apis/free-posts/dto/find-free-post-reactions-list-query.dto';
+import { FreePostReactionsItemDto } from '@src/apis/free-posts/dto/free-post-reactions-item.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
 import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto';
@@ -138,6 +140,27 @@ export class FreePostsController {
       postId,
       createReactionDto,
     );
+  }
+
+  @ApiFreePost.FindAllAndCountReactions({
+    summary: '특정 자유 게시글 reactions 전체 조회(pagination)',
+  })
+  @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
+  @Get(':postId/reactions')
+  async findAllAndCountReactions(
+    @Param('postId') postId: number,
+    @Query() findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
+  ) {
+    const [freePostReactions, count] =
+      await this.freePostsService.findAllAndCountReactions(
+        postId,
+        findFreePostReactionListQueryDto,
+      );
+
+    return [
+      plainToInstance(FreePostReactionsItemDto, freePostReactions),
+      count,
+    ];
   }
 
   @ApiFreePost.RemoveReaction({ summary: '자유 게시글 reaction 삭제' })

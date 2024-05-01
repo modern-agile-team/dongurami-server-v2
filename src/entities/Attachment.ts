@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
+import { ClubPostAttachment } from '@src/entities/ClubPostAttachment';
 import { User } from '@src/entities/User';
 
 @Entity('attachment')
@@ -61,4 +62,10 @@ export class Attachment {
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
   user: User;
+
+  @OneToMany(
+    () => ClubPostAttachment,
+    (clubPostAttachments) => clubPostAttachments.attachment,
+  )
+  clubPostAttachments: ClubPostAttachment[];
 }

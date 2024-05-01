@@ -1,7 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { ArrayMaxSize, Length, MinLength } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsNotEmpty,
+  IsString,
+  Length,
+  MinLength,
+} from 'class-validator';
 
+import {
+  CLUB_POST_ATTACHMENT_COUNT,
+  CLUB_POST_ATTACHMENT_MIME_TYPE,
+} from '@src/apis/club-post-attachments/constants/club-post-attachment.constant';
 import {
   CLUB_POST_DESCRIPTION_LENGTH,
   CLUB_POST_TAG_COUNT,
@@ -32,4 +42,17 @@ export class CreateClubPostRequestBodyDto
     each: true,
   })
   tagNames: string[] = [];
+
+  @ApiPropertyOptional({
+    description:
+      '동아리 게시글 첨부파일. url이 아닌 path <br>' +
+      `허용하는 MIME-Type: ${[...CLUB_POST_ATTACHMENT_MIME_TYPE]}`,
+    minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,
+    maxItems: CLUB_POST_ATTACHMENT_COUNT.MAX,
+    default: [],
+  })
+  @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
+  @IsNotEmpty({ each: true })
+  @IsString({ each: true })
+  attachmentPaths: string[] = [];
 }

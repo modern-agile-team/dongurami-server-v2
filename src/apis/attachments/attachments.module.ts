@@ -16,5 +16,6 @@ import { S3Module } from '@src/s3/s3.module';
   ],
   controllers: [AttachmentsController],
   providers: [AttachmentsService],
+  exports: [AttachmentsService],
 })
 export class AttachmentsModule {}

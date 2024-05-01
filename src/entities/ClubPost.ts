@@ -9,6 +9,7 @@ import {
 
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { Club } from '@src/entities/Club';
+import { ClubPostAttachment } from '@src/entities/ClubPostAttachment';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { PostTag } from '@src/entities/PostTag';
@@ -101,4 +102,10 @@ export class ClubPost {
     (clubPostTagLink) => clubPostTagLink.clubPost,
   )
   clubPostTagLinks: ClubPostTagLink[];
+
+  @OneToMany(
+    () => ClubPostAttachment,
+    (clubPostAttachment) => clubPostAttachment.clubPost,
+  )
+  clubPostAttachments: ClubPostAttachment[];
 }

@@ -5,6 +5,7 @@ import { differenceWith } from 'lodash';
 import { In, Raw } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
+import { AttachmentsService } from '@src/apis/attachments/services/attachments.service';
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
 import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
@@ -23,6 +24,7 @@ import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/reposi
 import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enum';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
+import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/services/club-post-attachments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
@@ -75,6 +77,8 @@ export class ClubsService {
     private readonly postTagsService: PostTagsService,
     private readonly clubPostTagLinkRepository: ClubPostTagLinkRepository,
     private readonly clubReviewsService: ClubReviewsService,
+    private readonly attachmentsService: AttachmentsService,
+    private readonly clubPostAttachmentsService: ClubPostAttachmentsService,
     private readonly clubApplicationsService: ClubApplicationsService,
     private readonly queryHelper: QueryHelper,
   ) {}
@@ -496,12 +500,15 @@ export class ClubsService {
       tagNames.map((name) => ({ name })),
     );
 
+    const { attachmentPaths } = createClubPostRequestBodyDto;
+
     const newClubPost = await this.clubPostsService.create(
       new CreateClubPostDto({
         ...createClubPostRequestBodyDto,
         userId,
         clubId,
         tags: postTags,
+        attachmentPaths,
       }),
     );
 

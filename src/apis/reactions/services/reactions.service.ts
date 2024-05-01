@@ -1,6 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOptionsRelations,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 
 import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
@@ -10,6 +15,7 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
+import { FindManyOptionsForPagination } from '@src/types/type';
 
 /**
  * @requires 해당 service 를 사용하려면 entity에 userId, parentId, reactionTypeId가 선언돼야합니다.
@@ -48,6 +54,29 @@ export class ReactionsService<E extends RequiredReactionColumn> {
       } as DeepPartial<E>,
       { reload: false },
     );
+  }
+
+  async findAllAndCount(
+    FindManyOptionsForPagination: FindManyOptionsForPagination<E>,
+    type?: ReactionType,
+  ) {
+    const { where, ...paginationProps } = FindManyOptionsForPagination;
+
+    const reactionType = type
+      ? await this.findOneReactionTypeOrFail(type)
+      : undefined;
+    const reactionTypeId = reactionType?.id;
+
+    return this.reactionRepository.findAndCount({
+      ...paginationProps,
+      where: {
+        ...where,
+        reactionTypeId,
+      } as FindOptionsWhere<E>,
+      relations: {
+        reactionType: true,
+      } as FindOptionsRelations<E>,
+    });
   }
 
   async remove(type: ReactionType, userId: number, parentId: number) {

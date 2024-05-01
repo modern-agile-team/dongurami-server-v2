@@ -36,5 +36,6 @@ export class FindFreePostReactionListQueryDto
   @CsvToOrder<typeof FREE_POST_REACTION_ORDER_FIELD>([
     ...FREE_POST_REACTION_ORDER_FIELD,
   ])
+  @IsOptional()
   order: Order<typeof FREE_POST_REACTION_ORDER_FIELD> = { id: SortOrder.Asc };
 }

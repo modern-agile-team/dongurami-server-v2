@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
 import { IsDate, IsObject, Validate } from 'class-validator';
@@ -10,18 +10,25 @@ import { IsBeforeConstraint } from '@src/decorators/validators/is-before.decorat
 import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
 import { ValidateClassInstance } from '@src/decorators/validators/validate-by-class.decorator';
 
+class PutUpdateClubApplicationFormCustomQuestionDto extends OmitType(
+  ClubApplicationFormQuestionItemDto,
+  ['id'],
+) {
+  id: string;
+}
+
 export class PutUpdateClubApplicationFormDto
   implements
     Pick<ClubApplicationFormDto, 'customQuestion' | 'startsAt' | 'endsAt'>
 {
   @ApiProperty({
     description: '커스텀 질문 항목',
-    type: [ClubApplicationFormQuestionItemDto],
+    type: [PutUpdateClubApplicationFormCustomQuestionDto],
   })
   @ValidateClassInstance({ each: true })
   @IsObject({ each: true })
-  @Type(() => ClubApplicationFormQuestionItemDto)
-  customQuestion: ClubApplicationFormQuestionItemDto[];
+  @Type(() => PutUpdateClubApplicationFormCustomQuestionDto)
+  customQuestion: PutUpdateClubApplicationFormCustomQuestionDto[];
 
   @ApiProperty({
     description: '지원서 시작일자, 종료일자보다 이후일 수 없음',

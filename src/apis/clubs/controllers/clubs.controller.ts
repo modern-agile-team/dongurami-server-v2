@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -17,6 +18,10 @@ import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
+import { ClubApplicationDto } from '@src/apis/club-applications/dto/club-application.dto';
+import { ClubApplicationsItemDto } from '@src/apis/club-applications/dto/club-applications-item.dto';
+import { PatchUpdateClubApplicationDto } from '@src/apis/club-applications/dto/patch-update-club-application.dto';
+import { UpdateClubApplicationStatusDto } from '@src/apis/club-applications/dto/update-club-application-status.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -26,8 +31,10 @@ import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
+import { CreateClubApplicationRequestBodyDto } from '@src/apis/clubs/dto/create-club-application-request-body.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
+import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';
@@ -180,6 +187,111 @@ export class ClubsController {
       user.id,
       clubId,
       createClubReviewRequestBodyDto,
+    );
+  }
+
+  /**
+   * @todo 지원 유저가 필수 정보를 모두 가지고있는지 체크돼야함
+   * 이름, 나이, 학과, 학번, 성별
+   */
+  @ApiClub.CreateClubApplication({ summary: '동아리 지원서 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubApplication', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Post(':clubId/applications')
+  createClubApplication(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Body()
+    createClubApplicationRequestBodyDto: CreateClubApplicationRequestBodyDto,
+  ): Promise<ClubApplicationDto> {
+    return this.clubsService.createClubApplication(
+      user.id,
+      clubId,
+      createClubApplicationRequestBodyDto,
+    );
+  }
+
+  /**
+   * @todo 동아리장 엑세스컨트롤
+   */
+  @ApiClub.FindAllAndCountClubApplications({
+    summary: '동아리 지원서 페이지네이션',
+  })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubApplications', type: ResponseType.Pagination })
+  @UseGuards(JwtAuthGuard)
+  @Get(':clubId/applications')
+  async findAllAndCountClubApplications(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Query()
+    findClubApplicationListRequestQueryDto: FindClubApplicationListRequestQueryDto,
+  ): Promise<[ClubApplicationsItemDto[], number]> {
+    const [clubAPplications, count] =
+      await this.clubsService.findAllAndCountClubApplications(
+        clubId,
+        findClubApplicationListRequestQueryDto,
+      );
+
+    return [plainToInstance(ClubApplicationsItemDto, clubAPplications), count];
+  }
+
+  /**
+   * @todo 동아리장 엑세스컨트롤
+   */
+  @ApiClub.FindOneClubApplication({
+    summary: '동아리 지원서 상세조회',
+    description: '지원서 상태가 submit이라면 viewed로 변경됨',
+  })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubApplication', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Get(':clubId/applications/:applicationId')
+  findOneClubApplication(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('applicationId', ParsePositiveIntPipe) applicationId: number,
+  ): Promise<ClubApplicationDto> {
+    return this.clubsService.findOneClubApplication(clubId, applicationId);
+  }
+
+  @ApiClub.PatchUpdateClubApplication({ summary: '동아리 지원서 업데이트' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubApplication', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Patch(':clubId/applications/:applicationId')
+  patchUpdateClubApplication(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('applicationId', ParsePositiveIntPipe) applicationId: number,
+    @Body() patchUpdateClubApplicationDto: PatchUpdateClubApplicationDto,
+  ): Promise<ClubApplicationDto> {
+    return this.clubsService.patchUpdateClubApplication(
+      user.id,
+      clubId,
+      applicationId,
+      patchUpdateClubApplicationDto,
+    );
+  }
+
+  @ApiClub.UpdateClubApplicationStatus({
+    summary: '동아리 지원서 상태 업데이트',
+    description: '승인으로 업데이트하면 동아리원으로 자동 추가됨',
+  })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubApplication', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Put(':clubId/applications/:applicationId/status')
+  updateClubApplicationStatus(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('applicationId', ParsePositiveIntPipe) applicationId: number,
+    @Body() updateClubApplicationStatusDto: UpdateClubApplicationStatusDto,
+  ): Promise<ClubApplicationDto> {
+    return this.clubsService.updateClubApplicationStatus(
+      user.id,
+      clubId,
+      applicationId,
+      updateClubApplicationStatusDto,
     );
   }
 }

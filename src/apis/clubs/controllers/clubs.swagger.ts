@@ -3,6 +3,7 @@ import { ApiOperation, ApiParam } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
+import { ClubApplicationDto } from '@src/apis/club-applications/dto/club-application.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -11,6 +12,8 @@ import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
+import { CLUB_APPLICATION_ERROR_CODE } from '@src/constants/error/club-application/club-application-error-code.constant';
+import { CLUB_MEMBER_ERROR_CODE } from '@src/constants/error/club-member/club-member-error-code.constant';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
@@ -323,6 +326,171 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ]),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
         CLUB_REVIEW_ERROR_CODE.ALREADY_EXIST_REVIEWED,
+      ]),
+    );
+  },
+
+  CreateClubApplication: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.CREATED,
+        'clubApplication',
+        ClubApplicationDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          CLUB_APPLICATION_ERROR_CODE.NOT_APPLICATION_PERIOD,
+          CLUB_APPLICATION_ERROR_CODE.INVALID_APPLICATION_FORM,
+          CLUB_APPLICATION_ERROR_CODE.MISSING_REQUIRED_QUESTION,
+          CLUB_APPLICATION_ERROR_CODE.NOT_ALLOWED_ANSWER,
+        ],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        CLUB_APPLICATION_ERROR_CODE.ALREADY_CLUB_MEMBER,
+        CLUB_APPLICATION_ERROR_CODE.PROCESSING_APPLICATION,
+      ]),
+    );
+  },
+
+  FindAllAndCountClubApplications: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      PaginationResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubApplications',
+        ClubApplicationDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  FindOneClubApplication: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubApplication',
+        ClubApplicationDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          CLUB_APPLICATION_ERROR_CODE.PROCESSED_APPLICATION,
+        ],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  PatchUpdateClubApplication: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubApplication',
+        ClubApplicationDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          CLUB_APPLICATION_ERROR_CODE.PROCESSED_APPLICATION,
+          CLUB_APPLICATION_ERROR_CODE.INVALID_APPLICATION_FORM,
+          CLUB_APPLICATION_ERROR_CODE.MISSING_REQUIRED_QUESTION,
+          CLUB_APPLICATION_ERROR_CODE.NOT_ALLOWED_ANSWER,
+        ],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  UpdateClubApplicationStatus: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubApplication',
+        ClubApplicationDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          CLUB_APPLICATION_ERROR_CODE.PROCESSED_APPLICATION,
+        ],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        CLUB_MEMBER_ERROR_CODE.ALREADY_EXIST_CLUB_MEMBER,
       ]),
     );
   },

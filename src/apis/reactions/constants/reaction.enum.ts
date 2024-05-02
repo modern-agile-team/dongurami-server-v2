@@ -1,3 +1,3 @@
-export enum ReactionTypes {
+export enum ReactionName {
   Like = 'like',
 }

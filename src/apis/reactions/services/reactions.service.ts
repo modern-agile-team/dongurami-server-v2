@@ -7,7 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { ReactionTypes } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
@@ -28,7 +28,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     private readonly reactionTypeRepository: ReactionTypeRepository,
   ) {}
 
-  async create(type: ReactionTypes, userId: number, parentId: number) {
+  async create(type: ReactionName, userId: number, parentId: number) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -58,7 +58,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
 
   async findAllAndCount(
     FindManyOptionsForPagination: FindManyOptionsForPagination<E>,
-    type?: ReactionTypes,
+    type?: ReactionName,
   ) {
     const { where, ...paginationProps } = FindManyOptionsForPagination;
 
@@ -79,7 +79,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     });
   }
 
-  async remove(type: ReactionTypes, userId: number, parentId: number) {
+  async remove(type: ReactionName, userId: number, parentId: number) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -105,7 +105,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   }
 
   private async findOneReactionTypeOrFail(
-    reactionName: ReactionTypes,
+    reactionName: ReactionName,
   ): Promise<{ id: number }> {
     const reactionType = await this.reactionTypeRepository.findOne({
       select: {

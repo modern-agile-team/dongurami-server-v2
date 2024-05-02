@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IsEnum } from 'class-validator';
 
-import { ReactionTypes } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 
 export class RemoveReactionDto {
   @ApiProperty({
     description: 'reaction type',
-    enum: ReactionTypes,
+    enum: ReactionName,
   })
-  @IsEnum(ReactionTypes)
-  type: ReactionTypes;
+  @IsEnum(ReactionName)
+  type: ReactionName;
 }

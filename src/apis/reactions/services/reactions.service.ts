@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
-import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
@@ -22,7 +22,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     private readonly reactionTypeRepository: ReactionTypeRepository,
   ) {}
 
-  async create(type: ReactionType, userId: number, parentId: number) {
+  async create(type: ReactionName, userId: number, parentId: number) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -50,7 +50,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     );
   }
 
-  async remove(type: ReactionType, userId: number, parentId: number) {
+  async remove(type: ReactionName, userId: number, parentId: number) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -76,7 +76,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   }
 
   private async findOneReactionTypeOrFail(
-    reactionName: ReactionType,
+    reactionName: ReactionName,
   ): Promise<{ id: number }> {
     const reactionType = await this.reactionTypeRepository.findOne({
       select: {

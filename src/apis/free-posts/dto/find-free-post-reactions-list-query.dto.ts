@@ -4,7 +4,7 @@ import { IsEnum, IsOptional } from 'class-validator';
 
 import { FREE_POST_REACTION_ORDER_FIELD } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostReactionDto } from '@src/apis/free-posts/dto/free-post-reaction.dto';
-import { ReactionTypes } from '@src/apis/reactions/constants/reaction.enum';
+import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
@@ -26,11 +26,11 @@ export class FindFreePostReactionListQueryDto
 
   @ApiPropertyOptional({
     description: '리액션 타입 필터링',
-    enum: ReactionTypes,
+    enum: ReactionName,
   })
   @IsOptional()
-  @IsEnum(ReactionTypes)
-  type?: ReactionTypes;
+  @IsEnum(ReactionName)
+  type?: ReactionName;
 
   @ApiPropertyOrder(FREE_POST_REACTION_ORDER_FIELD)
   @CsvToOrder<typeof FREE_POST_REACTION_ORDER_FIELD>([

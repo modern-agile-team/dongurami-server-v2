@@ -1,11 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import {
-  DeepPartial,
-  FindOptionsRelations,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
 import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
@@ -57,25 +52,10 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   }
 
   async findAllAndCount(
-    FindManyOptionsForPagination: FindManyOptionsForPagination<E>,
-    type?: ReactionName,
+    findManyOptionsForPagination: FindManyOptionsForPagination<E>,
   ) {
-    const { where, ...paginationProps } = FindManyOptionsForPagination;
-
-    const reactionType = type
-      ? await this.findOneReactionTypeOrFail(type)
-      : undefined;
-    const reactionTypeId = reactionType?.id;
-
     return this.reactionRepository.findAndCount({
-      ...paginationProps,
-      where: {
-        ...where,
-        reactionTypeId,
-      } as FindOptionsWhere<E>,
-      relations: {
-        reactionType: true,
-      } as FindOptionsRelations<E>,
+      ...findManyOptionsForPagination,
     });
   }
 

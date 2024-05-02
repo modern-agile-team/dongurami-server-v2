@@ -291,15 +291,15 @@ export class FreePostsService {
 
     const where = this.queryHelper.buildWherePropForFind(filter);
 
-    return this.reactionsService.findAllAndCount(
-      {
-        where: { ...where, parentId: freePostId },
-        skip: page * pageSize,
-        take: pageSize,
-        order,
+    return this.reactionsService.findAllAndCount({
+      where: { ...where, parentId: freePostId, reactionType: { name: type } },
+      skip: page * pageSize,
+      take: pageSize,
+      order,
+      relations: {
+        reactionType: true,
       },
-      type,
-    );
+    });
   }
 
   async removeReaction(

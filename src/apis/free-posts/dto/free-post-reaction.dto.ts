@@ -12,7 +12,12 @@ export class FreePostReactionDto
   implements
     Pick<
       FreePostReaction,
-      'id' | 'userId' | 'parentId' | 'createdAt' | 'reactionType'
+      | 'id'
+      | 'userId'
+      | 'reactionTypeId'
+      | 'parentId'
+      | 'createdAt'
+      | 'reactionType'
     >
 {
   @ApiProperty({
@@ -20,6 +25,9 @@ export class FreePostReactionDto
     format: 'integer',
   })
   userId: number;
+
+  @Exclude()
+  reactionTypeId: number;
 
   @ApiProperty({
     description: '자유 게시글 고유 ID',

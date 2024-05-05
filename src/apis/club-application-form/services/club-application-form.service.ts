@@ -107,7 +107,7 @@ export class ClubApplicationFormService {
     if (startsAt === null && endsAt !== null) {
       return now <= endsAt;
     }
-    // 시작일시는 존재허고 마감일시는 존재하지 않는 경우
+    // 시작일시는 존재하고 마감일시는 존재하지 않는 경우
     if (startsAt !== null && endsAt === null) {
       return startsAt <= now;
     }

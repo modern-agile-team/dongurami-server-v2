@@ -4,6 +4,7 @@ import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.i
 
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { ClubApplicationDto } from '@src/apis/club-applications/dto/club-application.dto';
+import { ClubApplicationsItemDto } from '@src/apis/club-applications/dto/club-applications-item.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -379,7 +380,7 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       PaginationResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'clubApplications',
-        ClubApplicationDto,
+        ClubApplicationsItemDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

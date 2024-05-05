@@ -8,7 +8,7 @@ export const CLUB_APPLICATION_ERROR_MESSAGE: ErrorMessage<
   typeof CLUB_APPLICATION_ERROR_CODE
 > = {
   [CLUB_APPLICATION_ERROR_CODE.ALREADY_CLUB_MEMBER]:
-    "Can't submit a club application because I'm already a member of a club.",
+    "Can't submit a club application because you're already a member of a club.",
   [CLUB_APPLICATION_ERROR_CODE.PROCESSING_APPLICATION]:
     'Application has been processing.',
   [CLUB_APPLICATION_ERROR_CODE.NOT_APPLICATION_PERIOD]:

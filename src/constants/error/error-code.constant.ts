@@ -28,6 +28,6 @@ export const ERROR_CODE = {
   ...NOTICE_POST_COMMENT_ERROR_CODE,
   // 8000 ~ 8001
   ...CLUB_APPLICATION_ERROR_CODE,
-  // 9000 ~ 9001
+  // 9000 ~ 9999
   ...CLUB_MEMBER_ERROR_CODE,
 } as const;

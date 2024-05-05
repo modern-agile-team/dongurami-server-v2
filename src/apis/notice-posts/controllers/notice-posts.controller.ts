@@ -135,7 +135,7 @@ export class NoticePostsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
   @Get(':postId/reactions')
   async findAllAndCountReactions(
-    @Param('postId') postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Query()
     findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
   ): Promise<[NoticePostReactionsItemDto[], number]> {

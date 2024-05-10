@@ -1,7 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsEnum, IsString, ValidateIf } from 'class-validator';
+import {
+  IsBoolean,
+  IsDefined,
+  IsEnum,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 
 import { QuestionInputType } from '@src/apis/club-application-form/constants/club-application-form.enum';
 import { ClubApplicationFormQuestionItem } from '@src/apis/club-application-form/types/club-application-form.type';
@@ -9,6 +15,12 @@ import { ClubApplicationFormQuestionItem } from '@src/apis/club-application-form
 export class ClubApplicationFormQuestionItemDto
   implements ClubApplicationFormQuestionItem
 {
+  @ApiProperty({
+    description: '지원서 폼 질문 고유 ID',
+  })
+  @IsDefined()
+  id: string;
+
   @ApiProperty({
     description: '질문',
   })

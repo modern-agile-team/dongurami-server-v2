@@ -1,5 +1,7 @@
 import { AUTH_ERROR_CODE } from '@src/constants/error/auth/auth-error-code.constant';
+import { CLUB_APPLICATION_ERROR_CODE } from '@src/constants/error/club-application/club-application-error-code.constant';
 import { CLUB_CATEGORY_ERROR_CODE } from '@src/constants/error/club-category/club-category-error-code.constant';
+import { CLUB_MEMBER_ERROR_CODE } from '@src/constants/error/club-member/club-member-error-code.constant';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { MAJOR_ERROR_CODE } from '@src/constants/error/major/major-error-code.constant';
@@ -24,4 +26,8 @@ export const ERROR_CODE = {
   ...CLUB_REVIEW_ERROR_CODE,
   // 7000 ~ 7999
   ...NOTICE_POST_COMMENT_ERROR_CODE,
+  // 8000 ~ 8999
+  ...CLUB_APPLICATION_ERROR_CODE,
+  // 9000 ~ 9999
+  ...CLUB_MEMBER_ERROR_CODE,
 } as const;

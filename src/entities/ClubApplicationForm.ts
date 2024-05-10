@@ -6,8 +6,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
+import { QuestionInputType } from '@src/apis/club-application-form/constants/club-application-form.enum';
 import { ClubApplicationFormQuestionItem } from '@src/apis/club-application-form/types/club-application-form.type';
+import { UserGender } from '@src/apis/users/constants/user.enum';
 import { Club } from '@src/entities/Club';
 import { ClubApplicationFormHistory } from '@src/entities/ClubApplicationFormHistory';
 import { User } from '@src/entities/User';
@@ -90,4 +93,53 @@ export class ClubApplicationForm {
       clubApplicationFormHistory.clubApplicationForm,
   )
   clubApplicationFormHistories: ClubApplicationFormHistory[];
+
+  setCommonQuestion(): void {
+    this.commonQuestion = [
+      {
+        question: '이름',
+        inputType: QuestionInputType.Text,
+        isRequired: true,
+      },
+      {
+        question: '학과',
+        inputType: QuestionInputType.Text,
+        isRequired: true,
+      },
+      {
+        question: '학번',
+        inputType: QuestionInputType.Text,
+        isRequired: true,
+      },
+      {
+        question: '학년',
+        inputType: QuestionInputType.Radio,
+        isRequired: true,
+        allowValues: ['1', '2', '3', '4'],
+      },
+      {
+        question: '성별',
+        inputType: QuestionInputType.Radio,
+        isRequired: true,
+        allowValues: Object.values(UserGender),
+      },
+      {
+        question: '휴대전화',
+        inputType: QuestionInputType.Text,
+        isRequired: true,
+      },
+    ].map((q) => this.createQuestion(q));
+  }
+
+  createQuestion(
+    props: Omit<ClubApplicationFormQuestionItem, 'id'>,
+  ): ClubApplicationFormQuestionItem {
+    return {
+      id: uuidv4(),
+      question: props.question,
+      inputType: props.inputType,
+      isRequired: props.isRequired,
+      allowValues: props.allowValues,
+    };
+  }
 }

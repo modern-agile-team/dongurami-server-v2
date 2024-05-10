@@ -10,9 +10,18 @@ import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club
 import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
 import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
 import { ClubApplicationFormService } from '@src/apis/club-application-form/services/club-application-form.service';
+import { ClubApplicationStatus } from '@src/apis/club-applications/constants/club-application.enum';
+import { ClubApplicationDto } from '@src/apis/club-applications/dto/club-application.dto';
+import { ClubApplicationsItemDto } from '@src/apis/club-applications/dto/club-applications-item.dto';
+import { CreateClubApplicationDto } from '@src/apis/club-applications/dto/create-club-application.dto';
+import { FindClubApplicationListQueryDto } from '@src/apis/club-applications/dto/find-club-application-list-query.dto';
+import { PatchUpdateClubApplicationDto } from '@src/apis/club-applications/dto/patch-update-club-application.dto';
+import { UpdateClubApplicationStatusDto } from '@src/apis/club-applications/dto/update-club-application-status.dto';
+import { ClubApplicationsService } from '@src/apis/club-applications/services/club-applications.service';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubCategoryRepository } from '@src/apis/club-categories/repositories/club-category.repository';
 import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/repositories/club-category-link.repository';
+import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enum';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
 import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/services/club-post-attachments.service';
@@ -31,12 +40,14 @@ import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.d
 import { ClubWithCategoryAndTagDto } from '@src/apis/clubs/dto/club-with-category-and-tag.dto';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
+import { CreateClubApplicationRequestBodyDto } from '@src/apis/clubs/dto/create-club-application-request-body.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubPostTagLinkDto } from '@src/apis/clubs/dto/create-club-post-tag-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
+import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
@@ -68,6 +79,7 @@ export class ClubsService {
     private readonly clubReviewsService: ClubReviewsService,
     private readonly attachmentsService: AttachmentsService,
     private readonly clubPostAttachmentsService: ClubPostAttachmentsService,
+    private readonly clubApplicationsService: ClubApplicationsService,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -623,6 +635,119 @@ export class ClubsService {
         ...createClubReviewRequestBodyDto,
       }),
     );
+  }
+
+  @Transactional()
+  async createClubApplication(
+    userId: number,
+    clubId: number,
+    createClubApplicationRequestBodyDto: CreateClubApplicationRequestBodyDto,
+  ): Promise<ClubApplicationDto> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubApplicationsService.create(
+      new CreateClubApplicationDto({
+        clubId,
+        userId,
+        answers: createClubApplicationRequestBodyDto.answers,
+        status: createClubApplicationRequestBodyDto.status,
+      }),
+    );
+  }
+
+  @Transactional()
+  async findAllAndCountClubApplications(
+    clubId: number,
+    findClubApplicationListRequestQueryDto: FindClubApplicationListRequestQueryDto,
+  ): Promise<[ClubApplicationsItemDto[], number]> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubApplicationsService.findAllAndCount(
+      new FindClubApplicationListQueryDto({
+        clubId,
+        page: findClubApplicationListRequestQueryDto.page,
+        pageSize: findClubApplicationListRequestQueryDto.pageSize,
+        status: findClubApplicationListRequestQueryDto.status,
+        order: findClubApplicationListRequestQueryDto.order,
+      }),
+    );
+  }
+
+  @Transactional()
+  async findOneClubApplication(
+    clubId: number,
+    applicationId: number,
+  ): Promise<ClubApplicationDto> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubApplicationsService.updateStatus(
+      applicationId,
+      ClubApplicationStatus.Viewed,
+    );
+  }
+
+  @Transactional()
+  async patchUpdateClubApplication(
+    userId: number,
+    clubId: number,
+    applicationId: number,
+    patchUpdateClubApplicationDto: PatchUpdateClubApplicationDto,
+  ): Promise<ClubApplicationDto> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubApplicationsService.patchUpdate(
+      userId,
+      applicationId,
+      patchUpdateClubApplicationDto,
+    );
+  }
+
+  @Transactional()
+  async updateClubApplicationStatus(
+    userId: number,
+    clubId: number,
+    applicationId: number,
+    updateClubApplicationStatusDto: UpdateClubApplicationStatusDto,
+  ): Promise<ClubApplicationDto> {
+    await this.isExistOrNotFound(clubId);
+
+    const clubMember = await this.clubMembersService.findOneByUserId(
+      clubId,
+      userId,
+    );
+
+    if (!clubMember?.roles?.includes(ClubMemberRole.President)) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const newClubApplication = await this.clubApplicationsService.updateStatus(
+      applicationId,
+      updateClubApplicationStatusDto.status,
+    );
+
+    await this.clubMembersService.create(clubId, newClubApplication.userId, [
+      ClubMemberRole.Member,
+    ]);
+
+    return newClubApplication;
+  }
+
+  async isExistOrNotFound(clubId: number): Promise<true> {
+    const isExistClub = await this.clubRepository.exist({
+      where: {
+        id: clubId,
+      },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return isExistClub;
   }
 
   private async syncTagLinkFromMapping(clubId: number): Promise<ClubTagDto[]> {

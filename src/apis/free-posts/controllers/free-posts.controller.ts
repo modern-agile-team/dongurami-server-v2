@@ -148,7 +148,7 @@ export class FreePostsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
   @Get(':postId/reactions')
   async findAllAndCountReactions(
-    @Param('postId') postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
     @Query() findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
   ): Promise<[FreePostReactionsItemDto[], number]> {
     const [freePostReactions, count] =

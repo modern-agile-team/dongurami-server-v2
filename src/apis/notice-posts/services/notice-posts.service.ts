@@ -7,6 +7,7 @@ import { CommonPostsService } from '@src/apis/common-posts/services/common-posts
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { CreateNoticePostDto } from '@src/apis/notice-posts/dto/create-notice-post.dto';
 import { FindNoticePostListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-list-query.dto';
+import { FindNoticePostReactionListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-reactions-list-query.dto';
 import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
 import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
@@ -291,6 +292,38 @@ export class NoticePostsService {
     return postTagLinks.map(
       (postTagLink) => new PostTagDto(postTagLink.postTag),
     );
+  }
+
+  async findAllAndCountReactions(
+    noticePostId: number,
+    findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
+  ): Promise<[NoticePostReaction[], number]> {
+    const { page, pageSize, order, type, ...filter } =
+      findNoticePostReactionListQueryDto;
+
+    const existNoticePost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!existNoticePost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    return this.reactionsService.findAllAndCount({
+      where: { ...where, parentId: noticePostId, reactionType: { name: type } },
+      skip: page * pageSize,
+      take: pageSize,
+      order,
+      relations: {
+        reactionType: true,
+      },
+    });
   }
 
   async createReaction(

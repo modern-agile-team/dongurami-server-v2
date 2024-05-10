@@ -20,6 +20,8 @@ import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiNoticePost } from '@src/apis/notice-posts/controllers/notice-posts.swagger';
 import { CreateNoticePostDto } from '@src/apis/notice-posts/dto/create-notice-post.dto';
 import { FindNoticePostListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-list-query.dto';
+import { FindNoticePostReactionListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-reactions-list-query.dto';
+import { NoticePostReactionsItemDto } from '@src/apis/notice-posts/dto/notice-post-reactions-item.dto';
 import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
 import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
@@ -125,6 +127,28 @@ export class NoticePostsController {
     @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<void> {
     return this.noticePostService.increaseHit(postId);
+  }
+
+  @ApiNoticePost.FindAllAndCountReactions({
+    summary: '특정 공지 게시글 reactions 전체 조회(pagination)',
+  })
+  @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
+  @Get(':postId/reactions')
+  async findAllAndCountReactions(
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Query()
+    findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
+  ): Promise<[NoticePostReactionsItemDto[], number]> {
+    const [noticePostReactions, count] =
+      await this.noticePostService.findAllAndCountReactions(
+        postId,
+        findNoticePostReactionListQueryDto,
+      );
+
+    return [
+      plainToInstance(NoticePostReactionsItemDto, noticePostReactions),
+      count,
+    ];
   }
 
   @ApiNoticePost.CreateReaction({ summary: '공지 게시글 reaction 생성' })

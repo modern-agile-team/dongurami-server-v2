@@ -7,6 +7,7 @@ import {
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { NoticePostsController } from '@src/apis/notice-posts/controllers/notice-posts.controller';
+import { NoticePostReactionsItemDto } from '@src/apis/notice-posts/dto/notice-post-reactions-item.dto';
 import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -191,6 +192,34 @@ export const ApiNoticePost: ApiOperator<keyof NoticePostsController> = {
         ...apiOperationOptions,
       }),
       ApiResponse({ status: HttpStatus.NO_CONTENT }),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  FindAllAndCountReactions: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      PaginationResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'reactions',
+        NoticePostReactionsItemDto,
+      ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

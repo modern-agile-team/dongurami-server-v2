@@ -640,11 +640,18 @@ export class ClubsService {
   async createClubReviewReaction(
     userId: number,
     clubId: number,
+    reviewId: number,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
 
-    return this.reactionsService.create(createReactionDto.type, userId, clubId);
+    await this.clubReviewsService.isExistOrNotFound(reviewId);
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      reviewId,
+    );
   }
 
   @Transactional()

@@ -196,15 +196,17 @@ export class ClubsController {
   @ApiClub.CreateClubReviewReaction({ summary: '동아리 후기 reaction 생성' })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Post(':clubId/reviews/reaction')
+  @Post(':clubId/reviews/:reviewId/reaction')
   createClubReviewReaction(
     @User() user: UserDto,
-    @Param('clubId') clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.clubsService.createClubReviewReaction(
       user.id,
       clubId,
+      reviewId,
       createReactionDto,
     );
   }

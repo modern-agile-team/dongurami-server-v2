@@ -16,7 +16,9 @@ import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { PostTagsModule } from '@src/apis/post-tags/post-tags.module';
+import { ReactionsModule } from '@src/apis/reactions/reactions.module';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 
 @Module({
@@ -37,6 +39,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     AttachmentsModule,
     ClubPostAttachmentsModule,
     ClubApplicationsModule,
+    ReactionsModule.forFeature(ClubReviewReaction),
   ],
   controllers: [ClubsController],
   providers: [ClubsService, QueryHelper],

@@ -5,7 +5,6 @@ import { differenceWith } from 'lodash';
 import { In, Raw } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
-import { AttachmentsService } from '@src/apis/attachments/services/attachments.service';
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
 import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
@@ -24,7 +23,6 @@ import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/reposi
 import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enum';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
-import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/services/club-post-attachments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
@@ -51,9 +49,12 @@ import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -77,10 +78,9 @@ export class ClubsService {
     private readonly postTagsService: PostTagsService,
     private readonly clubPostTagLinkRepository: ClubPostTagLinkRepository,
     private readonly clubReviewsService: ClubReviewsService,
-    private readonly attachmentsService: AttachmentsService,
-    private readonly clubPostAttachmentsService: ClubPostAttachmentsService,
     private readonly clubApplicationsService: ClubApplicationsService,
     private readonly queryHelper: QueryHelper,
+    private readonly reactionsService: ReactionsService<ClubReviewReaction>,
   ) {}
 
   @Transactional()
@@ -635,6 +635,16 @@ export class ClubsService {
         ...createClubReviewRequestBodyDto,
       }),
     );
+  }
+
+  async createClubReviewReaction(
+    userId: number,
+    clubId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.reactionsService.create(createReactionDto.type, userId, clubId);
   }
 
   @Transactional()

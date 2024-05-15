@@ -10,6 +10,7 @@ import {
 import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { Club } from '@src/entities/Club';
 import { ClubReviewHistory } from '@src/entities/ClubReviewHistory';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
 
@@ -109,4 +110,10 @@ export class ClubReview {
     (clubReviewHistory) => clubReviewHistory.clubReview,
   )
   clubReviewHistories: ClubReviewHistory[];
+
+  @OneToMany(
+    () => ClubReviewReaction,
+    (clubReviewReaction) => clubReviewReaction.clubReview,
+  )
+  clubReviewReactions: ClubReviewReaction[];
 }

@@ -50,6 +50,7 @@ import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.d
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
@@ -649,6 +650,23 @@ export class ClubsService {
 
     return this.reactionsService.create(
       createReactionDto.type,
+      userId,
+      reviewId,
+    );
+  }
+
+  async removeClubReviewReaction(
+    userId: number,
+    clubId: number,
+    reviewId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    await this.clubReviewsService.isExistOrNotFound(reviewId);
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
       userId,
       reviewId,
     );

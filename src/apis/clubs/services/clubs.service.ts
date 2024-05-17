@@ -653,6 +653,12 @@ export class ClubsService {
     );
   }
 
+  async getAverageRatingForReviews(clubId: number): Promise<number> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubReviewsService.getAverageRating(clubId);
+  }
+
   @Transactional()
   async createClubApplication(
     userId: number,

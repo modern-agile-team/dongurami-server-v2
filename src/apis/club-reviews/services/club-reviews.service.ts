@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
+import { PickKeysByType } from 'typeorm/common/PickKeysByType';
+
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
 import { ClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
+import { ClubReview } from '@src/entities/ClubReview';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 
@@ -68,5 +71,14 @@ export class ClubReviewsService {
         user: true,
       },
     });
+  }
+
+  getAverageRating(clubId: number): Promise<number> {
+    return this.clubReviewRepository.average(
+      'star_rate' as PickKeysByType<ClubReview, number>,
+      {
+        clubId,
+      },
+    );
   }
 }

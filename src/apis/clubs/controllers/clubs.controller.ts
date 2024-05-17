@@ -192,12 +192,12 @@ export class ClubsController {
     );
   }
 
-  @ApiClub.FindAllAndCountClubReview({
+  @ApiClub.FindAllAndCountClubReviews({
     summary: '동아리 후기 페이지네이션',
   })
   @SetResponse({ key: 'clubReviews', type: ResponseType.Pagination })
   @Get(':clubId/reviews')
-  async findAllAndCountClubReview(
+  async findAllAndCountClubReviews(
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
     @Query()
     findClubReviewListRequestQueryDto: FindClubReviewListRequestQueryDto,
@@ -209,6 +209,16 @@ export class ClubsController {
       );
 
     return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
+  }
+
+  @ApiClub.GetAverageRatingForReviews({
+    summary: '동아리 후기 평균 별점 조회',
+  })
+  @Get(':clubId/reviews/average-rating')
+  getAverageRatingForReviews(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+  ): Promise<number> {
+    return this.clubsService.getAverageRatingForReviews(clubId);
   }
 
   /**

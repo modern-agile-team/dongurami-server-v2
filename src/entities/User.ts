@@ -24,6 +24,7 @@ import { ClubMember } from '@src/entities/ClubMember';
 import { ClubPost } from '@src/entities/ClubPost';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { ClubReview } from '@src/entities/ClubReview';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { ClubTag } from '@src/entities/ClubTag';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { FreePost } from '@src/entities/FreePost';
@@ -282,4 +283,10 @@ export class User {
 
   @OneToMany(() => ClubReview, (clubReview) => clubReview.user)
   clubReviews: ClubReview[];
+
+  @OneToMany(
+    () => ClubReviewReaction,
+    (clubReviewReaction) => clubReviewReaction.user,
+  )
+  clubReviewReactions: ClubReviewReaction[];
 }

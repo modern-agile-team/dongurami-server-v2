@@ -26,6 +26,7 @@ import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
+import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
@@ -36,6 +37,7 @@ import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-po
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
@@ -188,6 +190,25 @@ export class ClubsController {
       clubId,
       createClubReviewRequestBodyDto,
     );
+  }
+
+  @ApiClub.FindAllAndCountClubReview({
+    summary: '동아리 후기 페이지네이션',
+  })
+  @SetResponse({ key: 'clubReviews', type: ResponseType.Pagination })
+  @Get(':clubId/reviews')
+  async findAllAndCountClubReview(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Query()
+    findClubReviewListRequestQueryDto: FindClubReviewListRequestQueryDto,
+  ): Promise<[Omit<ClubReviewsItemDto, 'status' | 'deletedAt'>[], number]> {
+    const [clubReviews, count] =
+      await this.clubsService.findAllAndCountClubReview(
+        clubId,
+        findClubReviewListRequestQueryDto,
+      );
+
+    return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
   }
 
   /**

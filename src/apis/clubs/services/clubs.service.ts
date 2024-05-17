@@ -30,7 +30,9 @@ import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
+import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
+import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
 import { ClubReviewsService } from '@src/apis/club-reviews/services/club-reviews.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -49,6 +51,7 @@ import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -633,6 +636,19 @@ export class ClubsService {
         userId,
         clubId,
         ...createClubReviewRequestBodyDto,
+      }),
+    );
+  }
+
+  async findAllAndCountClubReview(
+    clubId: number,
+    findClubReviewListRequestQueryDto: FindClubReviewListRequestQueryDto,
+  ): Promise<[Omit<ClubReviewsItemDto, 'status' | 'deletedAt'>[], number]> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubReviewsService.findAllAndCount(
+      new FindClubReviewListQueryDto({
+        ...findClubReviewListRequestQueryDto,
       }),
     );
   }

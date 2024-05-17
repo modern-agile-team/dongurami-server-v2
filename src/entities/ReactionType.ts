@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
@@ -58,4 +59,10 @@ export class ReactionType {
     (noticePostReaction) => noticePostReaction.reactionType,
   )
   noticePostReactions: NoticePostReaction[];
+
+  @OneToMany(
+    () => ClubReviewReaction,
+    (clubReviewReaction) => clubReviewReaction.reactionType,
+  )
+  clubReviewReactions: ClubReviewReaction[];
 }

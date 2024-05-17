@@ -8,9 +8,11 @@ import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-revi
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
 import { ClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubReview } from '@src/entities/ClubReview';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
 export class ClubReviewsService {
@@ -80,5 +82,21 @@ export class ClubReviewsService {
         clubId,
       },
     );
+  }
+
+  async isExistOrNotFound(reviewId: number): Promise<true> {
+    const isExistClubReview = await this.clubReviewRepository.exist({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    if (!isExistClubReview) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return isExistClubReview;
   }
 }

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Patch,
@@ -39,6 +40,8 @@ import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
@@ -219,6 +222,44 @@ export class ClubsController {
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
   ): Promise<number> {
     return this.clubsService.getAverageRatingForReviews(clubId);
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @ApiClub.CreateClubReviewReaction({ summary: '동아리 후기 reaction 생성' })
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post(':clubId/reviews/:reviewId/reaction')
+  createClubReviewReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.clubsService.createClubReviewReaction(
+      user.id,
+      clubId,
+      reviewId,
+      createReactionDto,
+    );
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @ApiClub.RemoveClubReviewReaction({ summary: '동아리 후기 reaction 삭제' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/reviews/:reviewId/reaction')
+  removeClubReviewReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.clubsService.removeClubReviewReaction(
+      user.id,
+      clubId,
+      reviewId,
+      removeReactionDto,
+    );
   }
 
   /**

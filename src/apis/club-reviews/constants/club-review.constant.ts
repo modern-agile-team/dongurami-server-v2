@@ -12,8 +12,6 @@ export const CLUB_REVIEW_STAR_RATE_RANGE = {
 
 export const CLUB_REVIEW_ORDER_FIELD: readonly (keyof ClubReviewDto)[] = [
   'id',
-  'userId',
-  'description',
   'starRate',
   'isAnonymous',
   'createdAt',

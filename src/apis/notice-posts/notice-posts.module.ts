@@ -7,6 +7,7 @@ import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice
 import { NoticePostsService } from '@src/apis/notice-posts/services/notice-posts.service';
 import { PostTagsModule } from '@src/apis/post-tags/post-tags.module';
 import { ReactionsModule } from '@src/apis/reactions/reactions.module';
+import { UsersModule } from '@src/apis/users/users.module';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
@@ -21,6 +22,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     CommonPostsModule.forFeature(NoticePost),
     ReactionsModule.forFeature(NoticePostReaction),
     PostTagsModule,
+    UsersModule,
   ],
   controllers: [NoticePostsController],
   providers: [NoticePostsService, QueryHelper],

@@ -18,6 +18,7 @@ import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service'
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { UsersService } from '@src/apis/users/services/users.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { NoticePost } from '@src/entities/NoticePost';
 import { NoticePostReaction } from '@src/entities/NoticePostReaction';
@@ -37,6 +38,7 @@ export class NoticePostsService {
     private readonly reactionsService: ReactionsService<NoticePostReaction>,
     private readonly commonPostsService: CommonPostsService<NoticePost>,
     private readonly postTagsService: PostTagsService,
+    private readonly usersService: UsersService,
 
     private readonly noticePostRepository: NoticePostRepository,
     private readonly noticePostTagLinkRepository: NoticePostTagLinkRepository,
@@ -61,9 +63,11 @@ export class NoticePostsService {
       tags: postTags,
     });
 
+    const postingUser = await this.usersService.findOneById(userId);
+
     await this.bulkAppendTagLink(userId, newPost.id, postTags);
 
-    return new NoticePostDto({ ...newPost, postTags });
+    return new NoticePostDto({ ...newPost, postTags, user: postingUser });
   }
 
   async findAllAndCount(
@@ -97,9 +101,14 @@ export class NoticePostsService {
   }
 
   async findOneOrNotFound(noticePostId: number): Promise<NoticePostDto> {
-    const noticePost = await this.noticePostRepository.findOneBy({
-      id: noticePostId,
-      status: NoticePostStatus.Posting,
+    const noticePost = await this.noticePostRepository.findOne({
+      where: {
+        id: noticePostId,
+        status: NoticePostStatus.Posting,
+      },
+      relations: {
+        user: true,
+      },
     });
 
     if (!noticePost) {
@@ -228,7 +237,13 @@ export class NoticePostsService {
 
   @Transactional()
   async remove(userId: number, noticePostId: number): Promise<number> {
-    const existPost = await this.findOneOrNotFound(noticePostId);
+    const existPost = await this.findOne(noticePostId);
+
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     if (existPost.userId !== userId) {
       throw new HttpForbiddenException({

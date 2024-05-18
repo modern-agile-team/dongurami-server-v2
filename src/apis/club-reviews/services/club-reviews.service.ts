@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { PickKeysByType } from 'typeorm/common/PickKeysByType';
-
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
@@ -9,7 +7,6 @@ import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club
 import { ClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { ClubReview } from '@src/entities/ClubReview';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
@@ -73,15 +70,6 @@ export class ClubReviewsService {
         user: true,
       },
     });
-  }
-
-  getAverageRating(clubId: number): Promise<number> {
-    return this.clubReviewRepository.average(
-      'star_rate' as PickKeysByType<ClubReview, number>,
-      {
-        clubId,
-      },
-    );
   }
 
   async isExistOrNotFound(reviewId: number): Promise<true> {

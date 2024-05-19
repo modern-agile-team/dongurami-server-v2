@@ -530,6 +530,21 @@ export class ClubsService {
     return newClubPost;
   }
 
+  async createClubPostReaction(
+    userId: number,
+    clubId: number,
+    postId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.createReaction(
+      userId,
+      postId,
+      createReactionDto,
+    );
+  }
+
   async findLatestApplicationForm(
     clubId: number,
   ): Promise<ClubApplicationFormDto> {

@@ -7,6 +7,11 @@ import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { ClubPostReaction } from '@src/entities/ClubPostReaction';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
 export class ClubPostsService {
@@ -14,6 +19,7 @@ export class ClubPostsService {
     private readonly clubPostRepository: ClubPostRepository,
     private readonly attachmentsService: AttachmentsService,
     private readonly clubPostAttachmentsService: ClubPostAttachmentsService,
+    private readonly reactionsService: ReactionsService<ClubPostReaction>,
   ) {}
 
   async create(createClubPostDto: CreateClubPostDto): Promise<ClubPostDto> {
@@ -46,5 +52,29 @@ export class ClubPostsService {
       ...newClubPost,
       attachments: filteredAttachments,
     });
+  }
+
+  async isExistOrNotFound(postId: number): Promise<true> {
+    const isExistClubPost = await this.clubPostRepository.exist({
+      where: { id: postId },
+    });
+
+    if (!isExistClubPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return isExistClubPost;
+  }
+
+  async createReaction(
+    userId: number,
+    postId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(postId);
+
+    return this.reactionsService.create(createReactionDto.type, userId, postId);
   }
 }

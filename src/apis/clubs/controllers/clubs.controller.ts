@@ -148,6 +148,25 @@ export class ClubsController {
     );
   }
 
+  @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':clubId/posts/:postId/reaction')
+  createClubPostReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ) {
+    return this.clubsService.createClubPostReaction(
+      user.id,
+      clubId,
+      postId,
+      createReactionDto,
+    );
+  }
+
   @ApiClub.FindLatestApplicationForm({
     summary: '최신 동아리 지원서 폼 조회',
   })

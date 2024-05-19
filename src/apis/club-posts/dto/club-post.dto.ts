@@ -23,6 +23,8 @@ export class ClubPostDto
       | 'clubPostHistories'
       | 'clubPostTagLinks'
       | 'clubPostAttachments'
+      | 'clubPostReactions'
+      | 'clubPostComments'
     >
 {
   @ApiProperty({

@@ -34,6 +34,7 @@ import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.d
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubApplicationRequestBodyDto } from '@src/apis/clubs/dto/create-club-application-request-body.dto';
+import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
@@ -145,6 +146,63 @@ export class ClubsController {
       user.id,
       clubId,
       createClubPostRequestBodyDto,
+    );
+  }
+
+  @ApiClub.CreateClubPostComment({ summary: '동아리 게시글 댓글 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubPostComment', type: ResponseType.Detail })
+  @Post(':clubId/posts/:postId/comments')
+  createClubPostComment(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body()
+    createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
+  ) {
+    return this.clubsService.createClubPostComment(
+      user.id,
+      clubId,
+      postId,
+      createClubPostCommentRequestBodyDto,
+    );
+  }
+
+  @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':clubId/posts/:postId/reaction')
+  createClubPostReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ) {
+    return this.clubsService.createClubPostReaction(
+      user.id,
+      clubId,
+      postId,
+      createReactionDto,
+    );
+  }
+
+  @ApiClub.RemoveClubPostReaction({ summary: '특정 동아리 게시글 리액션 제거' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/posts/:postId/reaction')
+  removeClubPostReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ) {
+    return this.clubsService.removeClubPostReaction(
+      user.id,
+      clubId,
+      postId,
+      removeReactionDto,
     );
   }
 

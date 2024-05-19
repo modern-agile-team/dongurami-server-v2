@@ -10,7 +10,9 @@ import {
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { Club } from '@src/entities/Club';
 import { ClubPostAttachment } from '@src/entities/ClubPostAttachment';
+import { ClubPostComment } from '@src/entities/ClubPostComment';
 import { ClubPostHistory } from '@src/entities/ClubPostHistory';
+import { ClubPostReaction } from '@src/entities/ClubPostReaction';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { PostTag } from '@src/entities/PostTag';
 import { User } from '@src/entities/User';
@@ -108,4 +110,16 @@ export class ClubPost {
     (clubPostAttachment) => clubPostAttachment.clubPost,
   )
   clubPostAttachments: ClubPostAttachment[];
+
+  @OneToMany(
+    () => ClubPostReaction,
+    (clubPostReaction) => clubPostReaction.clubPost,
+  )
+  clubPostReactions: ClubPostReaction[];
+
+  @OneToMany(
+    () => ClubPostComment,
+    (clubPostComment) => clubPostComment.clubPost,
+  )
+  clubPostComments: ClubPostComment[];
 }

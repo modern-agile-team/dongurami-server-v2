@@ -42,6 +42,7 @@ import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubApplicationRequestBodyDto } from '@src/apis/clubs/dto/create-club-application-request-body.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
+import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubPostTagLinkDto } from '@src/apis/clubs/dto/create-club-post-tag-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
@@ -528,6 +529,59 @@ export class ClubsService {
     );
 
     return newClubPost;
+  }
+
+  async createClubPostComment(
+    userId: number,
+    clubId: number,
+    postId: number,
+    createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
+  ) {
+    await this.isExistOrNotFound(clubId);
+
+    const isExistClubMember = await this.clubMembersService.isExistClubMember(
+      clubId,
+      userId,
+    );
+
+    /**
+     * @todo 추후 guard를 통해 access control 되도록 변경
+     */
+    if (!isExistClubMember) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+  }
+
+  async createClubPostReaction(
+    userId: number,
+    clubId: number,
+    postId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.createReaction(
+      userId,
+      postId,
+      createReactionDto,
+    );
+  }
+
+  async removeClubPostReaction(
+    userId: number,
+    clubId: number,
+    postId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.removeReaction(
+      userId,
+      postId,
+      removeReactionDto,
+    );
   }
 
   async findLatestApplicationForm(

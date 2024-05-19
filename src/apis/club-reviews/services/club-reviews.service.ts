@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { mean } from 'lodash';
+import mean from 'lodash/mean';
 
 import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
@@ -108,45 +108,38 @@ export class ClubReviewsService {
     return new ScoreDto({ ...starRatesCount, average });
   }
 
-  private getStarRatesCount(starRates: number[]): {
-    five: number;
-    four: number;
-    three: number;
-    two: number;
-    one: number;
-  } {
-    const scoreCount = {
-      five: 0,
-      four: 0,
-      three: 0,
-      two: 0,
-      one: 0,
-    };
-
-    starRates.reduce((scoreCount, starRate) => {
-      switch (starRate) {
-        case 5:
-          scoreCount.five += 1;
-          break;
-        case 4:
-          scoreCount.four += 1;
-          break;
-        case 3:
-          scoreCount.three += 1;
-          break;
-        case 2:
-          scoreCount.two += 1;
-          break;
-        case 1:
-          scoreCount.one += 1;
-          break;
-        default:
-          break;
-      }
-      return scoreCount;
-    }, scoreCount);
-
-    return scoreCount;
+  private getStarRatesCount(starRates: number[]): Omit<ScoreDto, 'average'> {
+    return starRates.reduce(
+      (acc, cur) => {
+        switch (cur) {
+          case 5:
+            acc.five += 1;
+            break;
+          case 4:
+            acc.four += 1;
+            break;
+          case 3:
+            acc.three += 1;
+            break;
+          case 2:
+            acc.two += 1;
+            break;
+          case 1:
+            acc.one += 1;
+            break;
+          default:
+            break;
+        }
+        return acc;
+      },
+      {
+        five: 0,
+        four: 0,
+        three: 0,
+        two: 0,
+        one: 0,
+      },
+    );
   }
 
   private getAverage(starRates: number[]): number {

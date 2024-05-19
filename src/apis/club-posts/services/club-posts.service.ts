@@ -8,6 +8,7 @@ import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.repository';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubPostReaction } from '@src/entities/ClubPostReaction';
@@ -76,5 +77,15 @@ export class ClubPostsService {
     await this.isExistOrNotFound(postId);
 
     return this.reactionsService.create(createReactionDto.type, userId, postId);
+  }
+
+  async removeReaction(
+    userId: number,
+    postId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(postId);
+
+    return this.reactionsService.remove(removeReactionDto.type, userId, postId);
   }
 }

@@ -167,6 +167,25 @@ export class ClubsController {
     );
   }
 
+  @ApiClub.RemoveClubPostReaction({ summary: '특정 동아리 게시글 리액션 제거' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/posts/:postId/reaction')
+  removeClubPostReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ) {
+    return this.clubsService.removeClubPostReaction(
+      user.id,
+      clubId,
+      postId,
+      removeReactionDto,
+    );
+  }
+
   @ApiClub.FindLatestApplicationForm({
     summary: '최신 동아리 지원서 폼 조회',
   })

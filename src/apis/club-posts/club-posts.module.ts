@@ -5,6 +5,7 @@ import { ClubPostAttachmentsModule } from '@src/apis/club-post-attachments/club-
 import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.repository';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
+import { QueryHelper } from '@src/helpers/query.helper';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
     AttachmentsModule,
     ClubPostAttachmentsModule,
   ],
-  providers: [ClubPostsService],
+  providers: [ClubPostsService, QueryHelper],
   exports: [ClubPostsService],
 })
 export class ClubPostsModule {}

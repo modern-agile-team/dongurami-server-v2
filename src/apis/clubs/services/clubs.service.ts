@@ -28,6 +28,7 @@ import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/serv
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
+import { FindClubPostListQueryDto } from '@src/apis/club-posts/dto/find-club-post-list-query.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
@@ -49,6 +50,7 @@ import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
@@ -524,6 +526,17 @@ export class ClubsService {
     );
 
     return newClubPost;
+  }
+
+  async findAllAndCountClubPosts(
+    clubId: number,
+    findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
+  ) {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.findAllAndCount(
+      new FindClubPostListQueryDto(findClubPostListRequestQueryDto),
+    );
   }
 
   async findLatestApplicationForm(

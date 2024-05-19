@@ -36,6 +36,7 @@ import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-po
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
@@ -140,6 +141,21 @@ export class ClubsController {
       user.id,
       clubId,
       createClubPostRequestBodyDto,
+    );
+  }
+
+  @ApiClub.FindAllAndCountClubPosts({
+    summary: '동아리 게시글 Pagination 조회',
+  })
+  @SetResponse({ key: 'clubPosts', type: ResponseType.Pagination })
+  @Get(':clubId/posts')
+  findAllAndCountClubPosts(
+    @Param('clubId') clubId: number,
+    @Query() findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
+  ) {
+    return this.clubsService.findAllAndCountClubPosts(
+      clubId,
+      findClubPostListRequestQueryDto,
     );
   }
 

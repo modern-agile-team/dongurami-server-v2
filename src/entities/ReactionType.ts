@@ -69,7 +69,7 @@ export class ReactionType {
 
   @OneToMany(
     () => ClubPostReaction,
-    (clubPostReactions) => clubPostReactions.reactionType,
+    (clubPostReaction) => clubPostReaction.reactionType,
   )
   clubPostReactions: ClubPostReaction[];
 }

@@ -112,7 +112,7 @@ export class ClubPost {
 
   @OneToMany(
     () => ClubPostReaction,
-    (clubPostReactions) => clubPostReactions.clubPost,
+    (clubPostReaction) => clubPostReaction.clubPost,
   )
   clubPostReactions: ClubPostReaction[];
 }

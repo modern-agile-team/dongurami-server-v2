@@ -293,7 +293,7 @@ export class User {
 
   @OneToMany(
     () => ClubPostReaction,
-    (clubPostReactions) => clubPostReactions.reactionType,
+    (clubPostReaction) => clubPostReaction.reactionType,
   )
   clubPostReactions: ClubPostReaction[];
 }

@@ -7,8 +7,10 @@ import { UserDto } from '@src/apis/users/dto/user.dto';
 
 export class PostsItemDto extends OmitType(PostDto, ['description']) {
   @ApiProperty({
-    description: '게시글 작성 유저 정보',
+    description: '게시글 작성자, isAnonymous 여부에 따라 null 값을 가짐',
+    type: UserDto,
+    nullable: true,
   })
   @Type(() => UserDto)
-  user: UserDto;
+  user: UserDto | null;
 }

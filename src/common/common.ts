@@ -15,3 +15,27 @@ export const isNil = (value: unknown): value is null | undefined => {
 export const isObject = (value: unknown): value is Record<any, any> => {
   return Object.prototype.toString.call(value) !== '[object Object]';
 };
+
+export const anonymize = <
+  T extends {
+    isAnonymous: boolean;
+    userId: number;
+    user: unknown;
+  },
+>(
+  obj: T,
+) => {
+  if (obj.isAnonymous === false) {
+    return obj;
+  }
+
+  if (!isNil(obj.userId)) {
+    obj.userId = null;
+  }
+
+  if (!isNil(obj.user)) {
+    obj.user = null;
+  }
+
+  return obj;
+};

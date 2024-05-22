@@ -25,6 +25,7 @@ import { PatchUpdateClubApplicationDto } from '@src/apis/club-applications/dto/p
 import { UpdateClubApplicationStatusDto } from '@src/apis/club-applications/dto/update-club-application-status.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
+import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
@@ -192,13 +193,13 @@ export class ClubsController {
   @SetResponse({ key: 'clubPostComment', type: ResponseType.Detail })
   @Post(':clubId/posts/:postId/comments')
   @UseGuards(JwtAuthGuard)
-  createClubPostComment(
+  async createClubPostComment(
     @User() user: UserDto,
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
     @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body()
     createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
-  ) {
+  ): Promise<ClubPostCommentDto> {
     return this.clubsService.createClubPostComment(
       user.id,
       clubId,

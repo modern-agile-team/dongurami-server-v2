@@ -153,6 +153,7 @@ export class ClubsController {
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
   @SetResponse({ key: 'clubPostComment', type: ResponseType.Detail })
   @Post(':clubId/posts/:postId/comments')
+  @UseGuards(JwtAuthGuard)
   createClubPostComment(
     @User() user: UserDto,
     @Param('clubId', ParsePositiveIntPipe) clubId: number,

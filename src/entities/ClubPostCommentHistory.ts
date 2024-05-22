@@ -52,7 +52,7 @@ export class ClubPostCommentHistory {
     default: () => "'0'",
     transformer: new BooleanTransformer(false),
   })
-  isAnonymous: number;
+  isAnonymous: boolean;
 
   @Column('enum', {
     name: 'status',

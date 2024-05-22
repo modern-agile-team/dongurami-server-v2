@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Patch,
@@ -26,6 +27,7 @@ import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
+import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ApiClub } from '@src/apis/clubs/controllers/clubs.swagger';
 import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.dto';
@@ -37,7 +39,10 @@ import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
+import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
@@ -159,6 +164,44 @@ export class ClubsController {
     );
   }
 
+  @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':clubId/posts/:postId/reaction')
+  createClubPostReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ) {
+    return this.clubsService.createClubPostReaction(
+      user.id,
+      clubId,
+      postId,
+      createReactionDto,
+    );
+  }
+
+  @ApiClub.RemoveClubPostReaction({ summary: '특정 동아리 게시글 리액션 제거' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/posts/:postId/reaction')
+  removeClubPostReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ) {
+    return this.clubsService.removeClubPostReaction(
+      user.id,
+      clubId,
+      postId,
+      removeReactionDto,
+    );
+  }
+
   @ApiClub.FindLatestApplicationForm({
     summary: '최신 동아리 지원서 폼 조회',
   })
@@ -203,6 +246,63 @@ export class ClubsController {
       user.id,
       clubId,
       createClubReviewRequestBodyDto,
+    );
+  }
+
+  @ApiClub.FindAllAndCountClubReviews({
+    summary: '동아리 후기 페이지네이션',
+  })
+  @SetResponse({ key: 'clubReviews', type: ResponseType.Pagination })
+  @Get(':clubId/reviews')
+  async findAllAndCountClubReviews(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Query()
+    findClubReviewListRequestQueryDto: FindClubReviewListRequestQueryDto,
+  ): Promise<[Omit<ClubReviewsItemDto, 'status' | 'deletedAt'>[], number]> {
+    const [clubReviews, count] =
+      await this.clubsService.findAllAndCountClubReview(
+        clubId,
+        findClubReviewListRequestQueryDto,
+      );
+
+    return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @ApiClub.CreateClubReviewReaction({ summary: '동아리 후기 reaction 생성' })
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post(':clubId/reviews/:reviewId/reaction')
+  createClubReviewReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Body() createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.clubsService.createClubReviewReaction(
+      user.id,
+      clubId,
+      reviewId,
+      createReactionDto,
+    );
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
+  @ApiClub.RemoveClubReviewReaction({ summary: '동아리 후기 reaction 삭제' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/reviews/:reviewId/reaction')
+  removeClubReviewReaction(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.clubsService.removeClubReviewReaction(
+      user.id,
+      clubId,
+      reviewId,
+      removeReactionDto,
     );
   }
 

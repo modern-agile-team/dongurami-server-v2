@@ -1,5 +1,5 @@
 import { HttpStatus, applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { OperationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
@@ -9,6 +9,7 @@ import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
+import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
@@ -17,6 +18,7 @@ import { CLUB_APPLICATION_ERROR_CODE } from '@src/constants/error/club-applicati
 import { CLUB_MEMBER_ERROR_CODE } from '@src/constants/error/club-member/club-member-error-code.constant';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/common-response.dto';
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
@@ -244,6 +246,60 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
     );
   },
 
+  CreateClubPostReaction: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      ApiNoContentResponse(),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        REACTION_ERROR_CODE.ALREADY_LIKED,
+      ]),
+    );
+  },
+
+  RemoveClubPostReaction: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      ApiNoContentResponse(),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        REACTION_ERROR_CODE.NOT_LIKED,
+      ]),
+    );
+  },
+
   FindLatestApplicationForm: function (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,
@@ -327,6 +383,88 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ]),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
         CLUB_REVIEW_ERROR_CODE.ALREADY_EXIST_REVIEWED,
+      ]),
+    );
+  },
+
+  FindAllAndCountClubReviews: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      PaginationResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubReviews',
+        ClubReviewsItemDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  CreateClubReviewReaction: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      ApiNoContentResponse(),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        REACTION_ERROR_CODE.ALREADY_LIKED,
+      ]),
+    );
+  },
+
+  RemoveClubReviewReaction: (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator => {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      ApiNoContentResponse(),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+      HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
+        REACTION_ERROR_CODE.NOT_LIKED,
       ]),
     );
   },

@@ -7,6 +7,7 @@ import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { PostTagsModule } from '@src/apis/post-tags/post-tags.module';
 import { ReactionsModule } from '@src/apis/reactions/reactions.module';
+import { UsersModule } from '@src/apis/users/users.module';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { FreePost } from '@src/entities/FreePost';
 import { FreePostReaction } from '@src/entities/FreePostReaction';
@@ -21,6 +22,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
     CommonPostsModule.forFeature(FreePost),
     ReactionsModule.forFeature(FreePostReaction),
     PostTagsModule,
+    UsersModule,
   ],
   controllers: [FreePostsController],
   providers: [FreePostsService, QueryHelper],

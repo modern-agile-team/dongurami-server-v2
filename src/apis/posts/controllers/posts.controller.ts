@@ -7,6 +7,7 @@ import { ApiPost } from '@src/apis/posts/controllers/posts.swagger';
 import { FindPostListQueryDto } from '@src/apis/posts/dto/find-post-list-query.dto';
 import { PostsItemDto } from '@src/apis/posts/dto/posts-item.dto';
 import { PostsService } from '@src/apis/posts/services/posts.service';
+import { anonymize } from '@src/common/common';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 
@@ -22,6 +23,6 @@ export class PostsController {
     const [posts, count] =
       await this.postsService.findAllAndCount(findPostListQueryDto);
 
-    return [plainToInstance(PostsItemDto, posts), count];
+    return [plainToInstance(PostsItemDto, posts).map(anonymize), count];
   }
 }

@@ -28,6 +28,8 @@ export class PostRepository {
       .createQueryBuilder()
       .select('id', 'id')
       .addSelect(`"${PostType.Free}"`, 'type')
+      .addSelect('1', 'isAllowComment')
+      .addSelect('is_anonymous', 'isAnonymous')
       .addSelect('user_id', 'userId')
       .addSelect('title', 'title')
       .addSelect('hit', 'hit')
@@ -40,6 +42,8 @@ export class PostRepository {
       .createQueryBuilder()
       .select('id', 'id')
       .addSelect(`"${PostType.Notice}"`, 'type')
+      .addSelect('is_allow_comment', 'isAllowComment')
+      .addSelect('0', 'isAnonymous')
       .addSelect('user_id', 'userId')
       .addSelect('title', 'title')
       .addSelect('hit', 'hit')
@@ -57,6 +61,8 @@ export class PostRepository {
       .select([
         'post.id',
         'type',
+        'isAnonymous',
+        'isAllowComment',
         'userId',
         'title',
         'hit',
@@ -91,7 +97,18 @@ export class PostRepository {
     ]);
 
     const posts = postRaws.map((postRaw) => {
-      const { id, type, userId, title, hit, createdAt, updatedAt } = postRaw;
+      const {
+        id,
+        type,
+        userId,
+        title,
+        hit,
+        isAnonymous,
+        isAllowComment,
+        createdAt,
+        updatedAt,
+      } = postRaw;
+
       const {
         major_id,
         login_type,
@@ -117,6 +134,8 @@ export class PostRepository {
         userId,
         title,
         hit,
+        isAnonymous: !!Number(isAnonymous),
+        isAllowComment: !!Number(isAllowComment),
         createdAt,
         updatedAt,
         user: {

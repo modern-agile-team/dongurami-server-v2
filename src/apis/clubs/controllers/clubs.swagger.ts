@@ -11,6 +11,7 @@ import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-c
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
+import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
 import { ClubsController } from '@src/apis/clubs/controllers/clubs.controller';
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
@@ -429,6 +430,30 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
         'clubReviews',
         ClubReviewsItemDto,
       ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  GetClubReviewsScore: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(HttpStatus.OK, 'score', ScoreDto),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,
         [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],

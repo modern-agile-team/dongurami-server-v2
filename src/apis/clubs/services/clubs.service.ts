@@ -531,6 +531,36 @@ export class ClubsService {
     return newClubPost;
   }
 
+  async createClubPostReaction(
+    userId: number,
+    clubId: number,
+    postId: number,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.createReaction(
+      userId,
+      postId,
+      createReactionDto,
+    );
+  }
+
+  async removeClubPostReaction(
+    userId: number,
+    clubId: number,
+    postId: number,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.removeReaction(
+      userId,
+      postId,
+      removeReactionDto,
+    );
+  }
+
   async findLatestApplicationForm(
     clubId: number,
   ): Promise<ClubApplicationFormDto> {

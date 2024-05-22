@@ -22,6 +22,7 @@ import { ClubCategory } from '@src/entities/ClubCategory';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubMember } from '@src/entities/ClubMember';
 import { ClubPost } from '@src/entities/ClubPost';
+import { ClubPostReaction } from '@src/entities/ClubPostReaction';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { ClubReview } from '@src/entities/ClubReview';
 import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
@@ -289,4 +290,10 @@ export class User {
     (clubReviewReaction) => clubReviewReaction.user,
   )
   clubReviewReactions: ClubReviewReaction[];
+
+  @OneToMany(
+    () => ClubPostReaction,
+    (clubPostReaction) => clubPostReaction.reactionType,
+  )
+  clubPostReactions: ClubPostReaction[];
 }

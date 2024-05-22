@@ -31,6 +31,7 @@ import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
+import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewsService } from '@src/apis/club-reviews/services/club-reviews.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -652,6 +653,12 @@ export class ClubsService {
         ...findClubReviewListRequestQueryDto,
       }),
     );
+  }
+
+  async getClubReviewsScore(clubId: number): Promise<ScoreDto> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubReviewsService.getScore(clubId);
   }
 
   async createClubReviewReaction(

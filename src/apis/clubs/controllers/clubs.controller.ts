@@ -214,6 +214,15 @@ export class ClubsController {
     return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
   }
 
+  @ApiClub.GetClubReviewsScore({
+    summary: '특정 동아리에 대한 전체 별점 및 평균 조회',
+  })
+  @SetResponse({ key: 'score', type: ResponseType.Detail })
+  @Get(':clubId/reviews/score')
+  getClubReviewsScore(@Param('clubId') clubId: number) {
+    return this.clubsService.getClubReviewsScore(clubId);
+  }
+
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
   @ApiClub.CreateClubReviewReaction({ summary: '동아리 후기 reaction 생성' })
   @UseGuards(JwtAuthGuard)

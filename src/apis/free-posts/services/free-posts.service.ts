@@ -20,6 +20,7 @@ import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service'
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { UsersService } from '@src/apis/users/services/users.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreePost } from '@src/entities/FreePost';
@@ -40,6 +41,7 @@ export class FreePostsService {
     private readonly commonPostsService: CommonPostsService<FreePost>,
     private readonly reactionsService: ReactionsService<FreePostReaction>,
     private readonly postTagsService: PostTagsService,
+    private readonly usersService: UsersService,
 
     private readonly queryHelper: QueryHelper,
 
@@ -65,9 +67,11 @@ export class FreePostsService {
       tags: postTags,
     });
 
+    const postingUser = await this.usersService.findOneById(userId);
+
     await this.bulkAppendTagLink(userId, newPost.id, postTags);
 
-    return new FreePostDto({ ...newPost, postTags });
+    return new FreePostDto({ ...newPost, postTags, user: postingUser });
   }
 
   findAllAndCount(
@@ -101,9 +105,14 @@ export class FreePostsService {
   }
 
   async findOneOrNotFound(freePostId: number): Promise<FreePostDto> {
-    const freePost = await this.freePostRepository.findOneBy({
-      id: freePostId,
-      status: FreePostStatus.Posting,
+    const freePost = await this.freePostRepository.findOne({
+      where: {
+        id: freePostId,
+        status: FreePostStatus.Posting,
+      },
+      relations: {
+        user: true,
+      },
     });
 
     if (!freePost) {
@@ -234,7 +243,13 @@ export class FreePostsService {
 
   @Transactional()
   async remove(userId: number, freePostId: number): Promise<number> {
-    const existFreePost = await this.findOneOrNotFound(freePostId);
+    const existFreePost = await this.findOne(freePostId);
+
+    if (!existFreePost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     if (userId !== existFreePost.userId) {
       throw new HttpForbiddenException({
@@ -265,12 +280,12 @@ export class FreePostsService {
     freePostId: number,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
-    const existPost = await this.findOneOrNotFound(freePostId);
+    await this.isExistOrNotFound(freePostId);
 
     return this.reactionsService.create(
       createReactionDto.type,
       userId,
-      existPost.id,
+      freePostId,
     );
   }
 
@@ -281,13 +296,7 @@ export class FreePostsService {
     const { page, pageSize, order, type, ...filter } =
       findFreePostReactionListQueryDto;
 
-    const existFreePost = await this.findOne(freePostId);
-
-    if (!existFreePost) {
-      throw new HttpNotFoundException({
-        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
-      });
-    }
+    await this.isExistOrNotFound(freePostId);
 
     const where = this.queryHelper.buildWherePropForFind(filter);
 
@@ -307,13 +316,29 @@ export class FreePostsService {
     freePostId: number,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
-    const existPost = await this.findOneOrNotFound(freePostId);
+    await this.isExistOrNotFound(freePostId);
 
     return this.reactionsService.remove(
       removeReactionDto.type,
       userId,
-      existPost.id,
+      freePostId,
     );
+  }
+
+  async isExistOrNotFound(postId: number): Promise<true> {
+    const isExistPost = await this.freePostRepository.exist({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return isExistPost;
   }
 
   async bulkAppendTagLink(

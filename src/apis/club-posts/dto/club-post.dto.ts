@@ -24,6 +24,7 @@ export class ClubPostDto
       | 'clubPostTagLinks'
       | 'clubPostAttachments'
       | 'clubPostReactions'
+      | 'clubPostComments'
     >
 {
   @ApiProperty({

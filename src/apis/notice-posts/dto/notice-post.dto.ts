@@ -5,6 +5,7 @@ import { Exclude } from 'class-transformer';
 import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { NoticePost } from '@src/entities/NoticePost';
 
@@ -68,6 +69,12 @@ export class NoticePostDto
   })
   postTags: PostTagDto[];
 
+  @ApiProperty({
+    description: '게시글 작성자',
+    type: UserDto,
+  })
+  user: UserDto;
+
   constructor(noticePostDto: Partial<NoticePostDto> = {}) {
     super();
 
@@ -82,5 +89,7 @@ export class NoticePostDto
     this.updatedAt = noticePostDto.updatedAt;
     this.deletedAt = noticePostDto.deletedAt;
     this.postTags = noticePostDto.postTags;
+
+    this.user = new UserDto({ ...noticePostDto.user });
   }
 }

@@ -15,10 +15,12 @@ export class PostDto extends BaseDto {
   type: PostType;
 
   @ApiProperty({
-    description: '게시글 작성자 고유 ID',
+    description:
+      '게시글 작성자 고유 ID, isAnonymous 여부에 따라 null 값을 가짐',
     format: 'integer',
+    nullable: true,
   })
-  userId: number;
+  userId: number | null;
 
   @ApiProperty({
     description: '게시글 제목',
@@ -36,6 +38,16 @@ export class PostDto extends BaseDto {
     format: 'integer',
   })
   hit: number;
+
+  @ApiProperty({
+    description: '익명 여부',
+  })
+  isAnonymous: boolean;
+
+  @ApiProperty({
+    description: '댓글 허용 여부 (false: 비활성화, true: 허용)',
+  })
+  isAllowComment: boolean;
 
   @Exclude()
   status: NoticePostStatus | FreePostStatus;

@@ -25,6 +25,7 @@ import { PatchUpdateClubApplicationDto } from '@src/apis/club-applications/dto/p
 import { UpdateClubApplicationStatusDto } from '@src/apis/club-applications/dto/update-club-application-status.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
+import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
@@ -34,6 +35,7 @@ import { BulkAppendClubTagDto } from '@src/apis/clubs/dto/bulk-append-club-tag.d
 import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubApplicationRequestBodyDto } from '@src/apis/clubs/dto/create-club-application-request-body.dto';
+import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
@@ -202,6 +204,26 @@ export class ClubsController {
     );
   }
 
+  @ApiClub.CreateClubPostComment({ summary: '동아리 게시글 댓글 생성' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubPostComment', type: ResponseType.Detail })
+  @Post(':clubId/posts/:postId/comments')
+  @UseGuards(JwtAuthGuard)
+  async createClubPostComment(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body()
+    createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
+  ): Promise<ClubPostCommentDto> {
+    return this.clubsService.createClubPostComment(
+      user.id,
+      clubId,
+      postId,
+      createClubPostCommentRequestBodyDto,
+    );
+  }
+
   @ApiClub.FindLatestApplicationForm({
     summary: '최신 동아리 지원서 폼 조회',
   })
@@ -266,6 +288,15 @@ export class ClubsController {
       );
 
     return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
+  }
+
+  @ApiClub.GetClubReviewsScore({
+    summary: '특정 동아리에 대한 전체 별점 및 평균 조회',
+  })
+  @SetResponse({ key: 'score', type: ResponseType.Detail })
+  @Get(':clubId/reviews/score')
+  getClubReviewsScore(@Param('clubId') clubId: number) {
+    return this.clubsService.getClubReviewsScore(clubId);
   }
 
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED])

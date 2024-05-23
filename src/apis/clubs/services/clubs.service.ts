@@ -23,6 +23,8 @@ import { ClubCategoryLinkRepository } from '@src/apis/club-category-links/reposi
 import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enum';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
+import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
+import { ClubPostCommentsService } from '@src/apis/club-post-comments/services/club-post-comments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
@@ -32,6 +34,7 @@ import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
+import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewsService } from '@src/apis/club-reviews/services/club-reviews.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -43,6 +46,7 @@ import { ClubDto } from '@src/apis/clubs/dto/club.dto';
 import { ClubsItemDto } from '@src/apis/clubs/dto/clubs-item.dto';
 import { CreateClubApplicationRequestBodyDto } from '@src/apis/clubs/dto/create-club-application-request-body.dto';
 import { CreateClubCategoryLinkDto } from '@src/apis/clubs/dto/create-club-category-link.dto';
+import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-request-body.dto';
 import { CreateClubPostTagLinkDto } from '@src/apis/clubs/dto/create-club-post-tag-link.dto';
 import { CreateClubRequestBodyDto } from '@src/apis/clubs/dto/create-club-request-body.dto';
@@ -87,6 +91,7 @@ export class ClubsService {
     private readonly clubApplicationsService: ClubApplicationsService,
     private readonly queryHelper: QueryHelper,
     private readonly reactionsService: ReactionsService<ClubReviewReaction>,
+    private readonly clubPostCommentsService: ClubPostCommentsService,
   ) {}
 
   @Transactional()
@@ -573,6 +578,36 @@ export class ClubsService {
     );
   }
 
+  @Transactional()
+  async createClubPostComment(
+    userId: number,
+    clubId: number,
+    postId: number,
+    createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
+  ): Promise<ClubPostCommentDto> {
+    await this.isExistOrNotFound(clubId);
+
+    const isExistClubMember = await this.clubMembersService.isExistClubMember(
+      clubId,
+      userId,
+    );
+
+    /**
+     * @todo 추후 guard를 통해 access control 되도록 변경
+     */
+    if (!isExistClubMember) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    return this.clubPostCommentsService.create(
+      userId,
+      postId,
+      createClubPostCommentRequestBodyDto,
+    );
+  }
+
   async findLatestApplicationForm(
     clubId: number,
   ): Promise<ClubApplicationFormDto> {
@@ -695,6 +730,12 @@ export class ClubsService {
         ...findClubReviewListRequestQueryDto,
       }),
     );
+  }
+
+  async getClubReviewsScore(clubId: number): Promise<ScoreDto> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubReviewsService.getScore(clubId);
   }
 
   async createClubReviewReaction(

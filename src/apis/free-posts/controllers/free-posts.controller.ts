@@ -30,6 +30,7 @@ import { FreePostsService } from '@src/apis/free-posts/services/free-posts.servi
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { anonymize } from '@src/common/common';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -46,8 +47,16 @@ export class FreePostsController {
   @UseGuards(JwtAuthGuard)
   @SetResponse({ key: 'freePost', type: ResponseType.Detail })
   @Post()
-  create(@User() user: UserDto, @Body() createFreePostDto: CreateFreePostDto) {
-    return this.freePostsService.create(user.id, createFreePostDto);
+  async create(
+    @User() user: UserDto,
+    @Body() createFreePostDto: CreateFreePostDto,
+  ) {
+    const newPost = await this.freePostsService.create(
+      user.id,
+      createFreePostDto,
+    );
+
+    return anonymize(newPost);
   }
 
   @ApiFreePost.FindAllAndCount({ summary: '자유 게시글 전체조회(pagination)' })
@@ -60,48 +69,54 @@ export class FreePostsController {
       findFreePostListQueryDto,
     );
 
-    return [plainToInstance(FreePostsItemDto, freePosts), count];
+    return [plainToInstance(FreePostsItemDto, freePosts).map(anonymize), count];
   }
 
   @ApiFreePost.FindOneOrNotFound({ summary: '자유게시글 상세조회' })
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
   @Get(':postId')
-  findOneOrNotFound(
+  async findOneOrNotFound(
     @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<FreePostDto> {
-    return this.freePostsService.findOneOrNotFound(postId);
+    const existPost = await this.freePostsService.findOneOrNotFound(postId);
+
+    return anonymize(existPost);
   }
 
   @ApiFreePost.PutUpdate({ summary: '자유게시글 수정' })
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
   @UseGuards(JwtAuthGuard)
   @Put(':postId')
-  putUpdate(
+  async putUpdate(
     @User() user: UserDto,
     @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body() putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
-    return this.freePostsService.putUpdate(
+    const newPost = await this.freePostsService.putUpdate(
       user.id,
       postId,
       putUpdateFreePostDto,
     );
+
+    return anonymize(newPost);
   }
 
   @ApiFreePost.PatchUpdate({ summary: '자유게시글 부분 수정' })
   @UseGuards(JwtAuthGuard)
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
   @Patch(':postId')
-  patchUpdate(
+  async patchUpdate(
     @User() user: UserDto,
     @Param('postId', ParsePositiveIntPipe) postId: number,
     @Body() patchUpdateFreePostDto: PatchUpdateFreePostDto,
   ): Promise<FreePostDto> {
-    return this.freePostsService.patchUpdate(
+    const newPost = await this.freePostsService.patchUpdate(
       user.id,
       postId,
       patchUpdateFreePostDto,
     );
+
+    return anonymize(newPost);
   }
 
   @ApiFreePost.Remove({

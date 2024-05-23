@@ -5,6 +5,7 @@ import { Exclude } from 'class-transformer';
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePost } from '@src/entities/FreePost';
 
@@ -26,10 +27,12 @@ export class FreePostDto
     >
 {
   @ApiProperty({
-    description: '게시글 작성자 고유 ID',
+    description:
+      '게시글 작성자 고유 ID, isAnonymous 여부에 따라 null 값을 가짐',
     format: 'integer',
+    nullable: true,
   })
-  userId: number;
+  userId: number | null;
 
   @ApiProperty({
     description: '제목',
@@ -67,6 +70,13 @@ export class FreePostDto
   })
   postTags: PostTagDto[];
 
+  @ApiProperty({
+    description: '게시글 작성자, isAnonymous 여부에 따라 null 값을 가짐',
+    type: UserDto,
+    nullable: true,
+  })
+  user: UserDto | null;
+
   constructor(freePostDto: Partial<FreePostDto> = {}) {
     super();
 
@@ -81,5 +91,7 @@ export class FreePostDto
     this.updatedAt = freePostDto.updatedAt;
     this.deletedAt = freePostDto.deletedAt;
     this.postTags = freePostDto.postTags;
+
+    this.user = new UserDto({ ...freePostDto.user });
   }
 }

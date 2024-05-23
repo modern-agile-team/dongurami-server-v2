@@ -37,7 +37,7 @@ export class CreateClubPostCommentRequestBodyDto
   isAnonymous: boolean = false;
 
   @ApiPropertyOptional({
-    description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글로 안식함',
+    description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글로 인식함',
     format: 'integer',
     nullable: false,
   })

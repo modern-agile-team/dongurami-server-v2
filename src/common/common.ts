@@ -60,7 +60,7 @@ SelectQueryBuilder.prototype.getMany = async function () {
 
     for (const [propertyKey, { propertyKey: name, type }] of Object.entries<{
       propertyKey: string;
-      type: string;
+      type: 'boolean' | 'number';
     }>(metaInfo)) {
       const transformedValue =
         type === 'number'
@@ -82,8 +82,18 @@ SelectQueryBuilder.prototype.getOne = async function () {
   const { entities, raw } = await this.getRawAndEntities();
   const metaInfo = Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entities[0]) || {};
 
-  for (const [propertyKey, name] of Object.entries<string>(metaInfo)) {
-    entities[0][propertyKey] = raw[0][name];
+  for (const [propertyKey, { propertyKey: name, type }] of Object.entries<{
+    propertyKey: string;
+    type: 'number' | 'boolean';
+  }>(metaInfo)) {
+    const transformedValue =
+      type === 'number'
+        ? Number(raw[0][name])
+        : 'boolean'
+          ? Boolean(raw[0][name])
+          : raw[0][name];
+
+    entities[0][propertyKey] = transformedValue;
   }
 
   return entities[0];

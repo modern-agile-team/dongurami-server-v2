@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
+import { CustomVirtualColumn } from '@src/decorators/custom-virtual-column.decorator';
 import { Club } from '@src/entities/Club';
 import { ClubPostAttachment } from '@src/entities/ClubPostAttachment';
 import { ClubPostComment } from '@src/entities/ClubPostComment';
@@ -92,6 +93,12 @@ export class ClubPost {
   })
   @JoinColumn([{ name: 'club_id', referencedColumnName: 'id' }])
   club: Club;
+
+  @CustomVirtualColumn('number')
+  likeCount: number;
+
+  @CustomVirtualColumn('number')
+  commentCount: number;
 
   @OneToMany(
     () => ClubPostHistory,

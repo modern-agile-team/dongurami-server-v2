@@ -46,55 +46,68 @@ export const anonymize = <
 
 declare module 'typeorm' {
   interface SelectQueryBuilder<Entity> {
-    getMany(this: SelectQueryBuilder<Entity>): Promise<Entity[] | undefined>;
-    getOne(this: SelectQueryBuilder<Entity>): Promise<Entity | undefined>;
+    getManyWithVirtualColumns(
+      this: SelectQueryBuilder<Entity>,
+      alias: string,
+    ): Promise<Entity[] | undefined>;
   }
 }
 
-SelectQueryBuilder.prototype.getMany = async function () {
+SelectQueryBuilder.prototype.getManyWithVirtualColumns = async function (
+  alias: string,
+) {
   const { entities, raw } = await this.getRawAndEntities();
 
-  const items = entities.map((entity, index) => {
-    const metaInfo = Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entity) ?? {};
-    const item = raw[index];
+  const entityMap = new Map<number, { entity: any; aggregatedData: any }>();
 
-    for (const [propertyKey, { propertyKey: name, type }] of Object.entries<{
-      propertyKey: string;
-      type: 'boolean' | 'number';
-    }>(metaInfo)) {
-      const transformedValue =
-        type === 'number'
-          ? Number(item[name])
-          : 'boolean'
-            ? Boolean(item[name])
-            : item[name];
+  raw.forEach((item) => {
+    const entityId = item[`${alias}_id`];
 
-      entity[propertyKey] = transformedValue;
+    if (!entityMap.has(entityId)) {
+      const entity = entities.find((el) => el.id === entityId);
+      const metaInfo = Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entity) ?? {};
+      const aggregatedData = {};
+
+      Object.keys(metaInfo).forEach((propertyKey) => {
+        const { type } = metaInfo[propertyKey];
+        aggregatedData[propertyKey] = type === 'number' ? 0 : null;
+      });
+
+      entityMap.set(entityId, { entity, aggregatedData });
     }
 
-    return entity;
+    const { entity, aggregatedData } = entityMap.get(entityId);
+
+    const metaInfo = Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entity) ?? {};
+    Object.entries<{ propertyKey: string; type: 'number' | 'boolean' }>(
+      metaInfo,
+    ).forEach(([propertyKey, { propertyKey: name, type }]) => {
+      const value = transformValue(item[name], type);
+      if (type === 'number') {
+        aggregatedData[propertyKey] += value;
+      } else {
+        aggregatedData[propertyKey] = value;
+      }
+    });
   });
 
-  return [...items];
+  const mappedEntities = Array.from(entityMap.values()).map(
+    ({ entity, aggregatedData }) => {
+      Object.assign(entity, aggregatedData);
+      return entity;
+    },
+  );
+
+  return mappedEntities;
 };
 
-SelectQueryBuilder.prototype.getOne = async function () {
-  const { entities, raw } = await this.getRawAndEntities();
-  const metaInfo = Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entities[0]) || {};
-
-  for (const [propertyKey, { propertyKey: name, type }] of Object.entries<{
-    propertyKey: string;
-    type: 'number' | 'boolean';
-  }>(metaInfo)) {
-    const transformedValue =
-      type === 'number'
-        ? Number(raw[0][name])
-        : 'boolean'
-          ? Boolean(raw[0][name])
-          : raw[0][name];
-
-    entities[0][propertyKey] = transformedValue;
+function transformValue(value: any, type: 'number' | 'boolean') {
+  if (type === 'number') {
+    const numberValue = Number(value);
+    return isNaN(numberValue) ? 0 : numberValue;
+  } else if (type === 'boolean') {
+    return Boolean(value);
+  } else {
+    return value;
   }
-
-  return entities[0];
-};
+}

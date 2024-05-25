@@ -325,7 +325,7 @@ export class ClubsController {
    * @todo 지원 유저가 필수 정보를 모두 가지고있는지 체크돼야함
    * 이름, 나이, 학과, 학번, 성별
    */
-  @ApiClub.CreateClubApplication({ summary: '동아리 지원서 생성' })
+  @ApiClub.CreateClubApplication({ summary: '동아리 지원내역 생성' })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
   @SetResponse({ key: 'clubApplication', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
@@ -347,7 +347,7 @@ export class ClubsController {
    * @todo 동아리장 엑세스컨트롤
    */
   @ApiClub.FindAllAndCountClubApplications({
-    summary: '동아리 지원서 페이지네이션',
+    summary: '동아리 지원내역 페이지네이션',
   })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
   @SetResponse({ key: 'clubApplications', type: ResponseType.Pagination })
@@ -371,7 +371,7 @@ export class ClubsController {
    * @todo 동아리장 엑세스컨트롤
    */
   @ApiClub.FindOneClubApplication({
-    summary: '동아리 지원서 상세조회',
+    summary: '동아리 지원내역 상세조회',
     description: '지원서 상태가 submit이라면 viewed로 변경됨',
   })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
@@ -385,7 +385,7 @@ export class ClubsController {
     return this.clubsService.findOneClubApplication(clubId, applicationId);
   }
 
-  @ApiClub.PatchUpdateClubApplication({ summary: '동아리 지원서 업데이트' })
+  @ApiClub.PatchUpdateClubApplication({ summary: '동아리 지원내역 업데이트' })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
   @SetResponse({ key: 'clubApplication', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
@@ -405,7 +405,7 @@ export class ClubsController {
   }
 
   @ApiClub.UpdateClubApplicationStatus({
-    summary: '동아리 지원서 상태 업데이트',
+    summary: '동아리 지원내역 상태 업데이트',
     description: '승인으로 업데이트하면 동아리원으로 자동 추가됨',
   })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])

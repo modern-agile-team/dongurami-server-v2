@@ -7,6 +7,7 @@ import { ClubApplicationDto } from '@src/apis/club-applications/dto/club-applica
 import { ClubApplicationsItemDto } from '@src/apis/club-applications/dto/club-applications-item.dto';
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
+import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
@@ -297,6 +298,34 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ]),
       HttpException.swaggerBuilder(HttpStatus.CONFLICT, [
         REACTION_ERROR_CODE.NOT_LIKED,
+      ]),
+    );
+  },
+
+  CreateClubPostComment: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.CREATED,
+        'clubPostComment',
+        ClubPostCommentDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       ]),
     );
   },

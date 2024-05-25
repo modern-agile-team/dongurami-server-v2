@@ -25,7 +25,7 @@ export class FindClubPostListRequestQueryDto
   @ApiPropertyOrder(CLUB_POST_ORDER_FIELD)
   @CsvToOrder<typeof CLUB_POST_ORDER_FIELD>([...CLUB_POST_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof CLUB_POST_ORDER_FIELD> = { id: SortOrder.Asc };
+  order: Order<typeof CLUB_POST_ORDER_FIELD> = { createdAt: SortOrder.Asc };
 
   @IsDefined()
   status: ClubPostStatus = ClubPostStatus.Posting;

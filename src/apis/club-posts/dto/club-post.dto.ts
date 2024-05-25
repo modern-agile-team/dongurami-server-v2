@@ -25,6 +25,8 @@ export class ClubPostDto
       | 'clubPostAttachments'
       | 'clubPostReactions'
       | 'clubPostComments'
+      | 'likeCount'
+      | 'commentCount'
     >
 {
   @ApiProperty({

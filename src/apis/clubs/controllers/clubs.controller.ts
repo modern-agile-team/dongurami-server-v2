@@ -27,6 +27,7 @@ import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -156,14 +157,16 @@ export class ClubsController {
   })
   @SetResponse({ key: 'clubPosts', type: ResponseType.Pagination })
   @Get(':clubId/posts')
-  findAllAndCountClubPosts(
+  async findAllAndCountClubPosts(
     @Param('clubId') clubId: number,
     @Query() findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
-  ) {
-    return this.clubsService.findAllAndCountClubPosts(
+  ): Promise<[ClubPostsItemDto[], number]> {
+    const [clubPosts, count] = await this.clubsService.findAllAndCountClubPosts(
       clubId,
       findClubPostListRequestQueryDto,
     );
+
+    return [plainToInstance(ClubPostsItemDto, clubPosts), count];
   }
 
   @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })

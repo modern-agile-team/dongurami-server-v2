@@ -27,6 +27,7 @@ import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-c
 import { ClubPostCommentsService } from '@src/apis/club-post-comments/services/club-post-comments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { FindClubPostListQueryDto } from '@src/apis/club-posts/dto/find-club-post-list-query.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
@@ -540,12 +541,22 @@ export class ClubsService {
   async findAllAndCountClubPosts(
     clubId: number,
     findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
-  ) {
+  ): Promise<[ClubPostsItemDto[], number]> {
     await this.isExistOrNotFound(clubId);
 
-    return this.clubPostsService.findAllAndCount(
+    const [clubPosts, count] = await this.clubPostsService.findAllAndCount(
       new FindClubPostListQueryDto(findClubPostListRequestQueryDto),
     );
+
+    clubPosts.forEach((clubPost) => {
+      const { clubPostComments } = clubPost;
+
+      if (clubPostComments.length > 1) {
+        clubPostComments.length = 1;
+      }
+    });
+
+    return [clubPosts, count];
   }
 
   async createClubPostReaction(

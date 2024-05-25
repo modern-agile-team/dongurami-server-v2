@@ -3,8 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { AttachmentsService } from '@src/apis/attachments/services/attachments.service';
 import { CreateClubPostAttachmentDto } from '@src/apis/club-post-attachments/dto/create-club-post-attachment.dto';
 import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/services/club-post-attachments.service';
+import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { FindClubPostListQueryDto } from '@src/apis/club-posts/dto/find-club-post-list-query.dto';
 import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.repository';
@@ -63,36 +65,87 @@ export class ClubPostsService {
     });
   }
 
-  async findAllAndCount(findClubPostListQueryDto: FindClubPostListQueryDto) {
+  async findAllAndCount(
+    findClubPostListQueryDto: FindClubPostListQueryDto,
+  ): Promise<[ClubPostsItemDto[], number]> {
     const { page, pageSize, order, ...filter } = findClubPostListQueryDto;
+
+    console.log(page, pageSize);
 
     const where = this.queryHelper.buildWherePropForFind(
       filter,
       this.LIKE_SEARCH_FIELD,
     );
 
-    await this.clubPostRepository.findAndCount({
-      where,
-      skip: page,
-      take: page * pageSize,
-      order,
-    });
+    this.queryHelper.aliasFactory('clubPost', order);
 
-    await this.clubPostRepository
-      .createQueryBuilder('clubPost')
-      .select([
-        'id',
-        'clubId',
-        'userId',
-        'description',
-        'tags',
-        'createdAt',
-        'updatedAt',
-        'clubPostAttachments',
-        'COUNT(DISTINCT clubPostReactions.id) as likeCount',
-      ])
-      .leftJoinAndSelect('clubPost.clubPostAttachments', 'clubPostAttachments')
-      .leftJoin('clubPost.clubPostReactions', 'clubPostReactions');
+    const [clubPosts, count] = await Promise.all([
+      this.clubPostRepository
+        .createQueryBuilder('clubPost')
+        .select([
+          'clubPost.id',
+          'clubPost.clubId',
+          'clubPost.userId',
+          'clubPost.description',
+          'clubPost.tags',
+          'clubPost.createdAt',
+          'clubPost.updatedAt',
+        ])
+        .addSelect('COUNT(DISTINCT clubPostReactions.id)', 'likeCount')
+        .addSelect('COUNT(DISTINCT clubPostComments.id)', 'commentCount')
+        .innerJoinAndSelect(
+          'clubPost.user',
+          'user',
+          'clubPost.userId = user.id',
+        )
+        .leftJoinAndSelect(
+          'clubPost.clubPostAttachments',
+          'clubPostAttachments',
+          'clubPostAttachments.clubPostId = clubPost.id',
+        )
+        .leftJoinAndSelect(
+          'clubPostAttachments.attachment',
+          'attachment',
+          'clubPostAttachments.attachmentId = attachment.id',
+        )
+        .leftJoin(
+          'clubPost.clubPostReactions',
+          'clubPostReactions',
+          'clubPostReactions.parentId = clubPost.id',
+        )
+        .leftJoinAndSelect(
+          'clubPost.clubPostComments',
+          'clubPostComments',
+          'clubPostComments.status = :status',
+          { status: ClubPostCommentStatus.Posting },
+        )
+        .leftJoinAndSelect(
+          'clubPostComments.user',
+          'commentUser',
+          'clubPostComments.userId = commentUser.id',
+        )
+        .where(where)
+        .orderBy(order)
+        .groupBy('clubPost.id, clubPostAttachments.id, clubPostComments.id')
+        .skip(page * pageSize)
+        .take(pageSize)
+        .getManyWithVirtualColumns('clubPost'),
+
+      this.clubPostRepository.countBy({ ...where }),
+    ]);
+
+    return [
+      clubPosts.map((clubPost) => {
+        const { clubPostAttachments, ...clubPostProps } = clubPost;
+        return {
+          ...clubPostProps,
+          attachments: clubPostAttachments.map(
+            (clubPostAttachment) => clubPostAttachment.attachment,
+          ),
+        };
+      }),
+      count,
+    ];
   }
 
   async isExistOrNotFound(postId: number): Promise<true> {

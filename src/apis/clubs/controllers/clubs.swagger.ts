@@ -9,6 +9,7 @@ import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
@@ -232,6 +233,34 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
         HttpStatus.CREATED,
         'clubPost',
         ClubPostDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  FindAllAndCountClubPosts: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ) {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      PaginationResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubPosts',
+        ClubPostsItemDto,
       ),
       HttpException.swaggerBuilder(
         HttpStatus.BAD_REQUEST,

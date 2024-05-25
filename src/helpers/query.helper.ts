@@ -51,4 +51,15 @@ export class QueryHelper {
             },
     };
   }
+
+  aliasFactory<E extends Record<string, any>>(
+    alias: string,
+    object: Partial<Record<keyof E, E[keyof E]>>,
+  ) {
+    for (const key in object) {
+      object[`${alias}.${key}`] = object[key];
+
+      delete object[key];
+    }
+  }
 }

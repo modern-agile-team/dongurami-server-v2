@@ -70,8 +70,6 @@ export class ClubPostsService {
   ): Promise<[ClubPostsItemDto[], number]> {
     const { page, pageSize, order, ...filter } = findClubPostListQueryDto;
 
-    console.log(page, pageSize);
-
     const where = this.queryHelper.buildWherePropForFind(
       filter,
       this.LIKE_SEARCH_FIELD,

@@ -56,10 +56,12 @@ export class QueryHelper {
     alias: string,
     object: Partial<Record<keyof E, E[keyof E]>>,
   ) {
-    for (const key in object) {
-      object[`${alias}.${key}`] = object[key];
+    const aliasedObject = <Record<keyof E, any>>{};
 
-      delete object[key];
+    for (const key in object) {
+      aliasedObject[`${alias}.${key}`] = object[key];
     }
+
+    return aliasedObject;
   }
 }

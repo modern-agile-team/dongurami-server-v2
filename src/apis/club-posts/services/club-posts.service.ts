@@ -75,7 +75,7 @@ export class ClubPostsService {
       this.LIKE_SEARCH_FIELD,
     );
 
-    this.queryHelper.aliasFactory('clubPost', order);
+    const aliasedOrder = this.queryHelper.aliasFactory('clubPost', order);
 
     const [clubPosts, count] = await Promise.all([
       this.clubPostRepository
@@ -123,7 +123,7 @@ export class ClubPostsService {
           'clubPostComments.userId = commentUser.id',
         )
         .where(where)
-        .orderBy(order)
+        .orderBy(aliasedOrder)
         .groupBy('clubPost.id, clubPostAttachments.id, clubPostComments.id')
         .skip(page * pageSize)
         .take(pageSize)

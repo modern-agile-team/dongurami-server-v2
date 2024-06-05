@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { AttachmentsService } from '@src/apis/attachments/services/attachments.service';
 import { CreateClubPostAttachmentDto } from '@src/apis/club-post-attachments/dto/create-club-post-attachment.dto';
 import { ClubPostAttachmentsService } from '@src/apis/club-post-attachments/services/club-post-attachments.service';
-import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
@@ -67,7 +66,9 @@ export class ClubPostsService {
 
   async findAllAndCount(
     findClubPostListQueryDto: FindClubPostListQueryDto,
-  ): Promise<[ClubPostsItemDto[], number]> {
+  ): Promise<
+    [Omit<ClubPostsItemDto, 'clubPostComments' | 'commentCount'>[], number]
+  > {
     const { page, pageSize, order, ...filter } = findClubPostListQueryDto;
 
     const where = this.queryHelper.buildWherePropForFind(
@@ -90,7 +91,6 @@ export class ClubPostsService {
           'clubPost.updatedAt',
         ])
         .addSelect('COUNT(DISTINCT clubPostReactions.id)', 'likeCount')
-        .addSelect('COUNT(DISTINCT clubPostComments.id)', 'commentCount')
         .innerJoinAndSelect(
           'clubPost.user',
           'user',
@@ -111,30 +111,20 @@ export class ClubPostsService {
           'clubPostReactions',
           'clubPostReactions.parentId = clubPost.id',
         )
-        .leftJoinAndSelect(
-          'clubPost.clubPostComments',
-          'clubPostComments',
-          'clubPostComments.status = :status',
-          { status: ClubPostCommentStatus.Posting },
-        )
-        .leftJoinAndSelect(
-          'clubPostComments.user',
-          'commentUser',
-          'clubPostComments.userId = commentUser.id',
-        )
         .where(where)
         .orderBy(aliasedOrder)
-        .groupBy('clubPost.id, clubPostAttachments.id, clubPostComments.id')
+        .groupBy('clubPost.id, clubPostAttachments.id')
         .skip(page * pageSize)
         .take(pageSize)
         .getManyWithVirtualColumns('clubPost'),
 
-      this.clubPostRepository.countBy({ ...where }),
+      this.clubPostRepository.countBy(where),
     ]);
 
     return [
       clubPosts.map((clubPost) => {
         const { clubPostAttachments, ...clubPostProps } = clubPost;
+
         return {
           ...clubPostProps,
           attachments: clubPostAttachments.map(

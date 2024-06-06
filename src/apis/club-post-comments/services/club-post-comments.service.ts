@@ -4,10 +4,13 @@ import { IsNull } from 'typeorm';
 
 import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
+import { ClubPostCommentsItemDto } from '@src/apis/club-post-comments/dto/club-post-comments-item.dto';
+import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
 import { ClubPostCommentRepository } from '@src/apis/club-post-comments/repositories/club-post-comment.repository';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
@@ -16,6 +19,7 @@ export class ClubPostCommentsService {
   constructor(
     private readonly clubPostCommentRepository: ClubPostCommentRepository,
     private readonly clubPostsService: ClubPostsService,
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   async create(
@@ -52,6 +56,25 @@ export class ClubPostCommentsService {
     await this.clubPostCommentRepository.save(newPostComment);
 
     return new ClubPostCommentDto(newPostComment);
+  }
+
+  async findAll(
+    findAllClubPostCommentsDto: FindClubPostCommentsDto,
+  ): Promise<ClubPostCommentsItemDto[]> {
+    const { order, ...filter } = findAllClubPostCommentsDto;
+
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    return this.clubPostCommentRepository.find({
+      where: {
+        ...where,
+        depth: 0,
+      },
+      relations: {
+        user: true,
+      },
+      order,
+    });
   }
 
   async findOneOrNotFound(

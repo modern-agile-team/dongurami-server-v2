@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
 
@@ -11,4 +11,12 @@ export class ClubPostCommentsItemDto extends ClubPostCommentDto {
   })
   @Type(() => UserDto)
   user: UserDto;
+
+  @ApiPropertyOptional({
+    description: '댓글의 하위 댓글 nested 구조',
+    type: ClubPostCommentsItemDto,
+    isArray: true,
+  })
+  @Type(() => ClubPostCommentsItemDto)
+  children?: ClubPostCommentsItemDto[];
 }

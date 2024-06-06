@@ -53,6 +53,11 @@ declare module 'typeorm' {
   }
 }
 
+/**
+ * @summary number type의 virtual column이고,
+ * 단순 Count를 통해 개수만 집계하는 것이 아닌 집계하고자 Join한 테이블의 컬럼을
+ * SELECT 시에는 정상적으로 작동하지 않음.
+ */
 SelectQueryBuilder.prototype.getManyWithVirtualColumns = async function (
   alias: string,
 ) {
@@ -83,11 +88,8 @@ SelectQueryBuilder.prototype.getManyWithVirtualColumns = async function (
       metaInfo,
     ).forEach(([propertyKey, { propertyKey: name, type }]) => {
       const value = transformValue(item[name], type);
-      if (type === 'number') {
-        aggregatedData[propertyKey] += value;
-      } else {
-        aggregatedData[propertyKey] = value;
-      }
+
+      aggregatedData[propertyKey] = value;
     });
   });
 

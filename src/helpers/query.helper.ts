@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { FindOptionsRelations, Like } from 'typeorm';
+import { FindOptionsRelations, In, Like } from 'typeorm';
 
 import { isNil } from '@src/common/common';
 
@@ -29,6 +29,8 @@ export class QueryHelper {
 
       if (likeSearchFields?.includes(key)) {
         where[key] = Like(`%${value}%`);
+      } else if (Array.isArray(value)) {
+        where[key] = In(value);
       } else {
         where[key] = value;
       }

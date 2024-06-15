@@ -8,6 +8,7 @@ import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
 import { PatchUpdateClubReviewDto } from '@src/apis/club-reviews/dto/patch-update-club-review.dto';
+import { RemoveClubReviewDto } from '@src/apis/club-reviews/dto/remove-club-review.dto';
 import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository';
 import { isNil } from '@src/common/common';
@@ -122,6 +123,40 @@ export class ClubReviewsService {
     );
 
     return new ClubReviewDto({ ...newClubReview });
+  }
+
+  async remove(removeClubReviewDto: RemoveClubReviewDto): Promise<number> {
+    const existClubReview = await this.clubReviewRepository.findOne({
+      where: {
+        id: removeClubReviewDto.id,
+        clubId: removeClubReviewDto.clubId,
+      },
+    });
+
+    if (isNil(existClubReview)) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (existClubReview.userId !== removeClubReviewDto.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const clubReviewUpdateResult = await this.clubReviewRepository.update(
+      {
+        id: removeClubReviewDto.id,
+      },
+      {
+        ...existClubReview,
+        status: ClubReviewStatus.Remove,
+        deletedAt: new Date(),
+      },
+    );
+
+    return clubReviewUpdateResult.affected;
   }
 
   async isExistOrNotFound(reviewId: number): Promise<true> {

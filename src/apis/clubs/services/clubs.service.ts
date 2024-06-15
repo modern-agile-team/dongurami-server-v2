@@ -42,6 +42,7 @@ import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
 import { PatchUpdateClubReviewDto } from '@src/apis/club-reviews/dto/patch-update-club-review.dto';
+import { RemoveClubReviewDto } from '@src/apis/club-reviews/dto/remove-club-review.dto';
 import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewsService } from '@src/apis/club-reviews/services/club-reviews.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
@@ -926,6 +927,30 @@ export class ClubsService {
         clubId,
         userId,
         ...patchUpdateClubReviewRequestDto,
+      }),
+    );
+  }
+
+  async removeClubReview(
+    userId: number,
+    clubId: number,
+    reviewId: number,
+  ): Promise<number> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId, status: ClubStatus.Active },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.clubReviewsService.remove(
+      new RemoveClubReviewDto({
+        id: reviewId,
+        userId,
+        clubId,
       }),
     );
   }

@@ -422,6 +422,19 @@ export class ClubsController {
     );
   }
 
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @ApiClub.RemoveClubReview({ summary: '동아리 후기 삭제' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ type: ResponseType.Delete })
+  @Delete(':clubId/reviews/:reviewId')
+  async removeClubReview(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+  ): Promise<number> {
+    return this.clubsService.removeClubReview(user.id, clubId, reviewId);
+  }
+
   @ApiClub.GetClubReviewsScore({
     summary: '특정 동아리에 대한 전체 별점 및 평균 조회',
   })

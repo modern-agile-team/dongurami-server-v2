@@ -32,11 +32,13 @@ export class ClubApplicationFormDto
 
   @ApiProperty({
     description: '지원서 시작일자',
+    nullable: true,
   })
   startsAt: Date | null;
 
   @ApiProperty({
     description: '지원서 종료일자',
+    nullable: true,
   })
   endsAt: Date | null;
 

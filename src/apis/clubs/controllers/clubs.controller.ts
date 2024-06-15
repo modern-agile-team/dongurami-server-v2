@@ -27,6 +27,7 @@ import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -40,6 +41,7 @@ import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-po
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
@@ -148,6 +150,23 @@ export class ClubsController {
       clubId,
       createClubPostRequestBodyDto,
     );
+  }
+
+  @ApiClub.FindAllAndCountClubPosts({
+    summary: '동아리 게시글 Pagination 조회',
+  })
+  @SetResponse({ key: 'clubPosts', type: ResponseType.Pagination })
+  @Get(':clubId/posts')
+  async findAllAndCountClubPosts(
+    @Param('clubId') clubId: number,
+    @Query() findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
+  ): Promise<[ClubPostsItemDto[], number]> {
+    const [clubPosts, count] = await this.clubsService.findAllAndCountClubPosts(
+      clubId,
+      findClubPostListRequestQueryDto,
+    );
+
+    return [plainToInstance(ClubPostsItemDto, clubPosts), count];
   }
 
   @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })

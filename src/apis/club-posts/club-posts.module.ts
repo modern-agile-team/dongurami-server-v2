@@ -7,6 +7,7 @@ import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.servi
 import { ReactionsModule } from '@src/apis/reactions/reactions.module';
 import { TypeOrmExModule } from '@src/core/type-orm/type-orm-ex.module';
 import { ClubPostReaction } from '@src/entities/ClubPostReaction';
+import { QueryHelper } from '@src/helpers/query.helper';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { ClubPostReaction } from '@src/entities/ClubPostReaction';
     ClubPostAttachmentsModule,
     ReactionsModule.forFeature(ClubPostReaction),
   ],
-  providers: [ClubPostsService],
+  providers: [ClubPostsService, QueryHelper],
   exports: [ClubPostsService],
 })
 export class ClubPostsModule {}

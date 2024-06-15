@@ -24,10 +24,13 @@ import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enu
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
+import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
 import { ClubPostCommentsService } from '@src/apis/club-post-comments/services/club-post-comments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
+import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
+import { FindClubPostListQueryDto } from '@src/apis/club-posts/dto/find-club-post-list-query.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
@@ -53,6 +56,7 @@ import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
@@ -533,6 +537,38 @@ export class ClubsService {
     );
 
     return newClubPost;
+  }
+
+  async findAllAndCountClubPosts(
+    clubId: number,
+    findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
+  ): Promise<[ClubPostsItemDto[], number]> {
+    await this.isExistOrNotFound(clubId);
+
+    const [clubPosts, count] = await this.clubPostsService.findAllAndCount(
+      new FindClubPostListQueryDto(findClubPostListRequestQueryDto),
+    );
+
+    const clubPostComments = await this.clubPostCommentsService.findAll(
+      new FindClubPostCommentsDto({
+        clubPostId: clubPosts.map((clubPost) => clubPost.id),
+      }),
+    );
+
+    return [
+      clubPosts.map((clubPost) => {
+        const filteredComments = clubPostComments.filter(
+          (clubPostComment) => clubPost.id === clubPostComment.clubPostId,
+        );
+
+        return {
+          ...clubPost,
+          clubPostComments: [filteredComments[0]],
+          commentCount: filteredComments.length,
+        };
+      }),
+      count,
+    ];
   }
 
   async createClubPostReaction(

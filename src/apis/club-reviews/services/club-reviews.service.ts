@@ -7,12 +7,16 @@ import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
+import { PatchUpdateClubReviewDto } from '@src/apis/club-reviews/dto/patch-update-club-review.dto';
 import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository';
+import { isNil } from '@src/common/common';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
@@ -74,6 +78,50 @@ export class ClubReviewsService {
         user: true,
       },
     });
+  }
+
+  async patchUpdate(
+    patchUpdateClubReviewDto: PatchUpdateClubReviewDto,
+  ): Promise<ClubReviewDto> {
+    const { id, clubId, userId, ...updateProps } = patchUpdateClubReviewDto;
+
+    if (Object.values(updateProps).every((prop) => prop === undefined)) {
+      throw new HttpBadRequestException({
+        code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+      });
+    }
+
+    const oldClubReview = await this.clubReviewRepository.findOne({
+      where: { id, clubId },
+    });
+
+    if (isNil(oldClubReview)) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    if (oldClubReview.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const newClubReview = this.clubReviewRepository.create({
+      ...oldClubReview,
+      ...updateProps,
+    });
+
+    await this.clubReviewRepository.update(
+      {
+        id,
+      },
+      {
+        ...newClubReview,
+      },
+    );
+
+    return new ClubReviewDto({ ...newClubReview });
   }
 
   async isExistOrNotFound(reviewId: number): Promise<true> {

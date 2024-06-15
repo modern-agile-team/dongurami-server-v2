@@ -21,6 +21,18 @@ export class ClubReviewSubscriber
     await this.createHistory(event, HistoryAction.Insert);
   }
 
+  async afterUpdate(event: UpdateEvent<ClubReview>): Promise<void> {
+    let action: HistoryAction;
+
+    if (event.entity.deletedAt) {
+      action = HistoryAction.Delete;
+    } else {
+      action = HistoryAction.Update;
+    }
+
+    await this.createHistory(event, action);
+  }
+
   private async createHistory(
     event: InsertEvent<ClubReview> | UpdateEvent<ClubReview>,
     action: HistoryAction,

@@ -47,6 +47,7 @@ import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-p
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { PatchUpdateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-comment-request-body.dto';
 import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
+import { PatchUpdateClubReviewRequestDto } from '@src/apis/clubs/dto/patch-update-club-review-request.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
@@ -400,6 +401,25 @@ export class ClubsController {
       );
 
     return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
+  }
+
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @ApiClub.PatchUpdateClubReview({ summary: '동아리 후기 업데이트' })
+  @UseGuards(JwtAuthGuard)
+  @SetResponse({ key: 'clubReview', type: ResponseType.Detail })
+  @Patch(':clubId/reviews/:reviewId')
+  async patchUpdateClubReview(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Body() patchUpdateClubReviewRequestDto: PatchUpdateClubReviewRequestDto,
+  ): Promise<ClubReviewDto> {
+    return this.clubsService.patchUpdateClubReview(
+      user.id,
+      clubId,
+      reviewId,
+      patchUpdateClubReviewRequestDto,
+    );
   }
 
   @ApiClub.GetClubReviewsScore({

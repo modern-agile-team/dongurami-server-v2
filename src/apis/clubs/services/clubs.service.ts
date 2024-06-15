@@ -41,6 +41,7 @@ import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
 import { CreateClubReviewDto } from '@src/apis/club-reviews/dto/create-club-review.dto';
 import { FindClubReviewListQueryDto } from '@src/apis/club-reviews/dto/find-club-review-list-query.dto';
+import { PatchUpdateClubReviewDto } from '@src/apis/club-reviews/dto/patch-update-club-review.dto';
 import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewsService } from '@src/apis/club-reviews/services/club-reviews.service';
 import { ClubTagLinkRepository } from '@src/apis/club-tag-links/repositories/club-tag-link.repository';
@@ -66,6 +67,7 @@ import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-p
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { PatchUpdateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-comment-request-body.dto';
 import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
+import { PatchUpdateClubReviewRequestDto } from '@src/apis/clubs/dto/patch-update-club-review-request.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
@@ -898,6 +900,32 @@ export class ClubsService {
     return this.clubReviewsService.findAllAndCount(
       new FindClubReviewListQueryDto({
         ...findClubReviewListRequestQueryDto,
+      }),
+    );
+  }
+
+  async patchUpdateClubReview(
+    userId: number,
+    clubId: number,
+    reviewId: number,
+    patchUpdateClubReviewRequestDto: PatchUpdateClubReviewRequestDto,
+  ): Promise<ClubReviewDto> {
+    const isExistClub = await this.clubRepository.exist({
+      where: { id: clubId, status: ClubStatus.Active },
+    });
+
+    if (!isExistClub) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.clubReviewsService.patchUpdate(
+      new PatchUpdateClubReviewDto({
+        id: reviewId,
+        clubId,
+        userId,
+        ...patchUpdateClubReviewRequestDto,
       }),
     );
   }

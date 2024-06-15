@@ -97,9 +97,6 @@ export class ClubPost {
   @CustomVirtualColumn('number')
   likeCount: number;
 
-  @CustomVirtualColumn('number')
-  commentCount: number;
-
   @OneToMany(
     () => ClubPostHistory,
     (clubPostHistory) => clubPostHistory.clubPost,

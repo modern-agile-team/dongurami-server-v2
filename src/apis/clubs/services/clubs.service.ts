@@ -621,7 +621,7 @@ export class ClubsService {
       postTags = await this.findPostTags(postId);
     }
 
-    const newPost = await this.clubPostsService.patchUpdate(
+    return this.clubPostsService.patchUpdate(
       new PatchUpdateClubPostDto({
         ...postProps,
         postId,
@@ -630,10 +630,6 @@ export class ClubsService {
         attachmentPaths,
       }),
     );
-
-    console.log(newPost);
-
-    return newPost;
   }
 
   async createClubPostReaction(

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { plainToInstance } from 'class-transformer';
+import { isNotEmptyObject } from 'class-validator';
 import { differenceWith } from 'lodash';
 import { In, Raw } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
@@ -31,6 +32,7 @@ import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { CreateClubPostDto } from '@src/apis/club-posts/dto/create-club-post.dto';
 import { FindClubPostListQueryDto } from '@src/apis/club-posts/dto/find-club-post-list-query.dto';
+import { PatchUpdateClubPostDto } from '@src/apis/club-posts/dto/patch-update-club-post.dto';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
 import { ClubReviewsItemDto } from '@src/apis/club-reviews/dto/club-reviews-item.dto';
@@ -58,7 +60,9 @@ import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
+import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
@@ -69,6 +73,7 @@ import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
@@ -571,6 +576,66 @@ export class ClubsService {
     ];
   }
 
+  @Transactional()
+  async patchUpdateClubPost(
+    userId: number,
+    clubId: number,
+    postId: number,
+    patchUpdateClubPostDto: PatchUpdateClubPostRequestBodyDto,
+  ) {
+    await this.isExistOrNotFound(clubId);
+
+    await this.clubPostsService.isExistOrNotFound(postId);
+
+    if (!isNotEmptyObject(patchUpdateClubPostDto)) {
+      throw new HttpBadRequestException({
+        code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+      });
+    }
+
+    const { tagNames, attachmentPaths, ...postProps } = patchUpdateClubPostDto;
+
+    let postTags: PostTagDto[];
+
+    if (tagNames) {
+      await this.clubPostTagLinkRepository.delete({
+        clubPostId: postId,
+      });
+
+      postTags = await this.postTagsService.bulkCreate(
+        userId,
+        tagNames.map((tagName) => ({ name: tagName })),
+      );
+
+      await this.bulkCreateClubPostTagLinks(
+        postTags.map(
+          (postTag) =>
+            new CreateClubPostTagLinkDto({
+              userId,
+              clubPostId: postId,
+              postTagId: postTag.id,
+            }),
+        ),
+      );
+    } else {
+      postTags = await this.findPostTags(postId);
+    }
+
+    const newPost = await this.clubPostsService.patchUpdate(
+      new PatchUpdateClubPostDto({
+        ...postProps,
+        postId,
+        userId,
+        tags: postTags,
+        attachmentPaths,
+      }),
+    );
+
+    console.log(newPost);
+
+    return newPost;
+  }
+
   async createClubPostReaction(
     userId: number,
     clubId: number,
@@ -896,6 +961,7 @@ export class ClubsService {
     const isExistClub = await this.clubRepository.exist({
       where: {
         id: clubId,
+        status: ClubStatus.Active,
       },
     });
 
@@ -933,5 +999,20 @@ export class ClubsService {
     );
 
     return tags;
+  }
+
+  private async findPostTags(clubPostId: number): Promise<PostTagDto[]> {
+    const postTagLinks = await this.clubPostTagLinkRepository.find({
+      where: {
+        clubPostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
   }
 }

@@ -49,6 +49,7 @@ export class CreateClubPostRequestBodyDto
     minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,
     maxItems: CLUB_POST_ATTACHMENT_COUNT.MAX,
     default: [],
+    format: 'int64',
   })
   @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
   @IsNumberString({}, { each: true })

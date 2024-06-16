@@ -582,7 +582,7 @@ export class ClubsService {
     clubId: number,
     postId: number,
     patchUpdateClubPostDto: PatchUpdateClubPostRequestBodyDto,
-  ) {
+  ): Promise<ClubPostDto> {
     await this.isExistOrNotFound(clubId);
 
     await this.clubPostsService.isExistOrNotFound(postId);

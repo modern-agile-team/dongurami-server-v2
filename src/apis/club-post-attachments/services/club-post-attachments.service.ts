@@ -45,7 +45,7 @@ export class ClubPostAttachmentsService {
     );
   }
 
-  async bulkDelete(clubPostId: number): Promise<number> {
+  async deleteByPostId(clubPostId: number): Promise<number> {
     const deleteResult = await this.clubPostAttachmentRepository.delete({
       clubPostId,
     });

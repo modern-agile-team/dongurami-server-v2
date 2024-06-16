@@ -189,7 +189,7 @@ export class ClubPostsService {
     let attachments: AttachmentDto[];
 
     if (attachmentPaths) {
-      await this.clubPostAttachmentsService.bulkDelete(postId);
+      await this.clubPostAttachmentsService.deleteByPostId(postId);
 
       const filteredAttachments =
         await this.filterValidPostAttachments(attachmentPaths);

@@ -36,7 +36,6 @@ export class PatchUpdateClubPostRequestBodyDto extends PartialType(
     maxLength: POST_TAG_NAME_LENGTH.MAX,
     minItems: CLUB_POST_TAG_COUNT.MIN,
     maxItems: CLUB_POST_TAG_COUNT.MAX,
-    default: [],
   })
   @ArrayMaxSize(CLUB_POST_TAG_COUNT.MAX)
   @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, {
@@ -51,7 +50,6 @@ export class PatchUpdateClubPostRequestBodyDto extends PartialType(
       `허용하는 MIME-Type: ${[...CLUB_POST_ATTACHMENT_MIME_TYPE]}`,
     minItems: CLUB_POST_ATTACHMENT_COUNT.MIN,
     maxItems: CLUB_POST_ATTACHMENT_COUNT.MAX,
-    default: [],
     format: 'int64',
   })
   @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)

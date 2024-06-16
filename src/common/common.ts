@@ -1,7 +1,6 @@
 import { SelectQueryBuilder } from 'typeorm';
 
 import { VIRTUAL_COLUMN_KEY } from '@src/decorators/custom-virtual-column.decorator';
-import type { ExcludeKeys } from '@src/types/type';
 
 export const transformPage = ({ value }: { value: unknown }): number => {
   const page = Number(value);
@@ -120,15 +119,15 @@ export const destructureExcludeKeys = <
   K extends keyof T,
 >(
   obj: T,
-  excludeKeys: K[],
-): ExcludeKeys<T, K> => {
+  keysToExclude: K[],
+): Omit<T, K> => {
   return Object.entries(obj).reduce(
     (acc, [key, value]) => {
-      if (!excludeKeys.includes(key as K)) {
+      if (!keysToExclude.includes(key as K)) {
         (acc as any)[key] = value;
       }
       return acc;
     },
-    {} as ExcludeKeys<T, K>,
+    {} as Omit<T, K>,
   );
 };

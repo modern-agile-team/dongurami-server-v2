@@ -29,7 +29,3 @@ export interface FindManyOptionsForPagination<E extends Record<string, any>>
   skip: number;
   take: number;
 }
-
-export type ExcludeKeys<T, K extends keyof T> = {
-  [P in Exclude<keyof T, K>]: T[P];
-};

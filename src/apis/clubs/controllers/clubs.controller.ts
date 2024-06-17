@@ -198,7 +198,7 @@ export class ClubsController {
   removeClubPost(
     @User() user: UserDto,
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('clubId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
   ): Promise<number> {
     return this.clubsService.removeClubPost(user.id, clubId, postId);
   }

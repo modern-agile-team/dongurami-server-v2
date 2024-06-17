@@ -571,6 +571,12 @@ export class ClubsService {
     ];
   }
 
+  async removeClubPost(userId: number, clubId: number, postId: number) {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.remove(userId, postId);
+  }
+
   async createClubPostReaction(
     userId: number,
     clubId: number,

@@ -169,6 +169,19 @@ export class ClubsController {
     return [plainToInstance(ClubPostsItemDto, clubPosts), count];
   }
 
+  @ApiClub.RemoveClubPost({ summary: '특정 동아리 게시글 삭제' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/posts/:postId')
+  removeClubPost(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) postId: number,
+  ) {
+    return this.clubsService.removeClubPost(user.id, clubId, postId);
+  }
+
   @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED])
   @HttpCode(HttpStatus.NO_CONTENT)

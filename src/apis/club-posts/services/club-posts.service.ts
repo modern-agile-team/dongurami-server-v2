@@ -150,6 +150,8 @@ export class ClubPostsService {
     return isExistClubPost;
   }
 
+  async remove(userId: number, postId: number) {}
+
   async createReaction(
     userId: number,
     postId: number,

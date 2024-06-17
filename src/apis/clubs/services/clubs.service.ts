@@ -641,7 +641,7 @@ export class ClubsService {
   ): Promise<number> {
     await this.isExistOrNotFound(clubId);
 
-    return this.clubPostsService.remove(userId, postId);
+    return this.clubPostsService.remove(userId, clubId, postId);
   }
 
   async createClubPostReaction(

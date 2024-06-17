@@ -237,8 +237,17 @@ export class ClubPostsService {
     });
   }
 
-  async remove(userId: number, postId: number): Promise<number> {
-    const existPost = await this.findOneOrNotFound(postId);
+  async remove(
+    userId: number,
+    clubId: number,
+    postId: number,
+  ): Promise<number> {
+    const existPost = destructureExcludeKeys(
+      await this.findOneOrNotFound(clubId, postId, {
+        relations: {},
+      }),
+      ['user', 'updatedAt'],
+    );
 
     if (existPost.userId !== userId) {
       throw new HttpForbiddenException({

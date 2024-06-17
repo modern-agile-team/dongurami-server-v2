@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { FindOneOptions } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { AttachmentDto } from '@src/apis/attachments/dto/attachment.dto';
@@ -16,8 +17,9 @@ import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { destructureExcludeKeys } from '@src/common/common';
+import { destructureExcludeKeys, isNil } from '@src/common/common';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { ClubPost } from '@src/entities/ClubPost';
 import { ClubPostReaction } from '@src/entities/ClubPostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
@@ -139,13 +141,18 @@ export class ClubPostsService {
     ];
   }
 
-  async findOneOrNotFound(postId: number): Promise<ClubPostDto> {
+  async findOneOrNotFound(
+    clubId: number,
+    postId: number,
+    overrideOptions?: FindOneOptions<ClubPost>,
+  ): Promise<ClubPostDto> {
     const existPost = await this.clubPostRepository.findOne({
-      where: { id: postId, status: ClubPostStatus.Posting },
+      where: { id: postId, clubId, status: ClubPostStatus.Posting },
       relations: { user: true },
+      ...overrideOptions,
     });
 
-    if (!existPost) {
+    if (isNil(existPost)) {
       throw new HttpNotFoundException({
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       });
@@ -154,9 +161,9 @@ export class ClubPostsService {
     return new ClubPostDto(existPost);
   }
 
-  async isExistOrNotFound(postId: number): Promise<true> {
+  async isExistOrNotFound(clubId: number, postId: number): Promise<true> {
     const isExistClubPost = await this.clubPostRepository.exist({
-      where: { id: postId, status: ClubPostStatus.Posting },
+      where: { id: postId, clubId, status: ClubPostStatus.Posting },
     });
 
     if (!isExistClubPost) {
@@ -172,11 +179,11 @@ export class ClubPostsService {
   async patchUpdate(
     patchUpdateClubPostDto: PatchUpdateClubPostDto,
   ): Promise<ClubPostDto> {
-    const { userId, postId, attachmentPaths, ...postProps } =
+    const { userId, postId, clubId, attachmentPaths, ...postProps } =
       patchUpdateClubPostDto;
 
     const oldClubPost = destructureExcludeKeys(
-      await this.findOneOrNotFound(postId),
+      await this.findOneOrNotFound(clubId, postId),
       ['updatedAt'],
     );
 
@@ -232,20 +239,22 @@ export class ClubPostsService {
 
   async createReaction(
     userId: number,
+    clubId: number,
     postId: number,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
-    await this.isExistOrNotFound(postId);
+    await this.isExistOrNotFound(clubId, postId);
 
     return this.reactionsService.create(createReactionDto.type, userId, postId);
   }
 
   async removeReaction(
     userId: number,
+    clubId: number,
     postId: number,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
-    await this.isExistOrNotFound(postId);
+    await this.isExistOrNotFound(clubId, postId);
 
     return this.reactionsService.remove(removeReactionDto.type, userId, postId);
   }

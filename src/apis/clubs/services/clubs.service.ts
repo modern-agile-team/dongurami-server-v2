@@ -585,7 +585,7 @@ export class ClubsService {
   ): Promise<ClubPostDto> {
     await this.isExistOrNotFound(clubId);
 
-    await this.clubPostsService.isExistOrNotFound(postId);
+    await this.clubPostsService.isExistOrNotFound(clubId, postId);
 
     if (!isNotEmptyObject(patchUpdateClubPostDto)) {
       throw new HttpBadRequestException({
@@ -624,6 +624,7 @@ export class ClubsService {
     return this.clubPostsService.patchUpdate(
       new PatchUpdateClubPostDto({
         ...postProps,
+        clubId,
         postId,
         userId,
         tags: postTags,
@@ -653,6 +654,7 @@ export class ClubsService {
 
     return this.clubPostsService.createReaction(
       userId,
+      clubId,
       postId,
       createReactionDto,
     );
@@ -668,6 +670,7 @@ export class ClubsService {
 
     return this.clubPostsService.removeReaction(
       userId,
+      clubId,
       postId,
       removeReactionDto,
     );
@@ -698,6 +701,7 @@ export class ClubsService {
 
     return this.clubPostCommentsService.create(
       userId,
+      clubId,
       postId,
       createClubPostCommentRequestBodyDto,
     );

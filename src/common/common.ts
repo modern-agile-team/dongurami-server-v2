@@ -124,7 +124,7 @@ export const destructureExcludeKeys = <
   return Object.entries(obj).reduce(
     (acc, [key, value]) => {
       if (!keysToExclude.includes(key as K)) {
-        (acc as any)[key] = value;
+        acc[key] = value;
       }
       return acc;
     },

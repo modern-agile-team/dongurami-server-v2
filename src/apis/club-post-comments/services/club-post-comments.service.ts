@@ -5,11 +5,13 @@ import { IsNull } from 'typeorm';
 import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostCommentsItemDto } from '@src/apis/club-post-comments/dto/club-post-comments-item.dto';
+import { FindAndCountClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-and-count-club-post-comments.dto';
 import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
 import { ClubPostCommentRepository } from '@src/apis/club-post-comments/repositories/club-post-comment.repository';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { ClubPostComment } from '@src/entities/ClubPostComment';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
@@ -76,6 +78,47 @@ export class ClubPostCommentsService {
       },
       order,
     });
+  }
+
+  async findAllAndCount(
+    findAndCountClubPostCommentsDto: FindAndCountClubPostCommentsDto,
+  ): Promise<[ClubPostComment[], number]> {
+    const { page, pageSize, order, loadDepth, ...filter } =
+      findAndCountClubPostCommentsDto;
+
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    const relations = this.queryHelper.createNestedChildRelations(loadDepth);
+
+    /**
+     * @todo 1 이상 depth도 처리되게 변경
+     * @todo join 후 where 필터링이 아닌 join on 조건으로 필터링되게
+     */
+    const [comments, count] = await this.clubPostCommentRepository.findAndCount(
+      {
+        where: {
+          ...where,
+          depth: 0,
+        },
+        order,
+        skip: page * pageSize,
+        take: pageSize,
+        relations: {
+          ...relations,
+          user: true,
+        },
+      },
+    );
+
+    const filteredComments = comments.map((comment) => {
+      comment.children = comment.children.filter(
+        (c) => c.status === ClubPostCommentStatus.Posting,
+      );
+
+      return comment;
+    });
+
+    return [filteredComments, count];
   }
 
   async findOneOrNotFound(

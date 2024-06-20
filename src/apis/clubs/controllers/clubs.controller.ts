@@ -26,6 +26,7 @@ import { UpdateClubApplicationStatusDto } from '@src/apis/club-applications/dto/
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
+import { ClubPostCommentsItemDto } from '@src/apis/club-post-comments/dto/club-post-comments-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
@@ -49,6 +50,7 @@ import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { anonymize } from '@src/common/common';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -259,12 +261,18 @@ export class ClubsController {
     @Param('postId', ParsePositiveIntPipe) postId: number,
     @Query()
     findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
-  ) {
-    return this.clubsService.findAllAndCountClubPostComments(
-      clubId,
-      postId,
-      findClubPostCommentsListRequestQueryDto,
-    );
+  ): Promise<[ClubPostCommentsItemDto[], number]> {
+    const [clubPostComments, count] =
+      await this.clubsService.findAllAndCountClubPostComments(
+        clubId,
+        postId,
+        findClubPostCommentsListRequestQueryDto,
+      );
+
+    return [
+      plainToInstance(ClubPostCommentsItemDto, clubPostComments).map(anonymize),
+      count,
+    ];
   }
 
   @ApiClub.FindLatestApplicationForm({

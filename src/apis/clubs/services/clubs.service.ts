@@ -25,6 +25,7 @@ import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enu
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubMembersService } from '@src/apis/club-members/services/club-members.service';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
+import { FindAndCountClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-and-count-club-post-comments.dto';
 import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
 import { ClubPostCommentsService } from '@src/apis/club-post-comments/services/club-post-comments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
@@ -70,6 +71,7 @@ import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { ClubPostComment } from '@src/entities/ClubPostComment';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
 import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
@@ -701,7 +703,18 @@ export class ClubsService {
     clubId: number,
     postId: number,
     findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
-  ) {}
+  ): Promise<[ClubPostComment[], number]> {
+    await this.isExistOrNotFound(clubId);
+
+    await this.clubPostsService.isExistOrNotFound(clubId, postId);
+
+    return this.clubPostCommentsService.findAllAndCount(
+      new FindAndCountClubPostCommentsDto({
+        ...findClubPostCommentsListRequestQueryDto,
+        clubPostId: postId,
+      }),
+    );
+  }
 
   async findLatestApplicationForm(
     clubId: number,

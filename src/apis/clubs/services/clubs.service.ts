@@ -56,6 +56,7 @@ import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-
 import { CreateClubTagLinkDto } from '@src/apis/clubs/dto/create-club-tag-link.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostCommentsListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-comments-list-request-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
@@ -630,6 +631,12 @@ export class ClubsService {
       createClubPostCommentRequestBodyDto,
     );
   }
+
+  async findAllAndCountClubPostComments(
+    clubId: number,
+    postId: number,
+    findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
+  ) {}
 
   async findLatestApplicationForm(
     clubId: number,

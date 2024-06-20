@@ -41,6 +41,7 @@ import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-po
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostCommentsListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-comments-list-request-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
@@ -224,6 +225,24 @@ export class ClubsController {
       clubId,
       postId,
       createClubPostCommentRequestBodyDto,
+    );
+  }
+
+  @ApiClub.FindAllAndCountClubPostComments({
+    summary: '동아리 게시글 댓글 Pagination 조회',
+  })
+  @SetResponse({ key: 'clubPostComments', type: ResponseType.Pagination })
+  @Get(':clubId/posts/:postId/comments')
+  async findAllAndCountClubPostComments(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Query()
+    findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
+  ) {
+    return this.clubsService.findAllAndCountClubPostComments(
+      clubId,
+      postId,
+      findClubPostCommentsListRequestQueryDto,
     );
   }
 

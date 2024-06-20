@@ -13,7 +13,7 @@ export class FindClubPostCommentsListRequestQueryDto
   implements
     Pick<
       FindAndCountClubPostCommentsDto,
-      'status' | 'order' | 'page' | 'pageSize'
+      'status' | 'order' | 'page' | 'pageSize' | 'loadDepth'
     >
 {
   @ApiPropertyOrder(CLUB_POST_COMMENT_ORDER_FIELD)
@@ -27,4 +27,7 @@ export class FindClubPostCommentsListRequestQueryDto
 
   @IsDefined()
   status: ClubPostCommentStatus = ClubPostCommentStatus.Posting;
+
+  @IsDefined()
+  loadDepth: number = 1;
 }

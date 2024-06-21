@@ -121,13 +121,12 @@ export const destructureExcludeKeys = <
   obj: T,
   keysToExclude: K[],
 ): Omit<T, K> => {
-  return Object.entries(obj).reduce(
-    (acc, [key, value]) => {
-      if (!keysToExclude.includes(key as K)) {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {} as Omit<T, K>,
-  );
+  const excludedObject = <Omit<T, K>>{};
+
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (!keysToExclude.includes(key as K)) {
+      acc[key] = value;
+    }
+    return acc;
+  }, excludedObject);
 };

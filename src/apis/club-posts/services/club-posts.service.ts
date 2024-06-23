@@ -219,6 +219,7 @@ export class ClubPostsService {
     const newClubPost = this.clubPostRepository.create({
       ...oldClubPost,
       ...postProps,
+      updatedAt: new Date(),
     });
 
     await this.clubPostRepository.update(
@@ -233,7 +234,6 @@ export class ClubPostsService {
     return new ClubPostDto({
       ...newClubPost,
       attachments,
-      updatedAt: new Date(),
     });
   }
 

@@ -17,7 +17,7 @@ import { ClubPostRepository } from '@src/apis/club-posts/repositories/club-post.
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { destructureExcludeKeys, isNil } from '@src/common/common';
+import { isNil } from '@src/common/common';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubPost } from '@src/entities/ClubPost';
 import { ClubPostReaction } from '@src/entities/ClubPostReaction';
@@ -182,10 +182,7 @@ export class ClubPostsService {
     const { userId, postId, clubId, attachmentPaths, ...postProps } =
       patchUpdateClubPostDto;
 
-    const oldClubPost = destructureExcludeKeys(
-      await this.findOneOrNotFound(clubId, postId),
-      ['updatedAt'],
-    );
+    const oldClubPost = await this.findOneOrNotFound(clubId, postId);
 
     if (oldClubPost.userId !== userId) {
       throw new HttpForbiddenException({
@@ -219,6 +216,7 @@ export class ClubPostsService {
     const newClubPost = this.clubPostRepository.create({
       ...oldClubPost,
       ...postProps,
+      updatedAt: new Date(),
     });
 
     await this.clubPostRepository.update(
@@ -233,7 +231,6 @@ export class ClubPostsService {
     return new ClubPostDto({
       ...newClubPost,
       attachments,
-      updatedAt: new Date(),
     });
   }
 

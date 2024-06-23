@@ -239,11 +239,12 @@ export class ClubPostsService {
     clubId: number,
     postId: number,
   ): Promise<number> {
-    const existPost = destructureExcludeKeys(
-      await this.findOneOrNotFound(clubId, postId, {
+    const existPost: Omit<ClubPostDto, 'user'> = await this.findOneOrNotFound(
+      clubId,
+      postId,
+      {
         relations: {},
-      }),
-      ['user', 'updatedAt'],
+      },
     );
 
     if (existPost.userId !== userId) {
@@ -258,6 +259,7 @@ export class ClubPostsService {
       },
       {
         ...existPost,
+        updatedAt: new Date(),
         status: ClubPostStatus.Remove,
         deletedAt: new Date(),
       },

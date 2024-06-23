@@ -5,8 +5,6 @@ export class PatchUpdateClubPostCommentDto extends PatchUpdateClubPostCommentReq
 
   userId: number;
 
-  clubId: number;
-
   clubPostId: number;
 
   constructor(
@@ -14,6 +12,23 @@ export class PatchUpdateClubPostCommentDto extends PatchUpdateClubPostCommentReq
   ) {
     super();
 
-    Object.assign(this, patchUpdateClubPostCommentDto);
+    const { id, clubPostId, userId, parentId, description, isAnonymous } =
+      patchUpdateClubPostCommentDto;
+
+    this.id = id;
+    this.clubPostId = clubPostId;
+    this.userId = userId;
+
+    if (parentId !== undefined) {
+      this.parentId = parentId;
+    }
+
+    if (description !== undefined) {
+      this.description = description;
+    }
+
+    if (isAnonymous !== undefined) {
+      this.isAnonymous = isAnonymous;
+    }
   }
 }

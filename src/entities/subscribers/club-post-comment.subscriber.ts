@@ -21,6 +21,18 @@ export class ClubPostCommentSubscriber
     await this.createHistory(event, HistoryAction.Insert);
   }
 
+  async afterUpdate(event: UpdateEvent<ClubPostComment>): Promise<any> {
+    let action: HistoryAction;
+
+    if (event.entity.deletedAt) {
+      action = HistoryAction.Delete;
+    } else {
+      action = HistoryAction.Update;
+    }
+
+    await this.createHistory(event, action);
+  }
+
   private async createHistory(
     event: InsertEvent<ClubPostComment> | UpdateEvent<ClubPostComment>,
     action: HistoryAction,

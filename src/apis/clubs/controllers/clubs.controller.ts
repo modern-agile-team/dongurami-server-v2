@@ -45,6 +45,7 @@ import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.d
 import { FindClubPostCommentsListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-comments-list-request-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
+import { PatchUpdateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-comment-request-body.dto';
 import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
@@ -273,6 +274,30 @@ export class ClubsController {
       plainToInstance(ClubPostCommentsItemDto, clubPostComments).map(anonymize),
       count,
     ];
+  }
+
+  @ApiClub.PatchUpdateClubPostComment({
+    summary: '특정 동아리 게시글 댓글 Patch 업데이트',
+  })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubPostComment', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Patch(':clubId/posts/:postId/comments/:commentId')
+  patchUpdateClubPostComment(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Body()
+    patchUpdateClubPostCommentRequestBodyDto: PatchUpdateClubPostCommentRequestBodyDto,
+  ): Promise<ClubPostCommentDto> {
+    return this.clubsService.patchUpdateClubPostComment(
+      user.id,
+      clubId,
+      postId,
+      commentId,
+      patchUpdateClubPostCommentRequestBodyDto,
+    );
   }
 
   @ApiClub.FindLatestApplicationForm({

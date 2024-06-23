@@ -300,6 +300,27 @@ export class ClubsController {
     );
   }
 
+  @ApiClub.RemoveClubPostComment({
+    summary: '특정 동아리 게시글 댓글 삭제',
+  })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ type: ResponseType.Delete })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':clubId/posts/:postId/comments/:commentId')
+  removeClubPostComment(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+  ): Promise<number> {
+    return this.clubsService.removeClubPostComment(
+      user.id,
+      clubId,
+      postId,
+      commentId,
+    );
+  }
+
   @ApiClub.FindLatestApplicationForm({
     summary: '최신 동아리 지원서 폼 조회',
   })

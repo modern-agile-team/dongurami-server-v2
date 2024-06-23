@@ -9,10 +9,10 @@ import { ClubPostCommentsItemDto } from '@src/apis/club-post-comments/dto/club-p
 import { FindAndCountClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-and-count-club-post-comments.dto';
 import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
 import { PatchUpdateClubPostCommentDto } from '@src/apis/club-post-comments/dto/patch-update-club-post-comment.dto';
+import { RemoveClubPostCommentDto } from '@src/apis/club-post-comments/dto/remove-club-post-comment.dto';
 import { ClubPostCommentRepository } from '@src/apis/club-post-comments/repositories/club-post-comment.repository';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
-import { destructureExcludeKeys } from '@src/common/common';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubPostComment } from '@src/entities/ClubPostComment';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -154,13 +154,10 @@ export class ClubPostCommentsService {
   ) {
     const { clubPostId, id, parentId, userId } = patchUpdateClubPostCommentDto;
 
-    const oldComment = destructureExcludeKeys(
-      await this.findOneOrNotFound(
-        clubPostId,
-        id,
-        parentId === undefined ? null : parentId,
-      ),
-      ['updatedAt'],
+    const oldComment = await this.findOneOrNotFound(
+      clubPostId,
+      id,
+      parentId === undefined ? null : parentId,
     );
 
     if (userId !== oldComment.userId) {
@@ -180,9 +177,36 @@ export class ClubPostCommentsService {
       },
       {
         ...newComment,
+        updatedAt: new Date(),
       },
     );
 
     return new ClubPostCommentDto(newComment);
+  }
+
+  async remove(
+    removeClubPostCommentDto: RemoveClubPostCommentDto,
+  ): Promise<number> {
+    const { id, clubPostId, userId } = removeClubPostCommentDto;
+
+    const existComment = await this.findOneOrNotFound(clubPostId, id);
+
+    if (userId !== existComment.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const updateResult = await this.clubPostCommentRepository.update(
+      { id },
+      {
+        ...existComment,
+        updatedAt: new Date(),
+        status: ClubPostCommentStatus.Remove,
+        deletedAt: new Date(),
+      },
+    );
+
+    return updateResult.affected;
   }
 }

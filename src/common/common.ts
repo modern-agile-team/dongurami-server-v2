@@ -113,20 +113,3 @@ function transformValue(value: any, type: 'number' | 'boolean') {
     return value;
   }
 }
-
-export const destructureExcludeKeys = <
-  T extends Record<string, any>,
-  K extends keyof T,
->(
-  obj: T,
-  keysToExclude: K[],
-): Omit<T, K> => {
-  const excludedObject = <Omit<T, K>>{};
-
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (!keysToExclude.includes(key as K)) {
-      acc[key] = value;
-    }
-    return acc;
-  }, excludedObject);
-};

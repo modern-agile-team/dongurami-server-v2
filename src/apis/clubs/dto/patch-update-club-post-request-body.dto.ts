@@ -2,8 +2,9 @@ import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 import {
   ArrayMaxSize,
-  IsNumberString,
+  IsNotEmpty,
   IsOptional,
+  IsString,
   Length,
   MinLength,
 } from 'class-validator';
@@ -53,7 +54,8 @@ export class PatchUpdateClubPostRequestBodyDto extends PartialType(
     format: 'int64',
   })
   @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
-  @IsNumberString({}, { each: true })
+  @IsNotEmpty({ each: true })
+  @IsString({ each: true })
   @IsOptional()
   attachmentPaths?: string[];
 }

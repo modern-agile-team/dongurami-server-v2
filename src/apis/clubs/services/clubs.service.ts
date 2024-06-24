@@ -636,6 +636,17 @@ export class ClubsService {
     );
   }
 
+  @Transactional()
+  async removeClubPost(
+    userId: number,
+    clubId: number,
+    postId: number,
+  ): Promise<number> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubPostsService.remove(userId, clubId, postId);
+  }
+
   async createClubPostReaction(
     userId: number,
     clubId: number,

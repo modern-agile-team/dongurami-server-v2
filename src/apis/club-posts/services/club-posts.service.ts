@@ -234,6 +234,40 @@ export class ClubPostsService {
     });
   }
 
+  async remove(
+    userId: number,
+    clubId: number,
+    postId: number,
+  ): Promise<number> {
+    const existPost: Omit<ClubPostDto, 'user'> = await this.findOneOrNotFound(
+      clubId,
+      postId,
+      {
+        relations: {},
+      },
+    );
+
+    if (existPost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const updateResult = await this.clubPostRepository.update(
+      {
+        id: postId,
+      },
+      {
+        ...existPost,
+        updatedAt: new Date(),
+        status: ClubPostStatus.Remove,
+        deletedAt: new Date(),
+      },
+    );
+
+    return updateResult.affected;
+  }
+
   async createReaction(
     userId: number,
     clubId: number,

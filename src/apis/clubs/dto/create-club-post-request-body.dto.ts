@@ -2,7 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
   ArrayMaxSize,
-  IsNumberString,
+  IsNotEmpty,
+  IsString,
   Length,
   MinLength,
 } from 'class-validator';
@@ -52,6 +53,7 @@ export class CreateClubPostRequestBodyDto
     format: 'int64',
   })
   @ArrayMaxSize(CLUB_POST_ATTACHMENT_COUNT.MAX)
-  @IsNumberString({}, { each: true })
+  @IsNotEmpty({ each: true })
+  @IsString({ each: true })
   attachmentPaths: string[] = [];
 }

@@ -144,7 +144,7 @@ export class ClubPostsService {
   async findOneOrNotFound(
     clubId: number,
     postId: number,
-    overrideOptions?: FindOneOptions<ClubPost>,
+    overrideOptions: FindOneOptions<ClubPost> = {},
   ): Promise<ClubPostDto> {
     const existPost = await this.clubPostRepository.findOne({
       where: { id: postId, clubId, status: ClubPostStatus.Posting },

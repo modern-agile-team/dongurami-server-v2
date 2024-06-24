@@ -19,6 +19,18 @@ export class ClubPostSubscriber implements EntitySubscriberInterface<ClubPost> {
     await this.createHistory(event, HistoryAction.Insert);
   }
 
+  async afterUpdate(event: UpdateEvent<ClubPost>): Promise<any> {
+    let action: HistoryAction;
+
+    if (event.entity.deletedAt) {
+      action = HistoryAction.Delete;
+    } else {
+      action = HistoryAction.Update;
+    }
+
+    await this.createHistory(event, action);
+  }
+
   private async createHistory(
     event: InsertEvent<ClubPost> | UpdateEvent<ClubPost>,
     action: HistoryAction,

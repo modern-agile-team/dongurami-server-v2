@@ -10,6 +10,7 @@ import {
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { POST_TAG_NAME_LENGTH } from '@src/apis/post-tags/constants/post-tag.constant';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { ClubPost } from '@src/entities/ClubPost';
 
@@ -44,6 +45,11 @@ export class ClubPostDto
   userId: number;
 
   @ApiProperty({
+    description: '동아리 게시글 작성 유저 정보',
+  })
+  user: UserDto;
+
+  @ApiProperty({
     description: '동아리 게시글 본문',
     minLength: CLUB_POST_DESCRIPTION_LENGTH.MIN,
   })
@@ -75,5 +81,7 @@ export class ClubPostDto
     super();
 
     Object.assign(this, clubPostDto);
+
+    this.user = new UserDto(clubPostDto.user);
   }
 }

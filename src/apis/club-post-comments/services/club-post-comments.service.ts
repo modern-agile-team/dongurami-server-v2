@@ -24,10 +24,11 @@ export class ClubPostCommentsService {
 
   async create(
     userId: number,
+    clubId: number,
     postId: number,
     createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
-    await this.clubPostsService.isExistOrNotFound(postId);
+    await this.clubPostsService.isExistOrNotFound(clubId, postId);
 
     if (createClubPostCommentRequestBodyDto.parentId !== undefined) {
       const parentComment = await this.findOneOrNotFound(

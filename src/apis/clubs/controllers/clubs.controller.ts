@@ -43,6 +43,7 @@ import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
+import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
 import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
@@ -167,6 +168,26 @@ export class ClubsController {
     );
 
     return [plainToInstance(ClubPostsItemDto, clubPosts), count];
+  }
+
+  @ApiClub.PatchUpdateClubPost({ summary: '특정 동아리 게시글 Patch 업데이트' })
+  @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])
+  @SetResponse({ key: 'clubPost', type: ResponseType.Detail })
+  @UseGuards(JwtAuthGuard)
+  @Patch(':clubId/posts/:postId')
+  patchUpdateClubPost(
+    @User() user: UserDto,
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Body()
+    patchUpdateCLubPostRequestBodyDto: PatchUpdateClubPostRequestBodyDto,
+  ): Promise<ClubPostDto> {
+    return this.clubsService.patchUpdateClubPost(
+      user.id,
+      clubId,
+      postId,
+      patchUpdateCLubPostRequestBodyDto,
+    );
   }
 
   @ApiClub.CreateClubPostReaction({ summary: '특정 동아리 게시글 리액션 생성' })

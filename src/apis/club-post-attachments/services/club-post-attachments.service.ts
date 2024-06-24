@@ -24,6 +24,17 @@ export class ClubPostAttachmentsService {
     return clubPostAttachments;
   }
 
+  findAll(clubPostId: number): Promise<ClubPostAttachment[]> {
+    return this.clubPostAttachmentRepository.find({
+      where: {
+        clubPostId,
+      },
+      relations: {
+        attachment: true,
+      },
+    });
+  }
+
   /**
    * @todo 업로드 제한에 대한 기획이 확실히 나오면 더 많은 필터링 조건 추가
    * ex) 용량
@@ -32,5 +43,13 @@ export class ClubPostAttachmentsService {
     return attachments.filter((attachment) =>
       CLUB_POST_ATTACHMENT_MIME_TYPE.includes(attachment.mimeType),
     );
+  }
+
+  async deleteByPostId(clubPostId: number): Promise<number> {
+    const deleteResult = await this.clubPostAttachmentRepository.delete({
+      clubPostId,
+    });
+
+    return deleteResult.affected;
   }
 }

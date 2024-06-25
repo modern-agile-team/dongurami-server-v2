@@ -79,6 +79,6 @@ export class ClubPostCommentDto
 
     Object.assign(this, clubPostCommentDto);
 
-    this.user = clubPostCommentDto.user;
+    this.user = new UserDto(clubPostCommentDto.user);
   }
 }

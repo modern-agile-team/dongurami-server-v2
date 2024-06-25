@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { IsNull } from 'typeorm';
+import { FindOneOptions, IsNull } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
@@ -129,6 +129,7 @@ export class ClubPostCommentsService {
     postId: number,
     postCommentId: number,
     parentId?: number | null,
+    overrideOptions: FindOneOptions<ClubPostComment> = {},
   ): Promise<ClubPostCommentDto> {
     const existComment = await this.clubPostCommentRepository.findOne({
       where: {
@@ -137,6 +138,10 @@ export class ClubPostCommentsService {
         parentId: parentId === null ? IsNull() : parentId,
         status: ClubPostCommentStatus.Posting,
       },
+      relations: {
+        user: true,
+      },
+      ...overrideOptions,
     });
 
     if (!existComment) {

@@ -296,7 +296,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubPostComment', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
   @Patch(':clubId/posts/:postId/comments/:commentId')
-  patchUpdateClubPostComment(
+  async patchUpdateClubPostComment(
     @User() user: UserDto,
     @Param('clubId', ParsePositiveIntPipe) clubId: number,
     @Param('postId', ParsePositiveIntPipe) postId: number,
@@ -304,13 +304,15 @@ export class ClubsController {
     @Body()
     patchUpdateClubPostCommentRequestBodyDto: PatchUpdateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
-    return this.clubsService.patchUpdateClubPostComment(
+    const newComment = await this.clubsService.patchUpdateClubPostComment(
       user.id,
       clubId,
       postId,
       commentId,
       patchUpdateClubPostCommentRequestBodyDto,
     );
+
+    return anonymize(newComment);
   }
 
   @ApiClub.RemoveClubPostComment({

@@ -26,6 +26,7 @@ import { UpdateClubApplicationStatusDto } from '@src/apis/club-applications/dto/
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { ClubMemberItemDto } from '@src/apis/club-members/dto/club-member-item.dto';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
+import { ClubPostCommentsItemDto } from '@src/apis/club-post-comments/dto/club-post-comments-item.dto';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
 import { ClubPostsItemDto } from '@src/apis/club-posts/dto/club-posts-item.dto';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
@@ -41,6 +42,7 @@ import { CreateClubPostRequestBodyDto } from '@src/apis/clubs/dto/create-club-po
 import { CreateClubReviewRequestBodyDto } from '@src/apis/clubs/dto/create-club-review-request-body.dto';
 import { FindClubApplicationListRequestQueryDto } from '@src/apis/clubs/dto/find-club-application-list-request-query.dto';
 import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.dto';
+import { FindClubPostCommentsListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-comments-list-request-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
 import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
@@ -48,6 +50,7 @@ import { ClubsService } from '@src/apis/clubs/services/clubs.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { anonymize } from '@src/common/common';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
@@ -259,6 +262,30 @@ export class ClubsController {
       postId,
       createClubPostCommentRequestBodyDto,
     );
+  }
+
+  @ApiClub.FindAllAndCountClubPostComments({
+    summary: '동아리 게시글 댓글 Pagination 조회',
+  })
+  @SetResponse({ key: 'clubPostComments', type: ResponseType.Pagination })
+  @Get(':clubId/posts/:postId/comments')
+  async findAllAndCountClubPostComments(
+    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Query()
+    findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
+  ): Promise<[ClubPostCommentsItemDto[], number]> {
+    const [clubPostComments, count] =
+      await this.clubsService.findAllAndCountClubPostComments(
+        clubId,
+        postId,
+        findClubPostCommentsListRequestQueryDto,
+      );
+
+    return [
+      plainToInstance(ClubPostCommentsItemDto, clubPostComments).map(anonymize),
+      count,
+    ];
   }
 
   @ApiClub.FindLatestApplicationForm({

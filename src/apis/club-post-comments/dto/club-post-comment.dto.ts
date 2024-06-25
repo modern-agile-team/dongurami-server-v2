@@ -4,6 +4,7 @@ import { Exclude } from 'class-transformer';
 
 import { CLUB_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/club-post-comments/constants/club-post-comment.constant';
 import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { ClubPostComment } from '@src/entities/ClubPostComment';
 
@@ -30,6 +31,11 @@ export class ClubPostCommentDto
     format: 'integer',
   })
   userId: number;
+
+  @ApiProperty({
+    description: '동아리 게시글 댓글 작성 유저 정보',
+  })
+  user: UserDto;
 
   @ApiProperty({
     description: '게시글 고유 ID',
@@ -72,5 +78,7 @@ export class ClubPostCommentDto
     super();
 
     Object.assign(this, clubPostCommentDto);
+
+    this.user = clubPostCommentDto.user;
   }
 }

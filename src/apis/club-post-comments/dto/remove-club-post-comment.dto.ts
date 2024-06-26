@@ -1,14 +1,11 @@
-import { PickType } from '@nestjs/mapped-types';
+export class RemoveClubPostCommentDto {
+  id: number;
 
-import { PatchUpdateClubPostCommentDto } from '@src/apis/club-post-comments/dto/patch-update-club-post-comment.dto';
+  clubPostId: number;
 
-export class RemoveClubPostCommentDto extends PickType(
-  PatchUpdateClubPostCommentDto,
-  ['id', 'clubPostId', 'userId'] as const,
-) {
+  userId: number;
+
   constructor(removeClubPostCommentDto: RemoveClubPostCommentDto) {
-    super();
-
     this.id = removeClubPostCommentDto.id;
     this.clubPostId = removeClubPostCommentDto.clubPostId;
     this.userId = removeClubPostCommentDto.userId;

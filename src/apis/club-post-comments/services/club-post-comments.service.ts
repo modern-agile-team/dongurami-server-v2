@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common';
 
-import { IsNull } from 'typeorm';
+import { FindOneOptions, IsNull } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
 
 import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { ClubPostCommentsItemDto } from '@src/apis/club-post-comments/dto/club-post-comments-item.dto';
 import { FindAndCountClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-and-count-club-post-comments.dto';
 import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
+import { PatchUpdateClubPostCommentDto } from '@src/apis/club-post-comments/dto/patch-update-club-post-comment.dto';
+import { RemoveClubPostCommentDto } from '@src/apis/club-post-comments/dto/remove-club-post-comment.dto';
 import { ClubPostCommentRepository } from '@src/apis/club-post-comments/repositories/club-post-comment.repository';
 import { ClubPostsService } from '@src/apis/club-posts/services/club-posts.service';
 import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubPostComment } from '@src/entities/ClubPostComment';
 import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
@@ -125,6 +129,7 @@ export class ClubPostCommentsService {
     postId: number,
     postCommentId: number,
     parentId?: number | null,
+    overrideOptions: FindOneOptions<ClubPostComment> = {},
   ): Promise<ClubPostCommentDto> {
     const existComment = await this.clubPostCommentRepository.findOne({
       where: {
@@ -133,6 +138,10 @@ export class ClubPostCommentsService {
         parentId: parentId === null ? IsNull() : parentId,
         status: ClubPostCommentStatus.Posting,
       },
+      relations: {
+        user: true,
+      },
+      ...overrideOptions,
     });
 
     if (!existComment) {
@@ -142,5 +151,67 @@ export class ClubPostCommentsService {
     }
 
     return new ClubPostCommentDto(existComment);
+  }
+
+  @Transactional()
+  async patchUpdate(
+    patchUpdateClubPostCommentDto: PatchUpdateClubPostCommentDto,
+  ) {
+    const { clubPostId, id, parentId, userId } = patchUpdateClubPostCommentDto;
+
+    const oldComment = await this.findOneOrNotFound(
+      clubPostId,
+      id,
+      parentId === undefined ? null : parentId,
+    );
+
+    if (userId !== oldComment.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const newComment = this.clubPostCommentRepository.create({
+      ...oldComment,
+      ...patchUpdateClubPostCommentDto,
+    });
+
+    await this.clubPostCommentRepository.update(
+      {
+        id,
+      },
+      {
+        ...newComment,
+        updatedAt: new Date(),
+      },
+    );
+
+    return new ClubPostCommentDto(newComment);
+  }
+
+  async remove(
+    removeClubPostCommentDto: RemoveClubPostCommentDto,
+  ): Promise<number> {
+    const { id, clubPostId, userId } = removeClubPostCommentDto;
+
+    const existComment = await this.findOneOrNotFound(clubPostId, id);
+
+    if (userId !== existComment.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const updateResult = await this.clubPostCommentRepository.update(
+      { id },
+      {
+        ...existComment,
+        updatedAt: new Date(),
+        status: ClubPostCommentStatus.Remove,
+        deletedAt: new Date(),
+      },
+    );
+
+    return updateResult.affected;
   }
 }

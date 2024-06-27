@@ -439,6 +439,61 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
     );
   },
 
+  PatchUpdateClubPostComment: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DetailResponseDto.swaggerBuilder(
+        HttpStatus.OK,
+        'clubPostComment',
+        ClubPostCommentDto,
+      ),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [
+          COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER,
+          COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+        ],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
+  RemoveClubPostComment: function (
+    apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
+      Partial<OperationObject>,
+  ): PropertyDecorator {
+    return applyDecorators(
+      ApiOperation({
+        ...apiOperationOptions,
+      }),
+      DeleteResponseDto.swaggerBuilder(HttpStatus.OK, 'clubPostComment'),
+      HttpException.swaggerBuilder(
+        HttpStatus.BAD_REQUEST,
+        [COMMON_ERROR_CODE.INVALID_REQUEST_PARAMETER],
+        {
+          description:
+            '해당 필드는 request parameter 가 잘못된 경우에만 리턴됩니다.',
+          type: CustomValidationError,
+        },
+      ),
+      HttpException.swaggerBuilder(HttpStatus.NOT_FOUND, [
+        COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      ]),
+    );
+  },
+
   FindLatestApplicationForm: function (
     apiOperationOptions: Required<Pick<Partial<OperationObject>, 'summary'>> &
       Partial<OperationObject>,

@@ -27,6 +27,8 @@ import { ClubMembersService } from '@src/apis/club-members/services/club-members
 import { ClubPostCommentDto } from '@src/apis/club-post-comments/dto/club-post-comment.dto';
 import { FindAndCountClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-and-count-club-post-comments.dto';
 import { FindClubPostCommentsDto } from '@src/apis/club-post-comments/dto/find-club-post-comments.dto';
+import { PatchUpdateClubPostCommentDto } from '@src/apis/club-post-comments/dto/patch-update-club-post-comment.dto';
+import { RemoveClubPostCommentDto } from '@src/apis/club-post-comments/dto/remove-club-post-comment.dto';
 import { ClubPostCommentsService } from '@src/apis/club-post-comments/services/club-post-comments.service';
 import { ClubPostTagLinkRepository } from '@src/apis/club-post-tag-links/repositories/club-post-tag-link.repository';
 import { ClubPostDto } from '@src/apis/club-posts/dto/club-post.dto';
@@ -62,6 +64,7 @@ import { FindClubListQueryDto } from '@src/apis/clubs/dto/find-club-list-query.d
 import { FindClubPostCommentsListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-comments-list-request-query.dto';
 import { FindClubPostListRequestQueryDto } from '@src/apis/clubs/dto/find-club-post-list-request-query.dto';
 import { FindClubReviewListRequestQueryDto } from '@src/apis/clubs/dto/find-club-review-list-request-query.dto';
+import { PatchUpdateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-comment-request-body.dto';
 import { PatchUpdateClubPostRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-request-body.dto';
 import { ClubRepository } from '@src/apis/clubs/repositories/club.repository';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
@@ -722,6 +725,54 @@ export class ClubsService {
     return this.clubPostCommentsService.findAllAndCount(
       new FindAndCountClubPostCommentsDto({
         ...findClubPostCommentsListRequestQueryDto,
+        clubPostId: postId,
+      }),
+    );
+  }
+
+  @Transactional()
+  async patchUpdateClubPostComment(
+    userId: number,
+    clubId: number,
+    postId: number,
+    commentId: number,
+    patchUpdateClubPostCommentRequestBodyDto: PatchUpdateClubPostCommentRequestBodyDto,
+  ): Promise<ClubPostCommentDto> {
+    await this.isExistOrNotFound(clubId);
+
+    await this.clubPostsService.isExistOrNotFound(clubId, postId);
+
+    if (!isNotEmptyObject(patchUpdateClubPostCommentRequestBodyDto)) {
+      throw new HttpBadRequestException({
+        code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+      });
+    }
+
+    return this.clubPostCommentsService.patchUpdate(
+      new PatchUpdateClubPostCommentDto({
+        ...patchUpdateClubPostCommentRequestBodyDto,
+        id: commentId,
+        userId,
+        clubPostId: postId,
+      }),
+    );
+  }
+
+  @Transactional()
+  async removeClubPostComment(
+    userId: number,
+    clubId: number,
+    postId: number,
+    commentId: number,
+  ): Promise<number> {
+    await this.isExistOrNotFound(clubId);
+
+    await this.clubPostsService.isExistOrNotFound(clubId, postId);
+
+    return this.clubPostCommentsService.remove(
+      new RemoveClubPostCommentDto({
+        id: commentId,
+        userId,
         clubPostId: postId,
       }),
     );

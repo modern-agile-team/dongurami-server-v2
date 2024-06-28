@@ -6,8 +6,8 @@ import { DevController } from '@src/apis/dev/controllers/dev.controller';
 import { ErrorCodeResponseDto } from '@src/apis/dev/dto/error-code-response.dto';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
-import { ApiOperator } from '@src/types/type';
 import { CustomValidationError } from '@src/types/custom-validation-errors.type';
+import { ApiOperator } from '@src/types/type';
 
 export const ApiDev: ApiOperator<keyof DevController> = {
   GetAccessToken: (

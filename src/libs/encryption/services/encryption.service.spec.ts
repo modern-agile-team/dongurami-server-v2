@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 
-import { EncryptionService } from '@src/entities/encryption.service';
 import { BCRYPT_TOKEN } from '@src/libs/encryption/constants/encryption.token';
+import { EncryptionService } from '@src/libs/encryption/services/encryption.service';
 
 describe(EncryptionService.name, () => {
   let service: EncryptionService;

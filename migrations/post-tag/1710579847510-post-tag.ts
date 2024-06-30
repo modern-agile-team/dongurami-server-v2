@@ -13,7 +13,7 @@ export class PostTag1710579847510 implements MigrationInterface {
           generatePrimaryColumn('게시글 태그 고유 ID'),
           {
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '게시글 태그 생성 유저 고유 ID',

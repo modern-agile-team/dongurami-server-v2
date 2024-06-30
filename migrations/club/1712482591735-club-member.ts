@@ -14,14 +14,14 @@ export class ClubMember1712482591735 implements MigrationInterface {
           generatePrimaryColumn('동아리 구성원'),
           {
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 구성원 유저 고유 ID',
           },
           {
             name: 'club_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 고유 ID',

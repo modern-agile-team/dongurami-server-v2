@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { getTsid } from 'tsid-ts';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { Club } from '@src/entities/Club';
@@ -16,7 +17,10 @@ export class TempClubSeed1710570954727 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const userRepository = queryRunner.manager.getRepository(User);
     const tempUser = await userRepository.save(
-      userRepository.create({ loginType: 'KAKAO' as any }),
+      userRepository.create({
+        id: getTsid().toBigInt().toString(),
+        loginType: 'KAKAO' as any,
+      }),
     );
 
     const clubRepository = queryRunner.manager.getRepository(Club);
@@ -31,9 +35,11 @@ export class TempClubSeed1710570954727 implements MigrationInterface {
     const clubs = await clubRepository.save(
       Array.from({ length: 50 }).map(() => {
         return clubRepository.create({
+          id: getTsid().toBigInt().toString(),
           userId: tempUser.id,
           name: faker.company.name(),
           introduce: faker.word.words(),
+          tags: [],
         });
       }),
     );
@@ -41,6 +47,7 @@ export class TempClubSeed1710570954727 implements MigrationInterface {
     const clubTags = await clubTagRepository.save(
       Array.from({ length: 50 }).map(() => {
         return clubTagRepository.create({
+          id: getTsid().toBigInt().toString(),
           userId: tempUser.id,
           name: faker.word.noun(),
         });
@@ -50,6 +57,7 @@ export class TempClubSeed1710570954727 implements MigrationInterface {
     const clubCategories = await clubCategoryRepository.save(
       Array.from({ length: 50 }).map(() => {
         return clubCategoryRepository.create({
+          id: getTsid().toBigInt().toString(),
           userId: tempUser.id,
           name: faker.word.noun(),
           memo: 'mock data',
@@ -72,15 +80,34 @@ export class TempClubSeed1710570954727 implements MigrationInterface {
       await clubTagLinkRepository.save(
         clubTagIds.map((clubTagId) => {
           return clubTagLinkRepository.create({
+            id: getTsid().toBigInt().toString(),
             clubTagId,
             userId: tempUser.id,
             clubId: clubId,
           });
         }),
       );
+
+      const clubTagLinks = await clubTagLinkRepository.find({
+        where: { clubId },
+        relations: {
+          clubTag: true,
+        },
+      });
+
+      await clubRepository.update(
+        {
+          id: clubId,
+        },
+        {
+          tags: clubTagLinks.map((clubTagLink) => clubTagLink.clubTag),
+        },
+      );
+
       await clubCategoryLinkRepository.save(
         clubCategoryIds.map((clubCategoryId) => {
           return clubCategoryLinkRepository.create({
+            id: getTsid().toBigInt().toString(),
             clubCategoryId,
             userId: tempUser.id,
             clubId: clubId,

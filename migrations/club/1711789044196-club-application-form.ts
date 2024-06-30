@@ -9,12 +9,12 @@ export class ClubApplicationsForm1711789044196 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'club_applications_form',
+        name: 'club_application_form',
         columns: [
           generatePrimaryColumn('동아리 지원서 폼'),
           {
             name: 'club_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 고유 ID',
@@ -58,11 +58,11 @@ export class ClubApplicationsForm1711789044196 implements MigrationInterface {
       }),
     );
     await queryRunner.query(
-      'ALTER TABLE club_applications_form COMMENT = "동아리 지원서 폼"',
+      'ALTER TABLE club_application_form COMMENT = "동아리 지원서 폼"',
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('club_applications_form');
+    await queryRunner.dropTable('club_application_form');
   }
 }

@@ -13,7 +13,7 @@ export class ClubApplicationsFormAddUserId1712989702178
       'club_application_form',
       new TableColumn({
         name: 'user_id',
-        type: 'int',
+        type: 'bigint',
         unsigned: true,
         isNullable: false,
         comment: '동아리 지원서 포맷 작성자 고유 ID',

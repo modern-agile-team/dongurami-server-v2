@@ -1,7 +1,6 @@
-import { MigrationInterface, QueryRunner, TableColumn } from "typeorm"
+import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
 export class UserEmailNullable1706878330599 implements MigrationInterface {
-
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.changeColumn(
       'user',
@@ -11,8 +10,8 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         type: 'varchar',
         isNullable: true,
         isUnique: true,
-        comment: '이메일'
-      })
+        comment: '이메일',
+      }),
     );
 
     await queryRunner.changeColumn(
@@ -23,8 +22,8 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         type: 'varchar',
         isNullable: true,
         isUnique: true,
-        comment: '이메일'
-      })
+        comment: '이메일',
+      }),
     );
   }
 
@@ -37,8 +36,8 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
         isUnique: true,
-        comment: '이메일'
-      })
+        comment: '이메일',
+      }),
     );
 
     await queryRunner.changeColumn(
@@ -49,8 +48,8 @@ export class UserEmailNullable1706878330599 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
         isUnique: true,
-        comment: '이메일'
-      })
+        comment: '이메일',
+      }),
     );
   }
 }

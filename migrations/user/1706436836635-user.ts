@@ -17,7 +17,7 @@ export class User1706436836635 implements MigrationInterface {
           generatePrimaryColumn('유저 고유 ID'),
           {
             name: 'major_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: true,
             comment: '전공 고유 ID',

@@ -15,14 +15,14 @@ export class ClubPost1712839843648 implements MigrationInterface {
           generatePrimaryColumn('동아리 게시글 고유 ID'),
           new TableColumn({
             name: 'club_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 고유 ID',
           }),
           new TableColumn({
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 게시글 생성 유저 고유 ID',

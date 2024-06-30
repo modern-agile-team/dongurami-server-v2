@@ -13,7 +13,7 @@ export class ClubTag1708776486100 implements MigrationInterface {
           generatePrimaryColumn('동아리 태그 고유 ID'),
           {
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 태그 생성 유저 고유 ID',

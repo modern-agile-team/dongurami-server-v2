@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
 import { HistoryAction } from '@src/constants/enum';
@@ -14,44 +7,45 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 
 @Index(['userId'], {})
 @Index(['freePostId'], {})
-@Entity('free_post_comment_history', { schema: 'dongurami_v2' })
+@Entity('free_post_comment_history')
 export class FreePostCommentHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유 게시글 댓글 수정이력 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '댓글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
   })
-  freePostId: number;
+  freePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_comment_id',
     comment: '자유 게시글 댓글 고유 ID',
     unsigned: true,
   })
-  freePostCommentId: number;
+  freePostCommentId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'parent_id',
     comment: '부모 댓글 고유 ID',
     unsigned: true,
     nullable: true,
   })
-  parentId: number | null;
+  parentId: string | null;
 
   @Column('tinyint', {
     name: 'depth',

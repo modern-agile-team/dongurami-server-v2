@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import { ClubPostReaction } from '@src/entities/ClubPostReaction';
 import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
@@ -9,13 +9,14 @@ import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 
 @Entity('reaction_type')
 export class ReactionType {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '반응 타입 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
   @Column('varchar', { name: 'name', comment: '반응 타입', length: 30 })
   name: string;

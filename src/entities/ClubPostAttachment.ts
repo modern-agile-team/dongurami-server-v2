@@ -1,23 +1,18 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { Attachment } from '@src/entities/Attachment';
 import { ClubPost } from '@src/entities/ClubPost';
 
 @Entity('club_post_attachment')
 export class ClubPostAttachment {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 게시글 첨부 파일 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
   @Column('bigint', {
     name: 'attachment_id',
@@ -26,12 +21,12 @@ export class ClubPostAttachment {
   })
   attachmentId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_post_id',
     unsigned: true,
     comment: '동아리 게시글 고유 ID',
   })
-  clubPostId: number;
+  clubPostId: string;
 
   @Column('timestamp', {
     name: 'created_at',

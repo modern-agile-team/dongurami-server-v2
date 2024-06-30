@@ -1,31 +1,25 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { User } from '@src/entities/User';
 
 @Entity('club_tag')
 export class ClubTag {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 태그 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 태그 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('varchar', {
     name: 'name',

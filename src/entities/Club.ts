@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { ClubApplication } from '@src/entities/ClubApplication';
@@ -21,20 +14,21 @@ import { User } from '@src/entities/User';
 
 @Entity('club')
 export class Club {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('varchar', {
     name: 'name',

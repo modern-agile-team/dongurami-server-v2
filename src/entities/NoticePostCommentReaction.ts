@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { ReactionType } from '@src/entities/ReactionType';
@@ -12,34 +6,35 @@ import { User } from '@src/entities/User';
 
 @Entity('notice_post_comment_reaction')
 export class NoticePostCommentReaction {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'reaction_type_id',
     comment: '리액션 타입 고유 ID',
     unsigned: true,
   })
-  reactionTypeId: number;
+  reactionTypeId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'notice_post_comment_id',
     comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
   })
-  parentId: number;
+  parentId: string;
 
   @Column('timestamp', {
     name: 'created_at',

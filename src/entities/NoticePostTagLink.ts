@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { NoticePost } from '@src/entities/NoticePost';
 import { PostTag } from '@src/entities/PostTag';
@@ -12,34 +6,35 @@ import { User } from '@src/entities/User';
 
 @Entity('notice_post_tag_link')
 export class NoticePostTagLink {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '공지게시글 태그 링크 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '공지게시글 태그 링크 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'notice_post_id',
     comment: '공지게시글 고유 ID',
     unsigned: true,
   })
-  noticePostId: number;
+  noticePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'post_tag_id',
     comment: '게시글 태그 고유 ID',
     unsigned: true,
   })
-  postTagId: number;
+  postTagId: string;
 
   @Column('timestamp', {
     name: 'created_at',

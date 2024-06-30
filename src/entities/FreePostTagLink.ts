@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { FreePost } from '@src/entities/FreePost';
 import { PostTag } from '@src/entities/PostTag';
@@ -12,34 +6,35 @@ import { User } from '@src/entities/User';
 
 @Entity('free_post_tag_link')
 export class FreePostTagLink {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유게시글 태그 링크 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '자유게시글 태그 링크 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_id',
     comment: '자유게시글 고유 ID',
     unsigned: true,
   })
-  freePostId: number;
+  freePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'post_tag_id',
     comment: '게시글 태그 고유 ID',
     unsigned: true,
   })
-  postTagId: number;
+  postTagId: string;
 
   @Column('timestamp', {
     name: 'created_at',

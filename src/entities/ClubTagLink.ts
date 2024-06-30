@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { Club } from '@src/entities/Club';
 import { ClubTag } from '@src/entities/ClubTag';
@@ -12,34 +6,35 @@ import { User } from '@src/entities/User';
 
 @Entity('club_tag_link')
 export class ClubTagLink {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 태그 링크 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 태그 링크 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_id',
     comment: '동아리 고유 ID',
     unsigned: true,
   })
-  clubId: number;
+  clubId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_tag_id',
     comment: '동아리 태그 고유 ID',
     unsigned: true,
   })
-  clubTagId: number;
+  clubTagId: string;
 
   @Column('timestamp', {
     name: 'created_at',

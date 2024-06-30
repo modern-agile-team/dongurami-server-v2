@@ -14,8 +14,8 @@ export class Attachment {
   })
   id: string;
 
-  @Column({ name: 'user_id', unsigned: true, nullable: false })
-  userId: number;
+  @Column('bigint', { name: 'user_id', unsigned: true, nullable: false })
+  userId: string;
 
   @Column('varchar', {
     name: 'url',

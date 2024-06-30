@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubPost } from '@src/entities/ClubPost';
 import { ReactionType } from '@src/entities/ReactionType';
@@ -12,34 +6,35 @@ import { User } from '@src/entities/User';
 
 @Entity('club_post_reaction')
 export class ClubPostReaction {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'reaction_type_id',
     comment: '리액션 타입 고유 ID',
     unsigned: true,
   })
-  reactionTypeId: number;
+  reactionTypeId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_post_id',
     comment: '동아리 게시글 고유 ID',
     unsigned: true,
   })
-  parentId: number;
+  parentId: string;
 
   @Column('timestamp', {
     name: 'created_at',

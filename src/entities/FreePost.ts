@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { FreePostComment } from '@src/entities/FreePostComment';
@@ -18,23 +11,24 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 
 @Entity('free_post')
 export class FreePost {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
   @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
   title: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('text', { name: 'description', comment: '자유게시글 내용' })
   description: string;

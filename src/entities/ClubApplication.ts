@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ClubApplicationStatus } from '@src/apis/club-applications/constants/club-application.enum';
 import { ClubApplicationAnswerItemDto } from '@src/apis/club-applications/dto/club-application-answer-item.dto';
@@ -17,27 +10,28 @@ import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-ba
 
 @Entity('club_application')
 export class ClubApplication {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 지원서',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_id',
     comment: '동아리 고유 ID',
     unsigned: true,
   })
-  clubId: number;
+  clubId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 지원 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('json', { name: 'answers', comment: '동아리 지원서 답변' })
   answers: ClubApplicationAnswerItemDto[];

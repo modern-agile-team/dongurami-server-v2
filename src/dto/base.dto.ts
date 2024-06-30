@@ -6,7 +6,7 @@ export class BaseDto {
     type: 'integer',
     minimum: 1,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: '생성일자',

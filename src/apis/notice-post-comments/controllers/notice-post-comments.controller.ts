@@ -45,7 +45,7 @@ export class NoticePostCommentsController {
   @SetResponse({ key: 'noticePostComment', type: ResponseType.Detail })
   @Post()
   create(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
     @Body() createNoticePostCommentDto: CreateNoticePostCommentDto,
   ): Promise<NoticePostCommentDto> {
@@ -62,7 +62,7 @@ export class NoticePostCommentsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'noticePostComments' })
   @Get()
   async findAllAndCount(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Query()
     findNoticePostCommentListQueryDto: FindNoticePostCommentListQueryDto,
   ): Promise<[NoticePostCommentsItemDto[], number]> {
@@ -81,8 +81,8 @@ export class NoticePostCommentsController {
   @Put(':commentId')
   putUpdate(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body() putUpdateNoticePostCommentDto: PutUpdateNoticePostCommentDto,
   ): Promise<NoticePostCommentDto> {
     return this.noticePostCommentsService.putUpdate(
@@ -101,8 +101,8 @@ export class NoticePostCommentsController {
   @Delete(':commentId')
   remove(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
   ): Promise<number> {
     return this.noticePostCommentsService.remove(user.id, postId, commentId);
   }
@@ -115,8 +115,8 @@ export class NoticePostCommentsController {
   @Post(':commentId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.noticePostCommentsService.createReaction(
@@ -135,8 +135,8 @@ export class NoticePostCommentsController {
   @Delete(':commentId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.noticePostCommentsService.removeReaction(

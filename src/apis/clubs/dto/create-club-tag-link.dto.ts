@@ -1,7 +1,7 @@
 export class CreateClubTagLinkDto {
-  userId: number;
-  clubId: number;
-  clubTagId: number;
+  userId: string;
+  clubId: string;
+  clubTagId: string;
 
   constructor(createClubTagLinkDto: Partial<CreateClubTagLinkDto> = {}) {
     Object.assign(this, createClubTagLinkDto);

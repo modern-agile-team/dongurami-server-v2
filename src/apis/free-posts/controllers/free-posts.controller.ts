@@ -76,7 +76,7 @@ export class FreePostsController {
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
   @Get(':postId')
   async findOneOrNotFound(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<FreePostDto> {
     const existPost = await this.freePostsService.findOneOrNotFound(postId);
 
@@ -89,7 +89,7 @@ export class FreePostsController {
   @Put(':postId')
   async putUpdate(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
     const newPost = await this.freePostsService.putUpdate(
@@ -107,7 +107,7 @@ export class FreePostsController {
   @Patch(':postId')
   async patchUpdate(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() patchUpdateFreePostDto: PatchUpdateFreePostDto,
   ): Promise<FreePostDto> {
     const newPost = await this.freePostsService.patchUpdate(
@@ -127,7 +127,7 @@ export class FreePostsController {
   @Delete(':postId')
   remove(
     @User() user: UserDto,
-    @Param('postId') postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<number> {
     return this.freePostsService.remove(user.id, postId);
   }
@@ -136,7 +136,7 @@ export class FreePostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put(':postId/hit')
   incrementHit(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<void> {
     return this.freePostsService.incrementHit(postId);
   }
@@ -147,7 +147,7 @@ export class FreePostsController {
   @Post(':postId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.freePostsService.createReaction(
@@ -163,7 +163,7 @@ export class FreePostsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
   @Get(':postId/reactions')
   async findAllAndCountReactions(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Query() findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
   ): Promise<[FreePostReactionsItemDto[], number]> {
     const [freePostReactions, count] =
@@ -184,7 +184,7 @@ export class FreePostsController {
   @Delete(':postId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.freePostsService.removeReaction(

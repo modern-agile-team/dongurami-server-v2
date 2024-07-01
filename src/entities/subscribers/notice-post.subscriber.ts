@@ -1,3 +1,4 @@
+import { getTsid } from 'tsid-ts';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -43,7 +44,7 @@ export class NoticePostSubscriber
       ...event.entity,
       action,
       noticePostId: event.entity.id,
-      id: undefined,
+      id: getTsid().toBigInt().toString(),
       createdAt: undefined,
     });
 

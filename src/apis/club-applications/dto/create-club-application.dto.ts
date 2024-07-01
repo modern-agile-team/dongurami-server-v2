@@ -5,9 +5,9 @@ import { ClubApplicationDto } from '@src/apis/club-applications/dto/club-applica
 export class CreateClubApplicationDto
   implements Pick<ClubApplicationDto, 'clubId' | 'userId' | 'status'>
 {
-  clubId: number;
+  clubId: string;
 
-  userId: number;
+  userId: string;
 
   answers: ClubApplicationAnswersItemRequestDto[];
 

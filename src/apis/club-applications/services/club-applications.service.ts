@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { IsNull } from 'typeorm';
 
 import { ClubApplicationFormService } from '@src/apis/club-application-form/services/club-application-form.service';
@@ -131,6 +132,7 @@ export class ClubApplicationsService {
     });
 
     const newClubApplication = this.clubApplicationRepository.create({
+      id: getTsid().toBigInt().toString(),
       clubId,
       userId,
       answers,
@@ -173,7 +175,7 @@ export class ClubApplicationsService {
   }
 
   async findOne(
-    applicationId: number,
+    applicationId: string,
   ): Promise<ClubApplicationDto | undefined> {
     const clubApplication = await this.clubApplicationRepository.findOneBy({
       id: applicationId,
@@ -187,7 +189,7 @@ export class ClubApplicationsService {
     return new ClubApplicationDto(clubApplication);
   }
 
-  async isExistOrNotFOund(applicationId): Promise<true> {
+  async isExistOrNotFOund(applicationId: string): Promise<true> {
     const isExist = await this.clubApplicationRepository.exist({
       where: {
         id: applicationId,
@@ -205,8 +207,8 @@ export class ClubApplicationsService {
   }
 
   async patchUpdate(
-    userId: number,
-    applicationId: number,
+    userId: string,
+    applicationId: string,
     patchUpdateClubApplicationDto: PatchUpdateClubApplicationDto,
   ): Promise<ClubApplicationDto> {
     const application = await this.clubApplicationRepository.findOneBy({
@@ -307,7 +309,7 @@ export class ClubApplicationsService {
   }
 
   async updateStatus(
-    applicationId: number,
+    applicationId: string,
     status: ClubApplicationStatus,
   ): Promise<ClubApplicationDto> {
     const application = await this.clubApplicationRepository.findOneBy({

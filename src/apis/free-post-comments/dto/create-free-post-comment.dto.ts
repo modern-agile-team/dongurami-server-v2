@@ -3,9 +3,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDefined,
-  IsInt,
+  IsNumberString,
   IsOptional,
-  IsPositive,
   Length,
 } from 'class-validator';
 
@@ -22,10 +21,9 @@ export class CreateFreePostCommentDto
     format: 'integer',
     nullable: false,
   })
-  @IsPositive()
-  @IsInt()
+  @IsNumberString({ no_symbols: true })
   @IsOptional()
-  parentId?: number;
+  parentId?: string;
 
   @ApiProperty({
     description: '본문',

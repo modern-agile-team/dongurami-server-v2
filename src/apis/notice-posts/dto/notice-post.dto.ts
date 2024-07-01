@@ -40,9 +40,9 @@ export class NoticePostDto
 
   @ApiProperty({
     description: '게시글 작성자 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '공지 게시글 조회수',

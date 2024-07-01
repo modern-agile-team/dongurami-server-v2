@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { FindOneOptions } from 'typeorm';
 
 import { CreateMajorRequestBodyDto } from '@src/apis/major/dto/create-major-request-body.dto';
@@ -44,7 +45,10 @@ export class MajorService {
       }
     }
 
-    const newMajor = this.majorRepository.create(createMajorRequestBodyDto);
+    const newMajor = this.majorRepository.create({
+      id: getTsid().toBigInt().toString(),
+      ...createMajorRequestBodyDto,
+    });
 
     await this.majorRepository.save(newMajor);
 

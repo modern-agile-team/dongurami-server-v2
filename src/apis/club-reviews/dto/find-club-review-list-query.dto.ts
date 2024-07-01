@@ -9,7 +9,7 @@ export class FindClubReviewListQueryDto
   extends PageDto
   implements Partial<Pick<ClubReviewDto, 'clubId' | 'status'>>
 {
-  clubId?: number;
+  clubId?: string;
 
   status?: ClubReviewStatus;
 

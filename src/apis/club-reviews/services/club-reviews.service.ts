@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import mean from 'lodash/mean';
+import { getTsid } from 'tsid-ts';
 
 import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { ClubReviewDto } from '@src/apis/club-reviews/dto/club-review.dto';
@@ -42,9 +43,10 @@ export class ClubReviewsService {
       });
     }
 
-    const newClubReview = this.clubReviewRepository.create(
-      new CreateClubReviewDto(createClubReviewDto),
-    );
+    const newClubReview = this.clubReviewRepository.create({
+      id: getTsid().toBigInt().toString(),
+      ...new CreateClubReviewDto(createClubReviewDto),
+    });
 
     await this.clubReviewRepository.save(newClubReview);
 
@@ -159,7 +161,7 @@ export class ClubReviewsService {
     return clubReviewUpdateResult.affected;
   }
 
-  async isExistOrNotFound(reviewId: number): Promise<true> {
+  async isExistOrNotFound(reviewId: string): Promise<true> {
     const isExistClubReview = await this.clubReviewRepository.exist({
       where: {
         id: reviewId,
@@ -175,7 +177,7 @@ export class ClubReviewsService {
     return isExistClubReview;
   }
 
-  async getScore(clubId: number): Promise<ScoreDto> {
+  async getScore(clubId: string): Promise<ScoreDto> {
     const clubReviews = await this.clubReviewRepository.find({
       select: {
         starRate: true,

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { isNotEmptyObject } from 'class-validator';
 import { differenceWith } from 'lodash';
+import { getTsid } from 'tsid-ts';
 import { In, Raw } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -112,7 +113,7 @@ export class ClubsService {
 
   @Transactional()
   async create(
-    userId: number,
+    userId: string,
     createClubRequestBodyDto: CreateClubRequestBodyDto,
   ): Promise<ClubWithCategoryAndTagDto> {
     const { name, introduce, logoPath, tagNames, categoryNames, status } =
@@ -148,6 +149,7 @@ export class ClubsService {
       : [];
 
     const newClub = await this.clubRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       name,
       introduce,
@@ -271,7 +273,7 @@ export class ClubsService {
     ];
   }
 
-  async findOneOrNotFound(clubId: number): Promise<ClubDto> {
+  async findOneOrNotFound(clubId: string): Promise<ClubDto> {
     const existClub = await this.clubRepository.findOneBy({
       id: clubId,
       status: ClubStatus.Active,
@@ -286,7 +288,7 @@ export class ClubsService {
     return new ClubDto(existClub);
   }
 
-  async findAllMembers(clubId: number): Promise<ClubMemberItemDto[]> {
+  async findAllMembers(clubId: string): Promise<ClubMemberItemDto[]> {
     const isExistClub = await this.clubRepository.exist({
       where: { id: clubId },
     });
@@ -300,7 +302,7 @@ export class ClubsService {
     return this.clubMembersService.findAllByClubId(clubId);
   }
 
-  async findAllTags(clubId: number): Promise<ClubTagDto[]> {
+  async findAllTags(clubId: string): Promise<ClubTagDto[]> {
     const isExistClub = await this.clubRepository.exist({
       where: { id: clubId },
     });
@@ -330,8 +332,8 @@ export class ClubsService {
 
   @Transactional()
   async bulkAppendTags(
-    userId: number,
-    clubId: number,
+    userId: string,
+    clubId: string,
     bulkAppendClubTagDto: BulkAppendClubTagDto,
   ): Promise<ClubTagDto[]> {
     const isExistClub = await this.clubRepository.exist({
@@ -382,6 +384,7 @@ export class ClubsService {
       const { userId, clubId, clubTagId } = createClubTagLinkDto;
 
       return this.clubTagLinkRepository.create({
+        id: getTsid().toBigInt().toString(),
         userId,
         clubId,
         clubTagId,
@@ -395,8 +398,8 @@ export class ClubsService {
 
   @Transactional()
   async bulkRemoveClubTagLinks(
-    clubId: number,
-    tagIds: number[],
+    clubId: string,
+    tagIds: string[],
   ): Promise<number> {
     const isExistClub = await this.clubRepository.exist({
       where: { id: clubId },
@@ -438,6 +441,7 @@ export class ClubsService {
         const { userId, clubId, clubCategoryId } = createClubCategoryLinkDto;
 
         return {
+          id: getTsid().toBigInt().toString(),
           userId,
           clubId,
           clubCategoryId,
@@ -450,7 +454,7 @@ export class ClubsService {
     return newClubCategoryLinks;
   }
 
-  async findAllCategoryByClubId(clubId: number): Promise<ClubCategoryDto[]> {
+  async findAllCategoryByClubId(clubId: string): Promise<ClubCategoryDto[]> {
     const isExistClub = await this.clubRepository.exist({
       where: {
         id: clubId,
@@ -490,8 +494,8 @@ export class ClubsService {
 
   @Transactional()
   async createClubPost(
-    userId: number,
-    clubId: number,
+    userId: string,
+    clubId: string,
     createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
   ): Promise<ClubPostDto> {
     const isExistClub = await this.clubRepository.exist({
@@ -554,7 +558,7 @@ export class ClubsService {
   }
 
   async findAllAndCountClubPosts(
-    clubId: number,
+    clubId: string,
     findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
   ): Promise<[ClubPostsItemDto[], number]> {
     await this.isExistOrNotFound(clubId);
@@ -587,9 +591,9 @@ export class ClubsService {
 
   @Transactional()
   async patchUpdateClubPost(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     patchUpdateClubPostDto: PatchUpdateClubPostRequestBodyDto,
   ): Promise<ClubPostDto> {
     await this.isExistOrNotFound(clubId);
@@ -644,9 +648,9 @@ export class ClubsService {
 
   @Transactional()
   async removeClubPost(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
   ): Promise<number> {
     await this.isExistOrNotFound(clubId);
 
@@ -654,9 +658,9 @@ export class ClubsService {
   }
 
   async createClubPostReaction(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
@@ -670,9 +674,9 @@ export class ClubsService {
   }
 
   async removeClubPostReaction(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
@@ -687,9 +691,9 @@ export class ClubsService {
 
   @Transactional()
   async createClubPostComment(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
     await this.isExistOrNotFound(clubId);
@@ -717,8 +721,8 @@ export class ClubsService {
   }
 
   async findAllAndCountClubPostComments(
-    clubId: number,
-    postId: number,
+    clubId: string,
+    postId: string,
     findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
   ): Promise<[ClubPostComment[], number]> {
     await this.isExistOrNotFound(clubId);
@@ -735,10 +739,10 @@ export class ClubsService {
 
   @Transactional()
   async patchUpdateClubPostComment(
-    userId: number,
-    clubId: number,
-    postId: number,
-    commentId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
+    commentId: string,
     patchUpdateClubPostCommentRequestBodyDto: PatchUpdateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
     await this.isExistOrNotFound(clubId);
@@ -763,10 +767,10 @@ export class ClubsService {
 
   @Transactional()
   async removeClubPostComment(
-    userId: number,
-    clubId: number,
-    postId: number,
-    commentId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
+    commentId: string,
   ): Promise<number> {
     await this.isExistOrNotFound(clubId);
 
@@ -782,7 +786,7 @@ export class ClubsService {
   }
 
   async findLatestApplicationForm(
-    clubId: number,
+    clubId: string,
   ): Promise<ClubApplicationFormDto> {
     const isExistClub = await this.clubRepository.exist({
       where: { id: clubId },
@@ -831,6 +835,7 @@ export class ClubsService {
       const { userId, clubPostId, postTagId } = createClubPostTagLinkDto;
 
       return this.clubPostTagLinkRepository.create({
+        id: getTsid().toBigInt().toString(),
         userId,
         clubPostId,
         postTagId,
@@ -843,9 +848,9 @@ export class ClubsService {
   }
 
   async putUpdateClubApplicationForm(
-    userId: number,
-    clubId: number,
-    formId: number,
+    userId: string,
+    clubId: string,
+    formId: string,
     putUpdateClubApplicationFormDto: PutUpdateClubApplicationFormDto,
   ): Promise<ClubApplicationFormDto> {
     const isExistClub = await this.clubRepository.exist({
@@ -867,8 +872,8 @@ export class ClubsService {
 
   @Transactional()
   async createClubReview(
-    userId: number,
-    clubId: number,
+    userId: string,
+    clubId: string,
     createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
   ): Promise<ClubReviewDto> {
     const isExistClub = await this.clubRepository.exist({
@@ -893,7 +898,7 @@ export class ClubsService {
   }
 
   async findAllAndCountClubReview(
-    clubId: number,
+    clubId: string,
     findClubReviewListRequestQueryDto: FindClubReviewListRequestQueryDto,
   ): Promise<[Omit<ClubReviewsItemDto, 'status' | 'deletedAt'>[], number]> {
     await this.isExistOrNotFound(clubId);
@@ -906,9 +911,9 @@ export class ClubsService {
   }
 
   async patchUpdateClubReview(
-    userId: number,
-    clubId: number,
-    reviewId: number,
+    userId: string,
+    clubId: string,
+    reviewId: string,
     patchUpdateClubReviewRequestDto: PatchUpdateClubReviewRequestDto,
   ): Promise<ClubReviewDto> {
     const isExistClub = await this.clubRepository.exist({
@@ -932,9 +937,9 @@ export class ClubsService {
   }
 
   async removeClubReview(
-    userId: number,
-    clubId: number,
-    reviewId: number,
+    userId: string,
+    clubId: string,
+    reviewId: string,
   ): Promise<number> {
     const isExistClub = await this.clubRepository.exist({
       where: { id: clubId, status: ClubStatus.Active },
@@ -955,16 +960,16 @@ export class ClubsService {
     );
   }
 
-  async getClubReviewsScore(clubId: number): Promise<ScoreDto> {
+  async getClubReviewsScore(clubId: string): Promise<ScoreDto> {
     await this.isExistOrNotFound(clubId);
 
     return this.clubReviewsService.getScore(clubId);
   }
 
   async createClubReviewReaction(
-    userId: number,
-    clubId: number,
-    reviewId: number,
+    userId: string,
+    clubId: string,
+    reviewId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
@@ -979,9 +984,9 @@ export class ClubsService {
   }
 
   async removeClubReviewReaction(
-    userId: number,
-    clubId: number,
-    reviewId: number,
+    userId: string,
+    clubId: string,
+    reviewId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
@@ -997,8 +1002,8 @@ export class ClubsService {
 
   @Transactional()
   async createClubApplication(
-    userId: number,
-    clubId: number,
+    userId: string,
+    clubId: string,
     createClubApplicationRequestBodyDto: CreateClubApplicationRequestBodyDto,
   ): Promise<ClubApplicationDto> {
     await this.isExistOrNotFound(clubId);
@@ -1015,7 +1020,7 @@ export class ClubsService {
 
   @Transactional()
   async findAllAndCountClubApplications(
-    clubId: number,
+    clubId: string,
     findClubApplicationListRequestQueryDto: FindClubApplicationListRequestQueryDto,
   ): Promise<[ClubApplicationsItemDto[], number]> {
     await this.isExistOrNotFound(clubId);
@@ -1033,8 +1038,8 @@ export class ClubsService {
 
   @Transactional()
   async findOneClubApplication(
-    clubId: number,
-    applicationId: number,
+    clubId: string,
+    applicationId: string,
   ): Promise<ClubApplicationDto> {
     await this.isExistOrNotFound(clubId);
 
@@ -1046,9 +1051,9 @@ export class ClubsService {
 
   @Transactional()
   async patchUpdateClubApplication(
-    userId: number,
-    clubId: number,
-    applicationId: number,
+    userId: string,
+    clubId: string,
+    applicationId: string,
     patchUpdateClubApplicationDto: PatchUpdateClubApplicationDto,
   ): Promise<ClubApplicationDto> {
     await this.isExistOrNotFound(clubId);
@@ -1062,9 +1067,9 @@ export class ClubsService {
 
   @Transactional()
   async updateClubApplicationStatus(
-    userId: number,
-    clubId: number,
-    applicationId: number,
+    userId: string,
+    clubId: string,
+    applicationId: string,
     updateClubApplicationStatusDto: UpdateClubApplicationStatusDto,
   ): Promise<ClubApplicationDto> {
     await this.isExistOrNotFound(clubId);
@@ -1092,7 +1097,7 @@ export class ClubsService {
     return newClubApplication;
   }
 
-  async isExistOrNotFound(clubId: number): Promise<true> {
+  async isExistOrNotFound(clubId: string): Promise<true> {
     const isExistClub = await this.clubRepository.exist({
       where: {
         id: clubId,
@@ -1109,7 +1114,7 @@ export class ClubsService {
     return isExistClub;
   }
 
-  private async syncTagLinkFromMapping(clubId: number): Promise<ClubTagDto[]> {
+  private async syncTagLinkFromMapping(clubId: string): Promise<ClubTagDto[]> {
     const tagLinks = await this.clubTagLinkRepository.find({
       select: {
         id: true,
@@ -1136,7 +1141,7 @@ export class ClubsService {
     return tags;
   }
 
-  private async findPostTags(clubPostId: number): Promise<PostTagDto[]> {
+  private async findPostTags(clubPostId: string): Promise<PostTagDto[]> {
     const postTagLinks = await this.clubPostTagLinkRepository.find({
       where: {
         clubPostId,

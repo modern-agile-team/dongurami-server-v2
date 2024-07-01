@@ -1,12 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import {
-  IsBoolean,
-  IsInt,
-  IsOptional,
-  IsPositive,
-  Length,
-} from 'class-validator';
+import { IsBoolean, IsNumberString, IsOptional, Length } from 'class-validator';
 
 import { CLUB_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/club-post-comments/constants/club-post-comment.constant';
 import { CreateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/create-club-post-comment-request-body.dto';
@@ -41,11 +35,10 @@ export class PatchUpdateClubPostCommentRequestBodyDto
 
   @ApiPropertyOptional({
     description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글로 인식함',
-    format: 'integer',
+    format: 'int64',
     nullable: false,
   })
-  @IsPositive()
-  @IsInt()
+  @IsNumberString({ no_symbols: true })
   @IsOptional()
-  parentId?: number;
+  parentId?: string;
 }

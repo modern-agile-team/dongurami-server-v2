@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { IsNull } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -35,8 +36,8 @@ export class FreePostCommentsService {
 
   @Transactional()
   async create(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     createFreePostCommentDto: CreateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
     const existPost = await this.freePostsService.findOne(freePostId);
@@ -65,6 +66,7 @@ export class FreePostCommentsService {
     }
 
     const newPostComment = await this.freePostCommentRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       status: FreePostCommentStatus.Posting,
       freePostId: existPost.id,
@@ -75,7 +77,7 @@ export class FreePostCommentsService {
   }
 
   async findAllAndCount(
-    freePostId: number,
+    freePostId: string,
     findFreePostCommentListQueryDto: FindFreePostCommentListQueryDto,
   ): Promise<[FreePostCommentsItemDto[], number]> {
     const existPost = await this.freePostsService.findOne(freePostId);
@@ -128,9 +130,9 @@ export class FreePostCommentsService {
   }
 
   async findOneOrNotFound(
-    freePostId: number,
-    freePostCommentId: number,
-    parentId?: number | null,
+    freePostId: string,
+    freePostCommentId: string,
+    parentId?: string | null,
   ): Promise<FreePostCommentDto> {
     const existComment = await this.freePostCommentRepository.findOne({
       where: {
@@ -152,9 +154,9 @@ export class FreePostCommentsService {
 
   @Transactional()
   async putUpdate(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
     putUpdateFreePostCommentDto: PutUpdateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
     const oldComment = await this.findOneOrNotFound(
@@ -190,9 +192,9 @@ export class FreePostCommentsService {
 
   @Transactional()
   async remove(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
   ): Promise<number> {
     const existComment = await this.findOneOrNotFound(
       freePostId,
@@ -221,9 +223,9 @@ export class FreePostCommentsService {
   }
 
   async createReaction(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     const existComment = await this.findOneOrNotFound(
@@ -239,9 +241,9 @@ export class FreePostCommentsService {
   }
 
   async removeReaction(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     const existComment = await this.findOneOrNotFound(

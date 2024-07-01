@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { isNotEmptyObject } from 'class-validator';
 import { differenceWith } from 'lodash';
+import { getTsid } from 'tsid-ts';
 import { Transactional } from 'typeorm-transactional';
 
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
@@ -50,7 +51,7 @@ export class FreePostsService {
   ) {}
 
   @Transactional()
-  async create(userId: number, createFreePostDto: CreateFreePostDto) {
+  async create(userId: string, createFreePostDto: CreateFreePostDto) {
     const { tagNames, ...postProps } = createFreePostDto;
 
     const postTags = await this.postTagsService.bulkCreate(
@@ -61,6 +62,7 @@ export class FreePostsService {
     );
 
     const newPost = await this.freePostRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       status: FreePostStatus.Posting,
       ...postProps,
@@ -104,7 +106,7 @@ export class FreePostsService {
     });
   }
 
-  async findOneOrNotFound(freePostId: number): Promise<FreePostDto> {
+  async findOneOrNotFound(freePostId: string): Promise<FreePostDto> {
     const freePost = await this.freePostRepository.findOne({
       where: {
         id: freePostId,
@@ -126,7 +128,7 @@ export class FreePostsService {
     return new FreePostDto({ ...freePost, postTags });
   }
 
-  async findOne(freePostId: number): Promise<FreePostDto | void> {
+  async findOne(freePostId: string): Promise<FreePostDto | void> {
     const freePost = await this.freePostRepository.findOneBy({
       id: freePostId,
       status: FreePostStatus.Posting,
@@ -141,8 +143,8 @@ export class FreePostsService {
 
   @Transactional()
   async putUpdate(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
     const { tagNames, ...postProps } = putUpdateFreePostDto;
@@ -186,8 +188,8 @@ export class FreePostsService {
 
   @Transactional()
   async patchUpdate(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     patchUpdateFreePostDto: PatchUpdateFreePostDto,
   ): Promise<FreePostDto> {
     if (!isNotEmptyObject(patchUpdateFreePostDto)) {
@@ -242,7 +244,7 @@ export class FreePostsService {
   }
 
   @Transactional()
-  async remove(userId: number, freePostId: number): Promise<number> {
+  async remove(userId: string, freePostId: string): Promise<number> {
     const existFreePost = await this.findOne(freePostId);
 
     if (!existFreePost) {
@@ -271,13 +273,13 @@ export class FreePostsService {
     return freePostUpdateResult.affected;
   }
 
-  incrementHit(freePostId: number): Promise<void> {
+  incrementHit(freePostId: string): Promise<void> {
     return this.commonPostsService.incrementHit(freePostId);
   }
 
   async createReaction(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(freePostId);
@@ -290,7 +292,7 @@ export class FreePostsService {
   }
 
   async findAllAndCountReactions(
-    freePostId: number,
+    freePostId: string,
     findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
   ): Promise<[FreePostReaction[], number]> {
     const { page, pageSize, order, type, ...filter } =
@@ -312,8 +314,8 @@ export class FreePostsService {
   }
 
   async removeReaction(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(freePostId);
@@ -325,7 +327,7 @@ export class FreePostsService {
     );
   }
 
-  async isExistOrNotFound(postId: number): Promise<true> {
+  async isExistOrNotFound(postId: string): Promise<true> {
     const isExistPost = await this.freePostRepository.exist({
       where: {
         id: postId,
@@ -342,8 +344,8 @@ export class FreePostsService {
   }
 
   async bulkAppendTagLink(
-    userId: number,
-    postId: number,
+    userId: string,
+    postId: string,
     postTags: PostTagDto[],
   ) {
     const existTagLinks = await this.freePostTagLinkRepository.findBy({
@@ -356,6 +358,7 @@ export class FreePostsService {
       (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
     ).map((postTag) =>
       this.freePostTagLinkRepository.create({
+        id: getTsid().toBigInt().toString(),
         userId,
         freePostId: postId,
         postTagId: postTag.id,
@@ -367,7 +370,7 @@ export class FreePostsService {
     return newAppendTags;
   }
 
-  private async findPostTags(freePostId: number): Promise<PostTagDto[]> {
+  private async findPostTags(freePostId: string): Promise<PostTagDto[]> {
     const postTagLinks = await this.freePostTagLinkRepository.find({
       where: {
         freePostId,

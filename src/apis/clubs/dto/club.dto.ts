@@ -25,7 +25,7 @@ export class ClubDto
     >
 {
   @Exclude()
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '동아리 명',

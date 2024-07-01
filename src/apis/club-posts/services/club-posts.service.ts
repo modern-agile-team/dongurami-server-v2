@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { FindOneOptions } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -47,6 +48,7 @@ export class ClubPostsService {
       await this.filterValidPostAttachments(attachmentPaths);
 
     const newClubPost = this.clubPostRepository.create({
+      id: getTsid().toBigInt().toString(),
       ...createClubPostProps,
       status: ClubPostStatus.Posting,
     });
@@ -142,8 +144,8 @@ export class ClubPostsService {
   }
 
   async findOneOrNotFound(
-    clubId: number,
-    postId: number,
+    clubId: string,
+    postId: string,
     overrideOptions: FindOneOptions<ClubPost> = {},
   ): Promise<ClubPostDto> {
     const existPost = await this.clubPostRepository.findOne({
@@ -161,7 +163,7 @@ export class ClubPostsService {
     return new ClubPostDto(existPost);
   }
 
-  async isExistOrNotFound(clubId: number, postId: number): Promise<true> {
+  async isExistOrNotFound(clubId: string, postId: string): Promise<true> {
     const isExistClubPost = await this.clubPostRepository.exist({
       where: { id: postId, clubId, status: ClubPostStatus.Posting },
     });
@@ -235,9 +237,9 @@ export class ClubPostsService {
   }
 
   async remove(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
   ): Promise<number> {
     const existPost: Omit<ClubPostDto, 'user'> = await this.findOneOrNotFound(
       clubId,
@@ -269,9 +271,9 @@ export class ClubPostsService {
   }
 
   async createReaction(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId, postId);
@@ -280,9 +282,9 @@ export class ClubPostsService {
   }
 
   async removeReaction(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     await this.isExistOrNotFound(clubId, postId);
@@ -299,7 +301,7 @@ export class ClubPostsService {
     return this.clubPostAttachmentsService.filterAttachments(existAttachments);
   }
 
-  private async findPostAttachments(postId: number): Promise<AttachmentDto[]> {
+  private async findPostAttachments(postId: string): Promise<AttachmentDto[]> {
     const clubPostAttachments =
       await this.clubPostAttachmentsService.findAll(postId);
 

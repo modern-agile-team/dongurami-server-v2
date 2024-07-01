@@ -5,9 +5,9 @@ export class PatchUpdateClubReviewDto
     Pick<ClubReviewDto, 'id' | 'clubId' | 'userId'>,
     Partial<Pick<ClubReviewDto, 'description' | 'starRate' | 'isAnonymous'>>
 {
-  id: number;
-  clubId: number;
-  userId: number;
+  id: string;
+  clubId: string;
+  userId: string;
   description?: string | null;
   starRate?: number;
   isAnonymous?: boolean;

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
+
 import { ClubApplicationFormDto } from '@src/apis/club-application-form/dto/club-application-form.dto';
 import { CreateClubApplicationFormDto } from '@src/apis/club-application-form/dto/create-club-application-form.dto';
 import { PutUpdateClubApplicationFormDto } from '@src/apis/club-application-form/dto/put-update-club-application-form.dto';
@@ -16,11 +18,12 @@ export class ClubApplicationFormService {
   ) {}
 
   async create(
-    clubId: number,
-    userId: number,
+    clubId: string,
+    userId: string,
     createClubApplicationFormDto: CreateClubApplicationFormDto,
   ): Promise<ClubApplicationFormDto> {
     const newClubApplication = this.clubApplicationFormRepository.create({
+      id: getTsid().toBigInt().toString(),
       clubId,
       userId,
       ...createClubApplicationFormDto,
@@ -34,7 +37,7 @@ export class ClubApplicationFormService {
   }
 
   async findLatestByClubId(
-    clubId: number,
+    clubId: string,
   ): Promise<ClubApplicationFormDto | undefined> {
     const clubApplicationForm =
       await this.clubApplicationFormRepository.findOne({
@@ -54,8 +57,8 @@ export class ClubApplicationFormService {
   }
 
   async putUpdate(
-    userId: number,
-    formId: number,
+    userId: string,
+    formId: string,
     putUpdateClubApplicationFormDto: PutUpdateClubApplicationFormDto,
   ): Promise<ClubApplicationFormDto> {
     const oldForm = await this.clubApplicationFormRepository.findOneBy({

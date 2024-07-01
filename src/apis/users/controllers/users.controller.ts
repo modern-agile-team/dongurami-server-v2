@@ -42,7 +42,8 @@ export class UsersController {
   @SetResponse({ type: ResponseType.Detail, key: 'user' })
   @Get(':userId')
   findOneUserOrNotFound(
-    @Param('userId', ParsePositiveIntPipe) userId: number,
+    @Param('userId', ParsePositiveIntPipe)
+    userId: string,
   ): DetailResponse<UserDto> {
     return this.usersService.findOneUserOrNotFound(userId);
   }
@@ -53,7 +54,8 @@ export class UsersController {
   @Put(':userId')
   putUpdate(
     @User() user: UserDto,
-    @Param('userId', ParsePositiveIntPipe) userId: number,
+    @Param('userId', ParsePositiveIntPipe)
+    userId: string,
     @Body() putUpdateUserDto: PutUpdateUserDto,
   ) {
     return this.usersService.putUpdate(user.id, userId, putUpdateUserDto);

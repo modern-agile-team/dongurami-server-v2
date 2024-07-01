@@ -9,7 +9,7 @@ export class FindClubApplicationListQueryDto
   extends PageDto
   implements Partial<Omit<ClubApplicationDto, 'answer'>>
 {
-  clubId?: number;
+  clubId?: string;
 
   status?: ClubApplicationStatus;
 

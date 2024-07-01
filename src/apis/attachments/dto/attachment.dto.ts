@@ -13,9 +13,9 @@ export class AttachmentDto
 
   @ApiProperty({
     description: '업로더 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: 'file url',

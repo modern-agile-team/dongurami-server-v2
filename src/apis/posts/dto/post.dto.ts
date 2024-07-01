@@ -17,10 +17,10 @@ export class PostDto extends BaseDto {
   @ApiProperty({
     description:
       '게시글 작성자 고유 ID, isAnonymous 여부에 따라 null 값을 가짐',
-    format: 'integer',
+    format: 'int64',
     nullable: true,
   })
-  userId: number | null;
+  userId: string | null;
 
   @ApiProperty({
     description: '게시글 제목',

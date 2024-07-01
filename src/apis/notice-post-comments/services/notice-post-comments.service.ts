@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { IsNull } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -36,8 +37,8 @@ export class NoticePostCommentsService {
 
   @Transactional()
   async create(
-    userId: number,
-    noticePostId: number,
+    userId: string,
+    noticePostId: string,
     createNoticePostCommentDto: CreateNoticePostCommentDto,
   ): Promise<NoticePostCommentDto> {
     const existPost = await this.noticePostsService.findOne(noticePostId);
@@ -72,6 +73,7 @@ export class NoticePostCommentsService {
     }
 
     const newPostComment = await this.noticePostCommentRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       status: NoticePostCommentStatus.Posting,
       noticePostId: existPost.id,
@@ -82,7 +84,7 @@ export class NoticePostCommentsService {
   }
 
   async findAllAndCount(
-    noticePostId: number,
+    noticePostId: string,
     findNoticePostCommentListQueryDto: FindNoticePostCommentListQueryDto,
   ): Promise<[NoticePostCommentsItemDto[], number]> {
     const existPost = await this.noticePostsService.findOne(noticePostId);
@@ -134,9 +136,9 @@ export class NoticePostCommentsService {
   }
 
   async findOneOrNotFound(
-    noticePostId: number,
-    noticePostCommentId: number,
-    parentId?: number | null,
+    noticePostId: string,
+    noticePostCommentId: string,
+    parentId?: string | null,
   ): Promise<NoticePostCommentDto> {
     const existComment = await this.noticePostCommentRepository.findOne({
       where: {
@@ -158,9 +160,9 @@ export class NoticePostCommentsService {
 
   @Transactional()
   async putUpdate(
-    userId: number,
-    noticePostId: number,
-    noticePostCommentId: number,
+    userId: string,
+    noticePostId: string,
+    noticePostCommentId: string,
     putUpdateNoticePostCommentDto: PutUpdateNoticePostCommentDto,
   ): Promise<NoticePostCommentDto> {
     const oldComment = await this.findOneOrNotFound(
@@ -196,9 +198,9 @@ export class NoticePostCommentsService {
 
   @Transactional()
   async remove(
-    userId: number,
-    noticePostId: number,
-    noticePostCommentId: number,
+    userId: string,
+    noticePostId: string,
+    noticePostCommentId: string,
   ): Promise<number> {
     const existComment = await this.findOneOrNotFound(
       noticePostId,
@@ -227,9 +229,9 @@ export class NoticePostCommentsService {
   }
 
   async createReaction(
-    userId: number,
-    noticePostId: number,
-    noticePostCommentId: number,
+    userId: string,
+    noticePostId: string,
+    noticePostCommentId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     const existComment = await this.findOneOrNotFound(
@@ -245,9 +247,9 @@ export class NoticePostCommentsService {
   }
 
   async removeReaction(
-    userId: number,
-    noticePostId: number,
-    noticePostCommentId: number,
+    userId: string,
+    noticePostId: string,
+    noticePostCommentId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     const existComment = await this.findOneOrNotFound(

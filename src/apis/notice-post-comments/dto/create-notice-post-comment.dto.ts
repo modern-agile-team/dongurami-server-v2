@@ -3,9 +3,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsDefined,
-  IsInt,
+  IsNumberString,
   IsOptional,
-  IsPositive,
   Length,
 } from 'class-validator';
 
@@ -19,13 +18,12 @@ export class CreateNoticePostCommentDto
 {
   @ApiPropertyOptional({
     description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글로 안식함',
-    format: 'integer',
+    format: 'int64',
     nullable: false,
   })
-  @IsPositive()
-  @IsInt()
+  @IsNumberString({ no_symbols: true })
   @IsOptional()
-  parentId?: number;
+  parentId?: string;
 
   @ApiProperty({
     description: '본문',

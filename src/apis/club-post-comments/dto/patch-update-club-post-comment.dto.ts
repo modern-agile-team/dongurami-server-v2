@@ -1,11 +1,11 @@
 import { PatchUpdateClubPostCommentRequestBodyDto } from '@src/apis/clubs/dto/patch-update-club-post-comment-request-body.dto';
 
 export class PatchUpdateClubPostCommentDto extends PatchUpdateClubPostCommentRequestBodyDto {
-  id: number;
+  id: string;
 
-  userId: number;
+  userId: string;
 
-  clubPostId: number;
+  clubPostId: string;
 
   constructor(
     patchUpdateClubPostCommentDto: Partial<PatchUpdateClubPostCommentDto> = {},

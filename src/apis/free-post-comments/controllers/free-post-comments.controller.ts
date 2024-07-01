@@ -45,7 +45,7 @@ export class FreePostCommentsController {
   @SetResponse({ key: 'freePostComment', type: ResponseType.Detail })
   @Post()
   create(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
     @Body() createFreePostCommentDto: CreateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
@@ -62,7 +62,7 @@ export class FreePostCommentsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'freePostComments' })
   @Get()
   async findAllAndCount(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Query() findFreePostCommentListQueryDto: FindFreePostCommentListQueryDto,
   ): Promise<[FreePostCommentsItemDto[], number]> {
     const [freePosts, count] =
@@ -80,8 +80,8 @@ export class FreePostCommentsController {
   @Put(':commentId')
   putUpdate(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body() putUpdateFreePostCommentDto: PutUpdateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
     return this.freePostCommentsService.putUpdate(
@@ -100,8 +100,8 @@ export class FreePostCommentsController {
   @Delete(':commentId')
   remove(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
   ): Promise<number> {
     return this.freePostCommentsService.remove(user.id, postId, commentId);
   }
@@ -114,8 +114,8 @@ export class FreePostCommentsController {
   @Post(':commentId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.freePostCommentsService.createReaction(
@@ -134,8 +134,8 @@ export class FreePostCommentsController {
   @Delete(':commentId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.freePostCommentsService.removeReaction(

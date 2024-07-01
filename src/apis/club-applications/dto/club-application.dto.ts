@@ -24,15 +24,15 @@ export class ClubApplicationDto
 {
   @ApiProperty({
     description: '동아리 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  clubId: number;
+  clubId: string;
 
   @ApiProperty({
     description: '지원 유저 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '지원서 답변',

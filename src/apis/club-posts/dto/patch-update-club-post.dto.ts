@@ -8,7 +8,7 @@ export class PatchUpdateClubPostDto extends PickType(ClubPostDto, [
   'description',
   'tags',
 ]) {
-  postId: number;
+  postId: string;
   attachmentPaths: string[];
 
   constructor(patchUpdateClubPostDto: Partial<PatchUpdateClubPostDto> = {}) {

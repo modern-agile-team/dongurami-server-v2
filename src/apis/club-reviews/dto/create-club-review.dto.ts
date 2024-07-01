@@ -7,8 +7,8 @@ export class CreateClubReviewDto
       'clubId' | 'userId' | 'description' | 'starRate' | 'isAnonymous'
     >
 {
-  clubId: number;
-  userId: number;
+  clubId: string;
+  userId: string;
   description: string | null;
   starRate: number;
   isAnonymous: boolean;

@@ -72,7 +72,7 @@ export class NoticePostsController {
   @SetResponse({ type: ResponseType.Detail, key: 'noticePost' })
   @Get(':postId')
   findOneOrNotFound(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<NoticePostDto> {
     return this.noticePostService.findOneOrNotFound(postId);
   }
@@ -82,7 +82,7 @@ export class NoticePostsController {
   @UseGuards(JwtAuthGuard)
   @Put(':postId')
   putUpdate(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
     @Body() putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
@@ -98,7 +98,7 @@ export class NoticePostsController {
   @UseGuards(JwtAuthGuard)
   @Patch(':postId')
   patchUpdate(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
     @Body() patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
@@ -114,7 +114,7 @@ export class NoticePostsController {
   @UseGuards(JwtAuthGuard)
   @Delete(':postId')
   remove(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
   ): Promise<number> {
     return this.noticePostService.remove(user.id, postId);
@@ -124,7 +124,7 @@ export class NoticePostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put(':postId/hit')
   increaseHit(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<void> {
     return this.noticePostService.increaseHit(postId);
   }
@@ -135,7 +135,7 @@ export class NoticePostsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
   @Get(':postId/reactions')
   async findAllAndCountReactions(
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Query()
     findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
   ): Promise<[NoticePostReactionsItemDto[], number]> {
@@ -157,7 +157,7 @@ export class NoticePostsController {
   @Post(':postId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.noticePostService.createReaction(
@@ -173,7 +173,7 @@ export class NoticePostsController {
   @Delete(':postId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.noticePostService.removeReaction(

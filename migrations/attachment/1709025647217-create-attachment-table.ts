@@ -1,4 +1,7 @@
-import { generateCreatedAtColumn } from 'migrations/__utils/util';
+import {
+  generateCreatedAtColumn,
+  generatePrimaryColumn,
+} from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
 export class CreateAttachmentTable1709025647217 implements MigrationInterface {
@@ -7,20 +10,12 @@ export class CreateAttachmentTable1709025647217 implements MigrationInterface {
       new Table({
         name: 'attachment',
         columns: [
-          new TableColumn({
-            name: 'id',
-            isNullable: false,
-            isPrimary: true,
-            type: 'bigint',
-            length: '18',
-            unsigned: true,
-            comment: '첨부 파일 고유 ID',
-          }),
+          generatePrimaryColumn('첨부 파일 고유 ID'),
           new TableColumn({
             name: 'user_id',
             isNullable: false,
             unsigned: true,
-            type: 'int',
+            type: 'bigint',
             comment: '업로더 고유 ID',
           }),
           new TableColumn({
@@ -34,7 +29,7 @@ export class CreateAttachmentTable1709025647217 implements MigrationInterface {
             name: 'path',
             isNullable: false,
             type: 'varchar',
-            length: '18',
+            length: '255',
             comment: 'domain을 제외한 path',
           }),
           new TableColumn({
@@ -64,6 +59,8 @@ export class CreateAttachmentTable1709025647217 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.query(`ALTER TABLE attachment COMMENT = "첨부 파일"`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

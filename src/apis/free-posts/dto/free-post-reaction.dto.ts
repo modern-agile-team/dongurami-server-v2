@@ -22,17 +22,17 @@ export class FreePostReactionDto
 {
   @ApiProperty({
     description: 'reaction 등록 유저 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @Exclude()
-  reactionTypeId: number;
+  reactionTypeId: string;
 
   @ApiProperty({
     description: '자유 게시글 고유 ID',
-    format: 'integer',
-    type: 'number',
+    format: 'int64',
+    type: 'string',
   })
   @Expose({ toPlainOnly: true })
   get freePostId() {
@@ -50,7 +50,7 @@ export class FreePostReactionDto
   }
 
   @Exclude({ toPlainOnly: true })
-  parentId: number;
+  parentId: string;
 
   @Exclude({ toPlainOnly: true })
   reactionType: ReactionType;

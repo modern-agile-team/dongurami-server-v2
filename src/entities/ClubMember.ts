@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubMemberRole } from '@src/apis/club-members/constants/club-member.enum';
 import { Club } from '@src/entities/Club';
@@ -12,27 +6,28 @@ import { User } from '@src/entities/User';
 
 @Entity('club_member')
 export class ClubMember {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 구성원',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_id',
     comment: '동아리 고유 ID',
     unsigned: true,
   })
-  clubId: number;
+  clubId: string;
 
   @Column('json', { name: 'roles', comment: '구성원의 역할 리스트' })
   roles: ClubMemberRole[];

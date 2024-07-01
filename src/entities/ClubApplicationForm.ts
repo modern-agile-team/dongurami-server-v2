@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 import { QuestionInputType } from '@src/apis/club-application-form/constants/club-application-form.enum';
@@ -17,27 +10,28 @@ import { User } from '@src/entities/User';
 
 @Entity('club_application_form')
 export class ClubApplicationForm {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 지원서 폼',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_id',
     comment: '동아리 고유 ID',
     unsigned: true,
   })
-  clubId: number;
+  clubId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 신청서 폼 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('json', { name: 'common_question', comment: '공통 질문' })
   commonQuestion: ClubApplicationFormQuestionItem[];

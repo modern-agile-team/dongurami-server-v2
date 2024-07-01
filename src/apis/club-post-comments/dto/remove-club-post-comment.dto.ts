@@ -1,9 +1,9 @@
 export class RemoveClubPostCommentDto {
-  id: number;
+  id: string;
 
-  clubPostId: number;
+  clubPostId: string;
 
-  userId: number;
+  userId: string;
 
   constructor(removeClubPostCommentDto: RemoveClubPostCommentDto) {
     this.id = removeClubPostCommentDto.id;

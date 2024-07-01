@@ -1,10 +1,12 @@
-import { ReactionType } from '@src/entities/ReactionType';
 import {
   generateCreatedAtColumn,
   generatePrimaryColumn,
   generateUpdatedAtColumn,
 } from 'migrations/__utils/util';
+import { getTsid } from 'tsid-ts';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+
+import { ReactionType } from '@src/entities/ReactionType';
 
 export class ReactionType1706439999274 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -37,6 +39,7 @@ export class ReactionType1706439999274 implements MigrationInterface {
     await queryRunner.manager.getRepository(ReactionType).upsert(
       [
         {
+          id: getTsid().toBigInt().toString(),
           name: 'like',
           memo: '좋아요',
         },

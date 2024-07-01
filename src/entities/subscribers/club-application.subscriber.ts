@@ -1,3 +1,4 @@
+import { getTsid } from 'tsid-ts';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -37,7 +38,7 @@ export class ClubApplicationSubscriber
       ...event.entity,
       action,
       clubApplicationId: event.entity.id,
-      id: undefined,
+      id: getTsid().toBigInt().toString(),
       createdAt: undefined,
     });
 

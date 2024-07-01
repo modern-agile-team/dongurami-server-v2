@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
 import { HistoryAction } from '@src/constants/enum';
@@ -15,27 +8,28 @@ import { ClubTag } from '@src/entities/ClubTag';
 @Index(['userId'], {})
 @Entity('club_history')
 export class ClubHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 수정이력 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_id',
     comment: '동아리 고유 ID',
     unsigned: true,
   })
-  clubId: number;
+  clubId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 수정 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('enum', {
     name: 'action',

@@ -23,5 +23,5 @@ export class PutUpdateUserDto extends PickType(CreateUserDto, [
   @IsNullable()
   profilePath: string | null;
 
-  majorId: number;
+  majorId: string;
 }

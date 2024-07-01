@@ -9,9 +9,9 @@ export class ClubCategoryDto
 {
   @ApiProperty({
     description: '카테고리 생성 유저 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '카테고리 명',

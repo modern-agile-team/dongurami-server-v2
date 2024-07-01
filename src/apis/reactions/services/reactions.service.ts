@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
 import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
@@ -23,7 +24,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     private readonly reactionTypeRepository: ReactionTypeRepository,
   ) {}
 
-  async create(type: ReactionName, userId: number, parentId: number) {
+  async create(type: ReactionName, userId: string, parentId: string) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -43,6 +44,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
 
     await this.reactionRepository.save(
       {
+        id: getTsid().toBigInt().toString(),
         reactionTypeId,
         userId,
         parentId,
@@ -59,7 +61,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     });
   }
 
-  async remove(type: ReactionName, userId: number, parentId: number) {
+  async remove(type: ReactionName, userId: string, parentId: string) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -86,7 +88,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
 
   private async findOneReactionTypeOrFail(
     reactionName: ReactionName,
-  ): Promise<{ id: number }> {
+  ): Promise<{ id: string }> {
     const reactionType = await this.reactionTypeRepository.findOne({
       select: {
         id: true,

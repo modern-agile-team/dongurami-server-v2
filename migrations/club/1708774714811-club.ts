@@ -4,7 +4,7 @@ import {
   generatePrimaryColumn,
   generateUpdatedAtColumn,
 } from 'migrations/__utils/util';
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableColumn } from 'typeorm';
 
 export class Club1708774714811 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -15,7 +15,7 @@ export class Club1708774714811 implements MigrationInterface {
           generatePrimaryColumn('동아리 고유 ID'),
           {
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 생성 유저 고유 ID',
@@ -40,6 +40,12 @@ export class Club1708774714811 implements MigrationInterface {
             isNullable: true,
             comment: '동아리 로고 경로',
           },
+          new TableColumn({
+            name: 'tags',
+            type: 'json',
+            isNullable: false,
+            comment: '동아리 태그',
+          }),
           {
             name: 'status',
             type: 'enum',

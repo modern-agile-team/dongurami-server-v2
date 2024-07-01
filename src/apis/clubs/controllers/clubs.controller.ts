@@ -80,7 +80,7 @@ export class ClubsController {
   @SetResponse({ key: 'club', type: ResponseType.Detail })
   @Get(':clubId')
   findOneOrNotFound(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
   ): Promise<ClubDto> {
     return this.clubsService.findOneOrNotFound(clubId);
   }
@@ -89,7 +89,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubMembers', type: ResponseType.Common })
   @Get(':clubId/members')
   findAllMembers(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
   ): Promise<ClubMemberItemDto[]> {
     return this.clubsService.findAllMembers(clubId);
   }
@@ -98,7 +98,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubTags', type: ResponseType.Common })
   @Get(':clubId/tags')
   async findAllTags(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
   ): Promise<ClubTagDto[]> {
     return this.clubsService.findAllTags(clubId);
   }
@@ -110,7 +110,7 @@ export class ClubsController {
   @Post(':clubId/tags')
   appendTags(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Body() bulkAppendClubTagDto: BulkAppendClubTagDto,
   ): Promise<ClubTagDto[]> {
     return this.clubsService.bulkAppendTags(
@@ -126,8 +126,8 @@ export class ClubsController {
   @SetResponse({ type: ResponseType.Delete })
   @Delete(':clubId/tags/:tagIds')
   removeTags(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('tagIds', ParseSeparablePositiveIntPipe) tagIds: number[],
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('tagIds', ParseSeparablePositiveIntPipe) tagIds: string[],
   ): Promise<number> {
     return this.clubsService.bulkRemoveClubTagLinks(clubId, tagIds);
   }
@@ -136,7 +136,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubCategories', type: ResponseType.Common })
   @Get(':clubId/categories')
   findAllCategories(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
   ): Promise<ClubCategoryDto[]> {
     return this.clubsService.findAllCategoryByClubId(clubId);
   }
@@ -148,7 +148,7 @@ export class ClubsController {
   @UseGuards(JwtAuthGuard)
   createClubPost(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Body() createClubPostRequestBodyDto: CreateClubPostRequestBodyDto,
   ): Promise<ClubPostDto> {
     return this.clubsService.createClubPost(
@@ -164,7 +164,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubPosts', type: ResponseType.Pagination })
   @Get(':clubId/posts')
   async findAllAndCountClubPosts(
-    @Param('clubId') clubId: number,
+    @Param('clubId') clubId: string,
     @Query() findClubPostListRequestQueryDto: FindClubPostListRequestQueryDto,
   ): Promise<[ClubPostsItemDto[], number]> {
     const [clubPosts, count] = await this.clubsService.findAllAndCountClubPosts(
@@ -182,8 +182,8 @@ export class ClubsController {
   @Patch(':clubId/posts/:postId')
   patchUpdateClubPost(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body()
     patchUpdateCLubPostRequestBodyDto: PatchUpdateClubPostRequestBodyDto,
   ): Promise<ClubPostDto> {
@@ -202,8 +202,8 @@ export class ClubsController {
   @Delete(':clubId/posts/:postId')
   removeClubPost(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<number> {
     return this.clubsService.removeClubPost(user.id, clubId, postId);
   }
@@ -215,8 +215,8 @@ export class ClubsController {
   @Post(':clubId/posts/:postId/reaction')
   createClubPostReaction(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() createReactionDto: CreateReactionDto,
   ) {
     return this.clubsService.createClubPostReaction(
@@ -234,8 +234,8 @@ export class ClubsController {
   @Delete(':clubId/posts/:postId/reaction')
   removeClubPostReaction(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ) {
     return this.clubsService.removeClubPostReaction(
@@ -253,8 +253,8 @@ export class ClubsController {
   @UseGuards(JwtAuthGuard)
   async createClubPostComment(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Body()
     createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
@@ -272,8 +272,8 @@ export class ClubsController {
   @SetResponse({ key: 'clubPostComments', type: ResponseType.Pagination })
   @Get(':clubId/posts/:postId/comments')
   async findAllAndCountClubPostComments(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @Query()
     findClubPostCommentsListRequestQueryDto: FindClubPostCommentsListRequestQueryDto,
   ): Promise<[ClubPostCommentsItemDto[], number]> {
@@ -299,9 +299,9 @@ export class ClubsController {
   @Patch(':clubId/posts/:postId/comments/:commentId')
   async patchUpdateClubPostComment(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
     @Body()
     patchUpdateClubPostCommentRequestBodyDto: PatchUpdateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
@@ -325,9 +325,9 @@ export class ClubsController {
   @Delete(':clubId/posts/:postId/comments/:commentId')
   removeClubPostComment(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('postId', ParsePositiveIntPipe) postId: number,
-    @Param('commentId', ParsePositiveIntPipe) commentId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('commentId', ParsePositiveIntPipe) commentId: string,
   ): Promise<number> {
     return this.clubsService.removeClubPostComment(
       user.id,
@@ -343,7 +343,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubApplicationForm', type: ResponseType.Detail })
   @Get(':clubId/application-forms/latest')
   findLatestApplicationForm(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
   ): Promise<ClubApplicationFormDto> {
     return this.clubsService.findLatestApplicationForm(clubId);
   }
@@ -355,8 +355,8 @@ export class ClubsController {
   @Put(':clubId/application-forms/:formId')
   putUpdateApplicationForm(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('formId', ParsePositiveIntPipe) formId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('formId', ParsePositiveIntPipe) formId: string,
     @Body() putUpdateClubApplicationFormDto: PutUpdateClubApplicationFormDto,
   ): Promise<ClubApplicationFormDto> {
     return this.clubsService.putUpdateClubApplicationForm(
@@ -374,7 +374,7 @@ export class ClubsController {
   @Post(':clubId/reviews')
   createClubReview(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Body() createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
   ): Promise<ClubReviewDto> {
     return this.clubsService.createClubReview(
@@ -390,7 +390,7 @@ export class ClubsController {
   @SetResponse({ key: 'clubReviews', type: ResponseType.Pagination })
   @Get(':clubId/reviews')
   async findAllAndCountClubReviews(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Query()
     findClubReviewListRequestQueryDto: FindClubReviewListRequestQueryDto,
   ): Promise<[Omit<ClubReviewsItemDto, 'status' | 'deletedAt'>[], number]> {
@@ -410,8 +410,8 @@ export class ClubsController {
   @Patch(':clubId/reviews/:reviewId')
   async patchUpdateClubReview(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: string,
     @Body() patchUpdateClubReviewRequestDto: PatchUpdateClubReviewRequestDto,
   ): Promise<ClubReviewDto> {
     return this.clubsService.patchUpdateClubReview(
@@ -429,8 +429,8 @@ export class ClubsController {
   @Delete(':clubId/reviews/:reviewId')
   async removeClubReview(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: string,
   ): Promise<number> {
     return this.clubsService.removeClubReview(user.id, clubId, reviewId);
   }
@@ -440,7 +440,7 @@ export class ClubsController {
   })
   @SetResponse({ key: 'score', type: ResponseType.Detail })
   @Get(':clubId/reviews/score')
-  getClubReviewsScore(@Param('clubId') clubId: number) {
+  getClubReviewsScore(@Param('clubId') clubId: string) {
     return this.clubsService.getClubReviewsScore(clubId);
   }
 
@@ -451,8 +451,8 @@ export class ClubsController {
   @Post(':clubId/reviews/:reviewId/reaction')
   createClubReviewReaction(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: string,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
     return this.clubsService.createClubReviewReaction(
@@ -470,8 +470,8 @@ export class ClubsController {
   @Delete(':clubId/reviews/:reviewId/reaction')
   removeClubReviewReaction(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('reviewId', ParsePositiveIntPipe) reviewId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('reviewId', ParsePositiveIntPipe) reviewId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     return this.clubsService.removeClubReviewReaction(
@@ -493,7 +493,7 @@ export class ClubsController {
   @Post(':clubId/applications')
   createClubApplication(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Body()
     createClubApplicationRequestBodyDto: CreateClubApplicationRequestBodyDto,
   ): Promise<ClubApplicationDto> {
@@ -515,7 +515,7 @@ export class ClubsController {
   @UseGuards(JwtAuthGuard)
   @Get(':clubId/applications')
   async findAllAndCountClubApplications(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Query()
     findClubApplicationListRequestQueryDto: FindClubApplicationListRequestQueryDto,
   ): Promise<[ClubApplicationsItemDto[], number]> {
@@ -540,8 +540,8 @@ export class ClubsController {
   @UseGuards(JwtAuthGuard)
   @Get(':clubId/applications/:applicationId')
   findOneClubApplication(
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('applicationId', ParsePositiveIntPipe) applicationId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('applicationId', ParsePositiveIntPipe) applicationId: string,
   ): Promise<ClubApplicationDto> {
     return this.clubsService.findOneClubApplication(clubId, applicationId);
   }
@@ -553,8 +553,8 @@ export class ClubsController {
   @Patch(':clubId/applications/:applicationId')
   patchUpdateClubApplication(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('applicationId', ParsePositiveIntPipe) applicationId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('applicationId', ParsePositiveIntPipe) applicationId: string,
     @Body() patchUpdateClubApplicationDto: PatchUpdateClubApplicationDto,
   ): Promise<ClubApplicationDto> {
     return this.clubsService.patchUpdateClubApplication(
@@ -575,8 +575,8 @@ export class ClubsController {
   @Put(':clubId/applications/:applicationId/status')
   updateClubApplicationStatus(
     @User() user: UserDto,
-    @Param('clubId', ParsePositiveIntPipe) clubId: number,
-    @Param('applicationId', ParsePositiveIntPipe) applicationId: number,
+    @Param('clubId', ParsePositiveIntPipe) clubId: string,
+    @Param('applicationId', ParsePositiveIntPipe) applicationId: string,
     @Body() updateClubApplicationStatusDto: UpdateClubApplicationStatusDto,
   ): Promise<ClubApplicationDto> {
     return this.clubsService.updateClubApplicationStatus(

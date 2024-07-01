@@ -1,34 +1,32 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
 
 @Index('FK_bb889933fee11d659b3ef8fc5dd', ['clubId'], {})
 @Entity('club_application_form_history')
 export class ClubApplicationFormHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 지원서 폼',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_application_form_id',
     comment: '동아리 지원서 폼 고유 ID',
     unsigned: true,
   })
-  clubApplicationFormId: number;
+  clubApplicationFormId: string;
 
-  @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
-  clubId: number;
+  @Column('bigint', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
+    unsigned: true,
+  })
+  clubId: string;
 
   @Column('json', { name: 'common_question', comment: '공통 질문' })
   commonQuestion: object;
@@ -64,13 +62,13 @@ export class ClubApplicationFormHistory {
   })
   action: 'insert' | 'update' | 'delete';
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     nullable: true,
     comment: '동아리 지원서 폼 수정 유저',
     unsigned: true,
   })
-  userId: number | null;
+  userId: string | null;
 
   @ManyToOne(
     () => ClubApplicationForm,

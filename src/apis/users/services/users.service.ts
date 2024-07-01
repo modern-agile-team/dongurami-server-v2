@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import * as crypto from 'crypto';
 import moment from 'moment';
+import { getTsid } from 'tsid-ts';
 import { FindOptionsWhere } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -53,6 +54,7 @@ export class UsersService {
     const nickname = this.generateUniqueNickname();
 
     const newUser = this.userRepository.create({
+      id: getTsid().toBigInt().toString(),
       snsId,
       loginType,
       nickname,
@@ -64,7 +66,7 @@ export class UsersService {
     return new UserDto(newUser);
   }
 
-  async findOneById(id: number): Promise<UserDto | null> {
+  async findOneById(id: string): Promise<UserDto | null> {
     const user = await this.userRepository.findOneBy({
       id,
     });
@@ -78,7 +80,7 @@ export class UsersService {
     return user ? new UserDto(user) : null;
   }
 
-  async findOneUserOrNotFound(userId: number): Promise<UserDto> {
+  async findOneUserOrNotFound(userId: string): Promise<UserDto> {
     const existUser = await this.findOneById(userId);
 
     if (!existUser) {
@@ -92,8 +94,8 @@ export class UsersService {
 
   @Transactional()
   async putUpdate(
-    myId: number,
-    userId: number,
+    myId: string,
+    userId: string,
     putUpdateUserDto: PutUpdateUserDto,
   ) {
     const existUser = await this.findOneUserOrNotFound(userId);

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
 import { HistoryAction } from '@src/constants/enum';
@@ -16,30 +9,35 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 @Index('FK_ab802f92a6582ef0802e0a821dd', ['clubId'], {})
 @Entity('club_review_history')
 export class ClubReviewHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 후기 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 후기 생성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
-  clubId: number;
+  @Column('bigint', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
+    unsigned: true,
+  })
+  clubId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_review_id',
     comment: '동아리 리뷰 고유 ID',
     unsigned: true,
   })
-  clubReviewId: number;
+  clubReviewId: string;
 
   @Column('varchar', {
     name: 'description',

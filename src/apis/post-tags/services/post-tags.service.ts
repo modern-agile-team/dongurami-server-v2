@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { difference } from 'lodash';
+import { getTsid } from 'tsid-ts';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -13,7 +14,7 @@ export class PostTagsService {
   constructor(private readonly postTagRepository: PostTagRepository) {}
 
   @Transactional()
-  async create(userId: number, createPostTagDto: CreatePostTagDto) {
+  async create(userId: string, createPostTagDto: CreatePostTagDto) {
     const existPostTag = await this.findOneByName(createPostTagDto.name);
 
     if (existPostTag) {
@@ -21,6 +22,7 @@ export class PostTagsService {
     }
 
     const newPostTag = await this.postTagRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       ...createPostTagDto,
     });
@@ -29,7 +31,7 @@ export class PostTagsService {
   }
 
   async bulkCreate(
-    userId: number,
+    userId: string,
     createPostTagDtos: CreatePostTagDto[],
   ): Promise<PostTagDto[]> {
     if (createPostTagDtos.length === 0) {
@@ -48,7 +50,11 @@ export class PostTagsService {
     }
 
     const newTags = newTagNames.map((tagName) =>
-      this.postTagRepository.create({ userId, name: tagName }),
+      this.postTagRepository.create({
+        id: getTsid().toBigInt().toString(),
+        userId,
+        name: tagName,
+      }),
     );
 
     await this.postTagRepository.insert(newTags);

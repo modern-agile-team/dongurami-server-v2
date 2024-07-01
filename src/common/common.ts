@@ -23,7 +23,7 @@ export const isObject = (value: unknown): value is Record<any, any> => {
 export const anonymize = <
   T extends {
     isAnonymous: boolean;
-    userId: number;
+    userId: string;
     user: unknown;
   },
 >(

@@ -9,7 +9,7 @@ export class FindClubPostListQueryDto
   extends PageDto
   implements Partial<Pick<ClubPostDto, 'clubId' | 'status' | 'description'>>
 {
-  clubId?: number;
+  clubId?: string;
 
   description?: string;
 

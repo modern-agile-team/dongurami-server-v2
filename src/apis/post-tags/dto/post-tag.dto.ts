@@ -9,9 +9,9 @@ export class PostTagDto
 {
   @ApiProperty({
     description: '태그 생성 유저 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '태그 명',

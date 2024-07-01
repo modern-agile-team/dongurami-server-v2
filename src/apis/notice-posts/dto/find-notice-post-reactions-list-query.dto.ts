@@ -17,12 +17,12 @@ export class FindNoticePostReactionListQueryDto
 {
   @ApiPropertyOptional({
     description: '리액션 생성 유저 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
     minimum: 1,
   })
   @IsOptional()
   @IsPositiveInt()
-  userId?: number;
+  userId?: string;
 
   @ApiPropertyOptional({
     description: '리액션 타입 필터링',

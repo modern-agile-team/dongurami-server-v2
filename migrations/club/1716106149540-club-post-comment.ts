@@ -9,7 +9,7 @@ import {
 export class ClubPostComment1716106149540 implements MigrationInterface {
   parentIdColumn = new TableColumn({
     name: 'parent_id',
-    type: 'int',
+    type: 'bigint',
     unsigned: true,
     isNullable: true,
     comment: '부모 댓글 고유 ID',

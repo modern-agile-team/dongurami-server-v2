@@ -21,7 +21,7 @@ export class DevController {
     description: '개발 환경에서만 사용 가능',
   })
   @Get('access-token/:userId')
-  getAccessToken(@Param('userId', ParsePositiveIntPipe) userId: number) {
+  getAccessToken(@Param('userId', ParsePositiveIntPipe) userId: string) {
     return this.authService.generateToken({ id: userId });
   }
 

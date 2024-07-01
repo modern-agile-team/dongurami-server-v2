@@ -7,7 +7,7 @@ import { Order } from '@src/dto/transformer/csv-to-order.decorator';
 export class FindClubPostCommentsDto
   implements Partial<Pick<ClubPostCommentDto, 'depth' | 'status' | 'parentId'>>
 {
-  clubPostId?: number | number[];
+  clubPostId?: string | string[];
 
   status: ClubPostCommentStatus = ClubPostCommentStatus.Posting;
 

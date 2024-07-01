@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { differenceWith } from 'lodash';
+import { getTsid } from 'tsid-ts';
 import { Transactional } from 'typeorm-transactional';
 
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
@@ -48,7 +49,7 @@ export class NoticePostsService {
   ) {}
 
   @Transactional()
-  async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
+  async create(userId: string, createNoticePostDto: CreateNoticePostDto) {
     const { tagNames, ...postProps } = createNoticePostDto;
 
     const postTags = await this.postTagsService.bulkCreate(
@@ -59,6 +60,7 @@ export class NoticePostsService {
     );
 
     const newPost = await this.noticePostRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       ...postProps,
       tags: postTags,
@@ -101,7 +103,7 @@ export class NoticePostsService {
     });
   }
 
-  async findOneOrNotFound(noticePostId: number): Promise<NoticePostDto> {
+  async findOneOrNotFound(noticePostId: string): Promise<NoticePostDto> {
     const noticePost = await this.noticePostRepository.findOne({
       where: {
         id: noticePostId,
@@ -123,7 +125,7 @@ export class NoticePostsService {
     return new NoticePostDto({ ...noticePost, postTags });
   }
 
-  async findOne(noticePostId: number): Promise<NoticePostDto | void> {
+  async findOne(noticePostId: string): Promise<NoticePostDto | void> {
     const noticePost = await this.noticePostRepository.findOneBy({
       id: noticePostId,
       status: NoticePostStatus.Posting,
@@ -138,8 +140,8 @@ export class NoticePostsService {
 
   @Transactional()
   async putUpdate(
-    noticePostId: number,
-    userId: number,
+    noticePostId: string,
+    userId: string,
     putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
     const { tagNames, ...postProps } = putUpdateNoticePostDto;
@@ -183,8 +185,8 @@ export class NoticePostsService {
 
   @Transactional()
   async patchUpdate(
-    noticePostId: number,
-    userId: number,
+    noticePostId: string,
+    userId: string,
     patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
     const { tagNames, ...postProps } = patchUpdateNoticePostDto;
@@ -237,7 +239,7 @@ export class NoticePostsService {
   }
 
   @Transactional()
-  async remove(userId: number, noticePostId: number): Promise<number> {
+  async remove(userId: string, noticePostId: string): Promise<number> {
     const existPost = await this.findOne(noticePostId);
 
     if (!existPost) {
@@ -264,13 +266,13 @@ export class NoticePostsService {
     return updateResult.affected;
   }
 
-  async increaseHit(noticePostId: number): Promise<void> {
+  async increaseHit(noticePostId: string): Promise<void> {
     return this.commonPostsService.incrementHit(noticePostId);
   }
 
   async bulkAppendTagLink(
-    userId: number,
-    postId: number,
+    userId: string,
+    postId: string,
     postTags: PostTagDto[],
   ) {
     const existTagLinks = await this.noticePostTagLinkRepository.findBy({
@@ -283,6 +285,7 @@ export class NoticePostsService {
       (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
     ).map((postTag) =>
       this.noticePostTagLinkRepository.create({
+        id: getTsid().toBigInt().toString(),
         userId,
         noticePostId: postId,
         postTagId: postTag.id,
@@ -294,7 +297,7 @@ export class NoticePostsService {
     return newAppendTags;
   }
 
-  private async findPostTags(noticePostId: number): Promise<PostTagDto[]> {
+  private async findPostTags(noticePostId: string): Promise<PostTagDto[]> {
     const postTagLinks = await this.noticePostTagLinkRepository.find({
       where: {
         noticePostId,
@@ -310,7 +313,7 @@ export class NoticePostsService {
   }
 
   async findAllAndCountReactions(
-    noticePostId: number,
+    noticePostId: string,
     findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
   ): Promise<[NoticePostReaction[], number]> {
     const { page, pageSize, order, type, ...filter } =
@@ -342,8 +345,8 @@ export class NoticePostsService {
   }
 
   async createReaction(
-    userId: number,
-    noticePostId: number,
+    userId: string,
+    noticePostId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     const isExistPost = await this.noticePostRepository.exist({
@@ -366,8 +369,8 @@ export class NoticePostsService {
   }
 
   async removeReaction(
-    userId: number,
-    noticePostId: number,
+    userId: string,
+    noticePostId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     const isExistPost = await this.noticePostRepository.exist({

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { In } from 'typeorm';
 
 import { ClubTagDto } from '@src/apis/club-tags/dto/club-tag.dto';
@@ -11,7 +12,7 @@ export class ClubTagsService {
   constructor(private readonly clubTagRepository: ClubTagRepository) {}
 
   async bulkCreate(
-    userId: number,
+    userId: string,
     createClubTagDto: CreateClubTagDto,
   ): Promise<ClubTagDto[]> {
     const { names } = createClubTagDto;
@@ -36,7 +37,11 @@ export class ClubTagsService {
 
     const newClubTags = this.clubTagRepository.create(
       notExistClubTagNames.map((clubTagName) => {
-        return { userId, name: clubTagName };
+        return {
+          id: getTsid().toBigInt().toString(),
+          userId,
+          name: clubTagName,
+        };
       }),
     );
 

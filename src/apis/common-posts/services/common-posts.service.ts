@@ -16,7 +16,7 @@ export class CommonPostsService<E extends RequiredCommonPostColumn> {
     private readonly postRepository: Repository<E>,
   ) {}
 
-  async incrementHit(postId: number): Promise<void> {
+  async incrementHit(postId: string): Promise<void> {
     const updateResult = await this.postRepository
       .createQueryBuilder('post')
       .update()

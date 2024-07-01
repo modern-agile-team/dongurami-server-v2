@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubPostStatus } from '@src/apis/club-posts/constants/club-post.enum';
 import { HistoryAction } from '@src/constants/enum';
@@ -16,30 +9,35 @@ import { PostTag } from '@src/entities/PostTag';
 @Index('FK_16ddac5d0ad7139092b9df29288', ['userId'], {})
 @Entity('club_post_history')
 export class ClubPostHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
-    comment: '동아리 게시글 수정 이력 고유 ID',
+    comment: '동아리 게시글 수정이력 고유 ID',
+    unsigned: true,
+    nullable: false,
+  })
+  id: string;
+
+  @Column('bigint', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
     unsigned: true,
   })
-  id: number;
+  clubId: string;
 
-  @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
-  clubId: number;
-
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_post_id',
     comment: '동아리 게시글 고유 ID',
     unsigned: true,
   })
-  clubPostId: number;
+  clubPostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '동아리 게시글 수정 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('text', { name: 'description', comment: '동아리 게시글 본문' })
   description: string;

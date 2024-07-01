@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { NoticePostCommentStatus } from '@src/apis/notice-post-comments/constants/notice-post-comment.enum';
 import { NoticePost } from '@src/entities/NoticePost';
@@ -16,35 +9,36 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 
 @Entity('notice_post_comment')
 export class NoticePostComment {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticePostId: number;
+  noticePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'parent_id',
     comment: '부모 댓글 고유 ID',
     unsigned: true,
     nullable: true,
   })
-  parentId: number | null;
+  parentId: string | null;
 
   @Column('tinyint', {
     name: 'depth',

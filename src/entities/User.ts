@@ -5,7 +5,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import {
@@ -49,20 +48,21 @@ import { UserHistory } from '@src/entities/UserHistory';
 @Index(['nickname'], { unique: true })
 @Entity('user')
 export class User {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '유저 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'major_id',
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  majorId: number | null;
+  majorId: string | null;
 
   @Column('enum', {
     name: 'login_type',

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ClubApplicationStatus } from '@src/apis/club-applications/constants/club-application.enum';
 import { ClubApplicationAnswerItemDto } from '@src/apis/club-applications/dto/club-application-answer-item.dto';
@@ -16,30 +9,35 @@ import { ClubApplication } from '@src/entities/ClubApplication';
 @Index('FK_c3eedbd5ad8c5722a2b6484a96e', ['userId'], {})
 @Entity('club_application_history')
 export class ClubApplicationHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 지원서',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', { name: 'club_id', comment: '동아리 고유 ID', unsigned: true })
-  clubId: number;
+  @Column('bigint', {
+    name: 'club_id',
+    comment: '동아리 고유 ID',
+    unsigned: true,
+  })
+  clubId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_application_id',
     comment: '동아리 지원서 고유 ID',
     unsigned: true,
   })
-  clubApplicationId: number;
+  clubApplicationId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '지원 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('json', { name: 'answers', comment: '동아리 지원서 답변' })
   answers: ClubApplicationAnswerItemDto[];

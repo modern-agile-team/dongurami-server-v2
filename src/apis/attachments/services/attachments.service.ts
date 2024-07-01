@@ -20,7 +20,7 @@ export class AttachmentsService {
   ) {}
 
   @Transactional()
-  async uploadFiles(userId: number, fileUploadDto: FileUploadDto) {
+  async uploadFiles(userId: string, fileUploadDto: FileUploadDto) {
     const { files } = fileUploadDto;
 
     const uploadedUrls: string[] = [];

@@ -1,7 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsDefined, IsOptional, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsDefined,
+  IsNumberString,
+  IsOptional,
+  Length,
+} from 'class-validator';
 
 import {
   NOTICE_POST_ORDER_FIELD,
@@ -14,7 +20,6 @@ import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
 import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
-import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 
 export class FindNoticePostListQueryDto
   extends PageDto
@@ -22,19 +27,19 @@ export class FindNoticePostListQueryDto
 {
   @ApiPropertyOptional({
     description: '공지게시글 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  id?: number;
+  @IsNumberString({ no_symbols: true })
+  id?: string;
 
   @ApiPropertyOptional({
     description: '공지게시글 작성자 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  userId?: number;
+  @IsNumberString({ no_symbols: true })
+  userId?: string;
 
   @ApiPropertyOptional({
     description: 'title 필터링',

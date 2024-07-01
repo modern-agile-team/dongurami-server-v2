@@ -28,9 +28,9 @@ export class ClubPostCommentDto
 {
   @ApiProperty({
     description: '댓글 작성자 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '동아리 게시글 댓글 작성 유저 정보',
@@ -39,16 +39,16 @@ export class ClubPostCommentDto
 
   @ApiProperty({
     description: '게시글 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  clubPostId: number;
+  clubPostId: string;
 
   @ApiProperty({
     description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글임',
-    format: 'integer',
+    format: 'int64',
     nullable: true,
   })
-  parentId: number | null;
+  parentId: string | null;
 
   @ApiProperty({
     description: '댓글 깊이 0부터 시작',

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ClubPostCommentStatus } from '@src/apis/club-post-comments/constants/club-post-comment.enum';
 import { ClubPost } from '@src/entities/ClubPost';
@@ -15,27 +8,28 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 
 @Entity('club_post_comment')
 export class ClubPostComment {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '동아리 게시글 댓글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '댓글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'club_post_id',
     comment: '게시글 고유 ID',
     unsigned: true,
   })
-  clubPostId: number;
+  clubPostId: string;
 
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
@@ -78,13 +72,13 @@ export class ClubPostComment {
   })
   deletedAt: Date | null;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'parent_id',
     nullable: true,
     comment: '부모 댓글 고유 ID',
     unsigned: true,
   })
-  parentId: number | null;
+  parentId: string | null;
 
   @Column('tinyint', {
     name: 'depth',

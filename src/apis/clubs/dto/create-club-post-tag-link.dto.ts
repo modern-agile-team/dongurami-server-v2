@@ -1,7 +1,7 @@
 export class CreateClubPostTagLinkDto {
-  userId: number;
-  clubPostId: number;
-  postTagId: number;
+  userId: string;
+  clubPostId: string;
+  postTagId: string;
 
   constructor(
     createClubPostTagLinkDto: Partial<CreateClubPostTagLinkDto> = {},

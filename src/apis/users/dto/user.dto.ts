@@ -39,7 +39,7 @@ export class UserDto
     >
 {
   @ApiProperty({})
-  majorId: number | null;
+  majorId: string | null;
 
   @ApiProperty({
     description: '유저 로그인 타입',

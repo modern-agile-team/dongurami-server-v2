@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
+
 import { AttachmentDto } from '@src/apis/attachments/dto/attachment.dto';
 import { CLUB_POST_ATTACHMENT_MIME_TYPE } from '@src/apis/club-post-attachments/constants/club-post-attachment.constant';
 import { CreateClubPostAttachmentDto } from '@src/apis/club-post-attachments/dto/create-club-post-attachment.dto';
@@ -16,7 +18,10 @@ export class ClubPostAttachmentsService {
     createClubPostAttachmentDtos: CreateClubPostAttachmentDto[],
   ): Promise<ClubPostAttachment[]> {
     const clubPostAttachments = this.clubPostAttachmentRepository.create(
-      createClubPostAttachmentDtos,
+      createClubPostAttachmentDtos.map((createClubPostAttachmentDto) => ({
+        id: getTsid().toBigInt().toString(),
+        ...createClubPostAttachmentDto,
+      })),
     );
 
     await this.clubPostAttachmentRepository.insert(clubPostAttachments);
@@ -24,7 +29,7 @@ export class ClubPostAttachmentsService {
     return clubPostAttachments;
   }
 
-  findAll(clubPostId: number): Promise<ClubPostAttachment[]> {
+  findAll(clubPostId: string): Promise<ClubPostAttachment[]> {
     return this.clubPostAttachmentRepository.find({
       where: {
         clubPostId,
@@ -45,7 +50,7 @@ export class ClubPostAttachmentsService {
     );
   }
 
-  async deleteByPostId(clubPostId: number): Promise<number> {
+  async deleteByPostId(clubPostId: string): Promise<number> {
     const deleteResult = await this.clubPostAttachmentRepository.delete({
       clubPostId,
     });

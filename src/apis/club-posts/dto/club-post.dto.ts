@@ -32,17 +32,15 @@ export class ClubPostDto
 {
   @ApiProperty({
     description: '동아리 고유 ID',
-    format: 'integer',
-    minimum: 1,
+    format: 'int64',
   })
-  clubId: number;
+  clubId: string;
 
   @ApiProperty({
     description: '동아리 게시글 작성 유저 고유 ID',
-    format: 'integer',
-    minimum: 1,
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '동아리 게시글 작성 유저 정보',

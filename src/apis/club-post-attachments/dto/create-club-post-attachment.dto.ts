@@ -3,7 +3,7 @@ import { ClubPostAttachment } from '@src/entities/ClubPostAttachment';
 export class CreateClubPostAttachmentDto
   implements Pick<ClubPostAttachment, 'clubPostId' | 'attachmentId'>
 {
-  clubPostId: number;
+  clubPostId: string;
   attachmentId: string;
 
   constructor(

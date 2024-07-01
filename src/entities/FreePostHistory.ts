@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { HistoryAction } from '@src/constants/enum';
@@ -16,27 +9,28 @@ import { BooleanTransformer } from '@src/entities/transformers/boolean.transform
 @Index(['userId'], {})
 @Entity('free_post_history')
 export class FreePostHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유 게시글 수정이력 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
   })
-  freePostId: number;
+  freePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('enum', {
     name: 'action',

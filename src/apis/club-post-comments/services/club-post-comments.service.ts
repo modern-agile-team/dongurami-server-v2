@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
 import { FindOneOptions, IsNull } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -29,9 +30,9 @@ export class ClubPostCommentsService {
   ) {}
 
   async create(
-    userId: number,
-    clubId: number,
-    postId: number,
+    userId: string,
+    clubId: string,
+    postId: string,
     createClubPostCommentRequestBodyDto: CreateClubPostCommentRequestBodyDto,
   ): Promise<ClubPostCommentDto> {
     await this.clubPostsService.isExistOrNotFound(clubId, postId);
@@ -54,6 +55,7 @@ export class ClubPostCommentsService {
     }
 
     const newPostComment = this.clubPostCommentRepository.create({
+      id: getTsid().toBigInt().toString(),
       ...createClubPostCommentRequestBodyDto,
       userId,
       clubPostId: postId,
@@ -126,9 +128,9 @@ export class ClubPostCommentsService {
   }
 
   async findOneOrNotFound(
-    postId: number,
-    postCommentId: number,
-    parentId?: number | null,
+    postId: string,
+    postCommentId: string,
+    parentId?: string | null,
     overrideOptions: FindOneOptions<ClubPostComment> = {},
   ): Promise<ClubPostCommentDto> {
     const existComment = await this.clubPostCommentRepository.findOne({

@@ -16,7 +16,7 @@ export class FreePost1706440108331 implements MigrationInterface {
           generatePrimaryColumn('자유 게시글 고유 ID'),
           {
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '게시글 작성 유저 고유 ID',

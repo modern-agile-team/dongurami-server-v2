@@ -1,6 +1,7 @@
 import {
   generateCreatedAtColumn,
   generatePrimaryColumn,
+  generateUpdatedAtColumn,
 } from 'migrations/__utils/util';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
@@ -13,7 +14,7 @@ export class ClubCategory1708778638574 implements MigrationInterface {
           generatePrimaryColumn('동아리 카테고리 고유 ID'),
           {
             name: 'user_id',
-            type: 'int',
+            type: 'bigint',
             unsigned: true,
             isNullable: false,
             comment: '동아리 카테고리 생성 유저 고유 ID',
@@ -34,6 +35,7 @@ export class ClubCategory1708778638574 implements MigrationInterface {
             comment: '메모',
           },
           generateCreatedAtColumn(),
+          generateUpdatedAtColumn(),
         ],
         foreignKeys: [
           {

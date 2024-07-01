@@ -1,6 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsDefined, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsDefined,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+} from 'class-validator';
 
 import { CLUB_ORDER_FIELD } from '@src/apis/clubs/constants/club.constant';
 import { ClubStatus } from '@src/apis/clubs/constants/club.enum';
@@ -9,7 +14,6 @@ import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
-import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
 
 export class FindClubListQueryDto extends PageDto implements Partial<ClubDto> {
   @ApiPropertyOptional({
@@ -21,17 +25,19 @@ export class FindClubListQueryDto extends PageDto implements Partial<ClubDto> {
 
   @ApiPropertyOptional({
     description: '동아리 카테고리 ID',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  categoryId?: number;
+  @IsNumberString({ no_symbols: true })
+  categoryId?: string;
 
   @ApiPropertyOptional({
     description: '동아리 태그 ID',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  tagId: number;
+  @IsNumberString({ no_symbols: true })
+  tagId: string;
 
   @ApiPropertyOrder(CLUB_ORDER_FIELD)
   @CsvToOrder<typeof CLUB_ORDER_FIELD>([...CLUB_ORDER_FIELD])

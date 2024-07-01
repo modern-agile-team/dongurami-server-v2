@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { getTsid } from 'tsid-ts';
+
 import { ClubCategoryDto } from '@src/apis/club-categories/dto/club-category.dto';
 import { CreateClubCategoryRequestBodyDto } from '@src/apis/club-categories/dto/create-club-category-request-body.dto';
 import { FindClubCategoryListQueryDto } from '@src/apis/club-categories/dto/find-club-category-list-query.dto';
@@ -22,7 +24,7 @@ export class ClubCategoriesService {
   ) {}
 
   async create(
-    userId: number,
+    userId: string,
     createClubCategoryRequestBodyDto: CreateClubCategoryRequestBodyDto,
   ): Promise<ClubCategoryDto> {
     const { name, memo } = createClubCategoryRequestBodyDto;
@@ -40,6 +42,7 @@ export class ClubCategoriesService {
     }
 
     const newClubCategory = await this.clubCategoryRepository.save({
+      id: getTsid().toBigInt().toString(),
       userId,
       name,
       memo,

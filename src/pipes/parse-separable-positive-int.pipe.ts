@@ -10,6 +10,7 @@ import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-ba
 
 interface Options {
   separator?: string;
+  transform?: boolean;
 }
 
 @Injectable()
@@ -18,6 +19,7 @@ export class ParseSeparablePositiveIntPipe implements PipeTransform<string> {
     @Optional()
     private readonly options: Options = {
       separator: ',',
+      transform: false,
     },
   ) {}
 
@@ -39,7 +41,9 @@ export class ParseSeparablePositiveIntPipe implements PipeTransform<string> {
       });
     }
 
-    return values.map((value) => parseInt(value));
+    return this.options.transform
+      ? values.map((value) => parseInt(value))
+      : values;
   }
 
   private isPositiveNumeric(value: string): boolean {

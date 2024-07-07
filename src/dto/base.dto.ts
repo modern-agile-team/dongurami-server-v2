@@ -4,7 +4,6 @@ export class BaseDto {
   @ApiProperty({
     description: '고유 ID',
     type: 'int64',
-    minimum: 1,
   })
   id: string;
 

@@ -372,16 +372,18 @@ export class ClubsController {
   @UseGuards(JwtAuthGuard)
   @SetResponse({ key: 'clubReview', type: ResponseType.Detail })
   @Post(':clubId/reviews')
-  createClubReview(
+  async createClubReview(
     @User() user: UserDto,
     @Param('clubId', ParsePositiveIntPipe) clubId: string,
     @Body() createClubReviewRequestBodyDto: CreateClubReviewRequestBodyDto,
   ): Promise<ClubReviewDto> {
-    return this.clubsService.createClubReview(
+    const clubReview = await this.clubsService.createClubReview(
       user.id,
       clubId,
       createClubReviewRequestBodyDto,
     );
+
+    return anonymize(clubReview);
   }
 
   @ApiClub.FindAllAndCountClubReviews({
@@ -401,6 +403,19 @@ export class ClubsController {
       );
 
     return [plainToInstance(ClubReviewsItemDto, clubReviews), count];
+  }
+
+  @ApiClub.FindBestClubReview({
+    summary: '동아리 Best review 조회',
+  })
+  @SetResponse({ key: 'clubReview', type: ResponseType.Detail })
+  @Get(':clubId/reviews/best')
+  async findBestClubReview(
+    @Param('clubId') clubId: string,
+  ): Promise<ClubReviewDto> {
+    const clubReview = await this.clubsService.findBestClubReview(clubId);
+
+    return anonymize(clubReview);
   }
 
   @ApiCommonResponse([HttpStatus.UNAUTHORIZED, HttpStatus.FORBIDDEN])

@@ -216,6 +216,7 @@ export class ClubReviewsService {
       where: {
         clubId,
         id: reviewId,
+        status: ClubReviewStatus.Posting,
       },
     });
 

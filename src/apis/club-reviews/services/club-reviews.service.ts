@@ -124,7 +124,7 @@ export class ClubReviewsService {
       .orderBy('COUNT(DISTINCT clubReviewReactions.id)', 'DESC')
       .getOne();
 
-    if (isNil) {
+    if (isNil(review)) {
       throw new HttpNotFoundException({
         code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
       });

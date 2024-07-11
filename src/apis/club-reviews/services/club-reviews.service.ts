@@ -12,9 +12,14 @@ import { PatchUpdateClubReviewDto } from '@src/apis/club-reviews/dto/patch-updat
 import { RemoveClubReviewDto } from '@src/apis/club-reviews/dto/remove-club-review.dto';
 import { ScoreDto } from '@src/apis/club-reviews/dto/score.dto';
 import { ClubReviewRepository } from '@src/apis/club-reviews/repositories/club-review.repository';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { UsersService } from '@src/apis/users/services/users.service';
 import { isNil } from '@src/common/common';
 import { CLUB_REVIEW_ERROR_CODE } from '@src/constants/error/club-review/club-review-error-code.constant';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
@@ -26,6 +31,8 @@ export class ClubReviewsService {
   constructor(
     private readonly clubReviewRepository: ClubReviewRepository,
     private readonly queryHelper: QueryHelper,
+    private readonly reactionsService: ReactionsService<ClubReviewReaction>,
+    private readonly usersService: UsersService,
   ) {}
 
   async create(
@@ -50,7 +57,9 @@ export class ClubReviewsService {
 
     await this.clubReviewRepository.save(newClubReview);
 
-    return new ClubReviewDto(newClubReview);
+    const postingUser = await this.usersService.findOneById(userId);
+
+    return new ClubReviewDto({ ...newClubReview, user: postingUser });
   }
 
   findAllAndCount(
@@ -81,6 +90,47 @@ export class ClubReviewsService {
         user: true,
       },
     });
+  }
+
+  async findBest(clubId: string): Promise<ClubReviewDto> {
+    const review = await this.clubReviewRepository
+      .createQueryBuilder('clubReview')
+      .select([
+        'clubReview.id',
+        'clubReview.clubId',
+        'clubReview.userId',
+        'clubReview.description',
+        'clubReview.starRate',
+        'clubReview.isAnonymous',
+        'clubReview.createdAt',
+        'clubReview.updatedAt',
+        'clubReviewReactions.id',
+      ])
+      .innerJoinAndSelect(
+        'clubReview.user',
+        'user',
+        'clubReview.userId = user.id',
+      )
+      .leftJoin(
+        'clubReview.clubReviewReactions',
+        'clubReviewReactions',
+        'clubReview.id = clubReviewReactions.parentId',
+      )
+      .where({
+        clubId,
+        status: ClubReviewStatus.Posting,
+      })
+      .groupBy('clubReview.id, clubReviewReactions.id')
+      .orderBy('COUNT(DISTINCT clubReviewReactions.id)', 'DESC')
+      .getOne();
+
+    if (isNil(review)) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return new ClubReviewDto(review);
   }
 
   async patchUpdate(
@@ -161,10 +211,12 @@ export class ClubReviewsService {
     return clubReviewUpdateResult.affected;
   }
 
-  async isExistOrNotFound(reviewId: string): Promise<true> {
+  async isExistOrNotFound(clubId: string, reviewId: string): Promise<true> {
     const isExistClubReview = await this.clubReviewRepository.exist({
       where: {
+        clubId,
         id: reviewId,
+        status: ClubReviewStatus.Posting,
       },
     });
 
@@ -191,6 +243,36 @@ export class ClubReviewsService {
     const average = this.getAverage(starRates);
 
     return new ScoreDto({ ...starRatesCount, average });
+  }
+
+  async createReaction(
+    clubId: string,
+    reviewId: string,
+    userId: string,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId, reviewId);
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      reviewId,
+    );
+  }
+
+  async removeReaction(
+    clubId: string,
+    reviewId: string,
+    userId: string,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    await this.isExistOrNotFound(clubId, reviewId);
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      reviewId,
+    );
   }
 
   private getStarRatesCount(starRates: number[]): Omit<ScoreDto, 'average'> {

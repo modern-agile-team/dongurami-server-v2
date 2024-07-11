@@ -7,6 +7,7 @@ import {
   CLUB_REVIEW_STAR_RATE_RANGE,
 } from '@src/apis/club-reviews/constants/club-review.constant';
 import { ClubReviewStatus } from '@src/apis/club-reviews/constants/club-review.enum';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { ClubReview } from '@src/entities/ClubReview';
 
@@ -34,10 +35,17 @@ export class ClubReviewDto
   clubId: string;
 
   @ApiProperty({
-    description: '동아리 후기 작성 유저 고유 ID',
-    format: 'int64',
+    description: '후기 작성자, isAnonymous 여부에 따라 null 값을 가짐',
+    type: UserDto,
+    nullable: true,
   })
-  userId: string;
+  user: UserDto | null;
+
+  @ApiProperty({
+    description: '후기 작성자 고유 ID, isAnonymous 여부에 따라 null 값을 가짐',
+    nullable: true,
+  })
+  userId: string | null;
 
   @ApiProperty({
     description: '동아리 후기 본문',
@@ -68,8 +76,32 @@ export class ClubReviewDto
   deletedAt: Date | null;
 
   constructor(clubReviewDto: Partial<ClubReviewDto> = {}) {
+    const {
+      id,
+      clubId,
+      userId,
+      user,
+      description,
+      starRate,
+      isAnonymous,
+      status,
+      createdAt,
+      updatedAt,
+      deletedAt,
+    } = clubReviewDto;
     super();
 
-    Object.assign(this, clubReviewDto);
+    this.id = id;
+    this.clubId = clubId;
+    this.userId = userId;
+    this.description = description;
+    this.starRate = starRate;
+    this.isAnonymous = isAnonymous;
+    this.status = status;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt;
+
+    this.user = new UserDto(user);
   }
 }

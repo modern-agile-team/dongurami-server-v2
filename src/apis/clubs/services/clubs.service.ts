@@ -75,12 +75,10 @@ import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
-import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
 import { ClubPostComment } from '@src/entities/ClubPostComment';
 import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
-import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
 import { ClubTagLink } from '@src/entities/ClubTagLink';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
@@ -107,7 +105,6 @@ export class ClubsService {
     private readonly clubReviewsService: ClubReviewsService,
     private readonly clubApplicationsService: ClubApplicationsService,
     private readonly queryHelper: QueryHelper,
-    private readonly reactionsService: ReactionsService<ClubReviewReaction>,
     private readonly clubPostCommentsService: ClubPostCommentsService,
   ) {}
 
@@ -910,6 +907,12 @@ export class ClubsService {
     );
   }
 
+  async findBestClubReview(clubId: string): Promise<ClubReviewDto> {
+    await this.isExistOrNotFound(clubId);
+
+    return this.clubReviewsService.findBest(clubId);
+  }
+
   async patchUpdateClubReview(
     userId: string,
     clubId: string,
@@ -974,12 +977,11 @@ export class ClubsService {
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
 
-    await this.clubReviewsService.isExistOrNotFound(reviewId);
-
-    return this.reactionsService.create(
-      createReactionDto.type,
-      userId,
+    return this.clubReviewsService.createReaction(
       reviewId,
+      userId,
+      clubId,
+      createReactionDto,
     );
   }
 
@@ -991,12 +993,11 @@ export class ClubsService {
   ): Promise<void> {
     await this.isExistOrNotFound(clubId);
 
-    await this.clubReviewsService.isExistOrNotFound(reviewId);
-
-    return this.reactionsService.remove(
-      removeReactionDto.type,
-      userId,
+    return this.clubReviewsService.removeReaction(
+      clubId,
       reviewId,
+      userId,
+      removeReactionDto,
     );
   }
 

@@ -429,11 +429,13 @@ export class ClubsController {
     @Param('reviewId', ParsePositiveIntPipe) reviewId: string,
     @Body() patchUpdateClubReviewRequestDto: PatchUpdateClubReviewRequestDto,
   ): Promise<ClubReviewDto> {
-    return this.clubsService.patchUpdateClubReview(
-      user.id,
-      clubId,
-      reviewId,
-      patchUpdateClubReviewRequestDto,
+    return anonymize(
+      await this.clubsService.patchUpdateClubReview(
+        user.id,
+        clubId,
+        reviewId,
+        patchUpdateClubReviewRequestDto,
+      ),
     );
   }
 

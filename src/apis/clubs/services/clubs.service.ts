@@ -913,6 +913,7 @@ export class ClubsService {
     return this.clubReviewsService.findBest(clubId);
   }
 
+  @Transactional()
   async patchUpdateClubReview(
     userId: string,
     clubId: string,
@@ -939,6 +940,7 @@ export class ClubsService {
     );
   }
 
+  @Transactional()
   async removeClubReview(
     userId: string,
     clubId: string,

@@ -617,7 +617,7 @@ export const ApiClub: ApiOperator<keyof ClubsController> = {
       ApiOperation({
         ...apiOperationOptions,
       }),
-      PaginationResponseDto.swaggerBuilder(
+      DetailResponseDto.swaggerBuilder(
         HttpStatus.OK,
         'clubReview',
         ClubReviewDto,

@@ -41,7 +41,7 @@ export class ClubReviewsService {
     const { clubId, userId } = createClubReviewDto;
 
     const isExistClubReview = await this.clubReviewRepository.exist({
-      where: { clubId, userId },
+      where: { clubId, userId, status: ClubReviewStatus.Posting },
     });
 
     if (isExistClubReview) {
@@ -146,6 +146,9 @@ export class ClubReviewsService {
 
     const oldClubReview = await this.clubReviewRepository.findOne({
       where: { id, clubId },
+      relations: {
+        user: true,
+      },
     });
 
     if (isNil(oldClubReview)) {

@@ -8,22 +8,22 @@ import {
   Length,
 } from 'class-validator';
 
-import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
+import { FreePost } from '@src/apis/free-posts/entities/free-post.entity';
 import {
   POST_TAG_COUNT,
   POST_TAG_NAME_LENGTH,
 } from '@src/apis/post-tags/constants/post-tag.constant';
 
-export class CreateFreePostDto
+export class CreateFreePostRequestDto
   implements Pick<FreePostDto, 'title' | 'description' | 'isAnonymous'>
 {
   @ApiProperty({
     description: '제목',
-    minLength: FREE_POST_TITLE_LENGTH.MIN,
-    maxLength: FREE_POST_TITLE_LENGTH.MAX,
+    minLength: FreePost.TITLE_LENGTH.MIN,
+    maxLength: FreePost.TITLE_LENGTH.MAX,
   })
-  @Length(FREE_POST_TITLE_LENGTH.MIN, FREE_POST_TITLE_LENGTH.MAX)
+  @Length(FreePost.TITLE_LENGTH.MIN, FreePost.TITLE_LENGTH.MAX)
   title: string;
 
   @ApiProperty({

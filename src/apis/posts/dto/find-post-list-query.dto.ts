@@ -7,7 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 
-import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { FreePostStatus } from '@src/apis/free-posts/entities/free-post.entity';
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { POST_ORDER_FIELD } from '@src/apis/posts/constants/post.constant';
 import { SortOrder } from '@src/constants/enum';

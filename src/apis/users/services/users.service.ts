@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import * as crypto from 'crypto';
 import moment from 'moment';
 import { getTsid } from 'tsid-ts';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { MajorService } from '@src/apis/major/services/major.service';
@@ -11,7 +12,6 @@ import { UserStatus } from '@src/apis/users/constants/user.enum';
 import { CreateUserDto } from '@src/apis/users/dto/create-user.dto';
 import { PutUpdateUserDto } from '@src/apis/users/dto/put-update-user.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { USER_ERROR_CODE } from '@src/constants/error/users/user-error-code.constant';
 import { User } from '@src/entities/User';
@@ -24,7 +24,8 @@ export class UsersService {
   private readonly SALT = 10;
 
   constructor(
-    private readonly userRepository: UserRepository,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly majorService: MajorService,
   ) {}
 

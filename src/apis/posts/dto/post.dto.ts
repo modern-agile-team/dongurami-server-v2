@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Exclude } from 'class-transformer';
 
-import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { FreePostStatus } from '@src/apis/free-posts/entities/free-post.entity';
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
 import { PostType } from '@src/apis/posts/constants/post.enum';
 import { BaseDto } from '@src/dto/base.dto';

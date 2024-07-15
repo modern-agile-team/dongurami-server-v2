@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
 import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
 import { PostType } from '@src/apis/posts/constants/post.enum';
 import { PostsItemDto } from '@src/apis/posts/dto/posts-item.dto';
+import { FreePost } from '@src/entities/FreePost';
 import { User } from '@src/entities/User';
 
 @Injectable()
 export class PostRepository {
   constructor(
-    private readonly freePostRepository: FreePostRepository,
+    @InjectRepository(FreePost)
+    private readonly freePostRepository: Repository<FreePost>,
     private readonly noticePostRepository: NoticePostRepository,
     private readonly dataSource: DataSource,
   ) {}

@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   Param,
   Patch,
   Post,
@@ -18,30 +19,36 @@ import { plainToInstance } from 'class-transformer';
 
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
 import { ApiFreePost } from '@src/apis/free-posts/controllers/free-posts.swagger';
-import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
-import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
-import { FindFreePostReactionListQueryDto } from '@src/apis/free-posts/dto/find-free-post-reactions-list-query.dto';
+import { CreateFreePostRequestDto } from '@src/apis/free-posts/dto/create-free-post.request-dto';
 import { FreePostReactionsItemDto } from '@src/apis/free-posts/dto/free-post-reactions-item.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
-import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto';
-import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
-import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
+import { ListFreePostReactionRequestDto } from '@src/apis/free-posts/dto/list-free-post-reactions.request-dto';
+import { ListFreePostRequestDto } from '@src/apis/free-posts/dto/list-free-post.request-dto';
+import { PatchUpdateFreePostRequestDto } from '@src/apis/free-posts/dto/patch-update-free-post.request-dto';
+import { PutUpdateFreePostRequestDto } from '@src/apis/free-posts/dto/put-update-free-post.request-dto';
+import { FreePostMap } from '@src/apis/free-posts/mappers/free-post.map';
+import { FREE_POSTS_SERVICE_TOKEN } from '@src/apis/free-posts/services/free-posts.service';
+import { IFreePostsService } from '@src/apis/free-posts/services/free-posts.service.interface';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
-import { anonymize } from '@src/common/common';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
-import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
+/**
+ * @todo reaction 분리
+ */
 @ApiTags('free-post')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
 @Controller('free-posts')
 export class FreePostsController {
-  constructor(private readonly freePostsService: FreePostsService) {}
+  constructor(
+    @Inject(FREE_POSTS_SERVICE_TOKEN)
+    private readonly freePostsService: IFreePostsService,
+  ) {}
 
   @ApiFreePost.Create({ summary: '자유 게시글 생성' })
   @UseGuards(JwtAuthGuard)
@@ -49,38 +56,46 @@ export class FreePostsController {
   @Post()
   async create(
     @User() user: UserDto,
-    @Body() createFreePostDto: CreateFreePostDto,
-  ) {
-    const newPost = await this.freePostsService.create(
-      user.id,
-      createFreePostDto,
-    );
+    @Body() createFreePostRequestDto: CreateFreePostRequestDto,
+  ): Promise<FreePostDto> {
+    const freePost = await this.freePostsService.create({
+      userId: user.id,
+      title: createFreePostRequestDto.title,
+      description: createFreePostRequestDto.description,
+      isAnonymous: createFreePostRequestDto.isAnonymous,
+      tagNames: createFreePostRequestDto.tagNames,
+    });
 
-    return anonymize(newPost);
+    return FreePostMap.toDto(freePost);
   }
 
   @ApiFreePost.FindAllAndCount({ summary: '자유 게시글 전체조회(pagination)' })
   @SetResponse({ type: ResponseType.Pagination, key: 'freePosts' })
   @Get()
   async findAllAndCount(
-    @Query() findFreePostListQueryDto: FindFreePostListQueryDto,
+    @Query() findFreePostListRequestDto: ListFreePostRequestDto,
   ): Promise<[FreePostsItemDto[], number]> {
-    const [freePosts, count] = await this.freePostsService.findAllAndCount(
-      findFreePostListQueryDto,
-    );
+    const [freePosts, count] = await this.freePostsService.findAllAndCount({
+      id: findFreePostListRequestDto.id,
+      userId: findFreePostListRequestDto.userId,
+      title: findFreePostListRequestDto.title,
+      isAnonymous: findFreePostListRequestDto.isAnonymous,
+      order: findFreePostListRequestDto.order,
+      page: findFreePostListRequestDto.page,
+      pageSize: findFreePostListRequestDto.pageSize,
+    });
 
-    return [plainToInstance(FreePostsItemDto, freePosts).map(anonymize), count];
+    return [freePosts.map(FreePostMap.toItemDto), count];
   }
-
   @ApiFreePost.FindOneOrNotFound({ summary: '자유게시글 상세조회' })
   @SetResponse({ type: ResponseType.Detail, key: 'freePost' })
   @Get(':postId')
   async findOneOrNotFound(
-    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('postId') postId: string,
   ): Promise<FreePostDto> {
-    const existPost = await this.freePostsService.findOneOrNotFound(postId);
+    const freePost = await this.freePostsService.findOneOrNotFound(postId);
 
-    return anonymize(existPost);
+    return FreePostMap.toDto(freePost);
   }
 
   @ApiFreePost.PutUpdate({ summary: '자유게시글 수정' })
@@ -89,16 +104,19 @@ export class FreePostsController {
   @Put(':postId')
   async putUpdate(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: string,
-    @Body() putUpdateFreePostDto: PutUpdateFreePostDto,
+    @Param('postId') postId: string,
+    @Body() putUpdateFreePostRequestDto: PutUpdateFreePostRequestDto,
   ): Promise<FreePostDto> {
-    const newPost = await this.freePostsService.putUpdate(
-      user.id,
-      postId,
-      putUpdateFreePostDto,
-    );
+    const freePost = await this.freePostsService.putUpdate({
+      id: postId,
+      userId: user.id,
+      title: putUpdateFreePostRequestDto.title,
+      description: putUpdateFreePostRequestDto.description,
+      isAnonymous: putUpdateFreePostRequestDto.isAnonymous,
+      tagNames: putUpdateFreePostRequestDto.tagNames,
+    });
 
-    return anonymize(newPost);
+    return FreePostMap.toDto(freePost);
   }
 
   @ApiFreePost.PatchUpdate({ summary: '자유게시글 부분 수정' })
@@ -107,16 +125,19 @@ export class FreePostsController {
   @Patch(':postId')
   async patchUpdate(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: string,
-    @Body() patchUpdateFreePostDto: PatchUpdateFreePostDto,
+    @Param('postId') postId: string,
+    @Body() patchUpdateFreePostRequestDto: PatchUpdateFreePostRequestDto,
   ): Promise<FreePostDto> {
-    const newPost = await this.freePostsService.patchUpdate(
-      user.id,
-      postId,
-      patchUpdateFreePostDto,
-    );
+    const freePost = await this.freePostsService.patchUpdate({
+      id: postId,
+      userId: user.id,
+      title: patchUpdateFreePostRequestDto.title,
+      description: patchUpdateFreePostRequestDto.description,
+      isAnonymous: patchUpdateFreePostRequestDto.isAnonymous,
+      tagNames: patchUpdateFreePostRequestDto.tagNames,
+    });
 
-    return anonymize(newPost);
+    return FreePostMap.toDto(freePost);
   }
 
   @ApiFreePost.Remove({
@@ -127,17 +148,18 @@ export class FreePostsController {
   @Delete(':postId')
   remove(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('postId') postId: string,
   ): Promise<number> {
-    return this.freePostsService.remove(user.id, postId);
+    return this.freePostsService.remove({
+      id: postId,
+      userId: user.id,
+    });
   }
 
   @ApiFreePost.IncrementHit({ summary: '조회수 증가(1)' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put(':postId/hit')
-  incrementHit(
-    @Param('postId', ParsePositiveIntPipe) postId: string,
-  ): Promise<void> {
+  incrementHit(@Param('postId') postId: string): Promise<void> {
     return this.freePostsService.incrementHit(postId);
   }
 
@@ -147,14 +169,14 @@ export class FreePostsController {
   @Post(':postId/reaction')
   createReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('postId') postId: string,
     @Body() createReactionDto: CreateReactionDto,
   ): Promise<void> {
-    return this.freePostsService.createReaction(
-      user.id,
+    return this.freePostsService.createReaction({
       postId,
-      createReactionDto,
-    );
+      userId: user.id,
+      reactionName: createReactionDto.type,
+    });
   }
 
   @ApiFreePost.FindAllAndCountReactions({
@@ -163,14 +185,19 @@ export class FreePostsController {
   @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
   @Get(':postId/reactions')
   async findAllAndCountReactions(
-    @Param('postId', ParsePositiveIntPipe) postId: string,
-    @Query() findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
+    @Param('postId') postId: string,
+    @Query()
+    findFreePostReactionListRequestDto: ListFreePostReactionRequestDto,
   ): Promise<[FreePostReactionsItemDto[], number]> {
     const [freePostReactions, count] =
-      await this.freePostsService.findAllAndCountReactions(
+      await this.freePostsService.findAllAndCountReactions({
         postId,
-        findFreePostReactionListQueryDto,
-      );
+        userId: findFreePostReactionListRequestDto.userId,
+        reactionName: findFreePostReactionListRequestDto.type,
+        order: findFreePostReactionListRequestDto.order,
+        page: findFreePostReactionListRequestDto.page,
+        pageSize: findFreePostReactionListRequestDto.pageSize,
+      });
 
     return [
       plainToInstance(FreePostReactionsItemDto, freePostReactions),
@@ -184,13 +211,13 @@ export class FreePostsController {
   @Delete(':postId/reaction')
   removeReaction(
     @User() user: UserDto,
-    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Param('postId') postId: string,
     @Body() removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
-    return this.freePostsService.removeReaction(
-      user.id,
+    return this.freePostsService.removeReaction({
       postId,
-      removeReactionDto,
-    );
+      userId: user.id,
+      reactionName: removeReactionDto.type,
+    });
   }
 }

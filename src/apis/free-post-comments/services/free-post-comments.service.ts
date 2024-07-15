@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { getTsid } from 'tsid-ts';
 import { IsNull } from 'typeorm';
@@ -11,7 +11,8 @@ import { FreePostCommentDto } from '@src/apis/free-post-comments/dto/free-post-c
 import { FreePostCommentsItemDto } from '@src/apis/free-post-comments/dto/free-post-comments-item.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/put-update-free-post-comment.dto';
 import { FreePostCommentRepository } from '@src/apis/free-post-comments/repositories/free-post-comment.repository';
-import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
+import { FREE_POSTS_SERVICE_TOKEN } from '@src/apis/free-posts/services/free-posts.service';
+import { IFreePostsService } from '@src/apis/free-posts/services/free-posts.service.interface';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
@@ -26,7 +27,8 @@ import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-
 @Injectable()
 export class FreePostCommentsService {
   constructor(
-    private readonly freePostsService: FreePostsService,
+    @Inject(FREE_POSTS_SERVICE_TOKEN)
+    private readonly freePostsService: IFreePostsService,
     private readonly reactionsService: ReactionsService<FreePostCommentReaction>,
 
     private readonly queryHelper: QueryHelper,

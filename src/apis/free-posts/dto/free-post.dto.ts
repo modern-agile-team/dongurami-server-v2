@@ -2,42 +2,26 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Exclude } from 'class-transformer';
 
-import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
-import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import {
+  FreePost,
+  FreePostStatus,
+} from '@src/apis/free-posts/entities/free-post.entity';
 import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
-import { FreePost } from '@src/entities/FreePost';
 
-export class FreePostDto
-  extends BaseDto
-  implements
-    Pick<
-      FreePost,
-      | 'id'
-      | 'userId'
-      | 'title'
-      | 'description'
-      | 'hit'
-      | 'isAnonymous'
-      | 'status'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'deletedAt'
-    >
-{
+export class FreePostDto extends BaseDto {
   @ApiProperty({
     description:
       '게시글 작성자 고유 ID, isAnonymous 여부에 따라 null 값을 가짐',
-    format: 'int64',
     nullable: true,
   })
   userId: string | null;
 
   @ApiProperty({
     description: '제목',
-    minLength: FREE_POST_TITLE_LENGTH.MIN,
-    maxLength: FREE_POST_TITLE_LENGTH.MAX,
+    minLength: FreePost.TITLE_LENGTH.MIN,
+    maxLength: FreePost.TITLE_LENGTH.MAX,
   })
   title: string;
 

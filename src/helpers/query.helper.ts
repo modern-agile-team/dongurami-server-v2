@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { FindOptionsRelations, In, Like } from 'typeorm';
 
 import { isNil } from '@src/common/common';
+import { OrderBy } from '@src/common/repository.port';
 
 @Injectable()
 export class QueryHelper {
@@ -37,6 +38,16 @@ export class QueryHelper {
     }
 
     return where;
+  }
+
+  buildOrderProps(order: OrderBy<any>) {
+    return order.reduce((acc, cur) => {
+      const { field, param } = cur;
+
+      acc[field] = param;
+
+      return acc;
+    }, {});
   }
 
   createNestedChildRelations(loadDepth: number): FindOptionsRelations<any> {

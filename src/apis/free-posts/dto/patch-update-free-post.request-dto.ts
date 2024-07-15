@@ -8,22 +8,24 @@ import {
   Length,
 } from 'class-validator';
 
-import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
-import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
+import { CreateFreePostRequestDto } from '@src/apis/free-posts/dto/create-free-post.request-dto';
+import { FreePost } from '@src/apis/free-posts/entities/free-post.entity';
 import {
   POST_TAG_COUNT,
   POST_TAG_NAME_LENGTH,
 } from '@src/apis/post-tags/constants/post-tag.constant';
 
-export class PatchUpdateFreePostDto implements Partial<CreateFreePostDto> {
+export class PatchUpdateFreePostRequestDto
+  implements Partial<CreateFreePostRequestDto>
+{
   @ApiPropertyOptional({
     description: '제목',
     nullable: false,
-    minLength: FREE_POST_TITLE_LENGTH.MIN,
-    maxLength: FREE_POST_TITLE_LENGTH.MAX,
+    minLength: FreePost.TITLE_LENGTH.MIN,
+    maxLength: FreePost.TITLE_LENGTH.MAX,
   })
   @IsOptional()
-  @Length(FREE_POST_TITLE_LENGTH.MIN, FREE_POST_TITLE_LENGTH.MAX)
+  @Length(FreePost.TITLE_LENGTH.MIN, FreePost.TITLE_LENGTH.MAX)
   title?: string;
 
   @ApiPropertyOptional({

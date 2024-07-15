@@ -68,3 +68,60 @@ export const CsvToOrder = <T extends readonly string[] = readonly string[]>(
     }),
   );
 };
+
+export type OrderV2<T extends readonly string[]> = Partial<
+  Record<T[number], SortOrder>
+>[];
+
+/**
+ * @todo 리펙토링 완료 후 CsvToOrder로 변경
+ */
+export const CsvToOrderV2 = <T extends readonly string[]>(
+  fields: T[number][],
+): PropertyDecorator => {
+  return applyDecorators(
+    Transform(({ value }: { value: unknown }): OrderV2<T> => {
+      const getField = (field: string): T[number] => {
+        return field.startsWith('-') ? field.slice(1) : field;
+      };
+
+      const getSortOrder = (field: string): SortOrder => {
+        const isStartsWithDash = field.startsWith('-');
+
+        return isStartsWithDash ? SortOrder.Desc : SortOrder.Asc;
+      };
+
+      // queryString 에 들어가는 transformer 인데 string 형태가 아닌 경우는 서버에러로 판단한다.
+      if (typeof value !== 'string') {
+        throw new HttpInternalServerErrorException({
+          code: COMMON_ERROR_CODE.SERVER_ERROR,
+          ctx: 'CsvToOrderBy 중 value 가 string type 이 아님',
+        });
+      }
+
+      const requestOrders = value
+        .split(',')
+        .map((requestOrder) => requestOrder.trim());
+
+      if (requestOrders.length === 0) {
+        return;
+      }
+
+      const allowFields = requestOrders.filter((requestOrder) => {
+        const field = getField(requestOrder);
+
+        return fields.includes(field);
+      });
+
+      if (allowFields.length === 0) {
+        return;
+      }
+
+      return allowFields.map((field) => {
+        return {
+          [getField(field)]: getSortOrder(field),
+        } as Record<T[number], SortOrder>;
+      });
+    }),
+  );
+};

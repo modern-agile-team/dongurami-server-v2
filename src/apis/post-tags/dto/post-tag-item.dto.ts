@@ -2,10 +2,7 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { BaseDto } from '@src/dto/base.dto';
 
-/**
- * @todo 생성자 함수 제거
- */
-export class PostTagDto extends OmitType(BaseDto, ['updatedAt']) {
+export class PostTagItemDto extends OmitType(BaseDto, ['updatedAt']) {
   @ApiProperty({
     description: '태그 생성 유저 고유 ID',
     nullable: true,
@@ -16,10 +13,4 @@ export class PostTagDto extends OmitType(BaseDto, ['updatedAt']) {
     description: '태그 명',
   })
   name: string;
-
-  constructor(postTagDto: Partial<PostTagDto> = {}) {
-    super();
-
-    Object.assign(this, postTagDto);
-  }
 }

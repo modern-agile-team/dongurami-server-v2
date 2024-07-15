@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
-import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { FreePostStatus } from '@src/apis/free-posts/entities/free-post.entity';
 import { HistoryAction } from '@src/constants/enum';
 import { FreePost } from '@src/entities/FreePost';
 import { PostTag } from '@src/entities/PostTag';

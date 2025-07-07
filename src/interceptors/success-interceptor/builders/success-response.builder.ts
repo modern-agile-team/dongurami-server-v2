@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
+import { isObject } from 'class-validator';
+
 import { PAGE_SIZE } from '@src/constants/constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { PageDto } from '@src/dto/page.dto';
@@ -7,7 +10,6 @@ import { CommonResponseDto } from '@src/interceptors/success-interceptor/dto/com
 import { DeleteResponseDto } from '@src/interceptors/success-interceptor/dto/delete-response.dto';
 import { DetailResponseDto } from '@src/interceptors/success-interceptor/dto/detail-response.dto';
 import { PaginationResponseDto } from '@src/interceptors/success-interceptor/dto/pagination-response.dto';
-import { isObject } from 'class-validator';
 
 interface Res {
   data: unknown;

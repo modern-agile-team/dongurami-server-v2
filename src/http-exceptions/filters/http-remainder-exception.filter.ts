@@ -5,10 +5,12 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+
+import { Response } from 'express';
+
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpExceptionService } from '@src/http-exceptions/services/http-exception.service';
-import { Response } from 'express';
 
 /**
  * 다른 exception filter 가 잡지않는 exception 을 잡는 필터
@@ -23,6 +25,7 @@ export class HttpRemainderExceptionFilter
   catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     const statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     const httpInternalServerErrorException =
@@ -38,8 +41,14 @@ export class HttpRemainderExceptionFilter
       exceptionError,
     );
 
-    console.error(exceptionError.ctx);
-    console.error(exceptionError.stack);
+    this.httpExceptionService.printLog({
+      ctx: httpInternalServerErrorException.ctx,
+      stack: httpInternalServerErrorException.stack,
+      request,
+      response: {
+        body: responseJson,
+      },
+    });
 
     response.status(statusCode).json(responseJson);
   }

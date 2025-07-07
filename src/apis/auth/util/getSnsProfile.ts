@@ -1,8 +1,14 @@
 import fetch from 'node-fetch';
-import { GoogleUserResponse, KakaoUserResponse, NaverUserResponse, SnsProfileBase } from '../social/types/auth-social.type';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+
+import {
+  GoogleUserResponse,
+  KakaoUserResponse,
+  NaverUserResponse,
+  SnsProfileBase,
+} from '@src/apis/auth/social/types/auth-social.type';
 import { UserLoginType } from '@src/apis/users/constants/user.enum';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
+import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 
 /**
  * SNS에서 사용자 프로필 정보를 가져온다.
@@ -10,7 +16,10 @@ import { UserLoginType } from '@src/apis/users/constants/user.enum';
  * @param {string} snsToken SNS에서 발급한 token
  * @returns {Promise<SnsProfileBase>} SNS profile 데이터
  */
-export async function getSnsProfile(loginType: UserLoginType, snsToken: string): Promise<SnsProfileBase | null> {
+export async function getSnsProfile(
+  loginType: UserLoginType,
+  snsToken: string,
+): Promise<SnsProfileBase | null> {
   try {
     let result: SnsProfileBase;
 
@@ -28,12 +37,16 @@ export async function getSnsProfile(loginType: UserLoginType, snsToken: string):
       }
 
       case UserLoginType.Google: {
-        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${snsToken}` },
-        });
+        const response = await fetch(
+          'https://www.googleapis.com/oauth2/v3/userinfo',
+          {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${snsToken}` },
+          },
+        );
 
-        const { sub: googleSub } = (await response.json()) as GoogleUserResponse;
+        const { sub: googleSub } =
+          (await response.json()) as GoogleUserResponse;
 
         result = { snsId: googleSub };
         break;
@@ -45,14 +58,18 @@ export async function getSnsProfile(loginType: UserLoginType, snsToken: string):
           headers: { Authorization: `Bearer ${snsToken}` },
         });
 
-        const { resultcode, message, response: naverResponse } = (await response.json()) as NaverUserResponse;
+        const {
+          resultcode,
+          message,
+          response: naverResponse,
+        } = (await response.json()) as NaverUserResponse;
 
         if (resultcode !== '00') {
           throw new HttpInternalServerErrorException({
             code: COMMON_ERROR_CODE.SERVER_ERROR,
             ctx: '네이버 서버 에러',
-            stack: message
-          })
+            stack: message,
+          });
         }
 
         result = { snsId: naverResponse?.id || '' };

@@ -13,22 +13,28 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
+import { plainToInstance } from 'class-transformer';
+
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { ApiNoticePost } from '@src/apis/notice-posts/controllers/notice-posts.swagger';
+import { CreateNoticePostDto } from '@src/apis/notice-posts/dto/create-notice-post.dto';
+import { FindNoticePostListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-list-query.dto';
+import { FindNoticePostReactionListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-reactions-list-query.dto';
+import { NoticePostReactionsItemDto } from '@src/apis/notice-posts/dto/notice-post-reactions-item.dto';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
+import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
+import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
+import { PutUpdateNoticePostDto } from '@src/apis/notice-posts/dto/put-update-notice-post.dto';
+import { NoticePostsService } from '@src/apis/notice-posts/services/notice-posts.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
-import { plainToInstance } from 'class-transformer';
-import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
-import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
-import { NoticePostDto } from '../dto/notice-post.dto';
-import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
-import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
-import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
-import { NoticePostsService } from '../services/notice-posts.service';
-import { ApiNoticePost } from './notice-posts.swagger';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('notice-post')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
@@ -64,24 +70,24 @@ export class NoticePostsController {
 
   @ApiNoticePost.FindOneOrNotFound({ summary: '공지게시글 상세조회 ' })
   @SetResponse({ type: ResponseType.Detail, key: 'noticePost' })
-  @Get(':noticePostId')
+  @Get(':postId')
   findOneOrNotFound(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<NoticePostDto> {
-    return this.noticePostService.findOneOrNotFound(noticePostId);
+    return this.noticePostService.findOneOrNotFound(postId);
   }
 
   @ApiNoticePost.PutUpdate({ summary: '공지게시글 수정' })
   @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
-  @Put(':noticePostId')
+  @Put(':postId')
   putUpdate(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
     @Body() putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
     return this.noticePostService.putUpdate(
-      noticePostId,
+      postId,
       user.id,
       putUpdateNoticePostDto,
     );
@@ -90,14 +96,14 @@ export class NoticePostsController {
   @ApiNoticePost.PatchUpdate({ summary: '공지게시글 patch 수정 ' })
   @SetResponse({ key: 'noticePost', type: ResponseType.Detail })
   @UseGuards(JwtAuthGuard)
-  @Patch(':noticePostId')
+  @Patch(':postId')
   patchUpdate(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
     @Body() patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
     return this.noticePostService.patchUpdate(
-      noticePostId,
+      postId,
       user.id,
       patchUpdateNoticePostDto,
     );
@@ -106,20 +112,74 @@ export class NoticePostsController {
   @ApiNoticePost.Remove({ summary: '공지 게시글 삭제' })
   @SetResponse({ type: ResponseType.Delete })
   @UseGuards(JwtAuthGuard)
-  @Delete(':noticePostId')
+  @Delete(':postId')
   remove(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
     @User() user: UserDto,
   ): Promise<number> {
-    return this.noticePostService.remove(user.id, noticePostId);
+    return this.noticePostService.remove(user.id, postId);
   }
 
   @ApiNoticePost.IncreaseHit({ summary: '조회수 1 증가' })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Put(':noticePostId/hit')
+  @Put(':postId/hit')
   increaseHit(
-    @Param('noticePostId', ParsePositiveIntPipe) noticePostId: number,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
   ): Promise<void> {
-    return this.noticePostService.increaseHit(noticePostId);
+    return this.noticePostService.increaseHit(postId);
+  }
+
+  @ApiNoticePost.FindAllAndCountReactions({
+    summary: '특정 공지 게시글 reactions 전체 조회(pagination)',
+  })
+  @SetResponse({ type: ResponseType.Pagination, key: 'reactions' })
+  @Get(':postId/reactions')
+  async findAllAndCountReactions(
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Query()
+    findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
+  ): Promise<[NoticePostReactionsItemDto[], number]> {
+    const [noticePostReactions, count] =
+      await this.noticePostService.findAllAndCountReactions(
+        postId,
+        findNoticePostReactionListQueryDto,
+      );
+
+    return [
+      plainToInstance(NoticePostReactionsItemDto, noticePostReactions),
+      count,
+    ];
+  }
+
+  @ApiNoticePost.CreateReaction({ summary: '공지 게시글 reaction 생성' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/reaction')
+  createReaction(
+    @User() user: UserDto,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Body() createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    return this.noticePostService.createReaction(
+      user.id,
+      postId,
+      createReactionDto,
+    );
+  }
+
+  @ApiNoticePost.RemoveReaction({ summary: '공지 게시글 reaction 삭제' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':postId/reaction')
+  removeReaction(
+    @User() user: UserDto,
+    @Param('postId', ParsePositiveIntPipe) postId: string,
+    @Body() removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    return this.noticePostService.removeReaction(
+      user.id,
+      postId,
+      removeReactionDto,
+    );
   }
 }

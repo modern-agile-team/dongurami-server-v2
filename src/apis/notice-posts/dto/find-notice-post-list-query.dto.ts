@@ -1,21 +1,25 @@
-import { PageDto } from '@src/dto/page.dto';
-import { NoticePostDto } from './notice-post.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+
+import { Transform } from 'class-transformer';
 import {
-  IsBooleanString,
+  IsBoolean,
   IsDefined,
+  IsNumberString,
   IsOptional,
   Length,
 } from 'class-validator';
-import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
+
 import {
   NOTICE_POST_ORDER_FIELD,
   NOTICE_POST_TITLE_LENGTH,
-} from '../constants/notice-post.constant';
+} from '@src/apis/notice-posts/constants/notice-post.constant';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
+import { SortOrder } from '@src/constants/enum';
+import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
-import { SortOrder } from '@src/constants/enum';
-import { NoticePostStatus } from '../constants/notice-post.enum';
+import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
 
 export class FindNoticePostListQueryDto
   extends PageDto
@@ -23,19 +27,19 @@ export class FindNoticePostListQueryDto
 {
   @ApiPropertyOptional({
     description: '공지게시글 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  id?: number;
+  @IsNumberString({ no_symbols: true })
+  id?: string;
 
   @ApiPropertyOptional({
     description: '공지게시글 작성자 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  userId?: number;
+  @IsNumberString({ no_symbols: true })
+  userId?: string;
 
   @ApiPropertyOptional({
     description: 'title 필터링',
@@ -50,14 +54,15 @@ export class FindNoticePostListQueryDto
     description: '댓글 허용 여부',
     enum: ['true', 'false'],
   })
-  @IsBooleanString()
+  @IsBoolean()
+  @Transform(transformStringToBoolean)
   @IsOptional()
   isAllowComment?: boolean;
 
   @ApiPropertyOrder(NOTICE_POST_ORDER_FIELD)
   @CsvToOrder<typeof NOTICE_POST_ORDER_FIELD>([...NOTICE_POST_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof NOTICE_POST_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof NOTICE_POST_ORDER_FIELD> = { id: SortOrder.Asc };
 
   @IsDefined()
   status: NoticePostStatus.Posting = NoticePostStatus.Posting;

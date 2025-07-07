@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+
+import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { NoticePost } from '@src/entities/NoticePost';
-import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
-import { Exclude } from 'class-transformer';
-import { NoticePostStatus } from '../constants/notice-post.enum';
 
 export class NoticePostDto
   extends BaseDto
@@ -36,9 +40,9 @@ export class NoticePostDto
 
   @ApiProperty({
     description: '게시글 작성자 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  userId: number;
+  userId: string;
 
   @ApiProperty({
     description: '공지 게시글 조회수',
@@ -59,9 +63,33 @@ export class NoticePostDto
   @Exclude()
   deletedAt: Date;
 
+  @ApiProperty({
+    description: '게시글 태그 리스트',
+    type: [PostTagDto],
+  })
+  postTags: PostTagDto[];
+
+  @ApiProperty({
+    description: '게시글 작성자',
+    type: UserDto,
+  })
+  user: UserDto;
+
   constructor(noticePostDto: Partial<NoticePostDto> = {}) {
     super();
 
-    Object.assign(this, noticePostDto);
+    this.id = noticePostDto.id;
+    this.userId = noticePostDto.userId;
+    this.title = noticePostDto.title;
+    this.description = noticePostDto.description;
+    this.hit = noticePostDto.hit;
+    this.isAllowComment = noticePostDto.isAllowComment;
+    this.status = noticePostDto.status;
+    this.createdAt = noticePostDto.createdAt;
+    this.updatedAt = noticePostDto.updatedAt;
+    this.deletedAt = noticePostDto.deletedAt;
+    this.postTags = noticePostDto.postTags;
+
+    this.user = new UserDto({ ...noticePostDto.user });
   }
 }

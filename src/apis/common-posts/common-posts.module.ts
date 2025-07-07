@@ -1,9 +1,11 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { DataSource } from 'typeorm';
+
 import { COMMON_POST_REPOSITORY_TOKEN } from '@src/apis/common-posts/constants/common-posts.token';
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { RequiredCommonPostColumn } from '@src/apis/common-posts/types/common-post.type';
-import { DataSource } from 'typeorm';
 
 @Module({
   providers: [CommonPostsService],

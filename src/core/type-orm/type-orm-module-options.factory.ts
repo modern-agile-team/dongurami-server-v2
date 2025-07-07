@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+
 import { ENV_KEY } from '@src/core/app-config/constants/app-config.constant';
 import { AppConfigService } from '@src/core/app-config/services/app-config.service';
 
@@ -16,7 +17,9 @@ export class TypeOrmModuleOptionsFactory implements TypeOrmOptionsFactory {
       password: this.appConfigService.get<string>(ENV_KEY.RDB_PASSWORD),
       database: this.appConfigService.get<string>(ENV_KEY.RDB_DATABASE),
       entities: ['dist/**/entities/*{.ts,.js}'],
+      subscribers: ['dist/**/entities/subscribers/*{.ts,.js}'],
       logging: true,
+      timezone: '+00:00',
     };
   }
 }

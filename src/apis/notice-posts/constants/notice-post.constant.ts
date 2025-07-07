@@ -1,4 +1,5 @@
-import { NoticePostDto } from '../dto/notice-post.dto';
+import { NoticePostReactionDto } from '@src/apis/notice-posts/dto/notice-post-reaction.dto';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
 
 export const NOTICE_POST_ORDER_FIELD: readonly (keyof NoticePostDto)[] = [
   'id',
@@ -14,3 +15,6 @@ export const NOTICE_POST_TITLE_LENGTH = {
   MIN: 1,
   MAX: 255,
 } as const;
+
+export const NOTICE_POST_REACTION_ORDER_FIELD: readonly (keyof NoticePostReactionDto)[] =
+  ['id', 'type', 'userId', 'createdAt'] as const;

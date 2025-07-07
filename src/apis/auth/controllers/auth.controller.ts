@@ -3,22 +3,21 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { ApiAuth } from '@src/apis/auth/controllers/auth.swagger';
 import { SignInRequestBodyDto } from '@src/apis/auth/dto/sign-in-request-body.dto';
 import { JwtAuthGuard } from '@src/apis/auth/jwt/jwt.guard';
+import { AuthService } from '@src/apis/auth/services/auth.service';
 import { UserDto } from '@src/apis/users/dto/user.dto';
+import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 import { User } from '@src/decorators/user.decorator';
 import { ResponseType } from '@src/interceptors/success-interceptor/constants/success-interceptor.enum';
 import { SetResponse } from '@src/interceptors/success-interceptor/decorators/success-response.decorator';
 import { DetailResponse } from '@src/interceptors/success-interceptor/types/success-interceptor.type';
-import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
-import { AuthService } from '../services/auth.service';
-import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 @ApiTags('auth')
 @ApiCommonResponse([HttpStatus.INTERNAL_SERVER_ERROR])
@@ -41,11 +40,5 @@ export class AuthController {
   @Get('profile')
   getProfile(@User() user: UserDto): DetailResponse<UserDto> {
     return new UserDto(user);
-  }
-
-  @ApiAuth.GetAccessToken({ summary: '개발용으로 생성된 accessToken 생성 api' })
-  @Get('access-token/:userId')
-  getAccessToken(@Param('userId', ParsePositiveIntPipe) userId: number) {
-    return this.authService.generateToken({ id: userId });
   }
 }

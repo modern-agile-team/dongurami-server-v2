@@ -1,4 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDefined,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  MaxLength,
+} from 'class-validator';
+
 import {
   FREE_POST_ORDER_FIELD,
   FREE_POST_TITLE_LENGTH,
@@ -9,15 +20,7 @@ import { SortOrder } from '@src/constants/enum';
 import { PageDto } from '@src/dto/page.dto';
 import { ApiPropertyOrder } from '@src/dto/swagger/api-property-order.decorator';
 import { CsvToOrder, Order } from '@src/dto/transformer/csv-to-order.decorator';
-import { IsPositiveInt } from '@src/dto/validator/is-positive-int.decorator';
-import { Type } from 'class-transformer';
-import {
-  IsBooleanString,
-  IsDefined,
-  IsNotEmpty,
-  IsOptional,
-  MaxLength,
-} from 'class-validator';
+import { transformStringToBoolean } from '@src/dto/transformer/transform-string-to-boolean.transformer';
 
 export class FindFreePostListQueryDto
   extends PageDto
@@ -25,19 +28,19 @@ export class FindFreePostListQueryDto
 {
   @ApiPropertyOptional({
     description: '자유게시글 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  id?: number;
+  @IsNumberString({ no_symbols: true })
+  id?: string;
 
   @ApiPropertyOptional({
     description: '자유게시글 작성자 고유 ID 필터링',
-    format: 'integer',
+    format: 'int64',
   })
   @IsOptional()
-  @IsPositiveInt()
-  userId?: number;
+  @IsNumberString({ no_symbols: true })
+  userId?: string;
 
   @ApiPropertyOptional({
     description: 'title 필터링',
@@ -52,15 +55,15 @@ export class FindFreePostListQueryDto
     description: '익명여부 필터링',
     enum: ['true', 'false', '0', '1'],
   })
-  @IsBooleanString()
+  @IsBoolean()
+  @Transform(transformStringToBoolean)
   @IsOptional()
-  @Type(() => Boolean)
   isAnonymous?: boolean;
 
   @ApiPropertyOrder(FREE_POST_ORDER_FIELD)
   @CsvToOrder<typeof FREE_POST_ORDER_FIELD>([...FREE_POST_ORDER_FIELD])
   @IsOptional()
-  order: Order<typeof FREE_POST_ORDER_FIELD> = { id: SortOrder.Desc };
+  order: Order<typeof FREE_POST_ORDER_FIELD> = { id: SortOrder.Asc };
 
   @IsDefined()
   status: FreePostStatus = FreePostStatus.Posting;

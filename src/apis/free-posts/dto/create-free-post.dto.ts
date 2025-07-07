@@ -1,7 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import {
+  ArrayMaxSize,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  Length,
+} from 'class-validator';
+
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
-import { IsBoolean, IsNotEmpty, IsOptional, Length } from 'class-validator';
+import {
+  POST_TAG_COUNT,
+  POST_TAG_NAME_LENGTH,
+} from '@src/apis/post-tags/constants/post-tag.constant';
 
 export class CreateFreePostDto
   implements Pick<FreePostDto, 'title' | 'description' | 'isAnonymous'>
@@ -27,4 +39,15 @@ export class CreateFreePostDto
   @IsOptional()
   @IsBoolean()
   isAnonymous: boolean = false;
+
+  @ApiProperty({
+    description: '태그 명',
+    minLength: POST_TAG_NAME_LENGTH.MIN,
+    maxLength: POST_TAG_NAME_LENGTH.MAX,
+    minItems: POST_TAG_COUNT.MIN,
+    maxItems: POST_TAG_COUNT.MAX,
+  })
+  @ArrayMaxSize(POST_TAG_COUNT.MAX)
+  @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, { each: true })
+  tagNames: string[];
 }

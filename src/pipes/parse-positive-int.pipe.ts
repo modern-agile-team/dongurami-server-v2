@@ -1,10 +1,27 @@
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  Injectable,
+  Optional,
+  PipeTransform,
+} from '@nestjs/common';
+
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 
+interface Options {
+  transform?: boolean;
+}
+
 @Injectable()
 export class ParsePositiveIntPipe implements PipeTransform<string> {
-  transform(value: string, metadata: ArgumentMetadata): number {
+  constructor(
+    @Optional()
+    private readonly options: Options = {
+      transform: false,
+    },
+  ) {}
+
+  transform(value: string, metadata: ArgumentMetadata): number | string {
     const { type, data } = metadata;
 
     if (!this.isPositiveNumeric(value)) {
@@ -20,7 +37,7 @@ export class ParsePositiveIntPipe implements PipeTransform<string> {
       });
     }
 
-    return parseInt(value, 10);
+    return this.options.transform ? parseInt(value, 10) : value;
   }
 
   private isPositiveNumeric(value: string): boolean {

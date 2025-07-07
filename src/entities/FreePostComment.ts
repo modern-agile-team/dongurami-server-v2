@@ -1,42 +1,52 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostCommentHistory } from '@src/entities/FreePostCommentHistory';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { FreePost } from './FreePost';
-import { FreePostCommentHistory } from './FreePostCommentHistory';
-import { FreePostCommentReaction } from './FreePostCommentReaction';
-import { FreePostReplyComment } from './FreePostReplyComment';
-import { User } from './User';
 
 @Entity('free_post_comment')
 export class FreePostComment {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유 게시글 댓글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '댓글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_id',
     comment: '게시글 고유 ID',
     unsigned: true,
   })
-  freePostId: number;
+  freePostId: string;
+
+  @Column('bigint', {
+    name: 'parent_id',
+    comment: '부모 댓글 고유 ID',
+    unsigned: true,
+    nullable: true,
+  })
+  parentId: string | null;
+
+  @Column('tinyint', {
+    name: 'depth',
+    comment: '댓글 깊이 (0부터 시작)',
+    unsigned: true,
+    default: () => "'0'",
+  })
+  depth: number;
 
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
@@ -46,7 +56,7 @@ export class FreePostComment {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(false),
   })
   isAnonymous: boolean;
 
@@ -79,6 +89,20 @@ export class FreePostComment {
   })
   deletedAt: Date | null;
 
+  @ManyToOne(
+    () => FreePostComment,
+    (freePostComment) => freePostComment.children,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn([{ name: 'parent_id', referencedColumnName: 'id' }])
+  parent: FreePostComment;
+
+  @OneToMany(() => FreePostComment, (freePostComment) => freePostComment.parent)
+  children: FreePostComment[];
+
   @ManyToOne(() => FreePost, (freePost) => freePost.freePostComments, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -104,10 +128,4 @@ export class FreePostComment {
     (freePostCommentReaction) => freePostCommentReaction.freePostComment,
   )
   freePostCommentReactions: FreePostCommentReaction[];
-
-  @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.freePostComment,
-  )
-  freePostReplyComments: FreePostReplyComment[];
 }

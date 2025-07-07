@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseDto } from '@src/dto/base.dto';
-import { Major } from '@src/entities/Major';
+
 import {
   MAJOR_CODE_LENGTH,
   MAJOR_MEMO_LENGTH,
   MAJOR_NAME_LENGTH,
-} from '../constants/major.constant';
+} from '@src/apis/major/constants/major.constant';
+import { BaseDto } from '@src/dto/base.dto';
+import { Major } from '@src/entities/Major';
 
 export class MajorDto
   extends BaseDto

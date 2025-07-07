@@ -3,10 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class BaseDto {
   @ApiProperty({
     description: '고유 ID',
-    type: 'integer',
-    minimum: 1,
+    type: 'int64',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: '생성일자',

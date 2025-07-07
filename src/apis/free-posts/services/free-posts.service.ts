@@ -1,17 +1,27 @@
 import { Injectable } from '@nestjs/common';
+
+import { isNotEmptyObject } from 'class-validator';
+import { differenceWith } from 'lodash';
+import { getTsid } from 'tsid-ts';
+import { Transactional } from 'typeorm-transactional';
+
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { CreateFreePostDto } from '@src/apis/free-posts/dto/create-free-post.dto';
 import { FindFreePostListQueryDto } from '@src/apis/free-posts/dto/find-free-post-list-query.dto';
+import { FindFreePostReactionListQueryDto } from '@src/apis/free-posts/dto/find-free-post-reactions-list-query.dto';
 import { FreePostDto } from '@src/apis/free-posts/dto/free-post.dto';
 import { FreePostsItemDto } from '@src/apis/free-posts/dto/free-posts-item.dto';
-import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto.td';
+import { PatchUpdateFreePostDto } from '@src/apis/free-posts/dto/patch-update-free-post.dto';
 import { PutUpdateFreePostDto } from '@src/apis/free-posts/dto/put-update-free-post.dto';
-import { FreePostHistoryService } from '@src/apis/free-posts/free-post-history/services/free-post-history.service';
+import { FreePostTagLinkRepository } from '@src/apis/free-posts/repositories/free-post-tag-link.repository';
 import { FreePostRepository } from '@src/apis/free-posts/repositories/free-post.repository';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { HistoryAction } from '@src/constants/enum';
+import { UsersService } from '@src/apis/users/services/users.service';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { ERROR_CODE } from '@src/constants/error/error-code.constant';
 import { FreePost } from '@src/entities/FreePost';
@@ -19,11 +29,7 @@ import { FreePostReaction } from '@src/entities/FreePostReaction';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { isNotEmptyObject } from 'class-validator';
-import { DataSource } from 'typeorm';
-import { CreateFreePostDto } from '../dto/create-free-post.dto';
 
 @Injectable()
 export class FreePostsService {
@@ -33,62 +39,41 @@ export class FreePostsService {
   >)[] = ['title'];
 
   constructor(
-    private readonly freePostHistoryService: FreePostHistoryService,
     private readonly commonPostsService: CommonPostsService<FreePost>,
     private readonly reactionsService: ReactionsService<FreePostReaction>,
+    private readonly postTagsService: PostTagsService,
+    private readonly usersService: UsersService,
 
     private readonly queryHelper: QueryHelper,
 
-    private readonly dataSource: DataSource,
     private readonly freePostRepository: FreePostRepository,
+    private readonly freePostTagLinkRepository: FreePostTagLinkRepository,
   ) {}
 
-  async create(userId: number, createFreePostDto: CreateFreePostDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
+  @Transactional()
+  async create(userId: string, createFreePostDto: CreateFreePostDto) {
+    const { tagNames, ...postProps } = createFreePostDto;
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({
+        name: tagName,
+      })),
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
+    const newPost = await this.freePostRepository.save({
+      id: getTsid().toBigInt().toString(),
+      userId,
+      status: FreePostStatus.Posting,
+      ...postProps,
+      tags: postTags,
+    });
 
-      const newPost = await entityManager
-        .withRepository(this.freePostRepository)
-        .save({
-          userId,
-          status: FreePostStatus.Posting,
-          ...createFreePostDto,
-        });
+    const postingUser = await this.usersService.findOneById(userId);
 
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        newPost.id,
-        HistoryAction.Insert,
-        {
-          ...newPost,
-        },
-      );
+    await this.bulkAppendTagLink(userId, newPost.id, postTags);
 
-      await queryRunner.commitTransaction();
-
-      return new FreePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostDto({ ...newPost, postTags, user: postingUser });
   }
 
   findAllAndCount(
@@ -115,13 +100,21 @@ export class FreePostsService {
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations: {
+        user: true,
+      },
     });
   }
 
-  async findOneOrNotFound(freePostId: number): Promise<FreePostDto> {
-    const freePost = await this.freePostRepository.findOneBy({
-      id: freePostId,
-      status: FreePostStatus.Posting,
+  async findOneOrNotFound(freePostId: string): Promise<FreePostDto> {
+    const freePost = await this.freePostRepository.findOne({
+      where: {
+        id: freePostId,
+        status: FreePostStatus.Posting,
+      },
+      relations: {
+        user: true,
+      },
     });
 
     if (!freePost) {
@@ -130,79 +123,73 @@ export class FreePostsService {
       });
     }
 
+    const postTags = await this.findPostTags(freePostId);
+
+    return new FreePostDto({ ...freePost, postTags });
+  }
+
+  async findOne(freePostId: string): Promise<FreePostDto | void> {
+    const freePost = await this.freePostRepository.findOneBy({
+      id: freePostId,
+      status: FreePostStatus.Posting,
+    });
+
+    if (!freePost) {
+      return;
+    }
+
     return new FreePostDto(freePost);
   }
 
+  @Transactional()
   async putUpdate(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     putUpdateFreePostDto: PutUpdateFreePostDto,
   ): Promise<FreePostDto> {
-    const existFreePost = await this.findOneOrNotFound(freePostId);
+    const { tagNames, ...postProps } = putUpdateFreePostDto;
 
-    if (userId !== existFreePost.userId) {
+    const oldFreePost = await this.findOneOrNotFound(freePostId);
+
+    if (userId !== oldFreePost.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    await this.freePostTagLinkRepository.delete({
+      freePostId,
+    });
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
+    const newFreePost = this.freePostRepository.create({
+      ...oldFreePost,
+      ...postProps,
+      tags: postTags,
+    });
 
-      await entityManager.withRepository(this.freePostRepository).update(
-        {
-          id: freePostId,
-        },
-        {
-          ...putUpdateFreePostDto,
-        },
-      );
+    await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        ...newFreePost,
+      },
+    );
 
-      const newPost = await entityManager
-        .withRepository(this.freePostRepository)
-        .findOneByOrFail({
-          id: freePostId,
-        });
+    await this.bulkAppendTagLink(userId, newFreePost.id, postTags);
 
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        HistoryAction.Update,
-        {
-          ...newPost,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostDto({ ...newFreePost, postTags });
   }
 
+  @Transactional()
   async patchUpdate(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     patchUpdateFreePostDto: PatchUpdateFreePostDto,
   ): Promise<FreePostDto> {
     if (!isNotEmptyObject(patchUpdateFreePostDto)) {
@@ -211,7 +198,60 @@ export class FreePostsService {
       });
     }
 
-    const existFreePost = await this.findOneOrNotFound(freePostId);
+    const { tagNames, ...postProps } = patchUpdateFreePostDto;
+
+    const oldFreePost = await this.findOneOrNotFound(freePostId);
+
+    if (userId !== oldFreePost.userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    let postTags: PostTagDto[];
+
+    if (tagNames) {
+      await this.freePostTagLinkRepository.delete({
+        freePostId,
+      });
+
+      postTags = await this.postTagsService.bulkCreate(
+        userId,
+        tagNames.map((tagName) => ({ name: tagName })),
+      );
+
+      await this.bulkAppendTagLink(userId, freePostId, postTags);
+    } else {
+      postTags = await this.findPostTags(freePostId);
+    }
+
+    const newFreePost = this.freePostRepository.create({
+      ...oldFreePost,
+      ...postProps,
+      tags: postTags,
+    });
+
+    await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        ...newFreePost,
+      },
+    );
+
+    return new FreePostDto({ ...newFreePost, postTags });
+  }
+
+  @Transactional()
+  async remove(userId: string, freePostId: string): Promise<number> {
+    const existFreePost = await this.findOne(freePostId);
+
+    if (!existFreePost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
     if (userId !== existFreePost.userId) {
       throw new HttpForbiddenException({
@@ -219,153 +259,129 @@ export class FreePostsService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const freePostUpdateResult = await this.freePostRepository.update(
+      {
+        id: freePostId,
+      },
+      {
+        ...existFreePost,
+        status: FreePostStatus.Remove,
+        deletedAt: new Date(),
+      },
+    );
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      await entityManager.withRepository(this.freePostRepository).update(
-        {
-          id: freePostId,
-        },
-        {
-          ...patchUpdateFreePostDto,
-        },
-      );
-
-      const newPost = await entityManager
-        .withRepository(this.freePostRepository)
-        .findOneByOrFail({
-          id: freePostId,
-        });
-
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        HistoryAction.Update,
-        {
-          ...newPost,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 patch 수정 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return freePostUpdateResult.affected;
   }
 
-  /**
-   * @todo 게시글 삭제 시 soft delete 를 하기 때문에 DB 상에 댓글, 대댓글이 삭제되지 않음
-   */
-  async remove(userId: number, freePostId: number): Promise<number> {
-    const existFreePost = await this.findOneOrNotFound(freePostId);
-
-    if (userId !== existFreePost.userId) {
-      throw new HttpForbiddenException({
-        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
-      });
-    }
-
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      const freePostUpdateResult = await entityManager
-        .withRepository(this.freePostRepository)
-        .update(
-          {
-            id: freePostId,
-          },
-          {
-            status: FreePostStatus.Remove,
-            deletedAt: new Date(),
-          },
-        );
-
-      await this.freePostHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        HistoryAction.Delete,
-        {
-          ...existFreePost,
-          status: FreePostStatus.Remove,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return freePostUpdateResult.affected;
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 삭제 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
-  }
-
-  incrementHit(freePostId: number): Promise<void> {
+  incrementHit(freePostId: string): Promise<void> {
     return this.commonPostsService.incrementHit(freePostId);
   }
 
   async createReaction(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
-    const existPost = await this.findOneOrNotFound(freePostId);
+    await this.isExistOrNotFound(freePostId);
 
     return this.reactionsService.create(
       createReactionDto.type,
       userId,
-      existPost.id,
+      freePostId,
     );
   }
 
+  async findAllAndCountReactions(
+    freePostId: string,
+    findFreePostReactionListQueryDto: FindFreePostReactionListQueryDto,
+  ): Promise<[FreePostReaction[], number]> {
+    const { page, pageSize, order, type, ...filter } =
+      findFreePostReactionListQueryDto;
+
+    await this.isExistOrNotFound(freePostId);
+
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    return this.reactionsService.findAllAndCount({
+      where: { ...where, parentId: freePostId, reactionType: { name: type } },
+      skip: page * pageSize,
+      take: pageSize,
+      order,
+      relations: {
+        reactionType: true,
+      },
+    });
+  }
+
   async removeReaction(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
-    const existPost = await this.findOneOrNotFound(freePostId);
+    await this.isExistOrNotFound(freePostId);
 
     return this.reactionsService.remove(
       removeReactionDto.type,
       userId,
-      existPost.id,
+      freePostId,
+    );
+  }
+
+  async isExistOrNotFound(postId: string): Promise<true> {
+    const isExistPost = await this.freePostRepository.exist({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return isExistPost;
+  }
+
+  async bulkAppendTagLink(
+    userId: string,
+    postId: string,
+    postTags: PostTagDto[],
+  ) {
+    const existTagLinks = await this.freePostTagLinkRepository.findBy({
+      freePostId: postId,
+    });
+
+    const newAppendTags = differenceWith(
+      postTags,
+      existTagLinks,
+      (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
+    ).map((postTag) =>
+      this.freePostTagLinkRepository.create({
+        id: getTsid().toBigInt().toString(),
+        userId,
+        freePostId: postId,
+        postTagId: postTag.id,
+      }),
+    );
+
+    await this.freePostTagLinkRepository.insert(newAppendTags);
+
+    return newAppendTags;
+  }
+
+  private async findPostTags(freePostId: string): Promise<PostTagDto[]> {
+    const postTagLinks = await this.freePostTagLinkRepository.find({
+      where: {
+        freePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
     );
   }
 }

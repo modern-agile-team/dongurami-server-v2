@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+
 import { FREE_POST_TITLE_LENGTH } from '@src/apis/free-posts/constants/free-post.constant';
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { UserDto } from '@src/apis/users/dto/user.dto';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePost } from '@src/entities/FreePost';
-import { Exclude } from 'class-transformer';
 
 export class FreePostDto
   extends BaseDto
@@ -23,10 +27,12 @@ export class FreePostDto
     >
 {
   @ApiProperty({
-    description: '게시글 작성자 고유 ID',
-    format: 'integer',
+    description:
+      '게시글 작성자 고유 ID, isAnonymous 여부에 따라 null 값을 가짐',
+    format: 'int64',
+    nullable: true,
   })
-  userId: number;
+  userId: string | null;
 
   @ApiProperty({
     description: '제목',
@@ -58,9 +64,34 @@ export class FreePostDto
   @Exclude()
   deletedAt: Date;
 
+  @ApiProperty({
+    description: '게시글 태그 리스트',
+    type: [PostTagDto],
+  })
+  postTags: PostTagDto[];
+
+  @ApiProperty({
+    description: '게시글 작성자, isAnonymous 여부에 따라 null 값을 가짐',
+    type: UserDto,
+    nullable: true,
+  })
+  user: UserDto | null;
+
   constructor(freePostDto: Partial<FreePostDto> = {}) {
     super();
 
-    Object.assign(this, freePostDto);
+    this.id = freePostDto.id;
+    this.userId = freePostDto.userId;
+    this.title = freePostDto.title;
+    this.description = freePostDto.description;
+    this.hit = freePostDto.hit;
+    this.isAnonymous = freePostDto.isAnonymous;
+    this.status = freePostDto.status;
+    this.createdAt = freePostDto.createdAt;
+    this.updatedAt = freePostDto.updatedAt;
+    this.deletedAt = freePostDto.deletedAt;
+    this.postTags = freePostDto.postTags;
+
+    this.user = new UserDto({ ...freePostDto.user });
   }
 }

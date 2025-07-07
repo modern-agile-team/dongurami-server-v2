@@ -1,38 +1,34 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostHistory } from '@src/entities/FreePostHistory';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostTagLink } from '@src/entities/FreePostTagLink';
+import { PostTag } from '@src/entities/PostTag';
+import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { FreePostComment } from './FreePostComment';
-import { FreePostHistory } from './FreePostHistory';
-import { FreePostReaction } from './FreePostReaction';
-import { FreePostReplyComment } from './FreePostReplyComment';
-import { User } from './User';
 
 @Entity('free_post')
 export class FreePost {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
   @Column('varchar', { name: 'title', comment: '자유게시글 제목', length: 255 })
   title: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('text', { name: 'description', comment: '자유게시글 내용' })
   description: string;
@@ -50,7 +46,7 @@ export class FreePost {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(false),
   })
   isAnonymous: boolean;
 
@@ -61,6 +57,12 @@ export class FreePost {
     default: () => "'posting'",
   })
   status: FreePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '자유 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',
@@ -109,8 +111,8 @@ export class FreePost {
   freePostReactions: FreePostReaction[];
 
   @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.freePost,
+    () => FreePostTagLink,
+    (freePostTagLink) => freePostTagLink.freePost,
   )
-  freePostReplyComments: FreePostReplyComment[];
+  freePostTagLinks: FreePostTagLink[];
 }

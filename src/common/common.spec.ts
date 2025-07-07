@@ -1,5 +1,6 @@
-import { isNil, transformPage } from '@src/common/common';
 import { isObject } from 'class-validator';
+
+import { isNil, transformPage } from '@src/common/common';
 
 describe('common.ts unit test', () => {
   describe(transformPage.name, () => {

@@ -1,40 +1,36 @@
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+
 import { FreePostStatus } from '@src/apis/free-posts/constants/free-post.enum';
 import { HistoryAction } from '@src/constants/enum';
+import { FreePost } from '@src/entities/FreePost';
+import { PostTag } from '@src/entities/PostTag';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { FreePost } from './FreePost';
 
 @Index(['userId'], {})
 @Entity('free_post_history')
 export class FreePostHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '자유 게시글 수정이력 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_id',
     comment: '자유 게시글 고유 ID',
     unsigned: true,
   })
-  freePostId: number;
+  freePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('enum', {
     name: 'action',
@@ -62,7 +58,7 @@ export class FreePostHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(false),
   })
   isAnonymous: boolean;
 
@@ -73,6 +69,12 @@ export class FreePostHistory {
     default: () => "'posting'",
   })
   status: FreePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '자유 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',

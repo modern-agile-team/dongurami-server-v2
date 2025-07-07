@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
+
+import { getTsid } from 'tsid-ts';
+import { IsNull } from 'typeorm';
+import { Transactional } from 'typeorm-transactional';
+
 import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
 import { CreateFreePostCommentDto } from '@src/apis/free-post-comments/dto/create-free-post-comment.dto';
 import { FindFreePostCommentListQueryDto } from '@src/apis/free-post-comments/dto/find-free-post-comment-list-query.dto';
 import { FreePostCommentDto } from '@src/apis/free-post-comments/dto/free-post-comment.dto';
 import { FreePostCommentsItemDto } from '@src/apis/free-post-comments/dto/free-post-comments-item.dto';
 import { PutUpdateFreePostCommentDto } from '@src/apis/free-post-comments/dto/put-update-free-post-comment.dto';
-import { FreePostCommentHistoryService } from '@src/apis/free-post-comments/free-post-comment-history/services/free-post-comment-history.service';
 import { FreePostCommentRepository } from '@src/apis/free-post-comments/repositories/free-post-comment.repository';
 import { FreePostsService } from '@src/apis/free-posts/services/free-posts.service';
 import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
 import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
 import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
-import { HistoryAction } from '@src/constants/enum';
 import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { FreePostComment } from '@src/entities/FreePostComment';
 import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
@@ -19,82 +22,73 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
 import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { DataSource } from 'typeorm';
 
 @Injectable()
 export class FreePostCommentsService {
   constructor(
     private readonly freePostsService: FreePostsService,
-    private readonly freePostCommentHistoryService: FreePostCommentHistoryService,
     private readonly reactionsService: ReactionsService<FreePostCommentReaction>,
 
     private readonly queryHelper: QueryHelper,
 
-    private readonly dataSource: DataSource,
     private readonly freePostCommentRepository: FreePostCommentRepository,
   ) {}
 
+  @Transactional()
   async create(
-    userId: number,
-    freePostId: number,
+    userId: string,
+    freePostId: string,
     createFreePostCommentDto: CreateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
-    const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
+    const existPost = await this.freePostsService.findOne(freePostId);
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      const newPostComment = await entityManager
-        .withRepository(this.freePostCommentRepository)
-        .save({
-          userId,
-          status: FreePostCommentStatus.Posting,
-          freePostId: existPost.id,
-          ...createFreePostCommentDto,
-        });
-
-      await this.freePostCommentHistoryService.create(
-        entityManager,
-        userId,
-        existPost.id,
-        newPostComment.id,
-        HistoryAction.Insert,
-        newPostComment,
+    if (createFreePostCommentDto.parentId !== undefined) {
+      const parentComment = await this.findOneOrNotFound(
+        freePostId,
+        createFreePostCommentDto.parentId,
+        null,
       );
 
-      await queryRunner.commitTransaction();
+      createFreePostCommentDto.depth = parentComment.depth + 1;
+    }
 
-      return new FreePostCommentDto(newPostComment);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
+    if (createFreePostCommentDto.depth > 1) {
       throw new HttpInternalServerErrorException({
         code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 댓글 생성 중 알 수 없는 에러',
-        stack: error.stack,
+        ctx: '자유게시글 댓글 생성 중 depth가 2 이상인 경우가 생김',
       });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
     }
+
+    const newPostComment = await this.freePostCommentRepository.save({
+      id: getTsid().toBigInt().toString(),
+      userId,
+      status: FreePostCommentStatus.Posting,
+      freePostId: existPost.id,
+      ...createFreePostCommentDto,
+    });
+
+    return new FreePostCommentDto(newPostComment);
   }
 
   async findAllAndCount(
-    freePostId: number,
+    freePostId: string,
     findFreePostCommentListQueryDto: FindFreePostCommentListQueryDto,
   ): Promise<[FreePostCommentsItemDto[], number]> {
-    const existPost = await this.freePostsService.findOneOrNotFound(freePostId);
+    const existPost = await this.freePostsService.findOne(freePostId);
 
-    const { page, pageSize, order, ...filter } =
+    if (!existPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const { page, pageSize, order, loadDepth, ...filter } =
       findFreePostCommentListQueryDto;
 
     const where = this.queryHelper.buildWherePropForFind<FreePostComment>({
@@ -102,22 +96,50 @@ export class FreePostCommentsService {
       freePostId: existPost.id,
     });
 
-    return this.freePostCommentRepository.findAndCount({
-      where,
-      order,
-      skip: page * pageSize,
-      take: pageSize,
+    const relations = this.queryHelper.createNestedChildRelations(loadDepth);
+
+    /**
+     * @todo 1 이상 depth도 처리되게 변경
+     * @todo join 후 where 필터링이 아닌 join on 조건으로 필터링되게
+     */
+    const [comments, count] = await this.freePostCommentRepository.findAndCount(
+      {
+        where: {
+          ...where,
+          depth: 0,
+        },
+        order,
+        skip: page * pageSize,
+        take: pageSize,
+        relations: {
+          ...relations,
+          user: true,
+        },
+      },
+    );
+
+    const filteredComments = comments.map((comment) => {
+      comment.children = comment.children.filter(
+        (c) => c.status === FreePostCommentStatus.Posting,
+      );
+
+      return comment;
     });
+
+    return [filteredComments, count];
   }
 
   async findOneOrNotFound(
-    freePostId: number,
-    freePostCommentId: number,
+    freePostId: string,
+    freePostCommentId: string,
+    parentId?: string | null,
   ): Promise<FreePostCommentDto> {
     const existComment = await this.freePostCommentRepository.findOne({
       where: {
-        freePostId,
         id: freePostCommentId,
+        freePostId,
+        parentId: parentId === null ? IsNull() : parentId,
+        status: FreePostCommentStatus.Posting,
       },
     });
 
@@ -130,82 +152,49 @@ export class FreePostCommentsService {
     return new FreePostCommentDto(existComment);
   }
 
+  @Transactional()
   async putUpdate(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
     putUpdateFreePostCommentDto: PutUpdateFreePostCommentDto,
   ): Promise<FreePostCommentDto> {
-    const existComment = await this.findOneOrNotFound(
+    const oldComment = await this.findOneOrNotFound(
       freePostId,
       freePostCommentId,
+      putUpdateFreePostCommentDto.parentId === undefined
+        ? null
+        : putUpdateFreePostCommentDto.parentId,
     );
 
-    if (userId !== existComment.userId) {
+    if (userId !== oldComment.userId) {
       throw new HttpForbiddenException({
         code: COMMON_ERROR_CODE.PERMISSION_DENIED,
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const newComment = this.freePostCommentRepository.create({
+      ...oldComment,
+      ...putUpdateFreePostCommentDto,
+    });
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await this.freePostCommentRepository.update(
+      {
+        id: freePostCommentId,
+      },
+      {
+        ...newComment,
+      },
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
-
-      await entityManager.withRepository(this.freePostCommentRepository).update(
-        {
-          id: freePostCommentId,
-        },
-        {
-          ...putUpdateFreePostCommentDto,
-        },
-      );
-
-      const newComment = {
-        ...existComment,
-        ...putUpdateFreePostCommentDto,
-      };
-
-      await this.freePostCommentHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        freePostCommentId,
-        HistoryAction.Update,
-        newComment,
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new FreePostCommentDto(newComment);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 댓글 put 수정 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new FreePostCommentDto(newComment);
   }
 
-  /**
-   * @todo 댓글 삭제 시 soft delete 를 하기 떄문에 대댓글은 삭제되지 않음
-   */
+  @Transactional()
   async remove(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
   ): Promise<number> {
     const existComment = await this.findOneOrNotFound(
       freePostId,
@@ -218,63 +207,25 @@ export class FreePostCommentsService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      const freePostCommentUpdateResult = await entityManager
-        .withRepository(this.freePostCommentRepository)
-        .update(
-          {
-            id: freePostCommentId,
-          },
-          {
-            status: FreePostCommentStatus.Remove,
-            deletedAt: new Date(),
-          },
-        );
-
-      await this.freePostCommentHistoryService.create(
-        entityManager,
-        userId,
-        freePostId,
-        freePostCommentId,
-        HistoryAction.Delete,
+    const freePostCommentUpdateResult =
+      await this.freePostCommentRepository.update(
+        {
+          id: freePostCommentId,
+        },
         {
           ...existComment,
           status: FreePostCommentStatus.Remove,
+          deletedAt: new Date(),
         },
       );
 
-      await queryRunner.commitTransaction();
-
-      return freePostCommentUpdateResult.affected;
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '자유게시글 댓글 삭제 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return freePostCommentUpdateResult.affected;
   }
 
   async createReaction(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
     createReactionDto: CreateReactionDto,
   ): Promise<void> {
     const existComment = await this.findOneOrNotFound(
@@ -290,9 +241,9 @@ export class FreePostCommentsService {
   }
 
   async removeReaction(
-    userId: number,
-    freePostId: number,
-    freePostCommentId: number,
+    userId: string,
+    freePostId: string,
+    freePostCommentId: string,
     removeReactionDto: RemoveReactionDto,
   ): Promise<void> {
     const existComment = await this.findOneOrNotFound(

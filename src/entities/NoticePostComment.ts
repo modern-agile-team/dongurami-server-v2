@@ -1,41 +1,52 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
+import { NoticePostCommentStatus } from '@src/apis/notice-post-comments/constants/notice-post-comment.enum';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostCommentHistory } from '@src/entities/NoticePostCommentHistory';
+import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
+import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { NoticePost } from './NoticePost';
-import { NoticePostCommentHistory } from './NoticePostCommentHistory';
-import { NoticePostCommentReaction } from './NoticePostCommentReaction';
-import { NoticePostReplyComment } from './NoticePostReplyComment';
-import { User } from './User';
 
 @Entity('notice_post_comment')
 export class NoticePostComment {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticePostId: number;
+  noticePostId: string;
+
+  @Column('bigint', {
+    name: 'parent_id',
+    comment: '부모 댓글 고유 ID',
+    unsigned: true,
+    nullable: true,
+  })
+  parentId: string | null;
+
+  @Column('tinyint', {
+    name: 'depth',
+    comment: '댓글 깊이 (0부터 시작)',
+    unsigned: true,
+    default: () => "'0'",
+  })
+  depth: number;
 
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
@@ -45,7 +56,7 @@ export class NoticePostComment {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(false),
   })
   isAnonymous: boolean;
 
@@ -58,7 +69,7 @@ export class NoticePostComment {
     enum: ['posting', 'remove'],
     default: () => "'posting'",
   })
-  status: 'posting' | 'remove';
+  status: NoticePostCommentStatus;
 
   @Column('timestamp', {
     name: 'created_at',
@@ -80,6 +91,23 @@ export class NoticePostComment {
     comment: '삭제 일자',
   })
   deletedAt: Date | null;
+
+  @ManyToOne(
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.children,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
+  @JoinColumn([{ name: 'parent_id', referencedColumnName: 'id' }])
+  parent: NoticePostComment;
+
+  @OneToMany(
+    () => NoticePostComment,
+    (noticePostComment) => noticePostComment.parent,
+  )
+  children: NoticePostComment[];
 
   @ManyToOne(() => NoticePost, (noticePost) => noticePost.noticePostComments, {
     onDelete: 'CASCADE',
@@ -106,10 +134,4 @@ export class NoticePostComment {
     (noticePostCommentReaction) => noticePostCommentReaction.noticePostComment,
   )
   noticePostCommentReactions: NoticePostCommentReaction[];
-
-  @OneToMany(
-    () => NoticePostReplyComment,
-    (noticePostReplyComment) => noticePostReplyComment.noticePostComment,
-  )
-  noticePostReplyComments: NoticePostReplyComment[];
 }

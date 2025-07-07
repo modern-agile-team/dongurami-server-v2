@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Exclude } from 'class-transformer';
+
 import { FREE_POST_COMMENT_DESCRIPTION_LENGTH } from '@src/apis/free-post-comments/constants/free-post-comment.constant';
 import { FreePostCommentStatus } from '@src/apis/free-post-comments/constants/free-post-comment.enum';
 import { BaseDto } from '@src/dto/base.dto';
 import { FreePostComment } from '@src/entities/FreePostComment';
-import { Exclude } from 'class-transformer';
 
 export class FreePostCommentDto
   extends BaseDto
@@ -13,6 +15,8 @@ export class FreePostCommentDto
       | 'id'
       | 'userId'
       | 'freePostId'
+      | 'parentId'
+      | 'depth'
       | 'description'
       | 'isAnonymous'
       | 'status'
@@ -23,15 +27,28 @@ export class FreePostCommentDto
 {
   @ApiProperty({
     description: '게시글 고유 ID',
-    format: 'integer',
+    format: 'int64',
   })
-  freePostId: number;
+  freePostId: string;
 
   @ApiProperty({
     description: '댓글 작성자 고유 ID',
+    format: 'int64',
+  })
+  userId: string;
+
+  @ApiProperty({
+    description: '부모 댓글 ID 해당 값을 주지 않을 경우 최상위 댓글임',
+    format: 'int64',
+    nullable: true,
+  })
+  parentId: string | null;
+
+  @ApiProperty({
+    description: '댓글 깊이 0부터 시작',
     format: 'integer',
   })
-  userId: number;
+  depth: number;
 
   @ApiProperty({
     description: '본문',

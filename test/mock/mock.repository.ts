@@ -1,3 +1,5 @@
+import { MockProvider } from '@test/mock/mock.type';
+
 import { FreePostCommentHistoryRepository } from '@src/apis/free-post-comments/free-post-comment-history/repositories/free-post-comment-history.repository';
 import { FreePostReplyCommentHistoryRepository } from '@src/apis/free-post-reply-comments/free-post-reply-comment-history/repositories/free-post-reply-comment-history.repository';
 import { FreePostHistoryRepository } from '@src/apis/free-posts/free-post-history/repositories/free-post-history.repository';
@@ -7,7 +9,6 @@ import { MajorRepository } from '@src/apis/major/repositories/major.repository';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { UserRepository } from '@src/apis/users/repositories/user.repository';
 import { UserHistoryRepository } from '@src/apis/users/user-history/repositories/user-history.repository';
-import { MockProvider } from '@test/mock/mock.type';
 
 const getDefaultRepositoryMethod = () => {
   return {

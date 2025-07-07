@@ -1,47 +1,58 @@
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+
 import { HistoryAction } from '@src/constants/enum';
+import { NoticePostComment } from '@src/entities/NoticePostComment';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { NoticePostComment } from './NoticePostComment';
 
 @Index(['userId'], {})
 @Index(['noticePostId'], {})
 @Entity('notice_post_comment_history')
 export class NoticePostCommentHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '공지 게시글 댓글 수정이력 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '댓글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'notice_post_id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
   })
-  noticePostId: number;
+  noticePostId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'notice_post_comment_id',
     comment: '공지 게시글 댓글 고유 ID',
     unsigned: true,
   })
-  noticePostCommentId: number;
+  noticePostCommentId: string;
+
+  @Column('bigint', {
+    name: 'parent_id',
+    comment: '부모 댓글 고유 ID',
+    unsigned: true,
+    nullable: true,
+  })
+  parentId: string | null;
+
+  @Column('tinyint', {
+    name: 'depth',
+    comment: '댓글 깊이 (0부터 시작)',
+    unsigned: true,
+    default: () => "'0'",
+  })
+  depth: number;
 
   @Column('varchar', { name: 'description', comment: '댓글 본문', length: 255 })
   description: string;
@@ -51,7 +62,7 @@ export class NoticePostCommentHistory {
     comment: '작성자 익명 여부 (0: 실명, 1: 익명)',
     unsigned: true,
     default: () => "'0'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(false),
   })
   isAnonymous: boolean;
 

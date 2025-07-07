@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { HttpError } from '@src/http-exceptions/types/exception.type';
 

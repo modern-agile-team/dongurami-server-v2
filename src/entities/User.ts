@@ -1,32 +1,46 @@
 import {
-  UserGender,
-  UserLoginType,
-  UserRole,
-  UserStatus,
-} from '@src/apis/users/constants/user.enum';
-import {
   Column,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FreePost } from './FreePost';
-import { FreePostComment } from './FreePostComment';
-import { FreePostCommentReaction } from './FreePostCommentReaction';
-import { FreePostReaction } from './FreePostReaction';
-import { FreePostReplyComment } from './FreePostReplyComment';
-import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
-import { NoticePost } from './NoticePost';
-import { NoticePostComment } from './NoticePostComment';
-import { NoticePostCommentReaction } from './NoticePostCommentReaction';
-import { NoticePostReaction } from './NoticePostReaction';
-import { NoticePostReplyComment } from './NoticePostReplyComment';
-import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
-import { UserHistory } from './UserHistory';
-import { Major } from './Major';
+
+import {
+  UserGender,
+  UserLoginType,
+  UserRole,
+  UserStatus,
+} from '@src/apis/users/constants/user.enum';
+import { Attachment } from '@src/entities/Attachment';
+import { Club } from '@src/entities/Club';
+import { ClubApplication } from '@src/entities/ClubApplication';
+import { ClubApplicationForm } from '@src/entities/ClubApplicationForm';
+import { ClubCategory } from '@src/entities/ClubCategory';
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { ClubMember } from '@src/entities/ClubMember';
+import { ClubPost } from '@src/entities/ClubPost';
+import { ClubPostComment } from '@src/entities/ClubPostComment';
+import { ClubPostReaction } from '@src/entities/ClubPostReaction';
+import { ClubPostTagLink } from '@src/entities/ClubPostTagLink';
+import { ClubReview } from '@src/entities/ClubReview';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
+import { ClubTag } from '@src/entities/ClubTag';
+import { ClubTagLink } from '@src/entities/ClubTagLink';
+import { FreePost } from '@src/entities/FreePost';
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { FreePostTagLink } from '@src/entities/FreePostTagLink';
+import { Major } from '@src/entities/Major';
+import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostComment } from '@src/entities/NoticePostComment';
+import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
+import { PostTag } from '@src/entities/PostTag';
+import { UserHistory } from '@src/entities/UserHistory';
 
 @Index(['email'], { unique: true })
 @Index(['snsId'], { unique: true })
@@ -34,20 +48,21 @@ import { Major } from './Major';
 @Index(['nickname'], { unique: true })
 @Entity('user')
 export class User {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '유저 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'major_id',
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  majorId: number | null;
+  majorId: string | null;
 
   @Column('enum', {
     name: 'login_type',
@@ -187,18 +202,6 @@ export class User {
   )
   freePostReactions: FreePostReaction[];
 
-  @OneToMany(
-    () => FreePostReplyComment,
-    (freePostReplyComment) => freePostReplyComment.user,
-  )
-  freePostReplyComments: FreePostReplyComment[];
-
-  @OneToMany(
-    () => FreePostReplyCommentReaction,
-    (freePostReplyCommentReaction) => freePostReplyCommentReaction.user,
-  )
-  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
-
   @OneToMany(() => NoticePost, (noticePost) => noticePost.user)
   noticePosts: NoticePost[];
 
@@ -220,18 +223,6 @@ export class User {
   )
   noticePostReactions: NoticePostReaction[];
 
-  @OneToMany(
-    () => NoticePostReplyComment,
-    (noticePostReplyComment) => noticePostReplyComment.user,
-  )
-  noticePostReplyComments: NoticePostReplyComment[];
-
-  @OneToMany(
-    () => NoticePostReplyCommentReaction,
-    (noticePostReplyCommentReaction) => noticePostReplyCommentReaction.user,
-  )
-  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
-
   @ManyToOne(() => Major, (major) => major.users, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -241,4 +232,72 @@ export class User {
 
   @OneToMany(() => UserHistory, (userHistory) => userHistory.user)
   userHistories: UserHistory[];
+
+  @OneToMany(() => Club, (club) => club.user)
+  clubs: Club[];
+
+  @OneToMany(
+    () => ClubApplicationForm,
+    (clubApplicationForm) => clubApplicationForm.user,
+  )
+  clubApplicationForms: ClubApplicationForm[];
+
+  @OneToMany(() => ClubTag, (clubTag) => clubTag.user)
+  clubTags: ClubTag[];
+
+  @OneToMany(() => ClubTagLink, (clubTagLink) => clubTagLink.user)
+  clubTagLinks: ClubTagLink[];
+
+  @OneToMany(() => ClubMember, (clubMember) => clubMember.user)
+  clubMembers: ClubMember[];
+
+  @OneToMany(() => ClubCategory, (clubCategory) => clubCategory.user)
+  clubCategories: ClubCategory[];
+
+  @OneToMany(() => ClubApplication, (clubApplication) => clubApplication.user)
+  clubApplications: ClubApplication[];
+
+  @OneToMany(
+    () => ClubCategoryLink,
+    (clubCategoryLink) => clubCategoryLink.user,
+  )
+  clubCategoryLinks: ClubCategoryLink[];
+  @OneToMany(() => Attachment, (attachment) => attachment.user)
+  attachments: Attachment[];
+
+  @OneToMany(() => PostTag, (postTag) => postTag.user)
+  postTags: PostTag[];
+
+  @OneToMany(() => FreePostTagLink, (freePostTagLink) => freePostTagLink.user)
+  freePostTagLinks: FreePostTagLink[];
+
+  @OneToMany(
+    () => NoticePostTagLink,
+    (noticePostTagLink) => noticePostTagLink.user,
+  )
+  noticePostTagLinks: NoticePostTagLink[];
+
+  @OneToMany(() => ClubPost, (clubPost) => clubPost.user)
+  clubPosts: ClubPost[];
+
+  @OneToMany(() => ClubPostTagLink, (clubPostTagLink) => clubPostTagLink.user)
+  clubPostTagLinks: ClubPostTagLink[];
+
+  @OneToMany(() => ClubReview, (clubReview) => clubReview.user)
+  clubReviews: ClubReview[];
+
+  @OneToMany(
+    () => ClubReviewReaction,
+    (clubReviewReaction) => clubReviewReaction.user,
+  )
+  clubReviewReactions: ClubReviewReaction[];
+
+  @OneToMany(() => ClubPostComment, (clubPostComment) => clubPostComment.user)
+  clubPostComments: ClubPostComment[];
+
+  @OneToMany(
+    () => ClubPostReaction,
+    (clubPostReaction) => clubPostReaction.reactionType,
+  )
+  clubPostReactions: ClubPostReaction[];
 }

@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+
 import { HttpException } from '@src/http-exceptions/exceptions/http.exception';
 import { HttpError } from '@src/http-exceptions/types/exception.type';
 
@@ -15,7 +16,7 @@ export class HttpInternalServerErrorException extends HttpException {
       stack?: any;
     },
   ) {
-    const { code, errors, ctx } = error;
+    const { code, errors, ctx, stack } = error;
 
     super({
       code,
@@ -24,7 +25,7 @@ export class HttpInternalServerErrorException extends HttpException {
     });
 
     this.ctx = ctx;
-    this.stack = this.stack;
+    this.stack = stack;
   }
 
   getResponse(): HttpInternalServerErrorException {

@@ -1,4 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
+
+import {
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
+
 import {
   USER_GRADE,
   USER_NAME_LENGTH,
@@ -11,16 +23,6 @@ import {
 import { UserDto } from '@src/apis/users/dto/user.dto';
 import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
 import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
-import {
-  IsEmail,
-  IsEnum,
-  IsOptional,
-  IsString,
-  Length,
-  Matches,
-  Max,
-  Min,
-} from 'class-validator';
 
 export class CreateUserDto
   implements

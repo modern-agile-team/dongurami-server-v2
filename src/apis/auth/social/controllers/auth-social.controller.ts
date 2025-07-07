@@ -1,13 +1,14 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthSocialService } from '../service/auth-social.service';
+
+import { ApiAuthSocial } from '@src/apis/auth/social/controllers/auth-social.swagger';
+import { CheckRegistrationRequestBodyDto } from '@src/apis/auth/social/dto/auth-registration.dto';
 import {
   SignInRequestBodyDto,
   SignUpRequestBodyDto,
-} from '../dto/auth-social.dto';
-import { CheckRegistrationRequestBodyDto } from '../dto/auth-registration.dto';
-import { AuthRegistrationService } from '../service/auth-registration.service';
-import { ApiAuthSocial } from './auth-social.swagger';
+} from '@src/apis/auth/social/dto/auth-social.dto';
+import { AuthRegistrationService } from '@src/apis/auth/social/service/auth-registration.service';
+import { AuthSocialService } from '@src/apis/auth/social/service/auth-social.service';
 import { ApiCommonResponse } from '@src/decorators/swagger/api-common-response.swagger';
 
 /**

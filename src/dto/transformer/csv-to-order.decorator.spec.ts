@@ -1,7 +1,8 @@
+import { plainToInstance } from 'class-transformer';
+
 import { SortOrder } from '@src/constants/enum';
 import { CsvToOrder } from '@src/dto/transformer/csv-to-order.decorator';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { plainToInstance } from 'class-transformer';
 
 describe(CsvToOrder.name, () => {
   const allowFields: string[] = ['id', 'createdAt'];
@@ -25,39 +26,21 @@ describe(CsvToOrder.name, () => {
 
   it('허용하지 않은 필드만 들어온 경우 기본값 줌', () => {
     class Test {
-      @CsvToOrder(allowFields, { createdAt: SortOrder.Asc })
+      @CsvToOrder(allowFields, { id: SortOrder.Desc })
       orderBy: unknown;
     }
     const test = plainToInstance(Test, { orderBy: 'deletedAt,updatedAt' });
 
-    expect(test.orderBy).toStrictEqual({ createdAt: SortOrder.Asc });
+    expect(test.orderBy).toStrictEqual({ id: SortOrder.Desc });
   });
 
   it('필드 내 공백이 있으면 공백 제거', () => {
     class Test {
-      @CsvToOrder(allowFields, { createdAt: SortOrder.Asc })
+      @CsvToOrder(allowFields, { id: SortOrder.Desc })
       orderBy: unknown;
     }
 
     const test = plainToInstance(Test, { orderBy: 'id, createdAt' });
-
-    expect(test.orderBy).toStrictEqual({
-      id: SortOrder.Desc,
-      createdAt: SortOrder.Desc,
-    });
-  });
-
-  it('모두 오름차순', () => {
-    const test = plainToInstance(Test, { orderBy: 'id,createdAt' });
-
-    expect(test.orderBy).toStrictEqual({
-      id: SortOrder.Desc,
-      createdAt: SortOrder.Desc,
-    });
-  });
-
-  it('모두 내림차순', () => {
-    const test = plainToInstance(Test, { orderBy: '-id,-createdAt' });
 
     expect(test.orderBy).toStrictEqual({
       id: SortOrder.Asc,
@@ -65,12 +48,30 @@ describe(CsvToOrder.name, () => {
     });
   });
 
+  it('모두 오름차순', () => {
+    const test = plainToInstance(Test, { orderBy: 'id,createdAt' });
+
+    expect(test.orderBy).toStrictEqual({
+      id: SortOrder.Asc,
+      createdAt: SortOrder.Asc,
+    });
+  });
+
+  it('모두 내림차순', () => {
+    const test = plainToInstance(Test, { orderBy: '-id,-createdAt' });
+
+    expect(test.orderBy).toStrictEqual({
+      id: SortOrder.Desc,
+      createdAt: SortOrder.Desc,
+    });
+  });
+
   it('오름차순 내림차순 조합', () => {
     const test = plainToInstance(Test, { orderBy: '-id,createdAt' });
 
     expect(test.orderBy).toStrictEqual({
-      id: SortOrder.Asc,
-      createdAt: SortOrder.Desc,
+      id: SortOrder.Desc,
+      createdAt: SortOrder.Asc,
     });
   });
 
@@ -78,7 +79,7 @@ describe(CsvToOrder.name, () => {
     const test = plainToInstance(Test, { orderBy: 'id,deletedAt' });
 
     expect(test.orderBy).toStrictEqual({
-      id: SortOrder.Desc,
+      id: SortOrder.Asc,
     });
   });
 });

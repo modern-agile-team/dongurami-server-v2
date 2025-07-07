@@ -4,6 +4,7 @@ import {
   TableColumn,
   TableColumnOptions,
   TableForeignKey,
+  TableForeignKeyOptions,
 } from 'typeorm';
 
 export const generatePrimaryColumn = (
@@ -11,12 +12,10 @@ export const generatePrimaryColumn = (
 ): TableColumnOptions => {
   return {
     name: 'id',
-    type: 'int',
+    type: 'bigint',
     unsigned: true,
     isPrimary: true,
     isNullable: false,
-    isGenerated: true,
-    generationStrategy: 'increment',
     comment,
   };
 };
@@ -109,7 +108,7 @@ export const createHistoryTable = async (
     }),
     new TableColumn({
       name: fkColumnName,
-      type: 'int',
+      type: 'bigint',
       unsigned: true,
       isNullable: false,
       comment: 'origin 고유 ID',
@@ -142,21 +141,21 @@ export const createReactionTable = async (
         generatePrimaryColumn(),
         {
           name: 'reaction_type_id',
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: '반응 타입 고유 ID',
         },
         {
           name: 'user_id',
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: '유저 고유 ID',
         },
         {
           name: fkColumnName,
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: `${parentDescription} 고유 ID`,
@@ -213,14 +212,14 @@ export const createCommentTable = async (
         generatePrimaryColumn(`${postDescription} 댓글 고유 ID`),
         {
           name: 'user_id',
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: '댓글 작성 유저 고유 ID',
         },
         {
           name: postFkColumnName,
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: `${postDescription} 고유 ID`,
@@ -300,21 +299,21 @@ export const createReplyCommentTable = async (
         generatePrimaryColumn(`${postDescription} 대댓글 고유 ID`),
         {
           name: 'user_id',
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: '댓글 작성 유저 고유 ID',
         },
         {
           name: postFkColumnName,
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: `${postDescription} 고유 ID`,
         },
         {
           name: commentFkColumnName,
-          type: 'int',
+          type: 'bigint',
           unsigned: true,
           isNullable: false,
           comment: `${commentDescription} 고유 ID`,
@@ -376,4 +375,26 @@ export const createReplyCommentTable = async (
   await queryRunner.query(
     `ALTER TABLE \`${replyCommentTableName}\` COMMENT = "${postDescription} 게시글 대댓글"`,
   );
+};
+
+export const generateFkColumn = (
+  referencedTableName: string,
+  comment: string,
+): [TableColumnOptions, TableForeignKeyOptions] => {
+  return [
+    {
+      name: `${referencedTableName}_id`,
+      type: 'bigint',
+      unsigned: true,
+      isNullable: false,
+      comment,
+    },
+    {
+      columnNames: [`${referencedTableName}_id`],
+      referencedTableName,
+      referencedColumnNames: ['id'],
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+  ];
 };

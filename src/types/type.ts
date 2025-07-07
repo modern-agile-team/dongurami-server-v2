@@ -1,5 +1,7 @@
 import { ApiOperationOptions } from '@nestjs/swagger';
 
+import { FindManyOptions, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+
 export type Nullable<T> = {
   [P in keyof T]: T[P] | null;
 };
@@ -16,3 +18,14 @@ export type ApiOperator<M extends string> = {
       ApiOperationOptions,
   ) => PropertyDecorator;
 };
+
+export interface FindManyOptionsForPagination<E extends Record<string, any>>
+  extends Required<
+      Pick<FindManyOptions<E>, 'skip' | 'take' | 'order' | 'where'>
+    >,
+    FindManyOptions<E> {
+  where: FindOptionsWhere<E>[] | FindOptionsWhere<E>;
+  order: FindOptionsOrder<E>;
+  skip: number;
+  take: number;
+}

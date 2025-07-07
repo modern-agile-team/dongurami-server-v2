@@ -1,4 +1,4 @@
-import { UserLoginType } from "@src/apis/users/constants/user.enum";
+import { UserLoginType } from '@src/apis/users/constants/user.enum';
 
 export interface SnsProfileBase {
   snsId: string;

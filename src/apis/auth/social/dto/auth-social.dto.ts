@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  USER_GRADE,
-  USER_NAME_LENGTH,
-} from '@src/apis/users/constants/user.constant';
-import { UserGender, UserRole } from '@src/apis/users/constants/user.enum';
-import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
-import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
+
 import {
   IsEmail,
   IsEnum,
@@ -16,13 +10,22 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { CheckRegistrationRequestBodyDto } from './auth-registration.dto';
+
+import { CheckRegistrationRequestBodyDto } from '@src/apis/auth/social/dto/auth-registration.dto';
+import {
+  USER_GRADE,
+  USER_NAME_LENGTH,
+} from '@src/apis/users/constants/user.constant';
+import { UserGender, UserRole } from '@src/apis/users/constants/user.enum';
+import { PHONE_NUMBER_REGEXP } from '@src/constants/regexp.constant';
+import { IsNullable } from '@src/decorators/validators/is-nullable.decorator';
 
 export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
   @ApiProperty({
     description: 'name',
     minLength: USER_NAME_LENGTH.MIN,
     maxLength: USER_NAME_LENGTH.MAX,
+    nullable: true,
   })
   @Length(USER_NAME_LENGTH.MIN, USER_NAME_LENGTH.MAX)
   @IsNullable()
@@ -31,6 +34,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
   @ApiProperty({
     description: 'email',
     format: 'email',
+    nullable: true,
   })
   @IsEmail()
   @IsNullable()
@@ -39,6 +43,7 @@ export class SignUpRequestBodyDto extends CheckRegistrationRequestBodyDto {
   @ApiProperty({
     description: 'role',
     enum: UserRole,
+    nullable: true,
   })
   @IsEnum(UserRole)
   @IsNullable()

@@ -1,18 +1,12 @@
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+
 import {
   UserLoginType,
   UserRole,
   UserStatus,
 } from '@src/apis/users/constants/user.enum';
 import { HistoryAction } from '@src/constants/enum';
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from './User';
+import { User } from '@src/entities/User';
 
 @Index(['email'], { unique: true })
 @Index(['snsId'], { unique: true })
@@ -21,28 +15,29 @@ import { User } from './User';
 @Index(['majorId'], {})
 @Entity('user_history')
 export class UserHistory {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '유저 고유 수정이력 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'major_id',
     nullable: true,
     comment: '전공 고유 ID',
     unsigned: true,
   })
-  majorId: number | null;
+  majorId: string | null;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('enum', {
     name: 'login_type',

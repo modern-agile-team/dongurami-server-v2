@@ -1,5 +1,5 @@
 export interface RequiredCommonPostColumn {
-  id: number;
+  id: string;
   status: unknown;
   hit: number;
 }

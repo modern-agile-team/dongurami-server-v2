@@ -1,35 +1,31 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { NoticePostComment } from '@src/entities/NoticePostComment';
+import { NoticePostHistory } from '@src/entities/NoticePostHistory';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { NoticePostTagLink } from '@src/entities/NoticePostTagLink';
+import { PostTag } from '@src/entities/PostTag';
+import { User } from '@src/entities/User';
 import { BooleanTransformer } from '@src/entities/transformers/boolean.transformer';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { NoticePostComment } from './NoticePostComment';
-import { NoticePostHistory } from './NoticePostHistory';
-import { NoticePostReaction } from './NoticePostReaction';
-import { NoticePostReplyComment } from './NoticePostReplyComment';
-import { User } from './User';
 
 @Entity('notice_post')
 export class NoticePost {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '공지 게시글 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '게시글 작성 유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
   @Column('varchar', { name: 'title', comment: '공지게시글 제목', length: 255 })
   title: string;
@@ -50,7 +46,7 @@ export class NoticePost {
     comment: '댓글 허용 여부 (0: 비활성화, 1: 허용)',
     unsigned: true,
     default: () => "'1'",
-    transformer: new BooleanTransformer(),
+    transformer: new BooleanTransformer(true),
   })
   isAllowComment: boolean;
 
@@ -61,6 +57,12 @@ export class NoticePost {
     default: () => "'posting'",
   })
   status: NoticePostStatus;
+
+  @Column('json', {
+    name: 'tags',
+    comment: '공지 게시글 태그',
+  })
+  tags: Pick<PostTag, 'id' | 'userId' | 'name' | 'createdAt'>[];
 
   @Column('timestamp', {
     name: 'created_at',
@@ -109,8 +111,8 @@ export class NoticePost {
   noticePostReactions: NoticePostReaction[];
 
   @OneToMany(
-    () => NoticePostReplyComment,
-    (noticePostReplyComment) => noticePostReplyComment.noticePost,
+    () => NoticePostTagLink,
+    (noticePostTagLink) => noticePostTagLink.noticePost,
   )
-  noticePostReplyComments: NoticePostReplyComment[];
+  noticePostTagLinks: NoticePostTagLink[];
 }

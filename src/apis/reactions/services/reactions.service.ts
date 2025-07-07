@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ReactionType } from '@src/apis/reactions/constants/reaction.enum';
+
+import { getTsid } from 'tsid-ts';
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+
+import { ReactionName } from '@src/apis/reactions/constants/reaction.enum';
 import { REACTION_REPOSITORY_TOKEN } from '@src/apis/reactions/constants/reaction.token';
 import { ReactionTypeRepository } from '@src/apis/reactions/repositories/reaction-type.repository';
 import { RequiredReactionColumn } from '@src/apis/reactions/types/reaction.type';
@@ -7,7 +11,7 @@ import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code
 import { REACTION_ERROR_CODE } from '@src/constants/error/reaction/reaction-error-code.constant';
 import { HttpConflictException } from '@src/http-exceptions/exceptions/http-conflict.exception';
 import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import { FindManyOptionsForPagination } from '@src/types/type';
 
 /**
  * @requires 해당 service 를 사용하려면 entity에 userId, parentId, reactionTypeId가 선언돼야합니다.
@@ -20,7 +24,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     private readonly reactionTypeRepository: ReactionTypeRepository,
   ) {}
 
-  async create(type: ReactionType, userId: number, parentId: number) {
+  async create(type: ReactionName, userId: string, parentId: string) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -40,6 +44,7 @@ export class ReactionsService<E extends RequiredReactionColumn> {
 
     await this.reactionRepository.save(
       {
+        id: getTsid().toBigInt().toString(),
         reactionTypeId,
         userId,
         parentId,
@@ -48,7 +53,15 @@ export class ReactionsService<E extends RequiredReactionColumn> {
     );
   }
 
-  async remove(type: ReactionType, userId: number, parentId: number) {
+  async findAllAndCount(
+    findManyOptionsForPagination: FindManyOptionsForPagination<E>,
+  ) {
+    return this.reactionRepository.findAndCount({
+      ...findManyOptionsForPagination,
+    });
+  }
+
+  async remove(type: ReactionName, userId: string, parentId: string) {
     const reactionType = await this.findOneReactionTypeOrFail(type);
     const reactionTypeId = reactionType.id;
 
@@ -74,8 +87,8 @@ export class ReactionsService<E extends RequiredReactionColumn> {
   }
 
   private async findOneReactionTypeOrFail(
-    reactionName: ReactionType,
-  ): Promise<{ id: number }> {
+    reactionName: ReactionName,
+  ): Promise<{ id: string }> {
     const reactionType = await this.reactionTypeRepository.findOne({
       select: {
         id: true,

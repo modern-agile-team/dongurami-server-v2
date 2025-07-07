@@ -1,0 +1,65 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
+import { ClubCategoryLink } from '@src/entities/ClubCategoryLink';
+import { User } from '@src/entities/User';
+
+@Entity('club_category')
+export class ClubCategory {
+  @Column('bigint', {
+    primary: true,
+    name: 'id',
+    comment: '동아리 카테고리 고유 ID',
+    unsigned: true,
+    nullable: false,
+  })
+  id: string;
+
+  @Column('bigint', {
+    name: 'user_id',
+    comment: '동아리 카테고리 생성 유저 고유 ID',
+    unsigned: true,
+  })
+  userId: string;
+
+  @Column('varchar', {
+    name: 'name',
+    comment: '동아리 카테고리 이름',
+    length: 20,
+    unique: true,
+  })
+  name: string;
+
+  @Column('varchar', {
+    name: 'memo',
+    comment: '메모',
+    length: 255,
+  })
+  memo: string;
+
+  @Column('timestamp', {
+    name: 'created_at',
+    comment: '생성 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  @Column('timestamp', {
+    name: 'updated_at',
+    comment: '수정 일자',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.clubCategories, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: User;
+
+  @OneToMany(
+    () => ClubCategoryLink,
+    (clubCategoryLink) => clubCategoryLink.clubCategory,
+  )
+  clubCategoryLinks: ClubCategoryLink[];
+}

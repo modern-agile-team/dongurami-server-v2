@@ -1,20 +1,22 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { FreePostCommentReaction } from './FreePostCommentReaction';
-import { FreePostReaction } from './FreePostReaction';
-import { FreePostReplyCommentReaction } from './FreePostReplyCommentReaction';
-import { NoticePostCommentReaction } from './NoticePostCommentReaction';
-import { NoticePostReaction } from './NoticePostReaction';
-import { NoticePostReplyCommentReaction } from './NoticePostReplyCommentReaction';
+import { Column, Entity, OneToMany } from 'typeorm';
+
+import { ClubPostReaction } from '@src/entities/ClubPostReaction';
+import { ClubReviewReaction } from '@src/entities/ClubReviewReaction';
+import { FreePostCommentReaction } from '@src/entities/FreePostCommentReaction';
+import { FreePostReaction } from '@src/entities/FreePostReaction';
+import { NoticePostCommentReaction } from '@src/entities/NoticePostCommentReaction';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
 
 @Entity('reaction_type')
 export class ReactionType {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '반응 타입 고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
   @Column('varchar', { name: 'name', comment: '반응 타입', length: 30 })
   name: string;
@@ -49,12 +51,6 @@ export class ReactionType {
   freePostReactions: FreePostReaction[];
 
   @OneToMany(
-    () => FreePostReplyCommentReaction,
-    (freePostReplyCommentReaction) => freePostReplyCommentReaction.reactionType,
-  )
-  freePostReplyCommentReactions: FreePostReplyCommentReaction[];
-
-  @OneToMany(
     () => NoticePostCommentReaction,
     (noticePostCommentReaction) => noticePostCommentReaction.reactionType,
   )
@@ -67,9 +63,14 @@ export class ReactionType {
   noticePostReactions: NoticePostReaction[];
 
   @OneToMany(
-    () => NoticePostReplyCommentReaction,
-    (noticePostReplyCommentReaction) =>
-      noticePostReplyCommentReaction.reactionType,
+    () => ClubReviewReaction,
+    (clubReviewReaction) => clubReviewReaction.reactionType,
   )
-  noticePostReplyCommentReactions: NoticePostReplyCommentReaction[];
+  clubReviewReactions: ClubReviewReaction[];
+
+  @OneToMany(
+    () => ClubPostReaction,
+    (clubPostReaction) => clubPostReaction.reactionType,
+  )
+  clubPostReactions: ClubPostReaction[];
 }

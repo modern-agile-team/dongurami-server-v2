@@ -1,44 +1,40 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { FreePostComment } from './FreePostComment';
-import { ReactionType } from './ReactionType';
-import { User } from './User';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+
+import { FreePostComment } from '@src/entities/FreePostComment';
+import { ReactionType } from '@src/entities/ReactionType';
+import { User } from '@src/entities/User';
 
 @Entity('free_post_comment_reaction')
 export class FreePostCommentReaction {
-  @PrimaryGeneratedColumn({
-    type: 'int',
+  @Column('bigint', {
+    primary: true,
     name: 'id',
     comment: '고유 ID',
     unsigned: true,
+    nullable: false,
   })
-  id: number;
+  id: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'reaction_type_id',
     comment: '리액션 타입 고유 ID',
     unsigned: true,
   })
-  reactionTypeId: number;
+  reactionTypeId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'user_id',
     comment: '유저 고유 ID',
     unsigned: true,
   })
-  userId: number;
+  userId: string;
 
-  @Column('int', {
+  @Column('bigint', {
     name: 'free_post_comment_id',
     comment: '자유 게시글 댓글 고유 ID',
     unsigned: true,
   })
-  parentId: number;
+  parentId: string;
 
   @Column('timestamp', {
     name: 'created_at',

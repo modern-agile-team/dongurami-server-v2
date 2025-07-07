@@ -1,3 +1,3 @@
 export interface Payload {
-  id: number;
+  id: string;
 }

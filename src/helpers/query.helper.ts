@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
+import { FindOptionsRelations, In, Like } from 'typeorm';
+
 import { isNil } from '@src/common/common';
-import { Like } from 'typeorm';
 
 @Injectable()
 export class QueryHelper {
@@ -27,11 +29,41 @@ export class QueryHelper {
 
       if (likeSearchFields?.includes(key)) {
         where[key] = Like(`%${value}%`);
+      } else if (Array.isArray(value)) {
+        where[key] = In(value);
       } else {
         where[key] = value;
       }
     }
 
     return where;
+  }
+
+  createNestedChildRelations(loadDepth: number): FindOptionsRelations<any> {
+    if (loadDepth === 0) {
+      return {};
+    }
+
+    return {
+      children:
+        loadDepth > 1
+          ? this.createNestedChildRelations(loadDepth - 1)
+          : {
+              user: true,
+            },
+    };
+  }
+
+  aliasFactory<E extends Record<string, unknown>>(
+    alias: string,
+    object: Partial<E>,
+  ) {
+    const aliasedObject = <Record<string, any>>{};
+
+    for (const key in object) {
+      aliasedObject[`${alias}.${key}`] = object[key];
+    }
+
+    return aliasedObject;
   }
 }

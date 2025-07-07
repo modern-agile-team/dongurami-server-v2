@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { EncryptionModule } from './encryption/encryption.module';
+
+import { EncryptionModule } from '@src/libs/encryption/encryption.module';
 
 @Module({
   imports: [EncryptionModule],

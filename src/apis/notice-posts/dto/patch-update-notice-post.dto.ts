@@ -1,7 +1,19 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { CreateNoticePostDto } from './create-notice-post.dto';
-import { NOTICE_POST_TITLE_LENGTH } from '../constants/notice-post.constant';
-import { IsBoolean, IsOptional, IsString, Length } from 'class-validator';
+
+import {
+  ArrayMaxSize,
+  IsBoolean,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
+
+import { NOTICE_POST_TITLE_LENGTH } from '@src/apis/notice-posts/constants/notice-post.constant';
+import { CreateNoticePostDto } from '@src/apis/notice-posts/dto/create-notice-post.dto';
+import {
+  POST_TAG_COUNT,
+  POST_TAG_NAME_LENGTH,
+} from '@src/apis/post-tags/constants/post-tag.constant';
 
 export class PatchUpdateNoticePostDto implements Partial<CreateNoticePostDto> {
   @ApiPropertyOptional({
@@ -27,4 +39,16 @@ export class PatchUpdateNoticePostDto implements Partial<CreateNoticePostDto> {
   @IsOptional()
   @IsBoolean()
   isAllowComment?: boolean;
+
+  @ApiPropertyOptional({
+    description: '태그 명',
+    minLength: POST_TAG_NAME_LENGTH.MIN,
+    maxLength: POST_TAG_NAME_LENGTH.MAX,
+    minItems: POST_TAG_COUNT.MIN,
+    maxItems: POST_TAG_COUNT.MAX,
+  })
+  @ArrayMaxSize(POST_TAG_COUNT.MAX)
+  @Length(POST_TAG_NAME_LENGTH.MIN, POST_TAG_NAME_LENGTH.MAX, { each: true })
+  @IsOptional()
+  tagNames?: string[];
 }

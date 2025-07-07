@@ -1,23 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNoticePostDto } from '../dto/create-notice-post.dto';
-import { DataSource } from 'typeorm';
-import { NoticePostDto } from '../dto/notice-post.dto';
-import { HttpInternalServerErrorException } from '@src/http-exceptions/exceptions/http-internal-server-error.exception';
-import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
-import { QueryHelper } from '@src/helpers/query.helper';
-import { FindNoticePostListQueryDto } from '../dto/find-notice-post-list-query.dto';
-import { NoticePostsItemDto } from '../dto/notice-posts-item.dto';
-import { NoticePostHistoryService } from '../notice-post-history/services/notice-posts-history.service';
-import { HistoryAction } from '@src/constants/enum';
-import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
-import { NoticePostStatus } from '../constants/notice-post.enum';
-import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
-import { PutUpdateNoticePostDto } from '../dto/put-update-notice-post.dto';
-import { PatchUpdateNoticePostDto } from '../dto/patch-update-notice-post.dto';
-import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
-import { NoticePostRepository } from '../repositories/notice-post.repository';
+
+import { differenceWith } from 'lodash';
+import { getTsid } from 'tsid-ts';
+import { Transactional } from 'typeorm-transactional';
+
 import { CommonPostsService } from '@src/apis/common-posts/services/common-posts.service';
+import { NoticePostStatus } from '@src/apis/notice-posts/constants/notice-post.enum';
+import { CreateNoticePostDto } from '@src/apis/notice-posts/dto/create-notice-post.dto';
+import { FindNoticePostListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-list-query.dto';
+import { FindNoticePostReactionListQueryDto } from '@src/apis/notice-posts/dto/find-notice-post-reactions-list-query.dto';
+import { NoticePostDto } from '@src/apis/notice-posts/dto/notice-post.dto';
+import { NoticePostsItemDto } from '@src/apis/notice-posts/dto/notice-posts-item.dto';
+import { PatchUpdateNoticePostDto } from '@src/apis/notice-posts/dto/patch-update-notice-post.dto';
+import { PutUpdateNoticePostDto } from '@src/apis/notice-posts/dto/put-update-notice-post.dto';
+import { NoticePostTagLinkRepository } from '@src/apis/notice-posts/repositories/notice-post-tag-links.repository';
+import { NoticePostRepository } from '@src/apis/notice-posts/repositories/notice-post.repository';
+import { PostTagDto } from '@src/apis/post-tags/dto/post-tag.dto';
+import { PostTagsService } from '@src/apis/post-tags/services/post-tags.service';
+import { CreateReactionDto } from '@src/apis/reactions/dto/create-reaction.dto';
+import { RemoveReactionDto } from '@src/apis/reactions/dto/remove-reaction.dto';
+import { ReactionsService } from '@src/apis/reactions/services/reactions.service';
+import { UsersService } from '@src/apis/users/services/users.service';
+import { COMMON_ERROR_CODE } from '@src/constants/error/common/common-error-code.constant';
 import { NoticePost } from '@src/entities/NoticePost';
+import { NoticePostReaction } from '@src/entities/NoticePostReaction';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { HttpBadRequestException } from '@src/http-exceptions/exceptions/http-bad-request.exception';
+import { HttpForbiddenException } from '@src/http-exceptions/exceptions/http-forbidden.exception';
+import { HttpNotFoundException } from '@src/http-exceptions/exceptions/http-not-found.exception';
 
 @Injectable()
 export class NoticePostsService {
@@ -27,59 +37,40 @@ export class NoticePostsService {
   >)[] = ['title'];
 
   constructor(
-    private readonly queryHelper: QueryHelper,
-    private readonly noticePostHistoryService: NoticePostHistoryService,
-    private readonly dataSource: DataSource,
-    private readonly noticePostRepository: NoticePostRepository,
+    private readonly reactionsService: ReactionsService<NoticePostReaction>,
     private readonly commonPostsService: CommonPostsService<NoticePost>,
+    private readonly postTagsService: PostTagsService,
+    private readonly usersService: UsersService,
+
+    private readonly noticePostRepository: NoticePostRepository,
+    private readonly noticePostTagLinkRepository: NoticePostTagLinkRepository,
+
+    private readonly queryHelper: QueryHelper,
   ) {}
 
-  async create(userId: number, createNoticePostDto: CreateNoticePostDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
+  @Transactional()
+  async create(userId: string, createNoticePostDto: CreateNoticePostDto) {
+    const { tagNames, ...postProps } = createNoticePostDto;
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({
+        name: tagName,
+      })),
+    );
 
-    try {
-      const entityManager = queryRunner.manager;
+    const newPost = await this.noticePostRepository.save({
+      id: getTsid().toBigInt().toString(),
+      userId,
+      ...postProps,
+      tags: postTags,
+    });
 
-      const newPost = await entityManager
-        .withRepository(this.noticePostRepository)
-        .save({
-          userId,
-          ...createNoticePostDto,
-        });
+    const postingUser = await this.usersService.findOneById(userId);
 
-      await this.noticePostHistoryService.create(
-        entityManager,
-        newPost.userId,
-        newPost.id,
-        HistoryAction.Insert,
-        {
-          ...newPost,
-        },
-      );
+    await this.bulkAppendTagLink(userId, newPost.id, postTags);
 
-      await queryRunner.commitTransaction();
-
-      return new NoticePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        ctx: '공지게시글 생성 중 알 수 없는 에러',
-        stack: error.stack,
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return new NoticePostDto({ ...newPost, postTags, user: postingUser });
   }
 
   async findAllAndCount(
@@ -106,13 +97,21 @@ export class NoticePostsService {
       order,
       skip: page * pageSize,
       take: pageSize,
+      relations: {
+        user: true,
+      },
     });
   }
 
-  async findOneOrNotFound(noticePostId: number): Promise<NoticePostDto> {
-    const noticePost = await this.noticePostRepository.findOneBy({
-      id: noticePostId,
-      status: NoticePostStatus.Posting,
+  async findOneOrNotFound(noticePostId: string): Promise<NoticePostDto> {
+    const noticePost = await this.noticePostRepository.findOne({
+      where: {
+        id: noticePostId,
+        status: NoticePostStatus.Posting,
+      },
+      relations: {
+        user: true,
+      },
     });
 
     if (!noticePost) {
@@ -121,18 +120,127 @@ export class NoticePostsService {
       });
     }
 
+    const postTags = await this.findPostTags(noticePostId);
+
+    return new NoticePostDto({ ...noticePost, postTags });
+  }
+
+  async findOne(noticePostId: string): Promise<NoticePostDto | void> {
+    const noticePost = await this.noticePostRepository.findOneBy({
+      id: noticePostId,
+      status: NoticePostStatus.Posting,
+    });
+
+    if (!noticePost) {
+      return;
+    }
+
     return new NoticePostDto(noticePost);
   }
 
+  @Transactional()
   async putUpdate(
-    noticePostId: number,
-    userId: number,
+    noticePostId: string,
+    userId: string,
     putUpdateNoticePostDto: PutUpdateNoticePostDto,
   ): Promise<NoticePostDto> {
-    const existPost = await this.noticePostRepository.findOne({
-      select: { userId: true },
-      where: { id: noticePostId },
+    const { tagNames, ...postProps } = putUpdateNoticePostDto;
+
+    const oldNoticePost = await this.findOneOrNotFound(noticePostId);
+
+    if (oldNoticePost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    const postTags = await this.postTagsService.bulkCreate(
+      userId,
+      tagNames.map((tagName) => ({ name: tagName })),
+    );
+
+    const newNoticePost = this.noticePostRepository.create({
+      ...oldNoticePost,
+      ...postProps,
+      tags: postTags,
     });
+
+    await this.noticePostRepository.update(
+      {
+        id: noticePostId,
+      },
+      {
+        ...newNoticePost,
+      },
+    );
+
+    await this.noticePostTagLinkRepository.delete({
+      noticePostId,
+    });
+
+    await this.bulkAppendTagLink(userId, newNoticePost.id, postTags);
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
+  }
+
+  @Transactional()
+  async patchUpdate(
+    noticePostId: string,
+    userId: string,
+    patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
+  ): Promise<NoticePostDto> {
+    const { tagNames, ...postProps } = patchUpdateNoticePostDto;
+
+    if (!Object.values(patchUpdateNoticePostDto).length) {
+      throw new HttpBadRequestException({
+        code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
+      });
+    }
+
+    const oldNoticePost = await this.findOneOrNotFound(noticePostId);
+
+    if (oldNoticePost.userId !== userId) {
+      throw new HttpForbiddenException({
+        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
+      });
+    }
+
+    let postTags: PostTagDto[];
+
+    if (tagNames) {
+      await this.noticePostTagLinkRepository.delete({
+        noticePostId,
+      });
+
+      postTags = await this.postTagsService.bulkCreate(
+        userId,
+        tagNames.map((tagName) => ({ name: tagName })),
+      );
+
+      await this.bulkAppendTagLink(userId, noticePostId, postTags);
+    } else {
+      postTags = await this.findPostTags(noticePostId);
+    }
+
+    const newNoticePost = this.noticePostRepository.create({
+      ...oldNoticePost,
+      ...postProps,
+      tags: postTags,
+    });
+
+    await this.noticePostRepository.update(
+      { id: noticePostId, status: NoticePostStatus.Posting },
+      {
+        ...newNoticePost,
+      },
+    );
+
+    return new NoticePostDto({ ...newNoticePost, postTags });
+  }
+
+  @Transactional()
+  async remove(userId: string, noticePostId: string): Promise<number> {
+    const existPost = await this.findOne(noticePostId);
 
     if (!existPost) {
       throw new HttpNotFoundException({
@@ -146,179 +254,141 @@ export class NoticePostsService {
       });
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    const updateResult = await this.noticePostRepository.update(
+      { id: noticePostId },
+      {
+        ...existPost,
+        deletedAt: new Date(),
+        status: NoticePostStatus.Remove,
+      },
+    );
 
-    queryRunner.connect();
-    queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-      await entityManager.withRepository(this.noticePostRepository).update(
-        {
-          id: noticePostId,
-        },
-        {
-          ...putUpdateNoticePostDto,
-        },
-      );
-
-      const newPost = await entityManager
-        .withRepository(this.noticePostRepository)
-        .findOneByOrFail({ id: noticePostId });
-
-      await this.noticePostHistoryService.create(
-        entityManager,
-        userId,
-        noticePostId,
-        HistoryAction.Insert,
-        {
-          ...newPost,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new NoticePostDto(newPost);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        stack: error.stack,
-        ctx: '공지게시글 업데이트 중 알 수 없는 에러',
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    return updateResult.affected;
   }
 
-  async patchUpdate(
-    noticePostId: number,
-    userId: number,
-    patchUpdateNoticePostDto: PatchUpdateNoticePostDto,
-  ): Promise<NoticePostDto> {
-    if (!Object.values(patchUpdateNoticePostDto).length) {
-      throw new HttpBadRequestException({
-        code: COMMON_ERROR_CODE.MISSING_UPDATE_FIELD,
-      });
-    }
-
-    const existPost = await this.findOneOrNotFound(noticePostId);
-
-    if (existPost.userId !== userId) {
-      throw new HttpForbiddenException({
-        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
-      });
-    }
-
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      await entityManager
-        .withRepository(this.noticePostRepository)
-        .update(
-          { id: noticePostId, status: NoticePostStatus.Posting },
-          { ...patchUpdateNoticePostDto },
-        );
-
-      const updatedBoard = await entityManager
-        .withRepository(this.noticePostRepository)
-        .findOneOrFail({ where: { id: noticePostId } });
-
-      await this.noticePostHistoryService.create(
-        entityManager,
-        userId,
-        noticePostId,
-        HistoryAction.Update,
-        { ...updatedBoard },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new NoticePostDto(updatedBoard);
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        stack: error.stack,
-        ctx: '공지게시글 업데이트 중 알 수 없는 에러 발생',
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
-  }
-
-  async remove(userId: number, noticePostId: number): Promise<number> {
-    const existPost = await this.findOneOrNotFound(noticePostId);
-
-    if (existPost.userId !== userId) {
-      throw new HttpForbiddenException({
-        code: COMMON_ERROR_CODE.PERMISSION_DENIED,
-      });
-    }
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const entityManager = queryRunner.manager;
-
-      const updateResult = await entityManager
-        .withRepository(this.noticePostRepository)
-        .update({ id: noticePostId }, { status: NoticePostStatus.Remove });
-
-      await this.noticePostHistoryService.create(
-        entityManager,
-        userId,
-        noticePostId,
-        HistoryAction.Delete,
-        {
-          ...existPost,
-          status: NoticePostStatus.Remove,
-        },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return updateResult.affected;
-    } catch (error) {
-      if (queryRunner.isTransactionActive) {
-        await queryRunner.rollbackTransaction();
-      }
-
-      console.error(error);
-
-      throw new HttpInternalServerErrorException({
-        code: COMMON_ERROR_CODE.SERVER_ERROR,
-        stack: error.stack,
-        ctx: '공지게시글 업데이트 중 알 수 없는 에러 발생',
-      });
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
-  }
-
-  async increaseHit(noticePostId: number): Promise<void> {
+  async increaseHit(noticePostId: string): Promise<void> {
     return this.commonPostsService.incrementHit(noticePostId);
+  }
+
+  async bulkAppendTagLink(
+    userId: string,
+    postId: string,
+    postTags: PostTagDto[],
+  ) {
+    const existTagLinks = await this.noticePostTagLinkRepository.findBy({
+      noticePostId: postId,
+    });
+
+    const newAppendTags = differenceWith(
+      postTags,
+      existTagLinks,
+      (postTag, postTagLink) => postTag.id === postTagLink.postTagId,
+    ).map((postTag) =>
+      this.noticePostTagLinkRepository.create({
+        id: getTsid().toBigInt().toString(),
+        userId,
+        noticePostId: postId,
+        postTagId: postTag.id,
+      }),
+    );
+
+    await this.noticePostTagLinkRepository.insert(newAppendTags);
+
+    return newAppendTags;
+  }
+
+  private async findPostTags(noticePostId: string): Promise<PostTagDto[]> {
+    const postTagLinks = await this.noticePostTagLinkRepository.find({
+      where: {
+        noticePostId,
+      },
+      relations: {
+        postTag: true,
+      },
+    });
+
+    return postTagLinks.map(
+      (postTagLink) => new PostTagDto(postTagLink.postTag),
+    );
+  }
+
+  async findAllAndCountReactions(
+    noticePostId: string,
+    findNoticePostReactionListQueryDto: FindNoticePostReactionListQueryDto,
+  ): Promise<[NoticePostReaction[], number]> {
+    const { page, pageSize, order, type, ...filter } =
+      findNoticePostReactionListQueryDto;
+
+    const existNoticePost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!existNoticePost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    return this.reactionsService.findAllAndCount({
+      where: { ...where, parentId: noticePostId, reactionType: { name: type } },
+      skip: page * pageSize,
+      take: pageSize,
+      order,
+      relations: {
+        reactionType: true,
+      },
+    });
+  }
+
+  async createReaction(
+    userId: string,
+    noticePostId: string,
+    createReactionDto: CreateReactionDto,
+  ): Promise<void> {
+    const isExistPost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.reactionsService.create(
+      createReactionDto.type,
+      userId,
+      noticePostId,
+    );
+  }
+
+  async removeReaction(
+    userId: string,
+    noticePostId: string,
+    removeReactionDto: RemoveReactionDto,
+  ): Promise<void> {
+    const isExistPost = await this.noticePostRepository.exist({
+      where: {
+        id: noticePostId,
+      },
+    });
+
+    if (!isExistPost) {
+      throw new HttpNotFoundException({
+        code: COMMON_ERROR_CODE.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    return this.reactionsService.remove(
+      removeReactionDto.type,
+      userId,
+      noticePostId,
+    );
   }
 }
